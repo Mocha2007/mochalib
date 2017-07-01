@@ -22,24 +22,25 @@ Length Constants:
 
 Mass Constants
 
-lb - Pound. kg
-m_e - Terran Mass. kg
-m_j - Jovian Mass. kg
-m_moon - Lunar Mass. kg
-m_person - Average Human Mass. kg
-m_sun - Solar Mass. kg
+* lb - Pound. kg
+* m_e - Terran Mass. kg
+* m_j - Jovian Mass. kg
+* m_moon - Lunar Mass. kg
+* m_person - Average Human Mass. kg
+* m_sun - Solar Mass. kg
 
 Time Constants
 
-day - Day. s
-hour - Hour. s
-jyear - Julian Year. s
-t_e - Earth's Rotation Period. s
-year - Gregorian Year. s
+* day - Day. s
+* hour - Hour. s
+* jyear - Julian Year. s
+* minute - Minute. s
+* t_e - Earth's Rotation Period. s
+* year - Gregorian Year. s
 
 Power Constants
 
-l_sun - Solar Luminosity. W
+* l_sun - Solar Luminosity. W
 
 Body Dictionaries:
 
