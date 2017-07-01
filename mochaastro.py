@@ -144,6 +144,8 @@ def roche(M,density):
 def hill(m,M,a,e):
 	return a*(1-e)*(m/3/M)**(1/3)
 	
+#NEW!
+	
 def gravbinding(m,r):#gravitational binding energy (in joules)
 	return 3*g*m**2/5/r	
 
@@ -158,3 +160,6 @@ def energy(m):#rest energy
 
 def mass(e):#relativistic mass
 	return e/c**2
+
+def orbitenergy(m,a):#Specific orbital energy
+	return -m*g/2/a

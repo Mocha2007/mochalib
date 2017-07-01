@@ -81,6 +81,7 @@ Various mathematical and scientific functions I've needed
 * mass - Calculates relativistic mass of specified object. J -> kg
 * mov - Mean orbital velocity of the specified orbit. kg,m -> m/s
 * optimal - Calculates which of Hohmann or Bielliptic transfer manoeuvres is more efficient. m,m,kg->[String]
+* orbitenergy - Calculates the specific orbital energy of the orbit. kg,m -> m^2/s^2
 * p - Period of the specified orbit. kg,m -> s
 * peakwavelength - Calculates peak wavelength of an object with temperature T. K -> m
 * roche - Calculates roche limit of specified body. kg,kg/m^3 -> m
