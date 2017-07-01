@@ -91,7 +91,89 @@ Various mathematical and scientific functions I've needed
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s
 
 # Math Library Documentation
-...
+## Functions
+
+* abundancy - Abundancy of n.
+* area - Area of non-intersecting polygon defined by points.
+* areacircle - Area of a circle.
+* areacone - Surface area of a cone.
+* areacylinder - Surface area of a cylinder.
+* areasphere - Surface area of a sphere.
+* areatetrahedron - Surface area of a tetrahedron.
+* bernoulli - *Forgot, something to do with Bernoulli, evidently.*
+* birthday - Solves the birthday problem for n people.
+* bounding - Lower left and upper right points of the bounding box of all points in a set.
+* cdf - Cumulative distribution function.
+* circumference - Circumference of a circle.
+* continuedfraction - Turns the series into decimal notation.
+* dist - Distance between two points in n-dimensional space.
+* divisors - Finds all divisors of n.
+* divisorfunction - Finds number of divisors of n.
+* doublefactorial - Finds n!!.
+* dpoly - Finds nth derivative of a polynomial using the coefficients.
+* fitts - Calculates Fitts' law.
+* greedyegyptian - Returns the greedy egyptian fractional expansion of x.
+* harmonic - Calculates harmonic numbers.
+* heron - Calculates area of a triangle using its sidelengths.
+* interiorangle - Calculates interior angle of a regular n-gon.
+* interioranglesum - Calculates the sum of the interior angles for a regular n-gon.
+* ipoly - Calculates the integral of a polynomial.
+* lcm - Calculates the least common multiple of two integers.
+* logistic - Logistic function.
+* ncr - ncr.
+* normal - Normal distribution curve.
+* npr - npr.
+* ord - Multiplicative order.
+* quadratic - Solves for the zeroes of the quadratic with coefficients a, b, c.
+* randomspherepoint - Returns an ACTUAL random point on a sphere, without polar clustering caused by naive methods.
+* sgn - Sign function. Returns 0 for x=0
+* snormal - Standard normal distribution curve.
+* standardlogistic - Standard logistic function.
+* sumofdivisors - Sum of divisors of n.
+* totient - Euler's totient function.
+* triangular - nth triangular number.
+* volumecone - Volume of a cone.
+* volumecylinder - Volume of a cylinder.
+* volumensphere - Volume of an n-sphere.
+* volumesphere - Volume of a sphere.
+* volumetetrahedron - Volume of a tetrahedron.
+* weierstrass - Weierstrass function.
+* woodall - woodall function.
+* zeta - Riemann zeta function.
+* zipf - Zipf's law.
+
+## Googological Functions
+
+* ack - Ackermann Function.
+* arrayed - Linear array notation.
+* arrow - Conway's Arrow Notation.
+* beaf - BEAF.
+* chained - Chained arrow notation.
+* graham - g_n.
+* pentation - Tetration.
+* tetration - Tetration.
+
+## Random etc. tools
+
+* averagetimestooccur - Average time for an event with probability p to occur.
+* card - random playing card
+* chanceofoccuring - more stat crap.
+* dice - ndn+bonus
+* mnm - random mnm based on published distributions by mars corp.
+* pascal - Returns nth row of Pascal's triangle.
+* pascalrow - Identical to *pascal*, deprecated
+
+## Series
+
+* iproduct - Infinite Summation.
+* isum - Infinite Product.
+* pproduct - Product.
+* ssum - Summation.
+
+## Sets
+
+* isburningship - Is c in the burning ship set?
+* ismandelbrot - Is c in the mandelbrot set?
 
 # Wavefunction Library Documentation
 All functions require three components - *x* (Time in s), *freq* (Frequency in hz), and *amp* (Amplitude). They all return a y-value.
