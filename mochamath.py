@@ -448,3 +448,18 @@ def ack(m,n):
 	if m==0:return n+1
 	if m>0 and n==0: return ack(m-1,1)
 	return ack(m-1,ack(m,n-1))
+	
+# NEW FUNCTIONS
+
+def cubicstats(a,b,c,d):
+	print("Zeroes","*shrug*")
+	print("Extrema",quadratic(3*a,2*b,c))
+	print("Inflection Point",-b/3/a)
+	
+#sqrt(n+sqrt(n+sqrt(n+...
+#equivalent to positive solution to x^2-x-n=0
+def infiniroot(n):
+	return (1+(1+4*n)**.5)/2
+	
+def maximizerect(P,m,n):
+	return P**2/(4*(m+1)*(n+1))

@@ -1,6 +1,12 @@
 # mochalib
 Various mathematical and scientific functions I've needed
 
+# 24 Game Library Documentation
+##Functions
+* allorder - Every number achievable with the four given integers.
+* twentyfour - Every number achievable with the four given integers, used in order.
+* operations - Performs every possible ordering of math operations on four integers, in that order.
+
 # Astronomical Library Documentation
 ## Fundamental Constants:
 
@@ -90,6 +96,10 @@ Various mathematical and scientific functions I've needed
 * vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,[Dimensionless],kg -> m/s,m/s
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s
 
+# Change Library Documentation
+## Functions
+* change - If there is a way to find n coins totalling $m, it will find it. Otherwise, returns False.
+
 # Math Library Documentation
 ## Functions
 
@@ -158,7 +168,10 @@ Various mathematical and scientific functions I've needed
 * averagetimestooccur - Average time for an event with probability p to occur.
 * card - random playing card
 * chanceofoccuring - more stat crap.
+* cubicstats - Returns zeroes (soon!!!), extrema, and inflection points of a cubic.
 * dice - ndn+bonus
+* infiniroot - sqrt(n+sqrt(n+...
+* maximizerect - Finds maximum area bounded by an m by n grid of rectangles with total perimeter P.
 * mnm - random mnm based on published distributions by mars corp.
 * pascal - Returns nth row of Pascal's triangle.
 * pascalrow - Identical to *pascal*, deprecated
@@ -174,6 +187,16 @@ Various mathematical and scientific functions I've needed
 
 * isburningship - Is c in the burning ship set?
 * ismandelbrot - Is c in the mandelbrot set?
+
+# Primality Library Documentation
+## Functions
+* primality - Attempts to primecheck n.
+
+# Runs or Straights Library Documentation
+## Functions
+* runs - Finds all runs in a set.
+* sor - Returns greatest straight or run in a set.
+* straights - Finds all straights in a set.
 
 # Wavefunction Library Documentation
 All functions require three components - *x* (Time in s), *freq* (Frequency in hz), and *amp* (Amplitude). They all return a y-value.
