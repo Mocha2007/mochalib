@@ -30,6 +30,7 @@ minute=60
 hour=3600
 day=86400
 year=31556952
+jyear=31536000
 mars={'a':1.523679*au,'e':0.0934,'r':3389500,'m':6.4171e23}
 #hohmann(362600000,405400000,5.97237e24)
 def hohmann(inner,outer,mass):
