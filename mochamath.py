@@ -177,7 +177,7 @@ def snormal(x):
 def normal(x,mu,sigma):
 	return snormal((x-mu)/sigma)/sigma
 
-def randomspherepoint(r):
+def randomspherepoint():
 	return 2*pi*random.random(),acos(2*random.random()-1)
 	
 def standardlogistic(x):
