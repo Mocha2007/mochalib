@@ -150,7 +150,7 @@ def gravbinding(m,r):#gravitational binding energy (in joules)
 def gravbinding2(r,rho):#gravitational binding energy (in joules), using density for mass
 	return g*pi**2*16*rho**2*r**5/15
 	
-def schwarzschild(m,r):#schwarzschild radius
+def schwarzschild(m):#schwarzschild radius
 	return 2*g*m/c**2
 	
 def energy(m):#rest energy
