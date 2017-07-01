@@ -44,6 +44,15 @@ Power Constants
 
 Body Dictionaries:
 
+Each of these dictionaries contain four components:
+
+* a - Semimajor Axis. m
+* e - Eccentricity. [Dimensionless]
+* m - Mass. kg
+* r - Radius. m
+
+List:
+
 * mars
 
 # Math Library Documentation
