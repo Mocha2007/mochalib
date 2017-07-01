@@ -1,7 +1,7 @@
 from math import floor,log
 from time import time
-patience=1
 def primality(n):
+	patience=1
 	try:n=int(n)
 	except:return False
 	if n<2:return False
@@ -33,12 +33,3 @@ def primality(n):
 			if n%(i*2+1)==0:return False#,i*2+1
 	#can't disprove primality
 	return "Probable Prime"
-n=1
-count=0
-while 1:
-	#print(primality(input("> ")))
-	truth=primality(n)
-	if truth!=False:
-		count+=1
-		print(n,n/count**1.09)
-	n+=1
