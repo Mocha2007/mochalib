@@ -2,13 +2,13 @@
 Various mathematical and scientific functions I've needed
 
 # Astronomical Library Documentation
-Fundamental Constants:
+## Fundamental Constants:
 
 * c - Speed of Light. m/s
 * g - Gravitational Constant. m^3/kgs^2
 * sigma - Stefan-Boltzmann Constant. W/m^2K^4
 
-Length Constants:
+## Length Constants:
 * au - Astronomical Unit. m
 * a_moon - Lunar Distance. m
 * mi - Mile. m
@@ -20,7 +20,7 @@ Length Constants:
 * r_sun - Solar Radius. m
 * ly - Light-Year. m
 
-Mass Constants
+## Mass Constants
 
 * lb - Pound. kg
 * m_e - Terran Mass. kg
@@ -29,7 +29,7 @@ Mass Constants
 * m_person - Average Human Mass. kg
 * m_sun - Solar Mass. kg
 
-Time Constants
+## Time Constants
 
 * day - Day. s
 * hour - Hour. s
@@ -38,20 +38,20 @@ Time Constants
 * t_e - Earth's Rotation Period. s
 * year - Gregorian Year. s
 
-Power Constants
+## Power Constants
 
 * l_sun - Solar Luminosity. W
 
-Body Dictionaries:
+## Body Dictionaries:
 
-Each of these dictionaries contain four components:
+### Each of these dictionaries contain four components:
 
 * a - Semimajor Axis. m
 * e - Eccentricity. [Dimensionless]
 * m - Mass. kg
 * r - Radius. m
 
-List:
+### List:
 
 * mars
 
