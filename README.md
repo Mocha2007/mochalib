@@ -2,7 +2,7 @@
 Various mathematical and scientific functions I've needed
 
 # 24 Game Library Documentation
-##Functions
+## Functions
 * allorder - Every number achievable with the four given integers.
 * twentyfour - Every number achievable with the four given integers, used in order.
 * operations - Performs every possible ordering of math operations on four integers, in that order.
