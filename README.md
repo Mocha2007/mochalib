@@ -63,7 +63,15 @@ Various mathematical and scientific functions I've needed
 
 ### List:
 
+* earth - Earth.
+* jupiter - Jupiter.
 * mars - Mars.
+* mercury - Mercury.
+* neptune - Neptune.
+* planetnine - Planet Nine.
+* saturn - Saturn.
+* uranus - Uranus.
+* venus - Venus.
 
 ## Functions:
 
