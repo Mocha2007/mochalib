@@ -7,6 +7,7 @@ pc=3.0857e16
 ly=9.4607e15
 au=149597870700
 a_moon=3.84399e8
+a_planck=2.176470e-8
 
 m_sun=1.98855e30
 m_j=1.8986e27
@@ -19,10 +20,13 @@ r_j=6.9911e7
 r_e=6.371e6
 r_moon=1737100
 r_person=.2544#assuming a perfect sphere
+r_planck=1.616229e-35
 
-t_e=0.99726968*24*60*60
+t_e=86164.100352
+t_planck=5.39116e-44
 
 l_sun=3.828e26#Watts
+l_planck=3.62831e52#Watts
 
 lb=0.45359237
 mi=1609.344

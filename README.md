@@ -17,6 +17,7 @@ Various mathematical and scientific functions I've needed
 ## Length Constants:
 * au - Astronomical Unit. m
 * a_moon - Lunar Distance. m
+* a_planck - Planck length. m
 * mi - Mile. m
 * pc - Parsec. m
 * r_e - Terran Radius. m
@@ -33,6 +34,7 @@ Various mathematical and scientific functions I've needed
 * m_j - Jovian Mass. kg
 * m_moon - Lunar Mass. kg
 * m_person - Average Human Mass. kg
+* m_planck - Planck Mass. kg
 * m_sun - Solar Mass. kg
 
 ## Time Constants
@@ -42,10 +44,12 @@ Various mathematical and scientific functions I've needed
 * jyear - Julian Year. s
 * minute - Minute. s
 * t_e - Earth's Rotation Period. s
+* t_planck - Planck Time. s
 * year - Gregorian Year. s
 
 ## Power Constants
 
+* l_planck - Planck Power. W
 * l_sun - Solar Luminosity. W
 
 ## Body Dictionaries:
