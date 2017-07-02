@@ -123,7 +123,7 @@ Various mathematical and scientific functions I've needed
 * areacylinder - Surface area of a cylinder.
 * areasphere - Surface area of a sphere.
 * areatetrahedron - Surface area of a tetrahedron.
-* bernoulli - *Forgot, something to do with Bernoulli, evidently.*
+* bernoulli - Bernoulli numbers.
 * birthday - Solves the birthday problem for n people.
 * bounding - Lower left and upper right points of the bounding box of all points in a set.
 * cdf - Cumulative distribution function.
