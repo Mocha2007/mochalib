@@ -84,6 +84,7 @@ Various mathematical and scientific functions I've needed
 * bielliptictime - Calculates time required to perform specified Bielliptic transfer manoeuvre. m,m,m,kg -> s
 * density - Density of the sphere. kg,m -> kg/m^3
 * energy - Calculates rest energy of specified object. kg -> J
+* esi - Calculates the Earth Similarity Index of specified object. m,kg,K -> [Dimensionless]
 * gravbinding - Gravitational binding energy of specified body. m,kg -> J
 * gravbinding2 - Gravitational binding energy of specified body, using density instead of mass. m,kg/m^3 -> J
 * habitablezone - Approximates inner and outer bounds of the habitable zone of a hypothetical star with specified mass. kg-> m,m

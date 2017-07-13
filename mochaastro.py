@@ -176,3 +176,12 @@ def mass(e):#relativistic mass
 
 def orbitenergy(m,a):#Specific orbital energy
 	return -m*g/2/a
+
+#source for the formula: http://phl.upr.edu/projects/earth-similarity-index-esi
+#esi(mars['r'],mars['m'],210)
+def esi(r,m,T):#Radius,Density,Escape Velocity,Temperature
+	esi1=1-abs((r-r_e)/(r+r_e))
+	esi2=1-abs((density(m,r)-density(m_e,r_e))/(density(m,r)+density(m_e,r_e)))
+	esi3=1-abs((vescape(m,r)-vescape(m_e,r_e))/(vescape(m,r)+vescape(m_e,r_e)))
+	esi4=1-abs((T-255)/(T+255))
+	return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
