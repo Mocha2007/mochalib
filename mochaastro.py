@@ -128,9 +128,9 @@ def vescape(m,r):
 def vtan(t,r):#Equatorial rotation velocity
 	return 2*pi*r/t
 	
-def synodic(p1,p2):#synodic period est. i think this is what it is...
+def synodic(p1,p2):#synodic period
 	try:
-		return p1*p2/(p2-1)
+		return p1*p2/(p2-p1)
 	except:
 		return inf
 	
