@@ -142,8 +142,8 @@ def habitablezone(mass):
 	m=mass/m_sun
 	return au*.95*(star(mass)[1]/l_sun)**.5,au*1.37*(star(mass)[1]/l_sun)**.5
 	
-def temp(luminosity,albedo,a):
-	return (luminosity*(1-albedo)/(16*pi*sigma*a**2))**.25
+def temp(T,R,sma,a):#https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model
+	return T*(1-a)**.25*(R/2/sma)**.5
 	
 def absmag(appmag,distance):
 	return appmag-5*(log(distance/pc)-1)
