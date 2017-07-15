@@ -1,6 +1,5 @@
 from math import cos,inf,log,pi,sin
 g=6.67408e-11#standard gravitational constant
-sigma=5.670373e-8#Stefan-Boltzmann Constant
 c=299792458#m/s
 
 pc=3.0857e16

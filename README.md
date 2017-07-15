@@ -12,7 +12,6 @@ Various mathematical and scientific functions I've needed
 
 * c - Speed of Light. m/s
 * g - Gravitational Constant. m^3/kgs^2
-* sigma - Stefan-Boltzmann Constant. W/m^2K^4
 
 ## Length Constants:
 * au - Astronomical Unit. m
@@ -105,7 +104,7 @@ Various mathematical and scientific functions I've needed
 * surfacegravity - Calculates surface gravity of specified body. kg,m->m/s^2
 * synchronous - Semimajor axis of the synchronous orbit around a body. s,kg -> m
 * synodic - Calculates synodic period of two specified bodies. s,s -> s
-* temp - Calculates temperature of a body illuminated by a star. W,[Dimensionless],m -> K
+* temp - Calculates planetary equilibrium temperature. K,m,m,[Dimensionless] -> K
 * vescape - Calculates escape velocity of specified body. kg,m->m/s
 * vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,[Dimensionless],kg -> m/s,m/s
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s
