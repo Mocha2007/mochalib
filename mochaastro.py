@@ -184,3 +184,13 @@ def esi(r,m,T):#Radius,Density,Escape Velocity,Temperature
 	esi3=1-abs((vescape(m,r)-vescape(m_e,r_e))/(vescape(m,r)+vescape(m_e,r_e)))
 	esi4=1-abs((T-255)/(T+255))
 	return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
+
+def drake(R,fp,ne,fl,fi,fc,L):
+	if R==-1:R=2.25
+	if fp==-1:fp=1
+	if ne==-1:ne=.4
+	if fl==-1:fl=.5
+	if fi==-1:fi=1
+	if fc==-1:fc=1
+	if L==-1:L=200
+	return R*fp*ne*fl*fi*fc*L

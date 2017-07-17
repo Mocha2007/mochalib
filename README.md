@@ -82,6 +82,7 @@ Various mathematical and scientific functions I've needed
 * biellipticinf - Calculates theoretical minimum Delta-v required to perform specified Bielliptic transfer manoeuvre. m,m,kg -> m/s
 * bielliptictime - Calculates time required to perform specified Bielliptic transfer manoeuvre. m,m,m,kg -> s
 * density - Density of the sphere. kg,m -> kg/m^3
+* drake - Drake Equation. Use -1 to specify default estimate. 1/y,[Dimensionless],[Dimensionless],[Dimensionless],[Dimensionless],[Dimensionless],y -> [Dimensionless]
 * energy - Calculates rest energy of specified object. kg -> J
 * esi - Calculates the Earth Similarity Index of specified object. m,kg,K -> [Dimensionless]
 * gravbinding - Gravitational binding energy of specified body. m,kg -> J
