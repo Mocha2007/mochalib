@@ -134,14 +134,19 @@ def synodic(p1,p2):#synodic period
 		return inf
 	
 def star(mass):
+	'''Mass (kg) ->
+	Radius (m), Luminosity (W), Temp (K), Lifespan (s)'''
 	m=mass/m_sun
-	return r_sun*m**.74/2,l_sun*m**3,5772*m**.505,12e9*365.2425*60*60*m**-2.5#Radius (m),Luminosity (solar lumin.),Temp (K),Lifespan (s)
+	return r_sun*m**.74/2,l_sun*m**3,5772*m**.505,12e9*365.2425*60*60*m**-2.5
 	
 def habitablezone(mass):
 	m=mass/m_sun
 	return au*.95*(star(mass)[1]/l_sun)**.5,au*1.37*(star(mass)[1]/l_sun)**.5
 	
-def temp(T,R,sma,a):#https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model
+def temp(T,R,sma,a):
+	'''Temperature of the star (K), Radius of the star (m), Semimajor axis (m), Albedo ->
+	Temperature (K)
+	Formula from https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model'''
 	return T*(1-a)**.25*(R/2/sma)**.5
 	
 def absmag(appmag,distance):
