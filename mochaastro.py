@@ -145,7 +145,7 @@ def habitablezone(mass):
 	
 def temp(T,R,sma,a):
 	'''Temperature of the star (K), Radius of the star (m), Semimajor axis (m), Albedo
-	-> Temperature (K)
+	-> Temperature of the body (K)
 	Formula from https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model'''
 	return T*(1-a)**.25*(R/2/sma)**.5
 	
