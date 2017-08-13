@@ -221,3 +221,7 @@ All functions require three components - *x* (Time in s), *freq* (Frequency in h
 * square - Square wave function. Uses flooring and modulo.
 * square1 - Square wave function. Uses the imaginary part of ln(sin(x)).
 * triangle - Triangle wave function.
+
+# Chemistry Library Documentation
+
+VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
