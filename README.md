@@ -228,8 +228,12 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 
 # Matrix Library Documentation
 
+* adj - finds the adjugate of the matrix
+* det - finds the determinant of the matrix
+* identity - finds the identity matrix with n rows
+* inverse - finds the inverse of the matrix
 * matrixadd - adds two matrices
+* matrixdiv - multiplies one matrix by the inverse of another
 * matrixmul - multiplies two matrices
 * matrixscalar - multiplies a matrix by a scalar
 * transpose - finds the transposition of a matrix
-* identity - finds the identity matrix with n rows
