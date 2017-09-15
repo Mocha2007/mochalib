@@ -225,3 +225,11 @@ All functions require three components - *x* (Time in s), *freq* (Frequency in h
 # Chemistry Library Documentation
 
 VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
+
+# Matrix Library Documentation
+
+* matrixadd - adds two matrices
+* matrixmul - multiplies two matrices
+* matrixscalar - multiplies a matrix by a scalar
+* transpose - finds the transposition of a matrix
+* identity - finds the identity matrix with n rows
