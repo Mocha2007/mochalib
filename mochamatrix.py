@@ -149,6 +149,8 @@ def roundm(matrix,places):
 
 def infpower(matrix):
 	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	for row in matrix:
+		if abs(sum(row))>1:raise ValueError("The absolute value of each row's sum must be equal to or less than one!")
 	o=matrixmul(matrix,matrix)
 	while o!=roundm(matrixmul(o,matrix),10):
 		o=roundm(matrixmul(o,matrix),10)
