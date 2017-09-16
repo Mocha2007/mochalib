@@ -210,7 +210,10 @@ def smallmatrixsqrt(matrix):
 	if skip34:return root1,root2
 	return root1,root2,root3,root4
 	
-def rot(matrix):
+def rot(matrix,quarterturns):
+	if quarterturns%1!=0:raise ValueError('The number of quarter-turns must be an integer!\n'+str(quarterturns))
+	if quarterturns%4==0:return matrix
+	if quarterturns%4!=1:return rot(rot(matrix,quarterturns-1),1)
 	m=transpose(matrix)
 	nm=[]
 	for r in m:
