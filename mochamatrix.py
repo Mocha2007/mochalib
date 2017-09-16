@@ -102,3 +102,24 @@ def matrixdiv(m1,m2):
 	
 def augmatrixsolve(matrix,augment):
 	return matrixdiv(transpose(augment),transpose(matrix))
+
+def roundm(matrix,places):
+	nm=[]
+	for row in matrix:
+		nr=[]
+		for value in row:
+			if abs(int(value)-value)<10**-places:nr+=[int(value)]
+			else:nr+=[round(value,places)]
+		nm+=[nr]
+	return nm
+
+def infpower(matrix):
+	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	o=matrixmul(matrix,matrix)
+	while o!=roundm(matrixmul(o,matrix),10):
+		o=roundm(matrixmul(o,matrix),10)
+	return o
+
+def disp(matrix):
+	for row in matrix:
+		print(row)

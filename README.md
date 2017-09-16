@@ -231,8 +231,10 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * adj - finds the adjugate of the matrix
 * augmatrixsolve - solves the augmented matrix
 * det - finds the determinant of the matrix
+* disp - displays matrix in a more natural look
 * identity - finds the identity matrix with n rows
-* inverse - finds the inverse of the matrix
+* infpower - finds the approximate infinite power of the matrix. may cause the program to hang if such a value does not exist.
+* inverse - finds the inverse of the matrixmatrix
 * matrixadd - adds two matrices
 * matrixdiv - multiplies one matrix by the inverse of another
 * matrixmul - multiplies two matrices
