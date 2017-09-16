@@ -1,3 +1,13 @@
+from random import random
+def rmatrix(rows,columns):
+	newmatrix=[]
+	for row in range(rows):
+		newrow=[]
+		for column in range(columns):
+			newrow+=[random()]
+		newmatrix+=[newrow]
+	return newmatrix
+
 def matrixadd(m1,m2):
 	if [len(m1),len(m1[0])]!=[len(m2),len(m2[0])]:raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	for row in range(len(m1)):
@@ -28,6 +38,9 @@ def matrixscalar(matrix,c):
 			newrow+=[value*c]
 		newmatrix+=[newrow]
 	return newmatrix
+
+def matrixsub(m1,m2):
+	return matrixadd(m1,matrixscalar(m2,-1))
 	
 def transpose(matrix):
 	newmatrix=[]
@@ -48,8 +61,17 @@ def identity(size):
 		newrow=[]
 		for column in range(size):
 			newrow+=[1 if row==column else 0]
-		if newrow!=[]:
-			matrix+=[newrow]
+		matrix+=[newrow]
+	return matrix
+
+def zero(size):
+	if size%1!=0 or size<1:raise ValueError('The size must be a natural number!')
+	matrix=[]
+	for row in range(size):
+		newrow=[]
+		for column in range(size):
+			newrow+=[0]
+		matrix+=[newrow]
 	return matrix
 	
 def det(matrix):
@@ -98,7 +120,7 @@ def inverse(matrix):
 def matrixdiv(m1,m2):
 	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!\n'+str(len(m2))+'x'+str(len(m2[0])))
-	if det(m2)==0:raise Exception('The determinant of the divisor must be nonzero!')
+	if det(m2)==0:raise ZeroDivisionError('The determinant of the divisor must be nonzero!')
 	return matrixmul(m1,inverse(m2))
 	
 def augmatrixsolve(matrix,augment):
@@ -124,3 +146,19 @@ def infpower(matrix):
 def disp(matrix):
 	for row in matrix:
 		print(row)
+
+def companion(*coefficients):
+	if coefficients[0]!=1:
+		c=coefficients[0]
+		for i in range(len(coefficients)):
+			coefficients[i]=coefficients[i]/c
+	coefficients=coefficients[::-1][:-1]#reverse list then remove last value
+	nm=[]
+	for r in range(len(coefficients)):
+		nr=[]
+		for c in range(len(coefficients)):
+			if r==c+1:nr+=[1]#the diagonalish ones
+			elif c+1!=len(coefficients):nr+=[0]#the filler zeroes
+			else:nr+=[-coefficients[r]]#must be the coefficients
+		nm+=[nr]
+	return nm

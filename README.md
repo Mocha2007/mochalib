@@ -230,6 +230,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 
 * adj - finds the adjugate of the matrix
 * augmatrixsolve - solves the augmented matrix
+* companion - finds the companion matrix of the given polynomial coefficients
 * det - finds the determinant of the matrix
 * disp - displays matrix in a more natural look
 * identity - finds the identity matrix with n rows
@@ -238,5 +239,8 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * matrixadd - adds two matrices
 * matrixdiv - multiplies one matrix by the inverse of another
 * matrixmul - multiplies two matrices
+* matrixsub - subtracts two matrices
 * matrixscalar - multiplies a matrix by a scalar
+* rmatrix - creates an mxn matrix with random values between 0 and 1
 * transpose - finds the transposition of a matrix
+* zero - finds the zero matrix with n rows
