@@ -187,9 +187,20 @@ def matrix22sqrt(matrix):
 	d=det(matrix)
 	s=d**.5
 	t=(tau+2*s)**.5
-	root1=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),1/t)#+s+t
-	root2=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),-1/t)#+s-t
+	skip12=False
+	skip34=False
+	try:
+		root1=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),1/t)#+s+t
+		root2=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),-1/t)#+s-t
+	except ZeroDivisionError:
+		skip12=True
 	t=(tau-2*s)**.5
-	root3=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),1/t)#-s+t
-	root4=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),-1/t)#-s-t
+	try:
+		root3=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),1/t)#-s+t
+		root4=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),-1/t)#-s-t
+	except ZeroDivisionError:
+		skip34=True
+	if skip12 and skip34:return False
+	if skip12:return root3,root4
+	if skip34:return root1,root2
 	return root1,root2,root3,root4
