@@ -41,7 +41,8 @@ def transpose(matrix):
 		newmatrix+=[newrow] if newrow!=[] else []
 	return newmatrix
 
-def identity(size):
+def identity(size):raise Exception('The size must be a natural number!')
+	if size%1!=0 or size<1:
 	matrix=[]
 	for row in range(size):
 		newrow=[]
