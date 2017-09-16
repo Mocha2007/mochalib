@@ -184,7 +184,7 @@ def trace(matrix):
 def matrix22sqrt(matrix):
 	if len(matrix[0])!=len(matrix) or len(matrix)!=2:raise Exception('The matrix must be 2x2!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
 	#fixes no response for zero matrix
-	if matrix==zero(2):return zero(2)
+	if matrix==zero(2):return (zero(2))
 	tau=trace(matrix)
 	d=det(matrix)
 	s=d**.5
