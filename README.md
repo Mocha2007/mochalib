@@ -233,6 +233,8 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * companion - finds the companion matrix of the given polynomial coefficients
 * det - finds the determinant of the matrix
 * disp - displays matrix in a more natural look
+* flipx - flips the matrix across the x-axis
+* flipy - flips the matrix across the y-axis
 * identity - finds the identity matrix with n rows
 * infpower - finds the approximate infinite power of the matrix. may cause the program to hang if such a value does not exist.
 * inverse - finds the inverse of the matrixmatrix
