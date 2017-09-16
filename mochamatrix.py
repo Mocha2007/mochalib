@@ -29,11 +29,14 @@ def matrixscalar(matrix,c):
 	
 def transpose(matrix):
 	newmatrix=[]
-	for row in range(len(matrix)):
+	for row in range(max(len(matrix),len(matrix[0]))):
 		newrow=[]
-		for column in range(len(matrix[row])):
-			newrow+=[matrix[column][row]]
-		newmatrix+=[newrow]
+		for column in range(max(len(matrix),len(matrix[0]))):
+			try:
+				newrow+=[matrix[column][row]]
+			except IndexError:
+				pass
+		newmatrix+=[newrow] if newrow!=[] else []
 	return newmatrix
 
 def identity(size):
@@ -42,7 +45,8 @@ def identity(size):
 		newrow=[]
 		for column in range(size):
 			newrow+=[1 if row==column else 0]
-		matrix+=[newrow]
+		if newrow!=[]:
+			matrix+=[newrow]
 	return matrix
 	
 def det(matrix):
@@ -93,3 +97,9 @@ def matrixdiv(m1,m2):
 	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!')
 	if det(m2)==0:raise Exception('The determinant of the divisor must be nonzero!')
 	return matrixmul(m1,inverse(m2))
+	
+def augmatrixsolve(matrix,augment):
+	return matrixdiv(transpose(augment),transpose(matrix))
+
+hw2a1=[[0,-1,6],[1,1,-7],[3,2,-1]]
+hw2a2=[[5],[0],[2]]

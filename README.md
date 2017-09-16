@@ -229,6 +229,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 # Matrix Library Documentation
 
 * adj - finds the adjugate of the matrix
+* augmatrixsolve - solves the augmented matrix
 * det - finds the determinant of the matrix
 * identity - finds the identity matrix with n rows
 * inverse - finds the inverse of the matrix
