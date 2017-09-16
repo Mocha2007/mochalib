@@ -102,6 +102,3 @@ def matrixdiv(m1,m2):
 	
 def augmatrixsolve(matrix,augment):
 	return matrixdiv(transpose(augment),transpose(matrix))
-
-hw2a1=[[0,-1,6],[1,1,-7],[3,2,-1]]
-hw2a2=[[5],[0],[2]]
