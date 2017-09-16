@@ -183,8 +183,9 @@ def trace(matrix):
 		trace+=matrix[i][i]
 	return trace
 
-def matrix22sqrt(matrix):
-	if len(matrix[0])!=len(matrix) or len(matrix)!=2:raise Exception('The matrix must be 2x2!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+def smallmatrixsqrt(matrix):
+	if len(matrix[0])!=len(matrix) or len(matrix) not in [1,2]:raise Exception('The matrix must be 1x1 or 2x2!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	if len(matrix)==1:return [[matrix[0][0]**.5]]
 	#fixes no response for zero matrix
 	if matrix==zero(2):return (zero(2))
 	tau=trace(matrix)
