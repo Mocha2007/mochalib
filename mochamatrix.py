@@ -122,6 +122,21 @@ def matrixdiv(m1,m2):
 	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!\n'+str(len(m2))+'x'+str(len(m2[0])))
 	if det(m2)==0:raise ZeroDivisionError('The determinant of the divisor must be nonzero!')
 	return matrixmul(m1,inverse(m2))
+
+def matrixexp(matrix,exp):
+	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	if exp%1!=0:raise Exception('The power must be an integer!\n'+str(exp))
+	if exp==0:return identity(len(matrix))
+	if exp<0:return inverse(matrixexp(matrix,-exp))
+	nm=[]
+	for r in matrix:
+		nr=[]
+		for c in r:
+			nr+=[c]
+		nm+=[nr]
+	for i in range(exp-1):
+		nm=matrixmul(nm,matrix)
+	return nm
 	
 def augmatrixsolve(matrix,augment):
 	return matrixdiv(transpose(augment),transpose(matrix))

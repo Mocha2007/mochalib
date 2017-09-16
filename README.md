@@ -238,6 +238,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * inverse - finds the inverse of the matrixmatrix
 * matrixadd - adds two matrices
 * matrixdiv - multiplies one matrix by the inverse of another
+* matrixexp - raises a matrix to an integer power
 * matrixmul - multiplies two matrices
 * matrixsub - subtracts two matrices
 * matrixscalar - multiplies a matrix by a scalar
