@@ -1,5 +1,6 @@
 from random import random
 from math import cos,sin
+
 def rmatrix(rows,columns):
 	newmatrix=[]
 	for row in range(rows):
@@ -228,3 +229,20 @@ def rot(matrix,quarterturns):
 
 def rotationmatrix(theta):
 	return [[cos(theta),-sin(theta)],[sin(theta),cos(theta)]]
+
+def disp2(matrix):
+	for r in matrix:
+		rs=''
+		for c in r:
+			rs+='\u2588' if c==1 else ' '
+		print(rs)
+
+lm={
+	'a':[[1,1,1,1,1],[1,0,0,0,1],[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1]],
+	'b':[[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0],[1,0,0,0,1],[1,1,1,1,0]],
+	'c':[[1,1,1,1,1],[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0],[1,1,1,1,1]],
+	'd':[[1,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,0]],
+	'e':[[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1]],
+	'f':[[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,1],[1,0,0,0,0],[1,0,0,0,0]],
+	' ':zero(5)
+}
