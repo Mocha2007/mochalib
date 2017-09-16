@@ -183,6 +183,8 @@ def trace(matrix):
 
 def matrix22sqrt(matrix):
 	if len(matrix[0])!=len(matrix) or len(matrix)!=2:raise Exception('The matrix must be 2x2!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	#fixes no response for zero matrix
+	if matrix==zero(2):return zero(2)
 	tau=trace(matrix)
 	d=det(matrix)
 	s=d**.5
@@ -200,7 +202,7 @@ def matrix22sqrt(matrix):
 		root4=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),-1/t)#-s-t
 	except ZeroDivisionError:
 		skip34=True
-	if skip12 and skip34:return False
+	if skip12 and skip34:return None
 	if skip12:return root3,root4
 	if skip34:return root1,root2
 	return root1,root2,root3,root4
