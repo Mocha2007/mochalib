@@ -1,10 +1,12 @@
 def matrixadd(m1,m2):
+	if [len(m1),len(m1[0])]!=[len(m2),len(m2[0])]:raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	for row in range(len(m1)):
 		for column in range(len(m1[row])):
 			m2[row][column]+=m1[row][column]
 	return m2
 	
 def matrixmul(m1,m2):
+	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	new=[]
 	for row in range(len(m1)):
 		newrow=[]
@@ -50,7 +52,7 @@ def identity(size):
 	return matrix
 	
 def det(matrix):
-	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0]))+'\n'+str(matrix))
+	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
 	if len(matrix)==1:return matrix[0][0]
 	if len(matrix)==2:return matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0]
 	s=0
@@ -70,6 +72,7 @@ def det(matrix):
 	return s
 
 def adj(matrix):
+	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
 	matrix=transpose(matrix)
 	adjmatrix=[]
 	for row in range(len(matrix)):
@@ -92,8 +95,8 @@ def inverse(matrix):
 	return matrixscalar(adj(matrix),1/det(matrix))
 	
 def matrixdiv(m1,m2):
-	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!')
-	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!')
+	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
+	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!\n'+str(len(m2))+'x'+str(len(m2[0])))
 	if det(m2)==0:raise Exception('The determinant of the divisor must be nonzero!')
 	return matrixmul(m1,inverse(m2))
 	
