@@ -246,6 +246,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * matrixscalar - multiplies a matrix by a scalar
 * rmatrix - creates an mxn matrix with random values between 0 and 1
 * rot - rotates the matrix a given number of times clockwise 90 degrees
+* rotationmatrix - gives the rotation matrix for the given angle
 * smallmatrixsqrt - attempts to find square roots of a 2x2 matrix
 * trace - finds the trace of a square matrix
 * transpose - finds the transposition of a matrix

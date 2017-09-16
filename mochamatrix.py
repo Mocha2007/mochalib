@@ -1,4 +1,5 @@
 from random import random
+from math import cos,sin
 def rmatrix(rows,columns):
 	newmatrix=[]
 	for row in range(rows):
@@ -224,3 +225,6 @@ def rot(matrix,quarterturns):
 	if quarterturns%4==0:return matrix
 	if quarterturns%4!=1:return rot(rot(matrix,quarterturns-1),1)
 	return flipy(transpose(matrix))
+
+def rotationmatrix(theta):
+	return [[cos(theta),-sin(theta)],[sin(theta),cos(theta)]]
