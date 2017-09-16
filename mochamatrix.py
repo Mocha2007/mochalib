@@ -209,3 +209,10 @@ def smallmatrixsqrt(matrix):
 	if skip12:return root3,root4
 	if skip34:return root1,root2
 	return root1,root2,root3,root4
+	
+def rot(matrix):
+	m=transpose(matrix)
+	nm=[]
+	for r in m:
+		nm+=[r[::-1]]
+	return nm
