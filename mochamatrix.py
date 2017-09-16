@@ -125,7 +125,7 @@ def matrixdiv(m1,m2):
 
 def matrixexp(matrix,exp):
 	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
-	if exp%1!=0:raise Exception('The power must be an integer!\n'+str(exp))
+	if exp%1!=0:raise ValueError('The power must be an integer!\n'+str(exp))
 	if exp==0:return identity(len(matrix))
 	if exp<0:return inverse(matrixexp(matrix,-exp))
 	nm=[]
