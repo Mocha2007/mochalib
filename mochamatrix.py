@@ -124,10 +124,6 @@ def matrixdiv(m1,m2):
 	return matrixmul(m1,inverse(m2))
 
 def matrixexp(matrix,exp):
-	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
-	if exp%1!=0:raise ValueError('The power must be an integer!\n'+str(exp))
-	if exp==0:return identity(len(matrix))
-	if exp<0:return inverse(matrixexp(matrix,-exp))
 	nm=[]
 	for r in matrix:
 		nr=[]
@@ -177,3 +173,23 @@ def companion(*coefficients):
 			else:nr+=[-coefficients[r]]#must be the coefficients
 		nm+=[nr]
 	return nm
+
+def trace(matrix):
+	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	trace=0
+	for i in range(len(matrix)):
+		trace+=matrix[i][i]
+	return trace
+
+def matrix22sqrt(matrix):
+	if len(matrix[0])!=len(matrix) or len(matrix)!=2:raise Exception('The matrix must be 2x2!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
+	tau=trace(matrix)
+	d=det(matrix)
+	s=d**.5
+	t=(tau+2*s)**.5
+	root1=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),1/t)#+s+t
+	root2=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),s)),-1/t)#+s-t
+	t=(tau-2*s)**.5
+	root3=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),1/t)#-s+t
+	root4=matrixscalar(matrixadd(matrix,matrixscalar(identity(2),-s)),-1/t)#-s-t
+	return root1,root2,root3,root4

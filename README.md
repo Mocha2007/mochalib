@@ -242,6 +242,8 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * matrixmul - multiplies two matrices
 * matrixsub - subtracts two matrices
 * matrixscalar - multiplies a matrix by a scalar
+* matrix22sqrt - attempts to find square roots of a 2x2 matrix
 * rmatrix - creates an mxn matrix with random values between 0 and 1
+* trace - finds the trace of a square matrix
 * transpose - finds the transposition of a matrix
 * zero - finds the zero matrix with n rows
