@@ -217,7 +217,7 @@ def flipy(matrix):
 	return nm
 
 def flipx(matrix):
-	return flipy(rot(matrix,2))
+	return matrix[::-1]
 	
 def rot(matrix,quarterturns):
 	if quarterturns%1!=0:raise ValueError('The number of quarter-turns must be an integer!\n'+str(quarterturns))
