@@ -70,7 +70,6 @@ def det(matrix):
 	return s
 
 def adj(matrix):
-	if det(matrix)==0:raise Exception('The determinant of the matrix must be nonzero!')
 	matrix=transpose(matrix)
 	adjmatrix=[]
 	for row in range(len(matrix)):
