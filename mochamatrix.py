@@ -280,7 +280,7 @@ def echelon(matrix):
 	return matrix
 
 def rre(matrix):
-	return transpose(echelon(transpose(echelon(long))))#i think this works lol
+	return transpose(echelon(transpose(echelon(matrix))))#i think this works lol
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
