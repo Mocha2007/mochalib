@@ -241,7 +241,9 @@ def disp2(matrix):
 def echelon(matrix):
 	for i in range(len(matrix)):
 		#step 1: see if the 'corner' is nonzero. if not, swap shit/etc
+		found=1
 		if matrix[i][i]==0:
+			found=0
 			#check to see if another row has it
 			for j in range(i+1,len(matrix)):
 				if matrix[j][i]!=0:#if so, switch the rows!
@@ -249,17 +251,19 @@ def echelon(matrix):
 					oldj=matrix[j][:]
 					matrix[i]=oldj
 					matrix[j]=oldi#verified to work
-					
-		c=matrix[i][i]
-		#div errything in that row so the left is 1
-		for j in range(len(matrix[i])):
-			matrix[i][j]=matrix[i][j]/c
-		#check to see if this column in the lower rows all start with zeroes. if not, make it so!
-		for j in range(i+1,len(matrix)):
-			if matrix[j][i]!=0:
-				c=matrix[j][i]
-				for k in range(len(matrix[j])):
-					matrix[j][k]-=c*matrix[i][k]
+					found=1
+					break
+		if found:
+			c=matrix[i][i]
+			#div errything in that row so the left is 1
+			for j in range(len(matrix[i])):
+				matrix[i][j]=matrix[i][j]/c
+			#check to see if this column in the lower rows all start with zeroes. if not, make it so!
+			for j in range(i+1,len(matrix)):
+				if matrix[j][i]!=0:
+					c=matrix[j][i]
+					for k in range(len(matrix[j])):
+						matrix[j][k]-=c*matrix[i][k]
 	#move all zero rows to bottom
 	for i in range(len(matrix)):
 		allzeroes=1
