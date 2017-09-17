@@ -314,20 +314,14 @@ def rre(matrix):
 			if matrix[i][j]!=0:
 				firstnonzero=j
 				break
-		#make sure it's 1
-		c=matrix[i][firstnonzero]
-		if c!=0 and c!=1:
-			for j in range(len(matrix[0])):
-				matrix[i][j]=matrix[i][j]/c
 		#check each row above for other nonzeros
-		for j in range(firstnonzero):
+		for j in range(i):
 			if matrix[j][firstnonzero]!=0:
 				#make it zero!!!
 				c=matrix[j][firstnonzero]
 				#for each row element, subtract c*that one
 				for k in range(len(matrix[0])):
 					matrix[j][k]-=c*matrix[i][k]
-	#uhhh i think that's it???
 	return matrix
 	
 
