@@ -238,7 +238,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * det - finds the determinant of the matrix
 * disp - displays matrix in a more natural look
 * disp2 - like disp, but displays block characters for 1s and blanks for other values
-* echelon - converts the matrix to row echelon form - RRE AND ECHELON ARE BROKEN SOMETIMES, IDK WHY
+* echelon - converts the matrix to row echelon form
 * flipx - flips the matrix across the x-axis
 * flipy - flips the matrix across the y-axis
 * identity - finds the identity matrix with n rows
@@ -253,7 +253,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * rmatrix - creates an mxn matrix with random values between 0 and 1
 * rot - rotates the matrix a given number of times clockwise 90 degrees
 * rotationmatrix - gives the rotation matrix for the given angle
-* rre - converts the matrix to reduced row echelon form... I think. - RRE AND ECHELON ARE BROKEN SOMETIMES, IDK WHY
+* rre - converts the matrix to reduced row echelon form... I think. - RRE IS BROKEN, IDK WHY
 * smallmatrixsqrt - attempts to find square roots of a 2x2 matrix
 * trace - finds the trace of a square matrix
 * transpose - finds the transposition of a matrix

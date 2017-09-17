@@ -273,6 +273,31 @@ def echelon(matrix):
 				break
 		if allzeroes:
 			matrix.append(matrix.pop(i))
+	#verify the leading terms are one AND all things below them are zeroes (a temporary bugfix)
+	for i in range(len(matrix)):
+		if matrix[i]!=[0]*len(matrix):#skip all zero rows
+			leading=-1
+			for j in range(len(matrix[0])):
+				if matrix[i][j]!=0:
+					leading=j
+					break
+			#verify it is a ONE
+			c=matrix[i][leading]
+			for j in range(len(matrix[0])):
+				matrix[i][j]=matrix[i][j]/c
+			#check rows below leading
+			for j in range(i+1,len(matrix)):
+				if matrix[i]!=[0]*len(matrix):#skip all zero rows
+					#find leading term
+					for k in range(len(matrix[0])):
+						if matrix[j][k]!=0:
+							newlead=k
+							break
+					#if leading term below, then sub all terms by c (since we just verified the leading above is a one)
+					if newlead<=leading and matrix[j][newlead]!=0:#the and is there cause python is retarded
+						for k in range(len(matrix[0])):
+							matrix[j][k]-=matrix[i][k]
+				else:break
 	#clean up unnecessary negatives and floats
 	for i in range(len(matrix)):
 		for j in range(len(matrix[i])):
