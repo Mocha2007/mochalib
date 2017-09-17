@@ -280,7 +280,25 @@ def echelon(matrix):
 	return matrix
 
 def rre(matrix):
-	return transpose(echelon(transpose(echelon(matrix))))#i think this works lol
+	matrix=echelon(matrix)
+	#check each row and check the column with the 1st 1
+	for i in range(len(matrix)):
+		#check each column for the nonzero
+		firstnonzero=-1
+		for j in range(len(matrix[0])):
+			if matrix[i][j]!=0:
+				firstnonzero=j
+				break
+		#check each row above for other nonzeros
+		for j in range(firstnonzero):
+			if matrix[j][firstnonzero]!=0:
+				#make it zero!!!
+				c=matrix[j][firstnonzero]
+				#for each row element, subtract c*that one
+				for k in range(len(matrix[0])):
+					matrix[j][k]-=c*matrix[i][k]
+	#uhhh i think that's it???
+	return matrix
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
