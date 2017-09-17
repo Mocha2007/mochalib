@@ -296,6 +296,7 @@ def echelon(matrix):
 			for j in range(i+1,len(matrix)):
 				if matrix[i]!=[0]*len(matrix):#skip all zero rows
 					#find leading term
+					newlead=-1#UnboundLocalError: local variable 'newlead' referenced before assignment
 					for k in range(len(matrix[0])):
 						if matrix[j][k]!=0:
 							newlead=k
