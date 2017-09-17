@@ -229,6 +229,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 # Matrix Library Documentation
 ## Variables
 * lm - a dictionary of 5x5 matrices containing the alphabet
+* long - a large sample markov matrix
 
 ## Functions
 * adj - finds the adjugate of the matrix
