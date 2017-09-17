@@ -260,7 +260,23 @@ def echelon(matrix):
 				c=matrix[j][i]
 				for k in range(len(matrix[j])):
 					matrix[j][k]-=c*matrix[i][k]
+	#move all zero rows to bottom
+	for i in range(len(matrix)):
+		allzeroes=1
+		for j in range(len(matrix)):
+			if matrix[i][j]!=0:
+				allzeroes=0
+				break
+		if allzeroes:
+			matrix.append(matrix.pop(i))
+	#clean up unnecessary negatives and floats
+	for i in range(len(matrix)):
+		for j in range(len(matrix[i])):
+			if matrix[i][j]%1==0:matrix[i][j]=int(matrix[i][j])
 	return matrix
+
+def rre(matrix):
+	return transpose(echelon(transpose(echelon(long))))#i think this works lol
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
