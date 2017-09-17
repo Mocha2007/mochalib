@@ -238,6 +238,13 @@ def disp2(matrix):
 			rs+='\u2588' if c==1 else ' '
 		print(rs)
 
+def clean(matrix):
+	#clean up unnecessary negatives and floats
+	for i in range(len(matrix)):
+		for j in range(len(matrix[i])):
+			if matrix[i][j]%1==0:matrix[i][j]=int(matrix[i][j])
+	return matrix
+
 def echelon(matrix):
 	for i in range(len(matrix)):
 		#step 1: see if the 'corner' is nonzero. if not, swap shit/etc
@@ -298,11 +305,7 @@ def echelon(matrix):
 						for k in range(len(matrix[0])):
 							matrix[j][k]-=matrix[i][k]
 				else:break
-	#clean up unnecessary negatives and floats
-	for i in range(len(matrix)):
-		for j in range(len(matrix[i])):
-			if matrix[i][j]%1==0:matrix[i][j]=int(matrix[i][j])
-	return matrix
+	return clean(matrix)
 
 def rre(matrix):
 	matrix=echelon(matrix)
@@ -322,7 +325,7 @@ def rre(matrix):
 				#for each row element, subtract c*that one
 				for k in range(len(matrix[0])):
 					matrix[j][k]-=c*matrix[i][k]
-	return matrix
+	return clean(matrix)
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
