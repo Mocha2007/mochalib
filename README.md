@@ -237,6 +237,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * det - finds the determinant of the matrix
 * disp - displays matrix in a more natural look
 * disp2 - like disp, but displays block characters for 1s and blanks for other values
+* echelon - converts the matrix to row echelon form
 * flipx - flips the matrix across the x-axis
 * flipy - flips the matrix across the y-axis
 * identity - finds the identity matrix with n rows
