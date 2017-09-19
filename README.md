@@ -215,6 +215,7 @@ Various mathematical and scientific functions I've needed
 # Wavefunction Library Documentation
 All functions require three components - *x* (Time in s), *freq* (Frequency in hz), and *amp* (Amplitude). They all return a y-value.
 ## Functions
+* f2n - turns a frequency into a musical note
 * sawtooth - Sawtooth wave function. Uses modulo.
 * sine - Sine wave function. Uses trigonometric functions.
 * sine1 - Sine wave function. Uses complex powers to compute the wave instead of trigonometric functions.

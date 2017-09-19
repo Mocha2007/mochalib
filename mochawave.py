@@ -1,4 +1,4 @@
-from math import pi,sin
+from math import pi,log,sin
 import cmath
 
 #using mod
@@ -17,3 +17,9 @@ def sine1(x,freq,amp):
 	return (amp*1j**(4*x/freq)).imag
 def sawtooth(x,freq,amp):
 	return amp*(2*((x/freq)%1)-1)
+def f2n(f):
+	l=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+	c=55/2**0.75
+	o=int(log(f/c,2))
+	n=round(12*(log(f/c,2)-o))
+	return l[n]+str(o)
