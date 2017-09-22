@@ -327,6 +327,15 @@ def rre(matrix):
 				for k in range(len(matrix[0])):
 					matrix[j][k]-=c*matrix[i][k]
 	return clean(matrix)
+
+def vectordot(va,vb):
+	s=0
+	for i in range(len(va)):
+		s+=va[i]*vb[i]
+	return s
+
+def vectorcross(va,vb):
+	return [va[1]*vb[2]-va[2]*vb[1],va[2]*vb[0]-va[0]*vb[2],va[0]*vb[1]-va[1]*vb[0]]
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
