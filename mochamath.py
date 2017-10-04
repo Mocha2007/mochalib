@@ -1,5 +1,5 @@
 #mocha's math library
-from math import acos,ceil,cos,e,erf,factorial,floor,gcd,inf,pi,log
+from math import acos,atan,ceil,cos,e,erf,factorial,floor,gcd,inf,pi,log
 from random import choice,randint
 #math.factorial()
 
@@ -463,3 +463,16 @@ def infiniroot(n):
 	
 def maximizerect(P,m,n):
 	return P**2/(4*(m+1)*(n+1))
+#coord systems
+def cyl2rect(r,theta,z):
+	'''Converts from cylindrical coordinates to rectangular coordinates'''
+	return r*cos(theta),r*sin(theta),z
+def rect2cyl(x,y,z):
+	'''Converts from rectangular coordinates to cylindrical coordinates'''
+	return (x**2+y**2)**.5,atan(y/x),z
+def rect2sphere(x,y,z):
+	'''Converts from rectangular coordinates to spherical coordinates'''
+	return (x**2+y**2+z**2)**.5,atan(y/x),acos(z/(x**2+y**2+z**2)**.5)
+def sphere2rect(rho,theta,phi):
+	'''Converts from spherical coordinates to rectangular coordinates'''
+	return rho*sin(phi)*cos(theta),rho*sin(phi)*sin(theta),rho*cos(phi)
