@@ -241,6 +241,7 @@ VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 * disp - displays matrix in a more natural look
 * disp2 - like disp, but displays block characters for 1s and blanks for other values
 * echelon - converts the matrix to row echelon form
+* eigenhelp - finds the rre of the matrix minus the eigenvalue times the identity matrix. The result is a solved system of equations.
 * flipx - flips the matrix across the x-axis
 * flipy - flips the matrix across the y-axis
 * identity - finds the identity matrix with n rows

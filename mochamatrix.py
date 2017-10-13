@@ -336,6 +336,9 @@ def vectordot(va,vb):
 
 def vectorcross(va,vb):
 	return [va[1]*vb[2]-va[2]*vb[1],va[2]*vb[0]-va[0]*vb[2],va[0]*vb[1]-va[1]*vb[0]]
+
+def eigenhelp(matrix,eigenvalue):
+	return rre(matrixadd(matrix,matrixscalar(identity(len(matrix)),-eigenvalue)))
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
