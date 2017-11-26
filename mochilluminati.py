@@ -46,6 +46,13 @@ def illuminati(name):
 		if person[1][0]==name[0]:
 			print(name,'has the same first letter as',person[1]+',',person[0]+'.')
 			return illuminati(person[1])
+	#check if 3 or 4
+	for item in ['3','4','three','four']:
+		if item in name:
+			print(name,'contains the word',item+'.')
+			if ['3','three'] in item:print('Triangles have',item,'sides.')
+			else:print('Squares have',item,'sides.')
+			return illuminati(item)
 	#then bs
 	for item in isymbols+fsymbols+names:
 		#substring
@@ -63,13 +70,6 @@ def illuminati(name):
 		#same first char
 		if name[0]==item[0]:
 			print(name,'has the same first letter as',item+'.')
-			return illuminati(item)
-	#check if 3 or 4
-	for item in ['3','4','three','four']:
-		if item in name:
-			print(name,'contains the word',item+'.')
-			if ['3','three'] in item:print('Triangles have',item,'sides.')
-			else:print('Squares have',item,'sides.')
 			return illuminati(item)
 	return 'Inconclusive'
 while 1:
