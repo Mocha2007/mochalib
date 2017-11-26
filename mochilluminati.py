@@ -3,8 +3,8 @@ def anagram(a,b):#https://stackoverflow.com/questions/8286554/using-python-find-
 
 def illuminati(name):
 	name=name.lower()
-	isymbols=['eye']
-	fsymbols=['apron','ashlar','charity','compass','faith','forget-me-not','g','gavel','hope','jabulon','jahbulon','level','lodge','pencil','plumb','skull','square','sun','triangle','trowel']
+	isymbols=['eye','triangle']
+	fsymbols=['apron','ashlar','charity','compass','faith','forget-me-not','g','gavel','hope','jabulon','jahbulon','level','lodge','pencil','plumb','skull','square','sun','trowel']
 	names=['illuminati','mason']
 	people=[
 		('adam','weishaupt','was the founder of the Bavarian Illuminati.'),
@@ -50,9 +50,12 @@ def illuminati(name):
 	for item in ['3','4','three','four']:
 		if item in name:
 			print(name,'contains the word',item+'.')
-			if ['3','three'] in item:print('Triangles have',item,'sides.')
-			else:print('Squares have',item,'sides.')
-			return illuminati(item)
+			if item in ['3','three']:
+				print('Triangles have',item,'sides.')
+				return illuminati('triangle')
+			else:
+				print('Squares have',item,'sides.')
+				return illuminati('square')
 	#then bs
 	for item in isymbols+fsymbols+names:
 		#substring
