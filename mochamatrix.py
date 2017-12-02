@@ -28,7 +28,11 @@ def matrixmul(m1,m2):
 					newrow+=[m1[row][0]*value]
 			else:#now i can just add
 				for value in range(len(m2)):
-					newrow[value]+=m1[row][column]*m2[column][value]
+					try:
+						newrow[value]+=m1[row][column]*m2[column][value]
+					except IndexError:
+						pass
+						#print('WARN: IndexError @ Alpha',row,column,value,m1,m2,newrow)
 		new+=[newrow]
 	return new
 	
@@ -339,6 +343,63 @@ def vectorcross(va,vb):
 
 def eigenhelp(matrix,eigenvalue):
 	return rre(matrixadd(matrix,matrixscalar(identity(len(matrix)),-eigenvalue)))
+
+#undocumented!!!
+
+def csb(matrix):#columnspace basis
+	oldmatrixt=transpose(matrix)
+	matrix=rre(oldmatrixt)
+	pivotcolumns=[]
+	for i in range(len(matrix)):
+		for j in range(len(matrix)):
+			if matrix[i][j]!=0:
+				pivotcolumns+=[i]
+				break
+	newmatrix=[]
+	for i in range(len(oldmatrixt)):
+		if i in pivotcolumns:
+			fullrow=[]
+			for j in range(len(oldmatrixt)):
+				fullrow+=[oldmatrixt[i][j]]
+			newmatrix+=[fullrow]
+	return newmatrix#bases are transposed
+	
+def vectordot(u,v):
+	s=0
+	for i in range(len(u)):
+		s+=u[i]*v[i]
+	return s
+	
+def innerproduct(u,v):
+	return matrixmul(transpose(u),v)
+	
+def mag(vector):
+	#temp fix
+	if type(vector[0])==type([]):vector=vector[0]
+	#pls delete that asap
+	s=0
+	for dim in vector:
+		s+=dim**2
+	return s**.5
+	
+def proj(u,v):#https://en.wikipedia.org/wiki/Projection_(linear_algebra)
+	c=innerproduct(u,v)/innerproduct(u,u)
+	return matrixscalar([u],c)
+
+def orthonormalize(bases):#Gram–Schmidt process BROKEN
+	orthonormalized=[bases[0]]
+	for basisn in range(1,len(bases)):
+		s=bases[basisn]
+		olds=s
+		for i in range(basisn):
+			s=matrixsub(s,proj(orthonormalized[i],olds))
+		orthonormalized+=[s]
+	return orthonormalized
+	
+def lss(A,b):#Ax=b
+	newA=matrixmul(transpose(A),A)
+	newb=matrixmul(transpose(A),b)
+	return matrixmul(inverse(newA),newb)
 	
 
 alphabet='abcdefghijklmnopqrstuvwxyz'
