@@ -136,7 +136,11 @@ def synodic(p1,p2):#synodic period
 def star(mass):
 	'''Mass (kg)\n-> Radius (m), Luminosity (W), Temp (K), Lifespan (s)'''
 	m=mass/m_sun
-	return r_sun*m**.74/2,l_sun*m**3,5772*m**.505,12e9*365.2425*60*60*m**-2.5
+	#default exponents: .74,3,.505,-2.5
+	#I find linear 1.084 a better approximation than exponential 0.74, at least for smaller stars.
+	#I find 4.24 a better approximation than 3, at least for M-F stars.
+	#I find 0.54 a very slightly better approximation than 0.505, at least for smaller stars.
+	return r_sun*m*1.084,l_sun*m**4.24,5772*m**.54,12e9*365.2425*60*60*m**-2.5
 	
 def habitablezone(mass):
 	m=mass/m_sun
@@ -188,6 +192,7 @@ def esi(r,m,T):#Radius,Density,Escape Velocity,Temperature
 	return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
 
 def drake(R,fp,ne,fl,fi,fc,L):
+	'''Use -1 for defaults'''
 	if R==-1:R=2.25
 	if fp==-1:fp=1
 	if ne==-1:ne=.4
