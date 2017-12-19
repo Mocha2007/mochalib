@@ -137,10 +137,13 @@ def star(mass):
 	'''Mass (kg)\n-> Radius (m), Luminosity (W), Temp (K), Lifespan (s)'''
 	m=mass/m_sun
 	#default exponents: .74,3,.505,-2.5
-	#I find linear 1.084 a better approximation than exponential 0.74, at least for smaller stars.
-	#I find 4.24 a better approximation than 3, at least for M-F stars.
+	#I find 0.96 a better approximation than 0.74, at least for smaller stars.
 	#I find 0.54 a very slightly better approximation than 0.505, at least for smaller stars.
-	return r_sun*m*1.084,l_sun*m**4.24,5772*m**.54,12e9*365.2425*60*60*m**-2.5
+	# Luminosity and time values from https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
+	#L
+	if m>.45:lum=1.148*m**3.4751
+	else:lum=.2264*m**2.52
+	return r_sun*m**0.96,l_sun*lum,5772*m**.54,399.0*m**-2.5162
 	
 def habitablezone(mass):
 	m=mass/m_sun
