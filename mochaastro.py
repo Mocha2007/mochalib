@@ -143,7 +143,7 @@ def star(mass):
 	#L
 	if m>.45:lum=1.148*m**3.4751
 	else:lum=.2264*m**2.52
-	return r_sun*m**0.96,l_sun*lum,5772*m**.54,399.0*m**-2.5162
+	return r_sun*m**0.96,l_sun*lum,5772*m**.54,3.97310184e17*m**-2.5162
 	
 def habitablezone(mass):
 	m=mass/m_sun
