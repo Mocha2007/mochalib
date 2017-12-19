@@ -91,6 +91,7 @@ Various mathematical and scientific functions I've needed
 * hill - Calculates hill sphere of specified body. cf. *soi*. kg,kg,m,[Dimensionless] -> m
 * hohmann - Calculates Delta-v required to perform specified Hohmann transfer manoeuvre. m,m,kg -> m/s
 * inclinationburn - Calculates Delta-v required to perform specified plane change manoeuvre. rad,[Dimensionless],rad,rad,rad,m -> m/s
+* itemp - Calculates SMA from Temp. K,m,[Dimensionless],K -> m
 * mass - Calculates relativistic mass of specified object. J -> kg
 * mov - Mean orbital velocity of the specified orbit. kg,m -> m/s
 * optimal - Calculates which of Hohmann or Bielliptic transfer manoeuvres is more efficient. m,m,kg->[String]
@@ -105,7 +106,7 @@ Various mathematical and scientific functions I've needed
 * surfacegravity - Calculates surface gravity of specified body. kg,m->m/s^2
 * synchronous - Semimajor axis of the synchronous orbit around a body. s,kg -> m
 * synodic - Calculates synodic period of two specified bodies. s,s -> s
-* temp - Calculates planetary equilibrium temperature. K,m,m,[Dimensionless] -> K
+* temp - Calculates planetary equilibrium temperature. K,m,,m[Dimensionless] -> K
 * vescape - Calculates escape velocity of specified body. kg,m->m/s
 * vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,[Dimensionless],kg -> m/s,m/s
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s

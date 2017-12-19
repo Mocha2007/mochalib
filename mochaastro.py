@@ -196,3 +196,7 @@ def drake(R,fp,ne,fl,fi,fc,L):
 	if fc==-1:fc=1
 	if L==-1:L=200
 	return R*fp*ne*fl*fi*fc*L
+	
+def itemp(T,R,a,Tp):
+	'''Temperature of the star (K), Radius of the star (m), Albedo, Temperature of the body (K)\n-> Semimajor axis (m)\nFormula inverted from https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model'''
+	return R*T**2*(1-a)**.5/2/Tp**2
