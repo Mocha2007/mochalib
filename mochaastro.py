@@ -208,3 +208,13 @@ def drake(R,fp,ne,fl,fi,fc,L):
 def itemp(T,R,a,Tp):
 	'''Temperature of the star (K), Radius of the star (m), Albedo, Temperature of the body (K)\n-> Semimajor axis (m)\nFormula inverted from https://en.wikipedia.org/wiki/Planetary_equilibrium_temperature#Theoretical_model'''
 	return R*T**2*(1-a)**.5/2/Tp**2
+	
+#ADD DOCS FOR THESE TWO
+
+def lz(eee,i_1,i_2):#https://en.wikipedia.org/wiki/Kozai_mechanism
+	iii=i_1-i_2
+	return (1-eee**2)**.5*cos(iii)
+
+def tkozai(m_1,m_2,p_1,p_2,e_2):
+	'''kg,kg,s,s,[dimensionless]->s\nVariables with subscript "2" refer to the outer (perturber) orbit and variables with subscript "1" refer to the inner (satellite) orbit.'''
+	return m_1/m_2*p_2**2/p_1*(1-e_2**2)**1.5
