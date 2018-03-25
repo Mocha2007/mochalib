@@ -1,10 +1,4 @@
 from re import sub,compile,fullmatch
-def capitalize(string):
-	lower=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-	upper=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-	for character in range(0,len(lower)):
-		string=sub(r'^'+lower[character],upper[character],string)
-	return string
 def soundex(string):
 	#Pre-rules
 	string=capitalize(string)
@@ -42,11 +36,7 @@ def soundex(string):
 	string+='000'
 	string=list(string)[0]+list(string)[1]+list(string)[2]+list(string)[3]
 	return string
-def dictsx():
-	open('soundexdict.csv','w').write('')
-	with open('dict_mega.txt','r') as f:
-		for line in f:
-			open('soundexdict.csv','a').write(''.join(line.split())+","+soundex(line)+"\n")
+
 def ipa(word):#attempts to generate the IPA transcription of a word based on Zompist SC rules
 	#http://www.zompist.com/spell.html
 	vowel=['a','e','i','o','u','ä','â','ë','ê','ï','î','ö','ô','ü','û','ò','ù','@']
@@ -510,6 +500,7 @@ def frenchipa(word):#https://en.wikipedia.org/wiki/French_orthography
 	#getting rid of symbols
 	word=sub('-','',word)
 	return word
+
 def spanishipa(word):#I assume Spanish dialect. Replace thetas with s if you have seseo or s with theta if you have ceceo
 	vowel=['a','e','i','o','u','y']
 	#x rules
@@ -610,6 +601,7 @@ def spanishipa(word):#I assume Spanish dialect. Replace thetas with s if you hav
 	word=sub('ó','o',word)
 	word=sub('ú','u',word)
 	return word
+
 def germanipa(word):
 	vowel=['a','ä','e','i','o','ö','u','ü','y']
 	#these rules need to be done early
@@ -682,6 +674,7 @@ def germanipa(word):
 	word=sub('a[ah]','aː',word)
 	word=sub('a(?![iuyʊɪ])','a',word)
 	return word
+
 def hungarianipa(word):
 	#foreign letters treated as something else
 	word=sub('qu','kv',word)
@@ -739,6 +732,7 @@ def hungarianipa(word):
 	word=sub('ü','y',word)
 	word=sub('ű','yː',word)
 	return word
+
 def italianipa(word):
 	#foreign letters
 	word=sub('y','i',word)
@@ -787,6 +781,7 @@ def italianipa(word):
 	word=sub('w','v',word)
 	word=sub('x','ks',word)
 	return word
+
 def polishipa(word):
 	#b rules
 	word=sub('b(?=cćfhkpsśtx)','p',word)
