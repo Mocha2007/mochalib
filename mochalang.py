@@ -37,6 +37,35 @@ def soundex(string):
 	string=list(string)[0]+list(string)[1]+list(string)[2]+list(string)[3]
 	return string
 
+def uipa(word):
+	word=sub('j','dʒ',word)
+	word=sub('ôw','au',word)
+	word=sub('öy','oi',word)
+	word=sub('@r','ɚ',word)
+	word=sub('@n','n̩',word)
+	word=sub('@l','l̩',word)
+	word=sub('ä','e',word)
+	word=sub('â','æ',word)
+	word=sub('ë','i',word)
+	word=sub('ê','ɛ',word)
+	word=sub('ï','ai',word)
+	word=sub('î','ɪ',word)
+	word=sub('ö','o',word)
+	word=sub('ô','ɑ',word)
+	word=sub('ü','ju',word)
+	word=sub('û','ʌ',word)
+	word=sub('ò','ɔ',word)
+	word=sub('ù','ʊ',word)
+	word=sub('@','ə',word)
+	word=sub('y','j',word)
+	word=sub('ñ','ŋ',word)
+	word=sub('\+','θ',word)
+	word=sub('\$','ʃ',word)
+	word=sub('%','ʒ',word)
+	word=sub('ç','tʃ',word)
+	word=sub('r','ɹ',word)
+	return word
+
 def ipa(word):#attempts to generate the IPA transcription of a word based on Zompist SC rules
 	#http://www.zompist.com/spell.html
 	vowel=['a','e','i','o','u','ä','â','ë','ê','ï','î','ö','ô','ü','û','ò','ù','@']
@@ -275,35 +304,7 @@ def ipa(word):#attempts to generate the IPA transcription of a word based on Zom
 	#Cleanup
 	word=sub(r'\\','',word)
 	word=sub('i','î',word)
-	return word
-
-def uipa(word):
-	word=sub('j','dʒ',word)
-	word=sub('ôw','au',word)
-	word=sub('öy','oi',word)
-	word=sub('@r','ɚ',word)
-	word=sub('@n','n̩',word)
-	word=sub('@l','l̩',word)
-	word=sub('ä','e',word)
-	word=sub('â','æ',word)
-	word=sub('ë','i',word)
-	word=sub('ê','ɛ',word)
-	word=sub('ï','ai',word)
-	word=sub('î','ɪ',word)
-	word=sub('ö','o',word)
-	word=sub('ô','ɑ',word)
-	word=sub('ü','ju',word)
-	word=sub('û','ʌ',word)
-	word=sub('ò','ɔ',word)
-	word=sub('ù','ʊ',word)
-	word=sub('@','ə',word)
-	word=sub('y','j',word)
-	word=sub('ñ','ŋ',word)
-	word=sub('\+','θ',word)
-	word=sub('\$','ʃ',word)
-	word=sub('%','ʒ',word)
-	word=sub('ç','tʃ',word)
-	return word
+	return uipa(word)
 
 def mochize(word):
 	word=sub('ɔ','ɑ',word)
