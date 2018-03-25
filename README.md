@@ -227,6 +227,8 @@ All functions require three components - *x* (Time in s), *freq* (Frequency in h
 
 # Chemistry Library Documentation
 
+# Language Library Documentation
+
 VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 
 # Matrix Library Documentation
