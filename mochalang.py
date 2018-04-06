@@ -1,7 +1,16 @@
 from re import sub,compile,fullmatch
+
+def scrabble(string):
+	alphabet = 'abcdefghijklmnopqrstuvwxyz'
+	scoring = [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10]
+	score = 0
+	for char in string:
+		score+=scoring[alphabet.index(char)]
+	return score
+
 def soundex(string):
 	#Pre-rules
-	string=capitalize(string)
+	string=string.title()
 	#R1
 	string=sub(r"[aeiouyhw'\n]",'',string)
 	#R3
