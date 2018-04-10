@@ -262,7 +262,7 @@ def averagetimestooccur(chance):#eg an event with a 6% chance of occuring has a 
 	return -log(2)/log(1-chance)
 
 def chanceofoccuring(chance,times):#eg an event with a 6% chance of occuring has had the opportunity to happen 15 times
-	return 1-(1-chance)^times
+	return 1-(1-chance)**times
 	
 def card():
 	faces=["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
