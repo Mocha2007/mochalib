@@ -1,5 +1,18 @@
 from re import sub,compile,fullmatch
 
+def letterfreq(string):
+	l = {}
+	for c in string:
+		if c not in l:l[c] = 1/len(string)
+		else:l[c] += 1/len(string)
+	return l
+
+def sortdict(dict):
+	l = []
+	for i in dict:
+		l.append((i,dict[i]))
+	return sorted(sorted(l),key=lambda x:x[1],reverse=True) #first by freq, then by id
+
 def scrabble(string):
 	alphabet = 'abcdefghijklmnopqrstuvwxyz'
 	scoring = [1,3,3,2,1,4,2,4,1,8,5,1,3,1,1,3,10,1,1,1,1,4,4,8,4,10]
@@ -7,6 +20,9 @@ def scrabble(string):
 	for char in string:
 		score+=scoring[alphabet.index(char)]
 	return score
+
+def unmojibake(string,fro,to):
+	return bytes(string,fro).decode(to)
 
 def soundex(string):
 	#Pre-rules
