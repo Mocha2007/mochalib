@@ -1,4 +1,4 @@
-import urllib.request,mochamw
+import urllib.request,mochamw,telnetlib
 from re import compile,sub,findall,search,M
 from random import randint
 
@@ -21,11 +21,11 @@ def udcleanup(string):
 	return string
 
 def wtcleanup(string):
+	string = sub(r'----[\w\W]+','',string) # crap in end
 	string = sub('^[^#].+$','',string,flags=M) # delete ANY line not beginning with a hash
 	string = string.replace('#','\n#') # ol
 	string = sub('^[^#]+','',string) # crap in beginning
 	string = sub('#[:*].+','',string) # crap in middle
-	string = sub(r'----[\w\W]+','',string) # crap in end
 	string = sub(r'\n{2,}','\n',string) # multiple returns
 	string = sub(r'Category:[\w:]+','',string) # category removal
 	string = sub(r'^[#*][^\w\n]+\n','',string) # empty defs
@@ -34,7 +34,7 @@ def wtcleanup(string):
 		if c=='#':
 			n+=1
 			string = string.replace(c,'**'+str(n)+'.**',1)
-	return string
+	return string[:2000]
 
 def wikicleanup(string):
 	string = sub(r'\s?\(.*?\)','',string) # text in parens
@@ -63,3 +63,18 @@ def xkcd(arg):
 	try:arg = 'https://xkcd.com/'+str(int(arg))
 	except:arg = 'https://c.xkcd.com/random/comic/'
 	return xkcdcleanup(l(arg))
+
+def numbersapi(n):
+	x = l('http://numbersapi.com/'+n)
+	if 'numbersapi' in x:return n+' is a gay-ass number.'
+	return x
+
+htn = telnetlib.Telnet(host='horizons.jpl.nasa.gov',port=6775)
+def horizons(name):
+	htn.read_until(b'Horizons> ',timeout=1)
+	htn.write(name.encode('ascii')+b'\n')
+	x = htn.read_until(b'Horizons> ',timeout=1)
+	if b'<cr>=yes' in x:
+		htn.write(b'\n')
+		x = htn.read_until(b'Select ...',timeout=1)
+	return sub(r'^[^*]*\*+|\*+[^*]*$','',x.decode('ascii'))

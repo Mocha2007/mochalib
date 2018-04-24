@@ -1,7 +1,7 @@
 from json import load
 from io import StringIO
-import urllib.request
-from re import compile,sub,findall,search
+import urllib.request,telnetlib
+from re import compile,sub,findall,search,MULTILINE
 
 #https://openweathermap.org/current
 
@@ -52,3 +52,42 @@ def cleanup(j):
 def main(loc):
 	# eg main('London')
 	return cleanup(l(loc))
+
+huracan = telnetlib.Telnet(host='rainmaker.wunderground.com')
+def hurricane(x):
+	try:
+		x = int(x)
+		if not 0<x<6:x=1
+		x = str(x)
+	except:x='1'
+	huracan.read_until(b':',timeout=1) # PRESS RETURN TO CONTINUE
+	huracan.write(b'\n')
+	huracan.read_until(b'-- ',timeout=1) # PRESS RETURN FOR MENU
+	huracan.write(b'\n')
+	huracan.read_until(b'n:',timeout=1) # selection:
+	huracan.write(b'8\n')
+	huracan.read_until(b':',timeout=1) # selection:
+	huracan.write(x.encode('ascii')+b'\n')
+
+	y = huracan.read_until(b'$$',timeout=1).decode('ascii')[:-2]
+	if x in '45':
+		y = sub(r'^[\w\W]+Rmks\/\n+','',y)
+		y = sub(r'\n+[^\n]+exit$','',y)
+	return '```\n'+y+'\n```'
+
+th = telnetlib.Telnet(host='telehack.com')
+def phoon():
+	th.read_until(b'\n.',timeout=1)
+	th.write(b'phoon\r\n')
+
+	x = th.read_until(b'\n.',timeout=1)
+	return '```\n'+x.decode('ascii')[7:-1]+'\n```'
+
+def quake(): #load
+	url='https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.csv'
+	request=urllib.request.Request(url,None,headers)
+	csv=urllib.request.urlopen(request).read().decode('ascii')
+	csv=sub(compile(r'(,[^,]*){8}$',MULTILINE),'',csv)
+	csv=sub(r',(?! )','\t',csv).replace('"','')
+	csv=sub(r'\tmagType\tnst\tgap\tdmin\trms\tnet\tid\tupdated|\t[Mm][bdeiLlsw].+(?=\t\d+km)','\t',csv) # del magType -> updated
+	return '```\n'+csv[:1992]+'\n```'
