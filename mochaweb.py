@@ -1,11 +1,13 @@
 import urllib.request,mochamw,telnetlib
 from re import compile,sub,findall,search,M
 from random import randint
+from json import load
+from io import StringIO
 
 linkpattern = r'\[\[[^\]]+?\]\]'
 limit = 499
 
-user_agent = 'MochaMW/1.0 (https://github.com/Mocha2007/mochalib)'
+user_agent = 'MochaWeb/1.0 (https://github.com/Mocha2007/mochalib)'
 headers={'User-Agent':user_agent,}
 
 def l(url): #load
@@ -78,3 +80,17 @@ def horizons(name):
 		htn.write(b'\n')
 		x = htn.read_until(b'Select ...',timeout=1)
 	return sub(r'^[^*]*\*+|\*+[^*]*$','',x.decode('ascii'))
+
+fixerioapikey = open('../fixer.io.txt','r').read()
+j = False
+def currency(a,b):
+	global j
+	if not j:j = load(StringIO(l('http://data.fixer.io/api/latest?access_key='+fixerioapikey)))
+
+	if a != 'EUR':a = j['rates'][a]
+	else:a = 1
+
+	if b != 'EUR':b = j['rates'][b]
+	else:b = 1
+	
+	return b/a
