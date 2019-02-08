@@ -95,6 +95,7 @@ def function(**kwargs): # needs repr and f
 					return abs(a)
 				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
+				# todo https://en.wikipedia.org/wiki/Inverse_trigonometric_functions#Relationships_between_trigonometric_functions_and_inverse_trigonometric_functions
 				return self
 			# binary identities
 			b = self.variables[1]
@@ -111,6 +112,15 @@ def function(**kwargs): # needs repr and f
 					return b.variables[0]
 				if type(a) == int == type(b):
 					return a+b
+				if type(a) == Power == type(b): # sin^2 + cos^2 = 1
+					a_, ap = a.variables
+					b_, bp = b.variables
+					powers_are_two = ap == bp == 2
+					if (type(a_), type(b_)) in ((Sin, Cos), (Cos, Sin)) and powers_are_two:
+						a_interior = a_.variables[0]
+						b_interior = b_.variables[0]
+						if a_interior == b_interior:
+							return 1
 			# subtractive identity
 			elif type(self) == Difference:
 				if b == 0: # a-0 -> a
@@ -442,7 +452,12 @@ trig_functions = {
 	Cot,
 	Sec,
 	Csc,
+	Arcsin,
+	Arccos,
 	Arctan,
+	Arccot,
+	Arcsec,
+	Arccsc,
 }
 
 # testing
