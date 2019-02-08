@@ -72,12 +72,16 @@ def dist(a,b):#works in any dimension! a and b are lists
 		s+=(a[i]-b[i])**2
 	return s**.5
 
-def divisors(n):
-	if n==1:return [1]
-	allproducts=[1]
-	for i in range(2,floor(n/2)+1):
-		if n%i==0:allproducts+=[i]
-	return allproducts+[n]
+def divisors(n: int) -> set:
+	if n in (0, 1):
+		return [n]
+	allproducts = []
+	for i in range(1,int(n**.5)+1):
+		if n % i == 0:
+			allproducts.append(i)
+	for i in list(allproducts):
+		allproducts.append(n//i)
+	return set(allproducts)
 	
 def divisorfunction(n,x):
 	divisorlist=divisors(n)
@@ -195,8 +199,8 @@ def totient(n):
 		if gcd(n,i)==1:s+=1
 	return s
 	
-def triangular(n):
-	return (n**2+n)/2
+def triangular(n: int) -> int:
+	return (n**2+n)//2
 
 def volumecone(r,h):
 	return 1/3*pi*r**2*h
@@ -476,3 +480,35 @@ def rect2sphere(x,y,z):
 def sphere2rect(rho,theta,phi):
 	'''Converts from spherical coordinates to rectangular coordinates'''
 	return rho*sin(phi)*cos(theta),rho*sin(phi)*sin(theta),rho*cos(phi)
+
+# 21 Dec 2018
+
+def prime_factors(n: int) -> set:
+	for i in range(2, int(n**.5)+1):
+		if n % i == 0:
+			return factors(n//i).add(i)
+	return {n}
+
+def factors(n: int) -> dict:
+	for i in range(2, int(n**.5)+1):
+		if n % i == 0:
+			dictionary = factors(n//i)
+			if i in dictionary:
+				dictionary[i] += 1
+			else:
+				dictionary[i] = 1
+			return dictionary
+	return {n: 1}
+
+def product(*n) -> float:
+	if len(n) == 0:
+		return 0
+	if len(n) == 1:
+		return n[0]
+	return product(*n[:-1]) * n[-1]
+
+def is_prime(n: int) -> bool:
+	for i in range(2, int(n**.5)+1):
+		if n % i == 0:
+			return False
+	return True
