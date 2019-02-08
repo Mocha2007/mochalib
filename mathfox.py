@@ -365,6 +365,18 @@ def csc_d(csc_object, with_respect_to):
 	a_= get_derivative(a, with_respect_to)
 	return Product(Difference(0, a_), Product(Cot(a), Csc(a)))
 
+def arcsin_d(arcsin_object, with_respect_to):
+	# accounts for chain rule
+	a = arcsin_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(a_, Power(Difference(1, Power(a, 2)), Quotient(1, 2)))
+
+def arccos_d(arccos_object, with_respect_to):
+	# accounts for chain rule
+	a = arccos_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(Difference(0, a_), Power(Difference(1, Power(a, 2)), Quotient(1, 2)))
+
 def arctan_d(arctan_object, with_respect_to):
 	# accounts for chain rule
 	a = arctan_object.variables[0]
@@ -386,7 +398,9 @@ Tan = function(f=(lambda a: tan(a)), repr='tan({0})', d=tan_d)
 Cot = function(f=(lambda a: 1/tan(a)), repr='cot({0})', d=cot_d)
 Sec = function(f=(lambda a: 1/cos(a)), repr='sec({0})', d=sec_d)
 Csc = function(f=(lambda a: 1/sin(a)), repr='csc({0})', d=csc_d)
-Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d) # only inverse trig function so far
+Arcsin = function(f=(lambda a: asin(a)), repr='arcsin({0})', d=arcsin_d)
+Arccos = function(f=(lambda a: acos(a)), repr='arccos({0})', d=arccos_d)
+Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d) # todo other inverse trig functions
 Equality = function(f=(lambda a, b: a == b), repr='{0} = {1}', d=eq_d)
 Euler = Variable('e')
 trig_functions = {
