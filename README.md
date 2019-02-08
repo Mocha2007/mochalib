@@ -1,6 +1,12 @@
 # mochalib
 Various mathematical and scientific functions I've needed
 
+# MathFox
+Adds functions/variables as classes to simplify, solve derivatives, etc.
+sample usage:
+x = Variable('x')
+Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
+
 # 24 Game Library Documentation
 ## Functions
 * allorder - Every number achievable with the four given integers.
