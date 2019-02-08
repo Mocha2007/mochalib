@@ -90,6 +90,10 @@ def function(**kwargs): # needs repr and f
 				if a == 1:
 					return 0
 				return self # otherwise, stay the same
+			elif type(self) == Abs: # ln(1) -> 0
+				if type(a) == int:
+					return abs(a)
+				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
 				return self
 			# binary identities
@@ -316,6 +320,12 @@ def power_d(power_object, with_respect_to): # Accounts for the chain rule now, d
 	b_= get_derivative(b, with_respect_to)
 	return Product(Power(a, Difference(b_, 1)), Sum(Product(b, a_), Product(Product(a, Log(a)), b_)))
 
+def abs_d(abs_object, with_respect_to):
+	# accounts for chain rule
+	a = abs_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(Product(a, a_), Abs(a))
+
 def ln_d(ln_object, with_respect_to):
 	# accounts for chain rule
 	a = ln_object.variables[0]
@@ -383,6 +393,24 @@ def arctan_d(arctan_object, with_respect_to):
 	a_= get_derivative(a, with_respect_to)
 	return Quotient(a_, Sum(Power(a, 2), 1))
 
+def arccot_d(arccot_object, with_respect_to):
+	# accounts for chain rule
+	a = arctan_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(Difference(0, a_), Sum(Power(a, 2), 1))
+
+def arcsec_d(arcsec_object, with_respect_to):
+	# accounts for chain rule
+	a = arcsec_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(a_, Product(Abs(a), Power(Difference(Power(a, 2), 1), Quotient(1, 2))))
+
+def arccsc_d(arccsc_object, with_respect_to):
+	# accounts for chain rule
+	a = arccsc_object.variables[0]
+	a_= get_derivative(a, with_respect_to)
+	return Quotient(Difference(0, a_), Product(Abs(a), Power(Difference(Power(a, 2), 1), Quotient(1, 2))))
+
 evaluable = set()
 
 # not sure if this accounts for chain rule yet... check after power rules are completed
@@ -391,6 +419,7 @@ Difference = function(f=(lambda a, b: a-b), repr='{0}-{1}', d=sum_d)
 Product = function(f=(lambda a, b: a*b), repr='{0}*{1}', d=product_d)
 Quotient = function(f=(lambda a, b: a/b), repr='{0}/{1}', d=quotient_d)
 Power = function(f=(lambda a, b: a**b), repr='{0}^{1}', d=power_d)
+Abs = function(f=(lambda a: abs(a)), repr='|{0}|', d=abs_d)
 Log = function(f=(lambda a: log(a)), repr='ln({0})', d=ln_d)
 Sin = function(f=(lambda a: sin(a)), repr='sin({0})', d=sin_d)
 Cos = function(f=(lambda a: cos(a)), repr='cos({0})', d=cos_d)
@@ -401,6 +430,9 @@ Csc = function(f=(lambda a: 1/sin(a)), repr='csc({0})', d=csc_d)
 Arcsin = function(f=(lambda a: asin(a)), repr='arcsin({0})', d=arcsin_d)
 Arccos = function(f=(lambda a: acos(a)), repr='arccos({0})', d=arccos_d)
 Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d) # todo other inverse trig functions
+Arccot = function(f=(lambda a: atan(1/a)), repr='arccot({0})', d=arccot_d)
+Arcsec = function(f=(lambda a: acos(1/a)), repr='arcsec({0})', d=arcsec_d)
+Arccsc = function(f=(lambda a: asin(1/a)), repr='arccsc({0})', d=arccsc_d)
 Equality = function(f=(lambda a, b: a == b), repr='{0} = {1}', d=eq_d)
 Euler = Variable('e')
 trig_functions = {
