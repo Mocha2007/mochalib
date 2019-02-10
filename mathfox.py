@@ -1,7 +1,7 @@
-from math import log, sin, cos, tan, asin, acos, atan
-from fractions import gcd
+from math import log, sin, cos, tan, asin, acos, atan, gcd
 
-def can_apply_function(x): # -> (bool, variables)
+
+def can_apply_function(x) -> (bool, list):
 	can_apply = True
 	for i in x.variables:
 		if type(i) in evaluable:
@@ -19,6 +19,7 @@ class Variable:
 	
 	def __repr__(self) -> str:
 		return self.name
+
 
 # class Sum:
 	# def __init__(self, a, b):
@@ -39,8 +40,10 @@ class Variable:
 		# elif type(self.a) == Variable and self.a.name in variables:
 			# self.a = variables[self.a.name]
 
+
 def function(**kwargs): # needs repr and f
 	global evaluable
+
 	class Function:
 		def __init__(self, *variables):
 			self.variables = list(variables)
@@ -208,7 +211,7 @@ def function(**kwargs): # needs repr and f
 			# alright, then solve!
 			a_contains = contains_variable(a, x)
 			b_contains = contains_variable(b, x)
-			if a_contains == b_contains == False: # variable absent from both sides
+			if not (a_contains or b_contains): # variable absent from both sides
 				return self # can't simplify
 			if b_contains and not a_contains: # variable on RHS
 				return type(self)(b, a).solve_for(x)
@@ -265,8 +268,10 @@ def function(**kwargs): # needs repr and f
 	evaluable.add(Function)
 	return Function
 
+
 def is_function(expression) -> bool:
 	return expression.__class__.__name__ == 'Function'
+
 
 def contains_variable(expression, variable: str) -> bool:
 	if type(expression) in evaluable:
@@ -278,148 +283,174 @@ def contains_variable(expression, variable: str) -> bool:
 			return True
 	return False
 
+
 def get_derivative(x, with_respect_to):
-	return x.derivative(with_respect_to) if is_function(x) else (int(x.name == with_respect_to) if type(x) == Variable else 0)
+	if is_function(x):
+		return x.derivative(with_respect_to)
+	return int(x.name == with_respect_to) if type(x) == Variable else 0
+
 
 def sum_d(sum_object, with_respect_to): # Sum -> Sum; Difference -> Difference; chain rule unnecessary
 	a, b = sum_object.variables
 	# print('g =', a)
 	# print('h =', b)
-	a_= get_derivative(a, with_respect_to)
-	b_= get_derivative(b, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
+	b_ = get_derivative(b, with_respect_to)
 	# print('g\' =', a_)
 	# print('h\' =', b_)
 	return type(sum_object)(a_, b_)
+
 
 def product_d(product_object, with_respect_to): # Product -> Sum; chain rule unnecessary
 	a, b = product_object.variables
 	# print('g =', a)
 	# print('h =', b)
-	a_= get_derivative(a, with_respect_to)
-	b_= get_derivative(b, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
+	b_ = get_derivative(b, with_respect_to)
 	# print('g\' =', a_)
 	# print('h\' =', b_)
 	return Sum(Product(a, b_), Product(a_, b))
+
 
 def quotient_d(quotient_object, with_respect_to): # Quotient -> Quotient; chain rule unnecessary
 	a, b = quotient_object.variables
 	# print('g =', a)
 	# print('h =', b)
-	a_= get_derivative(a, with_respect_to)
-	b_= get_derivative(b, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
+	b_ = get_derivative(b, with_respect_to)
 	# print('g\' =', a_)
 	# print('h\' =', b_)
 	return Quotient(Difference(Product(a_, b), Product(a, b_)), Power(b, 2))
 
+
 def power_d(power_object, with_respect_to): # Accounts for the chain rule now, don't worry
 	a, b = power_object.variables
-	if not (contains_variable(a, with_respect_to) or contains_variable(b, with_respect_to)): # neither are wrt; chain rule irrelevant
+	if not (contains_variable(a, with_respect_to) or contains_variable(b, with_respect_to)):
+		# neither are wrt; chain rule irrelevant
 		return 0
-	a_= get_derivative(a, with_respect_to)
-	if contains_variable(a, with_respect_to) and not contains_variable(b, with_respect_to): # base is wrt; accounts for chain rule
+	a_ = get_derivative(a, with_respect_to)
+	if contains_variable(a, with_respect_to) and not contains_variable(b, with_respect_to):
+		# base is wrt; accounts for chain rule
 		if b == 0:
 			return 0
 		if b == 1:
 			return a
 		return Product(Product(b, Power(a, Difference(b, 1))), a_)
-	if not contains_variable(a, with_respect_to) and contains_variable(b, with_respect_to): # power is wrt; accounts for chain rule
+	if not contains_variable(a, with_respect_to) and contains_variable(b, with_respect_to):
+		# power is wrt; accounts for chain rule
 		if a in (0, 1):
 			return 0
-		b_= get_derivative(b, with_respect_to)
+		b_ = get_derivative(b, with_respect_to)
 		return Product(Product(Log(a), Power(a, b)), b_)
-	b_= get_derivative(b, with_respect_to)
+	b_ = get_derivative(b, with_respect_to)
 	return Product(Power(a, Difference(b_, 1)), Sum(Product(b, a_), Product(Product(a, Log(a)), b_)))
+
 
 def abs_d(abs_object, with_respect_to):
 	# accounts for chain rule
 	a = abs_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(Product(a, a_), Abs(a))
+
 
 def ln_d(ln_object, with_respect_to):
 	# accounts for chain rule
 	a = ln_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(a_, a)
+
 
 def eq_d(eq_object, with_respect_to):
 	# accounts for chain rule
-	a, b = ln_object.variables
-	a_= get_derivative(a, with_respect_to)
-	b_= get_derivative(b, with_respect_to)
+	a, b = eq_object.variables
+	a_ = get_derivative(a, with_respect_to)
+	b_ = get_derivative(b, with_respect_to)
 	return Equality(a_, b_)
+
 
 def sin_d(sin_object, with_respect_to):
 	# accounts for chain rule
 	a = sin_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(a_, Cos(a))
+
 
 def cos_d(cos_object, with_respect_to):
 	# accounts for chain rule
 	a = cos_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(Difference(0, a_), Sin(a))
+
 
 def tan_d(tan_object, with_respect_to):
 	# accounts for chain rule
 	a = tan_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(a_, Power(Sec(a), 2))
+
 
 def cot_d(cot_object, with_respect_to):
 	# accounts for chain rule
 	a = cot_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(Difference(0, a_), Power(Csc(a), 2))
+
 
 def sec_d(sec_object, with_respect_to):
 	# accounts for chain rule
 	a = sec_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(a_, Product(Tan(a), Sec(a)))
+
 
 def csc_d(csc_object, with_respect_to):
 	# accounts for chain rule
 	a = csc_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Product(Difference(0, a_), Product(Cot(a), Csc(a)))
+
 
 def arcsin_d(arcsin_object, with_respect_to):
 	# accounts for chain rule
 	a = arcsin_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(a_, Power(Difference(1, Power(a, 2)), Quotient(1, 2)))
+
 
 def arccos_d(arccos_object, with_respect_to):
 	# accounts for chain rule
 	a = arccos_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(Difference(0, a_), Power(Difference(1, Power(a, 2)), Quotient(1, 2)))
+
 
 def arctan_d(arctan_object, with_respect_to):
 	# accounts for chain rule
 	a = arctan_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(a_, Sum(Power(a, 2), 1))
+
 
 def arccot_d(arccot_object, with_respect_to):
 	# accounts for chain rule
-	a = arctan_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a = arccot_object.variables[0]
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(Difference(0, a_), Sum(Power(a, 2), 1))
+
 
 def arcsec_d(arcsec_object, with_respect_to):
 	# accounts for chain rule
 	a = arcsec_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(a_, Product(Abs(a), Power(Difference(Power(a, 2), 1), Quotient(1, 2))))
+
 
 def arccsc_d(arccsc_object, with_respect_to):
 	# accounts for chain rule
 	a = arccsc_object.variables[0]
-	a_= get_derivative(a, with_respect_to)
+	a_ = get_derivative(a, with_respect_to)
 	return Quotient(Difference(0, a_), Product(Abs(a), Power(Difference(Power(a, 2), 1), Quotient(1, 2))))
+
 
 evaluable = set()
 
@@ -472,7 +503,8 @@ print(variable_test2.evaluate()) # should be x+1
 print(variable_test2.let(x=1)) # should be 1+1
 # print(variable_test2.let(x=1).evaluate()) # should be 2
 qa, qb, qc, qx = Variable('a'), Variable('b'), Variable('c'), Variable('x')
-quadratic = Quotient(Sum(Difference(0, qb), Power(Difference(Power(qb, 2), Product(Product(4, qa), qc)), Quotient(1, 2))), Product(2, qa))
+quadratic = Quotient(Sum(Difference(0, qb),
+			Power(Difference(Power(qb, 2), Product(Product(4, qa), qc)), Quotient(1, 2))), Product(2, qa))
 print(quadratic.let(a=0)) # should be 0/0
 print(quadratic.let(b=0)) # should be sqrt(-4ac)/(2a)
 print(quadratic.let(c=0)) # should be 0
