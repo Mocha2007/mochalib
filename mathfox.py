@@ -193,6 +193,15 @@ def function(**kwargs): # needs repr and f
 				if type(a) == Power: # (m^n)^b
 					m, n = a.variables
 					return Power(m, Product(n, b)).simplify()
+			elif type(self) == Equality:
+				if type(a) == type(b) and is_function(a):
+					# both are the same function, let's see if they share the same arguments
+					if a.variables[0] == b.variables[0]:
+						# first arguments are identical
+						return Equality(a.variables[1], b.variables[1])
+					if a.variables[1] == b.variables[1]:
+						# second arguments are identical
+						return Equality(a.variables[0], b.variables[0])
 			# otherwise, stay the same
 			# print('after:', self)
 			return type(self)(a, b)
