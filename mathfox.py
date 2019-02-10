@@ -502,27 +502,27 @@ trig_functions = {
 
 # testing
 
-sum_test = Sum(1, 2)
-print(sum_test)
-print(sum_test.evaluate())
-variable_test = Variable('x')
-variable_test2 = Sum(variable_test, 1)
-print(variable_test2) # should be x+1
-print(variable_test2.evaluate()) # should be x+1
-print(variable_test2.let(x=1)) # should be 1+1
-# print(variable_test2.let(x=1).evaluate()) # should be 2
-qa, qb, qc, qx = Variable('a'), Variable('b'), Variable('c'), Variable('x')
-quadratic = Quotient(Sum(Difference(0, qb),
-			Power(Difference(Power(qb, 2), Product(Product(4, qa), qc)), Quotient(1, 2))), Product(2, qa))
-print(quadratic.let(a=0)) # should be 0/0
-print(quadratic.let(b=0)) # should be sqrt(-4ac)/(2a)
-print(quadratic.let(c=0)) # should be 0
-equality_test = Equality(Product(3, qa), 5)
-print(equality_test.solve_for('a'))
-equality_test_2 = Equality(quadratic, qx)
-print(equality_test_2.solve_for('c'))
-print('bing bing bong bing bong')
-print(quadratic.derivative('c'))
-print(Arctan(qx))
-print(Arctan(qx).derivative('x'))
-print(Arctan(qx).derivative('x', 2))
+# sum_test = Sum(1, 2)
+# print(sum_test)
+# print(sum_test.evaluate())
+# variable_test = Variable('x')
+# variable_test2 = Sum(variable_test, 1)
+# print(variable_test2) # should be x+1
+# print(variable_test2.evaluate()) # should be x+1
+# print(variable_test2.let(x=1)) # should be 1+1
+# # print(variable_test2.let(x=1).evaluate()) # should be 2
+# qa, qb, qc, qx = Variable('a'), Variable('b'), Variable('c'), Variable('x')
+# quadratic = Quotient(Sum(Difference(0, qb),
+			# Power(Difference(Power(qb, 2), Product(Product(4, qa), qc)), Quotient(1, 2))), Product(2, qa))
+# print(quadratic.let(a=0)) # should be 0/0
+# print(quadratic.let(b=0)) # should be sqrt(-4ac)/(2a)
+# print(quadratic.let(c=0)) # should be 0
+# equality_test = Equality(Product(3, qa), 5)
+# print(equality_test.solve_for('a'))
+# equality_test_2 = Equality(quadratic, qx)
+# print(equality_test_2.solve_for('c'))
+# print('bing bing bong bing bong')
+# print(quadratic.derivative('c'))
+# print(Arctan(qx))
+# print(Arctan(qx).derivative('x'))
+# print(Arctan(qx).derivative('x', 2))
