@@ -217,7 +217,7 @@ def function(**kwargs): # needs repr and f
 				return type(self)(b, a).solve_for(x)
 			# not accounted for: TT (Variable on both sides)
 			if b_contains and a_contains:
-				return self.simplify() # todo
+				return self # todo
 			# for now, we pretend as if a is only on the LHS
 			if type(a) == Sum:
 				m, n = a.variables
@@ -470,7 +470,7 @@ Sec = function(f=(lambda a: 1/cos(a)), repr='sec({0})', d=sec_d)
 Csc = function(f=(lambda a: 1/sin(a)), repr='csc({0})', d=csc_d)
 Arcsin = function(f=(lambda a: asin(a)), repr='arcsin({0})', d=arcsin_d)
 Arccos = function(f=(lambda a: acos(a)), repr='arccos({0})', d=arccos_d)
-Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d) # todo other inverse trig functions
+Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d)
 Arccot = function(f=(lambda a: atan(1/a)), repr='arccot({0})', d=arccot_d)
 Arcsec = function(f=(lambda a: acos(1/a)), repr='arcsec({0})', d=arcsec_d)
 Arccsc = function(f=(lambda a: asin(1/a)), repr='arccsc({0})', d=arccsc_d)
