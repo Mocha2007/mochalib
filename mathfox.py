@@ -52,8 +52,11 @@ def function(**kwargs): # needs repr and f
 				return out.derivative(with_respect_to, n-1) if is_function(out) else 0
 
 		def integral(self, with_respect_to: Variable, *args):
-			is_definite = bool(args)
-			assert not is_definite # unimplemented
+			# is definite?
+			if args:
+				from_x, to_x = args
+				return self.integral(with_respect_to).evaluated_from(with_respect_to, from_x, to_x)
+			# thus indefinite
 			if not contains_variable(self, with_respect_to):
 				return Product(self, with_respect_to)
 			if type(self) in (Sum, Difference):
@@ -248,22 +251,22 @@ def function(**kwargs): # needs repr and f
 		def solve_for(self, x: Variable):
 			if type(self) != Equality:
 				raise AttributeError
-			self = self.simplify()
+			s = self.simplify()
 			# check which side contains it
-			a, b = self.variables
+			a, b = s.variables
 			# if already solved for, return
 			if a == x or b == x:
-				return self
+				return s
 			# alright, then solve!
 			a_contains = contains_variable(a, x)
 			b_contains = contains_variable(b, x)
 			if not (a_contains or b_contains): # variable absent from both sides
-				return self # can't simplify
+				return s # can't simplify
 			if b_contains and not a_contains: # variable on RHS
-				return type(self)(b, a).solve_for(x)
+				return type(s)(b, a).solve_for(x)
 			# not accounted for: TT (Variable on both sides)
 			if b_contains and a_contains:
-				return self # todo
+				return s # todo
 			# for now, we pretend as if a is only on the LHS
 			if type(a) == Sum:
 				m, n = a.variables
@@ -361,6 +364,11 @@ def function(**kwargs): # needs repr and f
 			if lhs == rhs:
 				return lhs
 			return lhs, rhs
+
+		def evaluated_from(self, with_respect_to: Variable, from_x: float, to_x: float):
+			a = self.let(**{with_respect_to.name: to_x})
+			b = self.let(**{with_respect_to.name: from_x})
+			return Difference(a, b)
 	evaluable.add(Function)
 	return Function
 
