@@ -318,7 +318,7 @@ def function(**kwargs): # needs repr and f
 			return Sum(Product(slope, with_respect_to), y_intercept).simplify()
 
 		def limit(self, with_respect_to, at):
-			# find leftward limit
+			"""Finds the limit of an expression, may return None, another expression, an int, or if LHS!=RHS a tuple"""
 			h = 1
 			lhs, rhs = None, None
 			while h != 0:
