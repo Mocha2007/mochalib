@@ -138,7 +138,8 @@ def function(**kwargs): # needs repr and f
 					return abs(a)
 				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
-				# todo https://en.wikipedia.org/wiki/Inverse_trigonometric_functions#Relationships_between_trigonometric_functions_and_inverse_trigonometric_functions
+				# todo https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
+				# todo section Relationships_between_trigonometric_functions_and_inverse_trigonometric_functions
 				return self
 			# binary identities
 			b = self.variables[1]
