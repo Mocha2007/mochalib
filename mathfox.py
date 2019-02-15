@@ -319,6 +319,13 @@ def function(**kwargs): # needs repr and f
 
 		def limit(self, with_respect_to, at):
 			"""Finds the limit of an expression, may return None, another expression, an int, or if LHS!=RHS a tuple"""
+			# is it already possible anyway?
+			try:
+				lhs = self.let(**{with_respect_to.name: at})
+				return lhs.evaluate() if type(lhs) in evaluable else lhs
+			except ZeroDivisionError:
+				pass
+			# guess not
 			h = 1
 			lhs, rhs = None, None
 			while h != 0:
