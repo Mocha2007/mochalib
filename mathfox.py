@@ -316,6 +316,25 @@ def function(**kwargs): # needs repr and f
 			y_intercept = Difference(y, Product(slope, x))
 			# print(x, y, slope, y_intercept)
 			return Sum(Product(slope, with_respect_to), y_intercept).simplify()
+
+		def limit(self, with_respect_to, at):
+			# find leftward limit
+			h = 1
+			lhs, rhs = None, None
+			while h != 0:
+				try:
+					lhs = self.let(**{with_respect_to.name: at-h})
+					rhs = self.let(**{with_respect_to.name: at+h})
+				except ZeroDivisionError:
+					pass
+				h /= 2
+			if type(lhs) in evaluable:
+				lhs = lhs.evaluate()
+			if type(rhs) in evaluable:
+				rhs = rhs.evaluate()
+			if lhs == rhs:
+				return lhs
+			return lhs, rhs
 	evaluable.add(Function)
 	return Function
 
