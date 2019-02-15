@@ -1,5 +1,7 @@
 from math import log, sin, cos, tan, asin, acos, atan, gcd
 
+inf = float('inf')
+
 
 def can_apply_function(x) -> (bool, list):
 	can_apply = True
@@ -335,7 +337,7 @@ def function(**kwargs): # needs repr and f
 				if type(g) not in evaluable:
 					g = Sum(g, 0)
 				fl, gl = f.limit(with_respect_to, at), g.limit(with_respect_to, at)
-				if fl == gl and {fl, gl} < {0, float('inf'), -float('inf')}: # f(x)=g(x)=0 or inf or -inf
+				if fl == gl and {fl, gl} < {0, inf, -inf}: # f(x)=g(x)=0 or inf or -inf
 					g_ = g.derivative(with_respect_to)
 					if type(g_) == int:
 						if g_:
