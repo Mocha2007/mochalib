@@ -4,15 +4,14 @@ inf = float('inf')
 
 
 def can_apply_function(x) -> (bool, list):
-	can_apply = True
 	for i in x.variables:
 		if type(i) in evaluable:
 			i = i.evaluate()
 			if type(i) in evaluable:
-				can_apply = False
+				return False, x.variables
 		elif type(i) == Variable:
-			can_apply = False
-	return can_apply, x.variables
+			return False, x.variables
+	return True, x.variables
 
 
 class Variable:
