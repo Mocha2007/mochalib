@@ -370,6 +370,49 @@ def function(**kwargs): # needs repr and f
 			a = self.let(**{with_respect_to.name: to_x})
 			b = self.let(**{with_respect_to.name: from_x})
 			return Difference(a, b)
+
+		def graph(self, with_respect_to: Variable, from_x: float, to_x: float):
+			resolution_x = 36
+			resolution_y = 24
+			points = [[' ']*resolution_x for _ in range(resolution_y)]
+			h = (to_x-from_x)/resolution_x
+			x = from_x
+			y = []
+			slope_function = self.derivative(with_respect_to)
+			slopes = []
+			for i in range(resolution_x):
+				# record y
+				new_y = self.let(**{with_respect_to.name: x})
+				if type(new_y) in evaluable:
+					new_y = new_y.evaluate()
+				y.append(new_y)
+				# record slopes
+				if type(slope_function) in evaluable:
+					slope = slope_function.let(**{with_respect_to.name: x})
+					if type(slope) in evaluable:
+						slopes.append(slope.evaluate())
+					else:
+						slopes.append(slope)
+				else:
+					slopes.append(slope_function)
+				# next step
+				x += h
+			ymin, ymax = min(y), max(y)
+			print(slope_function)
+			print(slopes)
+			for i, point in enumerate(y):
+				points_y = min(round(resolution_y*(point-ymin)/(ymax-ymin)), resolution_y-1)
+				# print(points_y, i)
+				if 0 < slopes[i]:
+					char = '/'
+				elif slopes[i] == 0:
+					char = '-'
+				elif slopes[i] < 1:
+					char = '\\'
+				else:
+					char = '*'
+				points[points_y][i] = char
+			print('\n'.join([''.join(i) for i in points][::-1]))
 	evaluable.add(Function)
 	return Function
 
@@ -680,3 +723,8 @@ qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # print(Arctan(qx).derivative(qx, 2))
 # test = Power(Euler, Difference(Difference(2, Product(4, qx)), Product(8, Power(qx, 2))))
 # test.limit(qx, inf).let(e=2.718).evaluate()
+# test = Sum(Difference(Power(qx, 3), Product(3, Power(qx, 2))), Product(2, qx))
+# test.graph(qx, -1/2, 5/2)
+# test = Arctan(qx).derivative(qx)
+# test.graph(qx, -7, 7)
+# input()
