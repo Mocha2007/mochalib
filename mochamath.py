@@ -8,12 +8,8 @@ from random import choice,randint
 #area((3,4),(5,6),(9,5),(12,8),(5,11))
 
 def area(*points):
-	points=list(points)+[points[0]]
-	area=0
-	for i in range(len(points)-1):
-		area+=points[i][0]*points[i+1][1]
-		area-=points[i][1]*points[i+1][0]
-	return area/2
+	points.append(points[0])
+	return sum((points[i][0]*points[i+1][1] - points[i][1]*points[i+1][0]) for i in range(len(points)-1))/2
 
 def areacircle(r):
 	return pi*r**2
@@ -29,16 +25,9 @@ def areasphere(r):
 
 def areatetrahedron(l):
 	return l*3**.5
-	
-def bounding(*points):#eg point: (1,2,3)
-	x=[]
-	y=[]
-	z=[]
-	for point in points:
-		x+=[point[0]]
-		y+=[point[1]]
-		z+=[point[2]]
-	return (min(x),min(y),min(z)),(max(x),max(y),max(z))
+
+def bounding(*points): # eg point: (1,2,3)
+	return tuple(map(min, zip(*points))), tuple(map(max, zip(*points)))
 	
 def cdf(x):#cumulative distribution function
     return (1+erf(x/2**.5))/2
