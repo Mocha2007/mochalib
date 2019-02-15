@@ -417,6 +417,23 @@ def function(**kwargs): # needs repr and f
 		def critical_points(self, with_respect_to: Variable) -> set:
 			f_ = self.derivative(with_respect_to)
 			return {Equality(f_, 0).solve_for(with_respect_to)} # soon, sets will be necessary
+
+		def converges(self, with_respect_to: Variable) -> bool:
+			s = self.simplify()
+			if type(s) in {float, int, Variable}:
+				return s == 0
+			# limit of the summand
+			if s.limit(with_respect_to, inf):
+				return False
+			# ratio test
+			numerator = s.let(**{with_respect_to.name: Sum(with_respect_to, 1)}) # x -> x+1 for all x in f
+			print(Quotient(numerator, s).limit(with_respect_to, inf))
+			r = abs(Quotient(numerator, s).limit(with_respect_to, inf))
+			if r < 1:
+				return True
+			if 1 < r:
+				return False
+			# else, inconclusive
 	evaluable.add(Function)
 	return Function
 
