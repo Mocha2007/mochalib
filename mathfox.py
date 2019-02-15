@@ -92,6 +92,20 @@ def function(**kwargs): # needs repr and f
 					s = a.variables[0]
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(Tan(s), c)
+				if a == Euler and is_linear(b, with_respect_to): # e^(ax+b)
+					s = b.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(self, c)
+				if not contains_variable(a, with_respect_to) and is_linear(b, with_respect_to): # c^(ax+b)
+					s = b.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(self, Product(c, Log(a)))
+			if type(self) == Quotient:
+				a, b = self.variables
+				if not contains_variable(a, with_respect_to) and is_linear(b, with_respect_to): # c/(ax+b)
+					s = b.variables
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(Product(a, Log(Abs(b))), c)
 			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
