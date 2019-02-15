@@ -326,6 +326,23 @@ def function(**kwargs): # needs repr and f
 			except ZeroDivisionError:
 				pass
 			# guess not
+
+			# try to l'Hopital it
+			if type(self) == Quotient:
+				f, g = self.variables
+				if type(f) not in evaluable: # fixme this is a band-aid, not a solution
+					f = Sum(f, 0)
+				if type(g) not in evaluable:
+					g = Sum(g, 0)
+				fl, gl = f.limit(with_respect_to, at), g.limit(with_respect_to, at)
+				if fl == gl and {fl, gl} < {0, float('inf'), -float('inf')}: # f(x)=g(x)=0 or inf or -inf
+					g_ = g.derivative(with_respect_to)
+					if type(g_) == int:
+						if g_:
+							return Quotient(f.derivative(with_respect_to), g_).let(**{with_respect_to.name: at})
+					elif g_.let(**{with_respect_to.name: at}): # g'(x) != 0
+						return Quotient(f.derivative(with_respect_to), g_.limit(with_respect_to, at)).let(**{with_respect_to.name: at})
+
 			h = 1
 			lhs, rhs = None, None
 			while h != 0:
