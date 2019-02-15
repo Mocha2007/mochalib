@@ -106,6 +106,7 @@ def function(**kwargs): # needs repr and f
 					s = b.variables
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(Product(a, Log(Abs(b))), c)
+			# todo inverse trig
 			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
@@ -224,6 +225,8 @@ def function(**kwargs): # needs repr and f
 					return 1
 				if b == 1: # a^1 = a
 					return a
+				if type(a) == int == type(b):
+					return a**b
 				if type(a) == Power: # (m^n)^b
 					m, n = a.variables
 					return Power(m, Product(n, b)).simplify()
@@ -305,7 +308,14 @@ def function(**kwargs): # needs repr and f
 				b = Power(Euler, b)
 			# print(self)
 			return Equality(a, b).solve_for(x)
-			
+
+		def tangent(self, with_respect_to: Variable, at):
+			"""Finds the tangent line of an expression at the given point"""
+			x, y = at, self.let(**{with_respect_to.name: at})
+			slope = self.derivative(with_respect_to).let(**{with_respect_to.name: at})
+			y_intercept = Difference(y, Product(slope, x))
+			# print(x, y, slope, y_intercept)
+			return Sum(Product(slope, with_respect_to), y_intercept).simplify()
 	evaluable.add(Function)
 	return Function
 
@@ -376,7 +386,7 @@ def get_linear(expression, variable: Variable) -> tuple:
 def get_derivative(x, with_respect_to: Variable):
 	if is_function(x):
 		return x.derivative(with_respect_to)
-	return int(x.name == with_respect_to) if type(x) == Variable else 0
+	return int(x == with_respect_to)
 
 
 def get_integral(x, with_respect_to: Variable):
