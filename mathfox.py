@@ -52,10 +52,21 @@ def function(**kwargs): # needs repr and f
 		def integral(self, with_respect_to: Variable, *args):
 			is_definite = bool(args)
 			assert not is_definite # unimplemented
-			out = self
-			if type(out) in (Sum, Difference):
-				a, b = out.variables
-				return type(out)(get_integral(a, with_respect_to), get_integral(b, with_respect_to))
+			if not contains_variable(self, with_respect_to):
+				return Product(self, with_respect_to)
+			if type(self) in (Sum, Difference):
+				a, b = self.variables
+				return type(self)(get_integral(a, with_respect_to), get_integral(b, with_respect_to))
+			if type(self) == Power:
+				a, b = self.variables
+				if a == with_respect_to and not contains_variable(b, a):
+					return Quotient(Power(a, Sum(b, 1)), Sum(b, 1))
+			# trig functions
+			if type(self) == Sin:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a, b = get_linear(s, with_respect_to)
+					return Quotient(Difference(0, Cos(s)), a)
 			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
@@ -190,16 +201,14 @@ def function(**kwargs): # needs repr and f
 			# print('after:', self)
 			return type(self)(a, b)
 		
-		def solve_for(self, x: str):
+		def solve_for(self, x: Variable):
 			if type(self) != Equality:
 				raise AttributeError
 			self = self.simplify()
 			# check which side contains it
 			a, b = self.variables
 			# if already solved for, return
-			if type(a) == Variable and a.name == x:
-				return self
-			if type(b) == Variable and b.name == x:
+			if a == x or b == x:
 				return self
 			# alright, then solve!
 			a_contains = contains_variable(a, x)
@@ -266,15 +275,63 @@ def is_function(expression) -> bool:
 	return expression.__class__.__name__ == 'Function'
 
 
-def contains_variable(expression, variable: str) -> bool:
+def contains_variable(expression, variable: Variable) -> bool:
 	if type(expression) in evaluable:
 		for i in expression.variables:
 			if contains_variable(i, variable):
 				return True
-	elif type(expression) == Variable:
-		if expression.name == variable:
-			return True
-	return False
+	return expression == variable
+
+
+def is_linear(expression, variable: Variable) -> bool:
+	"""Is the expression equivalent to ax+b?"""
+	if not contains_variable(expression, variable):
+		return True
+	# else, it MUST contain the variable
+	# sum/diff
+	if type(expression) in (Sum, Difference):
+		a, b = expression.variables
+		return is_linear(a, variable) and is_linear(b, variable)
+	# product
+	if type(expression) == Product:
+		a, b = expression.variables
+		if contains_variable(a, variable):
+			return is_linear(a, variable) and not contains_variable(b, variable)
+		return is_linear(b, variable) and not contains_variable(a, variable)
+	# quotient
+	if type(expression) == Quotient:
+		a, b = expression.variables
+		if contains_variable(a, variable):
+			return is_linear(a, variable) and not contains_variable(b, variable)
+		return not contains_variable(b, variable)
+	# constant
+	return expression == variable
+
+
+def get_linear(expression, variable: Variable) -> tuple:
+	assert is_linear(expression, variable)
+	if not contains_variable(expression, variable):
+		return 0, expression
+	# else, it MUST contain the variable
+	# sum/diff
+	if type(expression) in (Sum, Difference):
+		a, b = expression.variables
+		gla, glb = get_linear(a, variable), get_linear(b, variable)
+		return type(expression)(gla[0], glb[0]), type(expression)(gla[1], glb[1])
+	# product
+	if type(expression) == Product:
+		a, b = expression.variables
+		gla, glb = get_linear(a, variable), get_linear(b, variable)
+		if contains_variable(a, variable):
+			return Product(gla[0], glb[1]), Product(gla[1], glb[1])
+		return Product(glb[0], gla[1]), Product(glb[1], gla[1])
+	# quotient
+	if type(expression) == Quotient:
+		a, b = expression.variables
+		gla, glb = get_linear(a, variable), get_linear(b, variable)
+		return Quotient(gla[0], glb[1]), Quotient(gla[1], glb[1])
+	# constant
+	return 1, 0
 
 
 def get_derivative(x, with_respect_to: Variable):
