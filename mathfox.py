@@ -21,26 +21,6 @@ class Variable:
 		return self.name
 
 
-# class Sum:
-	# def __init__(self, a, b):
-		# self.a = a
-		# self.b = b
-	
-	# def __repr__(self):
-		# return str(self.a) + '+' + str(self.b)
-
-	# def evaluate(self):
-		# can_add, variables = can_apply_function(self)
-		# a, b = variables
-		# return a+b if can_add else Sum(a, b)
-
-	# def let(self, **variables):
-		# if type(self.a) in evaluable:
-			# self.a = self.a.let(**variables)
-		# elif type(self.a) == Variable and self.a.name in variables:
-			# self.a = variables[self.a.name]
-
-
 def function(**kwargs): # needs repr and f
 	global evaluable
 
@@ -59,13 +39,8 @@ def function(**kwargs): # needs repr and f
 			out = kwargs['f'](*variables) if can_apply else Function(*variables)
 			return out.simplify() if out in evaluable else out
 
-		def derivative(self, with_respect_to, *args):
-			if type(with_respect_to) == Variable:
-				with_respect_to = with_respect_to.name
-			if len(args):
-				n = args[0]
-			else:
-				n = 1
+		def derivative(self, with_respect_to: Variable, *args):
+			n = args[0] if args else 1
 			# print('f =', self)
 			out = kwargs['d'](self, with_respect_to)
 			# print('f\' =', out)
@@ -73,6 +48,15 @@ def function(**kwargs): # needs repr and f
 				return out.simplify() if is_function(out) else out
 			else:
 				return out.derivative(with_respect_to, n-1) if is_function(out) else 0
+
+		def integral(self, with_respect_to: Variable, *args):
+			is_definite = bool(args)
+			assert not is_definite # unimplemented
+			out = self
+			if type(out) in (Sum, Difference):
+				a, b = out.variables
+				return type(out)(get_integral(a, with_respect_to), get_integral(b, with_respect_to))
+			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
 			new_self = type(self)(*self.variables)
@@ -293,10 +277,18 @@ def contains_variable(expression, variable: str) -> bool:
 	return False
 
 
-def get_derivative(x, with_respect_to):
+def get_derivative(x, with_respect_to: Variable):
 	if is_function(x):
 		return x.derivative(with_respect_to)
 	return int(x.name == with_respect_to) if type(x) == Variable else 0
+
+
+def get_integral(x, with_respect_to: Variable):
+	if is_function(x):
+		return x.integral(with_respect_to)
+	if x == with_respect_to:
+		return Product(Quotient(1, 2), Power(x, 2))
+	return Product(x, with_respect_to)
 
 
 def sum_d(sum_object, with_respect_to): # Sum -> Sum; Difference -> Difference; chain rule unnecessary
@@ -511,18 +503,18 @@ trig_functions = {
 # print(variable_test2.evaluate()) # should be x+1
 # print(variable_test2.let(x=1)) # should be 1+1
 # # print(variable_test2.let(x=1).evaluate()) # should be 2
-# qa, qb, qc, qx = Variable('a'), Variable('b'), Variable('c'), Variable('x')
+qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # quadratic = Quotient(Sum(Difference(0, qb),
 			# Power(Difference(Power(qb, 2), Product(Product(4, qa), qc)), Quotient(1, 2))), Product(2, qa))
 # print(quadratic.let(a=0)) # should be 0/0
 # print(quadratic.let(b=0)) # should be sqrt(-4ac)/(2a)
 # print(quadratic.let(c=0)) # should be 0
 # equality_test = Equality(Product(3, qa), 5)
-# print(equality_test.solve_for('a'))
+# print(equality_test.solve_for(qa))
 # equality_test_2 = Equality(quadratic, qx)
-# print(equality_test_2.solve_for('c'))
+# print(equality_test_2.solve_for(qc))
 # print('bing bing bong bing bong')
-# print(quadratic.derivative('c'))
+# print(quadratic.derivative(qc))
 # print(Arctan(qx))
-# print(Arctan(qx).derivative('x'))
-# print(Arctan(qx).derivative('x', 2))
+# print(Arctan(qx).derivative(qx))
+# print(Arctan(qx).derivative(qx, 2))
