@@ -413,6 +413,10 @@ def function(**kwargs): # needs repr and f
 					char = '*'
 				points[points_y][i] = char
 			print('\n'.join([''.join(i) for i in points][::-1]))
+
+		def critical_points(self, with_respect_to: Variable) -> set:
+			f_ = self.derivative(with_respect_to)
+			return {Equality(f_, 0).solve_for(with_respect_to)} # soon, sets will be necessary
 	evaluable.add(Function)
 	return Function
 
@@ -728,3 +732,4 @@ qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # test = Arctan(qx).derivative(qx)
 # test.graph(qx, -7, 7)
 # input()
+# print(Difference(Power(qx, 2), 1).critical_points(qx))
