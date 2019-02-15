@@ -37,7 +37,7 @@ def function(**kwargs): # needs repr and f
 
 		def evaluate(self):
 			can_apply = can_apply_function(self)
-			variables = self.variables
+			variables = [i.evaluate() if type(i) in evaluable else i for i in self.variables]
 			out = kwargs['f'](*variables) if can_apply else Function(*variables)
 			return out.simplify() if out in evaluable else out
 
@@ -150,7 +150,7 @@ def function(**kwargs): # needs repr and f
 					return a.variables[0]
 				if type(b) == Difference and b.variables[1] == a: # a+(m-a)
 					return b.variables[0]
-				if type(a) == int == type(b):
+				if {type(a), type(b)} <= {float, int}:
 					return a+b
 				if type(a) == Power == type(b): # sin^2 + cos^2 = 1
 					a_, ap = a.variables
@@ -669,3 +669,5 @@ qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # print(Arctan(qx))
 # print(Arctan(qx).derivative(qx))
 # print(Arctan(qx).derivative(qx, 2))
+# test = Power(Euler, Difference(Difference(2, Product(4, qx)), Product(8, Power(qx, 2))))
+# test.limit(qx, inf).let(e=2.718).evaluate()
