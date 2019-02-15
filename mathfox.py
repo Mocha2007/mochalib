@@ -65,8 +65,33 @@ def function(**kwargs): # needs repr and f
 			if type(self) == Sin:
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
-					a, b = get_linear(s, with_respect_to)
+					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Difference(0, Cos(s)), a)
+			if type(self) == Cos:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Sin(s), a)
+			if type(self) == Product:
+				a, b = self.variables
+				if {type(a), type(b)} == {Csc, Cot} and a.variables == b.variables:
+					s = a.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(Difference(0, Csc(s)), c)
+				if {type(a), type(b)} == {Sec, Tan} and a.variables == b.variables:
+					s = a.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(Sec(s), c)
+			if type(self) == Power:
+				a, b = self.variables
+				if type(a) == Csc and b == 2:
+					s = a.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(Difference(0, Cot(s)), c)
+				if type(a) == Sec and b == 2:
+					s = a.variables[0]
+					c = get_linear(s, with_respect_to)[0]
+					return Quotient(Tan(s), c)
 			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
