@@ -3,15 +3,15 @@ from math import log, sin, cos, tan, asin, acos, atan, gcd
 inf = float('inf')
 
 
-def can_apply_function(x) -> (bool, list):
+def can_apply_function(x) -> bool:
 	for i in x.variables:
 		if type(i) in evaluable:
 			i = i.evaluate()
 			if type(i) in evaluable:
-				return False, x.variables
+				return False
 		elif type(i) == Variable:
-			return False, x.variables
-	return True, x.variables
+			return False
+	return True
 
 
 class Variable:
@@ -36,7 +36,8 @@ def function(**kwargs): # needs repr and f
 			return '('+string+')'
 
 		def evaluate(self):
-			can_apply, variables = can_apply_function(self)
+			can_apply = can_apply_function(self)
+			variables = self.variables
 			out = kwargs['f'](*variables) if can_apply else Function(*variables)
 			return out.simplify() if out in evaluable else out
 
