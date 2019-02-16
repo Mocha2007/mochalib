@@ -240,19 +240,24 @@ def function(**kwargs): # needs repr and f
 				if {ta, tb} <= trig_functions:
 					new = self
 					inner = b.variables[0]
-					if {ta, tb} == {Sin, Csc}:
+					t = {ta, tb}
+					if t == {Sin, Csc}:
 						return 1
-					if {ta, tb} == {Cos, Sec}:
+					if t == {Cos, Sec}:
 						return 1
-					if {ta, tb} == {Tan, Cot}:
+					if t == {Tan, Cot}:
 						return 1
-					if {ta, tb} == {Sin, Cot}:
+					if t == {Sin, Cot}:
 						new = Cos(inner)
-					elif {ta, tb} == {Cos, Tan}:
+					elif t == {Sin, Sec}:
+						new = Tan(inner)
+					elif t == {Cos, Tan}:
 						new = Sin(inner)
-					elif {ta, tb} == {Tan, Csc}:
+					elif t == {Cos, Csc}:
+						new = Cot(inner)
+					elif t == {Tan, Csc}:
 						new = Sec(inner)
-					elif {ta, tb} == {Cot, Sec}:
+					elif t == {Cot, Sec}:
 						new = Csc(inner)
 					return new.simplify()
 			# division identity
