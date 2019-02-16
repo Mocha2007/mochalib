@@ -255,7 +255,7 @@ def function(**kwargs): # needs repr and f
 			# print('after:', self)
 			return type(self)(a, b)
 		
-		def solve_for(self, x: Variable):
+		def solve_for(self, x: Variable) -> set:
 			if type(self) != Equality:
 				raise AttributeError
 			s = self.simplify()
@@ -263,17 +263,17 @@ def function(**kwargs): # needs repr and f
 			a, b = s.variables
 			# if already solved for, return
 			if a == x or b == x:
-				return s
+				return {s}
 			# alright, then solve!
 			a_contains = contains_variable(a, x)
 			b_contains = contains_variable(b, x)
 			if not (a_contains or b_contains): # variable absent from both sides
-				return s # can't simplify
+				return {s} # can't simplify
 			if b_contains and not a_contains: # variable on RHS
 				return type(s)(b, a).solve_for(x)
 			# not accounted for: TT (Variable on both sides)
 			if b_contains and a_contains:
-				return s # todo
+				return {s} # todo
 			# for now, we pretend as if a is only on the LHS
 			if type(a) == Sum:
 				m, n = a.variables
@@ -424,7 +424,11 @@ def function(**kwargs): # needs repr and f
 
 		def critical_points(self, with_respect_to: Variable) -> set:
 			f_ = self.derivative(with_respect_to)
-			return {Equality(f_, 0).solve_for(with_respect_to)} # soon, sets will be necessary
+			return Equality(f_, 0).solve_for(with_respect_to)
+
+		def inflection_points(self, with_respect_to: Variable) -> set:
+			f_ = self.derivative(with_respect_to, 2)
+			return Equality(f_, 0).solve_for(with_respect_to)
 
 		def converges(self, with_respect_to: Variable) -> bool:
 			s = self.simplify()
