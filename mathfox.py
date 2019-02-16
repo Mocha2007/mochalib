@@ -235,6 +235,26 @@ def function(**kwargs): # needs repr and f
 					return Quotient(Product(a, m), n).simplify()
 				if type(a) == int == type(b):
 					return a*b
+				# trig products
+				ta, tb = type(a), type(b)
+				if {ta, tb} <= trig_functions:
+					new = self
+					inner = b.variables[0]
+					if {ta, tb} == {Sin, Csc}:
+						return 1
+					if {ta, tb} == {Cos, Sec}:
+						return 1
+					if {ta, tb} == {Tan, Cot}:
+						return 1
+					if {ta, tb} == {Sin, Cot}:
+						new = Cos(inner)
+					elif {ta, tb} == {Cos, Tan}:
+						new = Sin(inner)
+					elif {ta, tb} == {Tan, Csc}:
+						new = Sec(inner)
+					elif {ta, tb} == {Cot, Sec}:
+						new = Csc(inner)
+					return new.simplify()
 			# division identity
 			elif type(self) == Quotient:
 				if a == 0: # 0/b -> 0
