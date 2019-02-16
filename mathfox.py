@@ -262,6 +262,22 @@ def function(**kwargs): # needs repr and f
 				if type(a) == int == type(b) and 1 < gcd(a, b):
 					g = gcd(a, b)
 					return Quotient(a//g, b//g).simplify()
+				# trig division
+				tb = type(b)
+				if tb in trig_functions:
+					inner = b.variables[0]
+					if tb == Sin:
+						return Product(a, Csc(inner))
+					if tb == Cos:
+						return Product(a, Sec(inner))
+					if tb == Tan:
+						return Product(a, Cot(inner))
+					if tb == Cot:
+						return Product(a, Tan(inner))
+					if tb == Sec:
+						return Product(a, Cos(inner))
+					if tb == Csc:
+						return Product(a, Sin(inner))
 			# power identity
 			elif type(self) == Power:
 				if a in (0, 1):
