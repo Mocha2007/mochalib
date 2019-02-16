@@ -267,14 +267,26 @@ def function(**kwargs): # needs repr and f
 			# alright, then solve!
 			a_contains = contains_variable(a, x)
 			b_contains = contains_variable(b, x)
-			if not (a_contains or b_contains): # variable absent from both sides
-				return {s} # can't simplify
+			assert a_contains or b_contains
 			if b_contains and not a_contains: # variable on RHS
-				return type(s)(b, a).solve_for(x)
+				return Equality(b, a).solve_for(x)
+			# LINEAR
+			if is_linear(a, x) and is_linear(b, x):
+				f = get_linear(a, x)
+				g = get_linear(b, x)
+				a, b = f[0]-g[0], f[1]-g[1]
+				return {Quotient(Difference(0, b), Product(2, a)).simplify()}
+			# QUADRATIC
+			if is_quadratic(a, x) and is_quadratic(b, x):
+				f = get_quadratic(a, x)
+				g = get_quadratic(b, x)
+				a, b, c = f[0]-g[0], f[1]-g[1], f[2]-g[2]
+				return quadratic(a, b, c)
+			# for now, we pretend as if a is only on the LHS
 			# not accounted for: TT (Variable on both sides)
 			if b_contains and a_contains:
 				return {s} # todo
-			# for now, we pretend as if a is only on the LHS
+			# general forms
 			if type(a) == Sum:
 				m, n = a.variables
 				if contains_variable(m, x):
@@ -470,29 +482,19 @@ def contains_variable(expression, variable: Variable) -> bool:
 	return expression == variable
 
 
+def is_constant(expression, variable: Variable) -> bool:
+	"""Returns True if the expression is a constant function of a variable, else False."""
+	return not contains_variable(expression, variable)
+
+
 def is_linear(expression, variable: Variable) -> bool:
-	"""Is the expression equivalent to ax+b?"""
-	if not contains_variable(expression, variable):
-		return True
-	# else, it MUST contain the variable
-	# sum/diff
-	if type(expression) in (Sum, Difference):
-		a, b = expression.variables
-		return is_linear(a, variable) and is_linear(b, variable)
-	# product
-	if type(expression) == Product:
-		a, b = expression.variables
-		if contains_variable(a, variable):
-			return is_linear(a, variable) and not contains_variable(b, variable)
-		return is_linear(b, variable) and not contains_variable(a, variable)
-	# quotient
-	if type(expression) == Quotient:
-		a, b = expression.variables
-		if contains_variable(a, variable):
-			return is_linear(a, variable) and not contains_variable(b, variable)
-		return not contains_variable(b, variable)
-	# constant
-	return expression == variable
+	"""Returns True if the expression is a linear function of a variable (ie. ax+b), else False."""
+	return is_constant(get_derivative(expression, variable), variable)
+
+
+def is_quadratic(expression, variable: Variable) -> bool:
+	"""Returns True if the expression is a quadratic function of a variable (ie. ax^2+bx+c), else False."""
+	return is_constant(get_derivative(expression, variable, 2), variable)
 
 
 def get_linear(expression, variable: Variable) -> tuple:
@@ -521,10 +523,62 @@ def get_linear(expression, variable: Variable) -> tuple:
 	return 1, 0
 
 
-def get_derivative(x, with_respect_to: Variable):
-	if is_function(x):
-		return x.derivative(with_respect_to)
-	return int(x == with_respect_to)
+def get_quadratic(expression, variable: Variable) -> tuple:
+	assert is_quadratic(expression, variable)
+	if not contains_variable(expression, variable):
+		return 0, 0, expression
+	# else, it MUST contain the variable
+	# sum/diff
+	if type(expression) in (Sum, Difference):
+		a, b = expression.variables
+		gla, glb = get_quadratic(a, variable), get_quadratic(b, variable)
+		return tuple(type(expression)(gla[i], glb[i]) for i in range(len(gla)))
+	# product
+	if type(expression) == Product:
+		a, b = expression.variables
+		a_has, b_has = contains_variable(a, variable), contains_variable(b, variable)
+		if a_has and b_has: # (ax+b)(cx+d)
+			aa, bb = get_linear(a, variable)
+			cc, dd = get_linear(b, variable)
+			return Product(aa, cc), Sum(Product(aa, dd), Product(bb, cc)), Product(bb, dd)
+		if a_has: # (ax^2+bx+c)(d)
+			aa, bb, cc = get_quadratic(a, variable)
+			return Product(aa, b), Product(bb, b), Product(cc, b)
+		# (d)(ax^2+bx+c)
+		aa, bb, cc = get_quadratic(b, variable)
+		return Product(aa, a), Product(bb, a), Product(cc, a)
+	# quotient
+	if type(expression) == Quotient:
+		a, b = expression.variables
+		assert type(b) == int # todo, complex shit unimplemented
+		# (ax^2+bx+c)/(d)
+		aa, bb, cc = get_quadratic(a, variable)
+		return Quotient(aa, b), Quotient(bb, b), Quotient(cc, b)
+	# power
+	if type(expression) == Power: # MUST be EXACTLY x^2 by this point
+		return 1, 0, 0
+	# the constant x
+	return 0, 1, 0
+
+
+def quadratic(a, b, c) -> set:
+	divisor = Product(2, a).simplify()
+	left = Difference(0, b).simplify()
+	discriminant = Power(Difference(Power(b, 2), Product(Product(4, a), c)), Quotient(1, 2)).simplify()
+	return {Quotient(Difference(left, discriminant), divisor).simplify(),
+			Quotient(Sum(left, discriminant), divisor).simplify()}
+
+
+def get_derivative(x, with_respect_to: Variable, *args):
+	if args:
+		n = args[0]
+	else:
+		n = 1
+	if n == 1:
+		if is_function(x):
+			return x.derivative(with_respect_to)
+		return int(x == with_respect_to)
+	return get_derivative(get_derivative(x, with_respect_to, n-1), with_respect_to)
 
 
 def get_integral(x, with_respect_to: Variable):
