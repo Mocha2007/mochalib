@@ -3,6 +3,12 @@ from math import log, sin, cos, tan, asin, acos, atan, gcd
 inf = float('inf')
 
 
+def center(string: str, width: int) -> str:
+	if width <= len(string):
+		return string
+	return ' '*((width-len(string))//2) + string
+
+
 def can_apply_function(x) -> bool:
 	for i in x.variables:
 		if type(i) in evaluable:
@@ -372,8 +378,8 @@ def function(**kwargs): # needs repr and f
 			return Difference(a, b)
 
 		def graph(self, with_respect_to: Variable, from_x: float, to_x: float):
-			resolution_x = 36
-			resolution_y = 24
+			resolution_x = 33
+			resolution_y = 22
 			points = [[' ']*resolution_x for _ in range(resolution_y)]
 			h = (to_x-from_x)/resolution_x
 			x = from_x
@@ -398,8 +404,8 @@ def function(**kwargs): # needs repr and f
 				# next step
 				x += h
 			ymin, ymax = min(y), max(y)
-			print(slope_function)
-			print(slopes)
+			# print(slope_function)
+			# print(slopes)
 			for i, point in enumerate(y):
 				points_y = min(round(resolution_y*(point-ymin)/(ymax-ymin)), resolution_y-1)
 				# print(points_y, i)
@@ -412,6 +418,8 @@ def function(**kwargs): # needs repr and f
 				else:
 					char = '*'
 				points[points_y][i] = char
+			print(center('{0} for {1} in [{2}, {3}]'.format(self, with_respect_to, from_x, to_x), resolution_x))
+			# todo x- and y-axes
 			print('\n'.join([''.join(i) for i in points][::-1]))
 
 		def critical_points(self, with_respect_to: Variable) -> set:
@@ -747,6 +755,6 @@ qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # test = Sum(Difference(Power(qx, 3), Product(3, Power(qx, 2))), Product(2, qx))
 # test.graph(qx, -1/2, 5/2)
 # test = Arctan(qx).derivative(qx)
-# test.graph(qx, -7, 7)
+# test.graph(qx, -4, 4)
 # input()
 # print(Difference(Power(qx, 2), 1).critical_points(qx))
