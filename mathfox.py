@@ -430,6 +430,14 @@ def function(**kwargs): # needs repr and f
 			f_ = self.derivative(with_respect_to, 2)
 			return Equality(f_, 0).solve_for(with_respect_to)
 
+		def local_extrema(self, with_respect_to: Variable) -> set:
+			"""Returns set of local extrema, which may or may not also be global extrema."""
+			f__ = self.derivative(with_respect_to, 2)
+			cp = self.critical_points(with_respect_to)
+			if type(f__) in evaluable:
+				return set(filter(lambda x: f__.let(**{with_respect_to.name: x}), cp))
+			return cp if f__ else set()
+
 		def converges(self, with_respect_to: Variable) -> bool:
 			s = self.simplify()
 			if type(s) in {float, int, Variable}:
