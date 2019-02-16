@@ -284,8 +284,7 @@ def function(**kwargs): # needs repr and f
 				return quadratic(a, b, c)
 			# for now, we pretend as if a is only on the LHS
 			# not accounted for: TT (Variable on both sides)
-			if b_contains and a_contains:
-				return {s} # todo
+			assert not (b_contains and a_contains) # todo
 			# general forms
 			if type(a) == Sum:
 				m, n = a.variables
@@ -431,7 +430,7 @@ def function(**kwargs): # needs repr and f
 					char = '*'
 				points[points_y][i] = char
 			print(center('{0} for {1} in [{2}, {3}]'.format(self, with_respect_to, from_x, to_x), resolution_x))
-			# todo x- and y-axes
+			# todo x- and y-axis labels
 			print('\n'.join([''.join(i) for i in points][::-1]))
 
 		def critical_points(self, with_respect_to: Variable) -> set:
@@ -550,7 +549,7 @@ def get_quadratic(expression, variable: Variable) -> tuple:
 	# quotient
 	if type(expression) == Quotient:
 		a, b = expression.variables
-		assert type(b) == int # todo, complex shit unimplemented
+		assert type(b) == int # todo, complicated shit unimplemented
 		# (ax^2+bx+c)/(d)
 		aa, bb, cc = get_quadratic(a, variable)
 		return Quotient(aa, b), Quotient(bb, b), Quotient(cc, b)
