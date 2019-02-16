@@ -236,11 +236,10 @@ def function(**kwargs): # needs repr and f
 				if type(a) == int == type(b):
 					return a*b
 				# trig products
-				ta, tb = type(a), type(b)
-				if {ta, tb} <= trig_functions:
+				t = {type(a), type(b)}
+				if t <= trig_functions:
 					new = self
 					inner = b.variables[0]
-					t = {ta, tb}
 					if t == {Sin, Csc}:
 						return 1
 					if t == {Cos, Sec}:
