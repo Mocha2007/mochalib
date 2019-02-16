@@ -65,24 +65,10 @@ def function(**kwargs): # needs repr and f
 			# thus indefinite
 			if not contains_variable(self, with_respect_to):
 				return Product(self, with_respect_to)
+			# must contain x
 			if type(self) in (Sum, Difference):
 				a, b = self.variables
 				return type(self)(get_integral(a, with_respect_to), get_integral(b, with_respect_to))
-			if type(self) == Power:
-				a, b = self.variables
-				if a == with_respect_to and not contains_variable(b, a):
-					return Quotient(Power(a, Sum(b, 1)), Sum(b, 1))
-			# trig functions
-			if type(self) == Sin:
-				s = self.variables[0]
-				if is_linear(s, with_respect_to):
-					a = get_linear(s, with_respect_to)[0]
-					return Quotient(Difference(0, Cos(s)), a)
-			if type(self) == Cos:
-				s = self.variables[0]
-				if is_linear(s, with_respect_to):
-					a = get_linear(s, with_respect_to)[0]
-					return Quotient(Sin(s), a)
 			if type(self) == Product:
 				a, b = self.variables
 				if {type(a), type(b)} == {Csc, Cot} and a.variables == b.variables:
@@ -93,7 +79,35 @@ def function(**kwargs): # needs repr and f
 					s = a.variables[0]
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(Sec(s), c)
-			if type(self) == Power:
+				if not contains_variable(a, with_respect_to): # a(...)
+					return Product(a, b.integral(with_respect_to))
+				if not contains_variable(a, with_respect_to): # (...)b
+					return Product(b, a.integral(with_respect_to))
+			elif type(self) == Quotient:
+				a, b = self.variables
+				if not contains_variable(a, with_respect_to): # a/...
+					if is_linear(b, with_respect_to):  # c/(ax+b)
+						s = b.variables
+						c = get_linear(s, with_respect_to)[0]
+						return Quotient(Product(a, Log(Abs(b))), c)
+					elif type(b) == Sum: # a/(...+...)
+						d1, d2 = b.variables
+						if type(d1) == Power(with_respect_to, 2) and not contains_variable(d2, with_respect_to): # a/(x^2+u^2)
+							u = Power(d2, Quotient(1, 2))
+							return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
+						if type(d2) == Power(with_respect_to, 2) and not contains_variable(d1, with_respect_to): # a/(u^2+x^2)
+							u = Power(d1, Quotient(1, 2))
+							return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
+					elif type(b) == Power and b.variables[1] == Quotient(1, 2): # a/sqrt(...)
+						d1 = b.variables[0]
+						if type(d1) == Difference and d1.variables[1] == Power(with_respect_to, 2): # a/sqrt(...-x^2)
+							if not contains_variable(d1.variables[0], with_respect_to): # a/sqrt(u^2-x^2)
+								u = Power(d1.variables[0], Quotient(1, 2))
+								return Product(a, Arcsin(Quotient(with_respect_to, u)))
+			elif type(self) == Power:
+				a, b = self.variables
+				if a == with_respect_to and not contains_variable(b, a):
+					return Quotient(Power(a, Sum(b, 1)), Sum(b, 1))
 				a, b = self.variables
 				if type(a) == Csc and b == 2:
 					s = a.variables[0]
@@ -111,12 +125,33 @@ def function(**kwargs): # needs repr and f
 					s = b.variables[0]
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(self, Product(c, Log(a)))
-			if type(self) == Quotient:
-				a, b = self.variables
-				if not contains_variable(a, with_respect_to) and is_linear(b, with_respect_to): # c/(ax+b)
-					s = b.variables
-					c = get_linear(s, with_respect_to)[0]
-					return Quotient(Product(a, Log(Abs(b))), c)
+			# log
+			elif type(self) == Log:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Difference(Product(s, self), s), a)
+			# trig functions
+			elif type(self) == Sin:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Difference(0, Cos(s)), a)
+			elif type(self) == Cos:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Sin(s), a)
+			elif type(self) == Tan:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Log(Abs(Sec(s))), a)
+			elif type(self) == Sec:
+				s = self.variables[0]
+				if is_linear(s, with_respect_to):
+					a = get_linear(s, with_respect_to)[0]
+					return Quotient(Log(Abs(Sum(Sec(s), Tan(s)))), a)
 			# todo inverse trig
 			raise ValueError('Unsolvable Integral')
 
