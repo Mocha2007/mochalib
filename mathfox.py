@@ -152,7 +152,8 @@ def function(**kwargs): # needs repr and f
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Log(Abs(Sum(Sec(s), Tan(s)))), a)
-			# todo inverse trig
+			# todo https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
+			# todo Section Indefinite integrals of inverse trigonometric functions
 			raise ValueError('Unsolvable Integral')
 
 		def let(self, **variables):
@@ -179,9 +180,44 @@ def function(**kwargs): # needs repr and f
 					return abs(a)
 				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
-				# todo https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
-				# todo section Relationships_between_trigonometric_functions_and_inverse_trigonometric_functions
-				return self
+				new = self
+				if type(a) in trig_functions: # trig(trig(...))
+					inner = a.variables[0]
+					t = type(self), type(a)
+					if t in {(Sin, Arcsin), (Cos, Arccos), (Tan, Arctan)}:
+						new = inner
+					elif t in {(Cos, Arccsc), (Sin, Arcsec), (Tan, Arccot)}:
+						new = Quotient(Power(Difference(Power(inner, 2), 1), Quotient(1, 2)), inner)
+					elif t in {(Cos, Arcsin), (Sin, Arccos)}:
+						new = Power(Difference(1, Power(inner, 2)), Quotient(1, 2))
+					elif t in {(Sin, Arctan), (Cos, Arccot)}:
+						new = Quotient(inner, Power(Sum(1, Power(inner, 2)), Quotient(1, 2)))
+					elif t in {(Cos, Arctan), (Sin, Arccot)}:
+						new = Quotient(1, Power(Sum(1, Power(inner, 2)), Quotient(1, 2)))
+					elif t in {(Sin, Arccsc), (Cos, Arcsec)}:
+						new = Quotient(1, inner)
+					elif t == (Tan, Arcsin):
+						new = Quotient(inner, Power(Difference(1, Power(inner, 2)), Quotient(1, 2)))
+					elif t == (Tan, Arccos):
+						new = Quotient(Power(Difference(1, Power(inner, 2)), Quotient(1, 2)), inner)
+					elif t == (Tan, Arccsc):
+						new = Quotient(1, Power(Difference(Power(inner, 2), 1), Quotient(1, 2)))
+					elif t == (Tan, Arcsec):
+						new = Power(Difference(Power(inner, 2), 1), Quotient(1, 2))
+				if type(a) == Quotient and a.variables[0] == 1:
+					inner = a.variables[1]
+					ta = type(self)
+					if ta == Arcsin:
+						new = Arccsc(inner)
+					elif ta == Arccos:
+						new = Arcsec(inner)
+					elif ta == Arcsec:
+						new = Arccos(inner)
+					elif ta == Arccsc:
+						new = Arcsin(inner)
+				if new in evaluable:
+					return new.simplify()
+				return new
 			# binary identities
 			b = self.variables[1]
 			b = b.simplify() if is_function(b) else b
@@ -326,6 +362,18 @@ def function(**kwargs): # needs repr and f
 					if a.variables[1] == b.variables[1]:
 						# second arguments are identical
 						return Equality(a.variables[0], b.variables[0])
+					if type(a) == Difference:
+						a1, a2 = a.variables
+						return Equality(a1, Sum(a2, b)).simplify()
+					if type(b) == Difference:
+						b1, b2 = b.variables
+						return Equality(Sum(a, b2), b1).simplify()
+					if type(a) == Quotient:
+						a1, a2 = a.variables
+						return Equality(a1, Product(a2, b)).simplify()
+					if type(b) == Quotient:
+						b1, b2 = b.variables
+						return Equality(Product(a, b2), b1).simplify()
 			# otherwise, stay the same
 			# print('after:', self)
 			return type(self)(a, b)
@@ -847,6 +895,7 @@ Arctan = function(f=(lambda a: atan(a)), repr='arctan({0})', d=arctan_d)
 Arccot = function(f=(lambda a: atan(1/a)), repr='arccot({0})', d=arccot_d)
 Arcsec = function(f=(lambda a: acos(1/a)), repr='arcsec({0})', d=arcsec_d)
 Arccsc = function(f=(lambda a: asin(1/a)), repr='arccsc({0})', d=arccsc_d)
+# todo hyperbolic functions
 Equality = function(f=(lambda a, b: a == b), repr='{0} = {1}', d=eq_d)
 Euler = Variable('e')
 trig_functions = {
