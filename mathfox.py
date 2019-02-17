@@ -476,11 +476,16 @@ def function(**kwargs): # needs repr and f
 			# try to l'Hopital it
 			if type(self) == Quotient:
 				f, g = self.variables
-				if type(f) not in evaluable: # fixme this is a band-aid, not a solution
-					f = Sum(f, 0)
+				# get limit of f
+				if type(f) not in evaluable:
+					fl = f
+				else:
+					fl = f.limit(with_respect_to, at)
+				# get limit of g
 				if type(g) not in evaluable:
-					g = Sum(g, 0)
-				fl, gl = f.limit(with_respect_to, at), g.limit(with_respect_to, at)
+					gl = g
+				else:
+					gl = g.limit(with_respect_to, at)
 				if fl == gl and {fl, gl} < {0, inf, -inf}: # f(x)=g(x)=0 or inf or -inf
 					g_ = g.derivative(with_respect_to)
 					if type(g_) == int:
@@ -639,6 +644,7 @@ def get_linear(expression, variable: Variable) -> tuple:
 	# quotient
 	if type(expression) == Quotient:
 		a, b = expression.variables
+		assert type(b) == int # todo, complicated shit unimplemented
 		gla, glb = get_linear(a, variable), get_linear(b, variable)
 		return Quotient(gla[0], glb[1]), Quotient(gla[1], glb[1])
 	# constant
