@@ -605,6 +605,9 @@ def function(**kwargs): # needs repr and f
 				else:
 					boxes.append(value)
 			return sum(boxes)/resolution
+
+		def average_value(self, with_respect_to: Variable, from_x: float, to_x: float):
+			return Quotient(self.integral(with_respect_to, from_x, to_x), Difference(to_x, from_x)).simplify()
 	evaluable.add(Function)
 	return Function
 
