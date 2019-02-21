@@ -514,7 +514,7 @@ def function(**kwargs): # needs repr and f
 		def evaluated_from(self, with_respect_to: Variable, from_x: float, to_x: float):
 			a = self.let(**{with_respect_to.name: to_x})
 			b = self.let(**{with_respect_to.name: from_x})
-			return Difference(a, b)
+			return Difference(a, b).simplify()
 
 		def graph(self, with_respect_to: Variable, from_x: float, to_x: float):
 			resolution_x = 33
@@ -593,6 +593,18 @@ def function(**kwargs): # needs repr and f
 			if 1 < r:
 				return False
 			# else, inconclusive
+
+		def estimate_integral(self, with_respect_to: Variable, from_x: float, to_x: float) -> float:
+			resolution = 10000
+			c = (from_x - to_x)/resolution
+			boxes = []
+			for i in range(resolution):
+				value = self.let(**{with_respect_to.name: c*i + from_x})
+				if type(value) in evaluable:
+					boxes.append(value.evaluate())
+				else:
+					boxes.append(value)
+			return sum(boxes)/resolution
 	evaluable.add(Function)
 	return Function
 
