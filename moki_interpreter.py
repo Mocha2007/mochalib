@@ -67,7 +67,7 @@ type_specific_behavior = {
 		(list, int): lambda a, b: list(filter(lambda x: x != b, a)),
 		(list, list): lambda a, b: list(filter(lambda x: x not in b, a)),
 		(list, str): lambda a, b: list(filter(lambda x: x != b, a)),
-		(str, int): lambda a, b: a[:-b],
+		(str, int): lambda a, b: a[:-b] if len(a) != 1 else chr(ord(a)-b),
 		(str, str): lambda a, b: ''.join(list(filter(lambda x: x not in b, list(a)))),
 	},
 	'/': {
@@ -243,8 +243,8 @@ def run(program: str, **kwargs):
 			# top two in stack swap
 			elif char == '\\':
 				a, b = stack.pop(), stack.pop()
-				stack.append(b)
 				stack.append(a)
+				stack.append(b)
 			# collapse stack into array
 			elif char == '_':
 				stack.list = [stack.list]
