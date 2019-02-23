@@ -210,9 +210,6 @@ def run(program: str, **kwargs):
 	for i, char in enumerate(program):
 		stack_history.append(list(stack))
 		if is_string:
-			# don't add strings to ints n shit
-			if not stack or type(stack[-1]) != str:
-				stack.append('')
 			# escape chars
 			if is_escape:
 				is_escape = False
@@ -230,9 +227,12 @@ def run(program: str, **kwargs):
 			# comments
 			if char == '#':
 				is_comment = not is_comment
+			if is_comment:
+				continue
 			# strings
-			elif char == '\'':
+			if char == '\'':
 				is_string = True
+				stack.append('')
 			# function assignment
 			elif char == ':':
 				a, b = stack.pop(), stack.pop()
