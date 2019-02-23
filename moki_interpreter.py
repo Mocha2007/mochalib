@@ -35,7 +35,7 @@ type_specific_behavior = {
 		len: 1,
 		# (int,): lambda x: stack[-x],
 		(list,): sorted,
-		(str,): sorted,
+		(str,): lambda x: ''.join(sorted(x)),
 	},
 	'"': {
 		len: 1,
