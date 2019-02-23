@@ -183,11 +183,12 @@ functions = {
 	'l': lambda stack: log(stack.pop()),
 	# m (USED) mode
 	# n (USED) 5 n -> [1, 2, 3, 4, 5]; 'c' n -> 'abc'
+	'p': lambda stack: stack[-1].pop(),
 	'r': lambda *_: random(),
 	's': sum,
 	't': lambda *_: time(),
 	# u (USED) [1, 2, 3] u -> 1 2 3
-	'z': lambda stack: list(zip(stack.pop())),
+	'z': lambda stack: list(zip(*stack.pop())),
 	# {
 	# | (USED) abs/len
 	# }
@@ -297,7 +298,7 @@ class Stack:
 		return len(self.list)
 
 	def __repr__(self) -> str:
-		return str(self.list).replace(',', '')
+		return str(self.list).replace(',', '')[1:-1]
 
 	def __setitem__(self, key, value):
 		self.__dict__[key] = value
