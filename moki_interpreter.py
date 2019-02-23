@@ -130,12 +130,11 @@ type_specific_behavior = {
 
 # special functions
 def type_specific_function(char: str, stack):
-	length = type_specific_behavior[char][len]
-	if length == inf:
+	if type_specific_behavior[char][len] == inf:
 		args = tuple(stack.pop() for _ in range(len(stack)))
-		return type_specific_behavior[char][tuple(type(arg) for arg in args)](*args)
+		return type_specific_behavior[char][inf](*args)
 	args = tuple(stack.pop() for _ in range(type_specific_behavior[char][len]))
-	return type_specific_behavior[char][inf](*args)
+	return type_specific_behavior[char][tuple(type(arg) for arg in args)](*args)
 
 
 # functions
@@ -177,7 +176,7 @@ functions = {
 	# \ (USED) swap top two
 	# ] (USED) ceiling/uppercase/max
 	'^': lambda stack: stack.pop()**stack.pop(),
-	# todo _ (USED) pop next argument, push to stack
+	# _
 	# ` (USED) function call
 	'a': lambda *_: [],
 	'l': lambda stack: log(stack.pop()),
@@ -308,7 +307,8 @@ while 1:
 	# stack = Stack() # [0] <> Stack()
 	stack_history = []
 	code = input('>>> ')
-	code = random_program(20)
+	if not code:
+		code = random_program(20)
 	print(code)
 	output = run(code)
 	print(output)
