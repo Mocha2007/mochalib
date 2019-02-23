@@ -176,7 +176,7 @@ functions = {
 	# [ (USED) floor/lowercase/min
 	# \ (USED) swap top two
 	# ] (USED) ceiling/uppercase/max
-	'^': lambda stack: stack.pop()**stack.pop(),
+	'^': lambda stack: (lambda a, b: a**b if a != b != 0 else log(0))(stack.pop(), stack.pop()),
 	# _ (USED) collapse stack into array
 	# ` (USED) function call
 	'a': lambda *_: [],
