@@ -19,7 +19,7 @@ def alphabet_generator(x: str) -> str:
 
 
 def random_program(n: int) -> str:
-	valid_chars = list(type_specific_behavior.keys()) + list(functions.keys()) + list("#':;\\`")
+	valid_chars = list(type_specific_behavior.keys()) + list(functions.keys()) + list("#':;\\_`")
 	return ''.join(choice(valid_chars) for _ in range(n))
 
 
@@ -85,8 +85,8 @@ type_specific_behavior = {
 		(str, str): lambda a, b: a.count(b),
 	},
 	'M': {
-		len: inf,
-		inf: lambda stack: sum(stack)/len(stack),
+		len: 1,
+		(list,): lambda x: sum(x)/len(x),
 	},
 	'[': {
 		len: 1,
@@ -103,8 +103,11 @@ type_specific_behavior = {
 		(str,): lambda x: x.upper(),
 	},
 	'm': {
-		len: inf,
-		inf: lambda stack: mode(stack),
+		len: 1,
+		(float,): lambda x: mode(str(x)),
+		(int,): lambda x: mode(str(x)),
+		(list,): mode,
+		(str,): mode,
 	},
 	'n': {
 		len: 1,
@@ -130,9 +133,6 @@ type_specific_behavior = {
 
 # special functions
 def type_specific_function(char: str, stack):
-	if type_specific_behavior[char][len] == inf:
-		args = tuple(stack.pop() for _ in range(len(stack)))
-		return type_specific_behavior[char][inf](*args)
 	args = tuple(stack.pop() for _ in range(type_specific_behavior[char][len]))
 	return type_specific_behavior[char][tuple(type(arg) for arg in args)](*args)
 
@@ -176,7 +176,7 @@ functions = {
 	# \ (USED) swap top two
 	# ] (USED) ceiling/uppercase/max
 	'^': lambda stack: stack.pop()**stack.pop(),
-	# _
+	# _ (USED) collapse stack into array
 	# ` (USED) function call
 	'a': lambda *_: [],
 	'l': lambda stack: log(stack.pop()),
@@ -245,6 +245,9 @@ def run(program: str, **kwargs):
 				a, b = stack.pop(), stack.pop()
 				stack.append(b)
 				stack.append(a)
+			# collapse stack into array
+			elif char == '_':
+				stack.list = [stack.list]
 			# function execution
 			elif char == '`':
 				stack.append(run(declared_functions[stack.pop()], declared_functions=declared_functions, external_stack=stack))
