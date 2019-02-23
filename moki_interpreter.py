@@ -220,7 +220,7 @@ def run(program: str, **kwargs):
 				is_string = False
 			else:
 				# otherwise, concat
-				stack[-1] += char
+				stack.push(stack.pop()+char)
 			continue
 		try:
 			# SPECIAL FUNCTIONS THAT MUST BE RUN BEFORE
