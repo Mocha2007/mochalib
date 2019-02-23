@@ -19,7 +19,7 @@ def alphabet_generator(x: str) -> str:
 
 
 def random_program(n: int) -> str:
-	valid_chars = list(type_specific_behavior.keys()) + list(functions.keys()) + list("#':;\\_`")
+	valid_chars = list(type_specific_behavior.keys()) + list(functions.keys()) + list("#':;\\_`M")
 	return ''.join(choice(valid_chars) for _ in range(n))
 
 
@@ -84,7 +84,7 @@ type_specific_behavior = {
 		(str, int): lambda a, b: a[:len(a)//b],
 		(str, str): lambda a, b: a.count(b),
 	},
-	'M': {
+	'A': {
 		len: 1,
 		(list,): lambda x: sum(x)/len(x),
 	},
@@ -171,7 +171,8 @@ functions = {
 	'>': lambda stack: int(stack.pop() > stack.pop()),
 	'?': lambda stack: (lambda *x: x[1] if x[0] else x[2])(stack.pop(), stack.pop(), stack.pop()),
 	'@': lambda stack: stack.pop(0),
-	# M (USED) mean
+	# A (USED) mean
+	# M (USED) map
 	# [ (USED) floor/lowercase/min
 	# \ (USED) swap top two
 	# ] (USED) ceiling/uppercase/max
@@ -183,6 +184,7 @@ functions = {
 	# m (USED) mode
 	# n (USED) 5 n -> [1, 2, 3, 4, 5]; 'c' n -> 'abc'
 	'r': lambda *_: random(),
+	's': sum,
 	't': lambda *_: time(),
 	# u (USED) [1, 2, 3] u -> 1 2 3
 	'z': lambda stack: list(zip(stack.pop())),
@@ -251,6 +253,14 @@ def run(program: str, **kwargs):
 			# collapse array into stack
 			elif char == 'u':
 				stack.list += stack.pop()
+			# map
+			elif char == 'M':
+				array = stack.pop()
+				f = declared_functions[stack.pop()]
+				special_stack = Stack()
+				special_stack.append(i)
+				array = [run(f, declared_functions=declared_functions, external_stack=special_stack)[-1] for i in array]
+				stack.append(array)
 			# function execution
 			elif char == '`':
 				stack.append(run(declared_functions[stack.pop()], declared_functions=declared_functions, external_stack=stack))
@@ -318,3 +328,6 @@ while 1:
 	print(code)
 	output = run(code)
 	print(output)
+
+# sample programs:
+# (C B A)(,2@^,2@^,2@^+=) -> checks if lengths ABC form a right triangle
