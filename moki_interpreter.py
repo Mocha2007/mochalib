@@ -3,6 +3,7 @@ from random import choice, random
 from time import time
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
+inf = float('inf')
 
 
 def mode(x):
@@ -23,7 +24,6 @@ def random_program(n: int) -> str:
 
 
 def error(**kwargs):
-	kwargs['s'] = stack
 	pointer = ' '*kwargs['i'] + '^'
 	kwargs['p'] = pointer
 	kwargs['b'] = stack_history[-1]
@@ -33,7 +33,7 @@ def error(**kwargs):
 type_specific_behavior = {
 	'$': {
 		len: 1,
-		(int,): lambda x: stack[-x],
+		# (int,): lambda x: stack[-x],
 		(list,): sorted,
 		(str,): sorted,
 	},
@@ -85,8 +85,8 @@ type_specific_behavior = {
 		(str, str): lambda a, b: a.count(b),
 	},
 	'M': {
-		len: 0,
-		tuple(): lambda: None if empty_stack() else sum(stack)/len(stack),
+		len: inf,
+		inf: lambda stack: sum(stack)/len(stack),
 	},
 	'[': {
 		len: 1,
@@ -103,8 +103,8 @@ type_specific_behavior = {
 		(str,): lambda x: x.upper(),
 	},
 	'm': {
-		len: 0,
-		tuple(): lambda: None if empty_stack() else mode(stack),
+		len: inf,
+		inf: lambda stack: mode(stack),
 	},
 	'n': {
 		len: 1,
@@ -129,65 +129,64 @@ type_specific_behavior = {
 
 
 # special functions
-def type_specific_function(char: str):
+def type_specific_function(char: str, stack):
+	length = type_specific_behavior[char][len]
+	if length == inf:
+		args = tuple(stack.pop() for _ in range(len(stack)))
+		return type_specific_behavior[char][tuple(type(arg) for arg in args)](*args)
 	args = tuple(stack.pop() for _ in range(type_specific_behavior[char][len]))
-	return type_specific_behavior[char][tuple(type(arg) for arg in args)](*args)
-
-
-def empty_stack():
-	global stack
-	stack = []
+	return type_specific_behavior[char][inf](*args)
 
 
 # functions
 functions = {
-	'!': lambda: int(not stack.pop()),
+	'!': lambda stack: int(not stack.pop()),
 	# " (USED) chr/ord
 	# # (USED) comments
 	# $ (USED) int -> stack item at index; list/string -> sort
-	'%': lambda: stack.pop() % stack.pop(),
-	'&': lambda: stack.pop() & stack.pop(),
+	'%': lambda stack: stack.pop() % stack.pop(),
+	'&': lambda stack: stack.pop() & stack.pop(),
 	# ' (USED) string creation
 	# ( (USED) decrement
 	# ) (USED) increment
-	'*': lambda: stack.pop() * stack.pop(),
-	'+': lambda: stack.pop() + stack.pop(),
-	',': lambda: 0,
+	'*': lambda stack: stack.pop() * stack.pop(),
+	'+': lambda stack: stack.pop() + stack.pop(),
+	',': lambda *_: 0,
 	# - (USED) numeric/set subtraction
-	'.': lambda: stack[-1],
+	'.': lambda stack: stack[-1],
 	# / (USED) numeric division, special behavior with lists/strings
-	'0': lambda: stack.pop()*10,
-	'1': lambda: stack.pop()*10+1,
-	'2': lambda: stack.pop()*10+2,
-	'3': lambda: stack.pop()*10+3,
-	'4': lambda: stack.pop()*10+4,
-	'5': lambda: stack.pop()*10+5,
-	'6': lambda: stack.pop()*10+6,
-	'7': lambda: stack.pop()*10+7,
-	'8': lambda: stack.pop()*10+8,
-	'9': lambda: stack.pop()*10+9,
+	'0': lambda stack: stack.pop()*10,
+	'1': lambda stack: stack.pop()*10+1,
+	'2': lambda stack: stack.pop()*10+2,
+	'3': lambda stack: stack.pop()*10+3,
+	'4': lambda stack: stack.pop()*10+4,
+	'5': lambda stack: stack.pop()*10+5,
+	'6': lambda stack: stack.pop()*10+6,
+	'7': lambda stack: stack.pop()*10+7,
+	'8': lambda stack: stack.pop()*10+8,
+	'9': lambda stack: stack.pop()*10+9,
 	# : (USED) assignment
 	# ; (USED) pop
-	'<': lambda: int(stack.pop() < stack.pop()),
-	'=': lambda: int(stack.pop() == stack.pop()),
-	'>': lambda: int(stack.pop() > stack.pop()),
-	'?': lambda: (lambda *x: x[1] if x[0] else x[2])(stack.pop(), stack.pop(), stack.pop()),
-	'@': lambda: stack.pop(0),
+	'<': lambda stack: int(stack.pop() < stack.pop()),
+	'=': lambda stack: int(stack.pop() == stack.pop()),
+	'>': lambda stack: int(stack.pop() > stack.pop()),
+	'?': lambda stack: (lambda *x: x[1] if x[0] else x[2])(stack.pop(), stack.pop(), stack.pop()),
+	'@': lambda stack: stack.pop(0),
 	# M (USED) mean
 	# [ (USED) floor/lowercase/min
 	# \ (USED) swap top two
 	# ] (USED) ceiling/uppercase/max
-	'^': lambda: stack.pop()**stack.pop(),
-	# _
+	'^': lambda stack: stack.pop()**stack.pop(),
+	# todo _ (USED) pop next argument, push to stack
 	# ` (USED) function call
-	'a': lambda: [],
-	'l': lambda: log(stack.pop()),
+	'a': lambda *_: [],
+	'l': lambda stack: log(stack.pop()),
 	# m (USED) mode
 	# n (USED) 5 n -> [1, 2, 3, 4, 5]; 'c' n -> 'abc'
 	# 'p': lambda: [stack.pop()] + stack.pop(),
-	'r': lambda: random(),
-	't': lambda: time(),
-	'z': lambda: list(zip(stack.pop())),
+	'r': lambda *_: random(),
+	't': lambda *_: time(),
+	'z': lambda stack: list(zip(stack.pop())),
 	# {
 	# | (USED) abs/len
 	# }
@@ -201,6 +200,11 @@ def run(program: str, **kwargs):
 		declared_functions = kwargs['declared_functions']
 	else:
 		declared_functions = {}
+	if 'external_stack' in kwargs:
+		external_stack = kwargs['external_stack']
+	else:
+		external_stack = Stack(0)
+	stack = Stack(external_stack=external_stack)
 	is_comment = False
 	is_string = False
 	is_escape = False
@@ -208,7 +212,7 @@ def run(program: str, **kwargs):
 		stack_history.append(list(stack))
 		if is_string:
 			# don't add strings to ints n shit
-			if type(stack[-1]) != str:
+			if not stack or type(stack[-1]) != str:
 				stack.append('')
 			# escape chars
 			if is_escape:
@@ -244,25 +248,28 @@ def run(program: str, **kwargs):
 				stack.append(a)
 			# function execution
 			elif char == '`':
-				run(declared_functions[stack.pop()], declared_functions=declared_functions)
+				stack.append(run(declared_functions[stack.pop()], declared_functions=declared_functions, external_stack=stack))
 			# really special
 			elif char in type_specific_behavior:
-				stack.append(type_specific_function(char))
+				stack.append(type_specific_function(char, stack))
 			# nop
 			if char not in functions:
 				continue
 			# main code
-			stack.append(functions[char]())
+			stack.append(functions[char](stack))
 		except Exception as this_exception:
-			error(c=char, e=this_exception, f=declared_functions, i=i, x=program)
-			return None
+			error(c=char, e=this_exception, f=declared_functions, i=i, s=stack, x=program)
+			break
+	return stack
 
 
 class Stack:
 	count = 0
 
-	def __init__(self, n=1):
+	def __init__(self, n=0, **kwargs):
 		self.list = [0]*n
+		if 'external_stack' in kwargs:
+			self.external_stack = kwargs['external_stack']
 
 	def __getitem__(self, item):
 		return self.list[item]
@@ -287,7 +294,10 @@ class Stack:
 		try:
 			return self.list.pop(*args)
 		except IndexError:
-			return 0
+			try:
+				return self.external_stack.pop(*args)
+			except (AttributeError, IndexError):
+				return 0
 
 	def push(self, x):
 		self.list.append(x)
@@ -295,13 +305,10 @@ class Stack:
 
 # main
 while 1:
-	stack = Stack() # [0] <> Stack()
+	# stack = Stack() # [0] <> Stack()
 	stack_history = []
 	code = input('>>> ')
 	code = random_program(20)
 	print(code)
-	try:
-		run(code)
-		print(stack)
-	except Exception as e:
-		print(e)
+	output = run(code)
+	print(output)
