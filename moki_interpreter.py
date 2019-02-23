@@ -182,9 +182,9 @@ functions = {
 	'l': lambda stack: log(stack.pop()),
 	# m (USED) mode
 	# n (USED) 5 n -> [1, 2, 3, 4, 5]; 'c' n -> 'abc'
-	# 'p': lambda: [stack.pop()] + stack.pop(),
 	'r': lambda *_: random(),
 	't': lambda *_: time(),
+	# u (USED) [1, 2, 3] u -> 1 2 3
 	'z': lambda stack: list(zip(stack.pop())),
 	# {
 	# | (USED) abs/len
@@ -248,6 +248,9 @@ def run(program: str, **kwargs):
 			# collapse stack into array
 			elif char == '_':
 				stack.list = [stack.list]
+			# collapse array into stack
+			elif char == 'u':
+				stack.list += stack.pop()
 			# function execution
 			elif char == '`':
 				stack.append(run(declared_functions[stack.pop()], declared_functions=declared_functions, external_stack=stack))
