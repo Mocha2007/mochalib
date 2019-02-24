@@ -219,7 +219,7 @@ def function(**kwargs): # needs repr and f
 						new = Arcsin(inner)
 				if new in evaluable:
 					return new.simplify()
-				return new.simplify()
+				return new
 			# binary identities
 			b = self.variables[1]
 			b = b.simplify() if is_function(b) else b
