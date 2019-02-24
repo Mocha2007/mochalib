@@ -182,44 +182,41 @@ def function(**kwargs): # needs repr and f
 					return abs(a)
 				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
-				new = self
 				if type(a) in trig_functions: # trig(trig(...))
 					inner = a.variables[0]
 					t = type(self), type(a)
 					if t in {(Sin, Arcsin), (Cos, Arccos), (Tan, Arctan)}:
-						new = inner
+						return inner.simplify() if is_function(inner) else inner
 					elif t in {(Cos, Arccsc), (Sin, Arcsec), (Tan, Arccot)}:
-						new = Quotient(Power(Difference(Power(inner, 2), 1), Quotient(1, 2)), inner)
+						return Quotient(Power(Difference(Power(inner, 2), 1), Quotient(1, 2)), inner).simplify()
 					elif t in {(Cos, Arcsin), (Sin, Arccos)}:
-						new = Power(Difference(1, Power(inner, 2)), Quotient(1, 2))
+						return Power(Difference(1, Power(inner, 2)), Quotient(1, 2)).simplify()
 					elif t in {(Sin, Arctan), (Cos, Arccot)}:
-						new = Quotient(inner, Power(Sum(1, Power(inner, 2)), Quotient(1, 2)))
+						return Quotient(inner, Power(Sum(1, Power(inner, 2)), Quotient(1, 2))).simplify()
 					elif t in {(Cos, Arctan), (Sin, Arccot)}:
-						new = Quotient(1, Power(Sum(1, Power(inner, 2)), Quotient(1, 2)))
+						return Quotient(1, Power(Sum(1, Power(inner, 2)), Quotient(1, 2))).simplify()
 					elif t in {(Sin, Arccsc), (Cos, Arcsec)}:
-						new = Quotient(1, inner)
+						return Quotient(1, inner).simplify()
 					elif t == (Tan, Arcsin):
-						new = Quotient(inner, Power(Difference(1, Power(inner, 2)), Quotient(1, 2)))
+						return Quotient(inner, Power(Difference(1, Power(inner, 2)), Quotient(1, 2))).simplify()
 					elif t == (Tan, Arccos):
-						new = Quotient(Power(Difference(1, Power(inner, 2)), Quotient(1, 2)), inner)
+						return Quotient(Power(Difference(1, Power(inner, 2)), Quotient(1, 2)), inner).simplify()
 					elif t == (Tan, Arccsc):
-						new = Quotient(1, Power(Difference(Power(inner, 2), 1), Quotient(1, 2)))
+						return Quotient(1, Power(Difference(Power(inner, 2), 1), Quotient(1, 2))).simplify()
 					elif t == (Tan, Arcsec):
-						new = Power(Difference(Power(inner, 2), 1), Quotient(1, 2))
+						return Power(Difference(Power(inner, 2), 1), Quotient(1, 2)).simplify()
 				if type(a) == Quotient and a.variables[0] == 1:
 					inner = a.variables[1]
 					ta = type(self)
 					if ta == Arcsin:
-						new = Arccsc(inner)
+						return Arccsc(inner).simplify()
 					elif ta == Arccos:
-						new = Arcsec(inner)
+						return Arcsec(inner).simplify()
 					elif ta == Arcsec:
-						new = Arccos(inner)
+						return Arccos(inner).simplify()
 					elif ta == Arccsc:
-						new = Arcsin(inner)
-				if new in evaluable:
-					return new.simplify()
-				return new
+						return Arcsin(inner).simplify()
+				return self
 			# binary identities
 			b = self.variables[1]
 			b = b.simplify() if is_function(b) else b
