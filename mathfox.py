@@ -92,12 +92,15 @@ def function(**kwargs): # needs repr and f
 						return Quotient(Product(a, Log(Abs(b))), c)
 					elif type(b) == Sum: # a/(...+...)
 						d1, d2 = b.variables
-						if type(d1) == Power(with_respect_to, 2) and not contains_variable(d2, with_respect_to): # a/(x^2+u^2)
-							u = Power(d2, Quotient(1, 2))
-							return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
-						if type(d2) == Power(with_respect_to, 2) and not contains_variable(d1, with_respect_to): # a/(u^2+x^2)
-							u = Power(d1, Quotient(1, 2))
-							return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
+						print(d1, d2, type(d1), type(d2))
+						if type(d1) == Power and not contains_variable(d2, with_respect_to): # a/(...^+u^2)
+							if tuple(d1.variables) == (with_respect_to, 2):
+								u = Power(d2, Quotient(1, 2))
+								return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
+						if type(d2) == Power and not contains_variable(d1, with_respect_to): # a/(u^2+...^...)
+							if tuple(d2.variables) == (with_respect_to, 2):
+								u = Power(d1, Quotient(1, 2))
+								return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
 					elif type(b) == Power and b.variables[1] == Quotient(1, 2): # a/sqrt(...)
 						d1 = b.variables[0]
 						if type(d1) == Difference and d1.variables[1] == Power(with_respect_to, 2): # a/sqrt(...-x^2)
