@@ -219,7 +219,7 @@ def function(**kwargs): # needs repr and f
 						new = Arcsin(inner)
 				if new in evaluable:
 					return new.simplify()
-				return new
+				return new.simplify()
 			# binary identities
 			b = self.variables[1]
 			b = b.simplify() if is_function(b) else b
@@ -360,10 +360,10 @@ def function(**kwargs): # needs repr and f
 					# both are the same function, let's see if they share the same arguments
 					if a.variables[0] == b.variables[0]:
 						# first arguments are identical
-						return Equality(a.variables[1], b.variables[1])
+						return Equality(a.variables[1], b.variables[1]).simplify()
 					if a.variables[1] == b.variables[1]:
 						# second arguments are identical
-						return Equality(a.variables[0], b.variables[0])
+						return Equality(a.variables[0], b.variables[0]).simplify()
 					if type(a) == Difference:
 						a1, a2 = a.variables
 						return Equality(a1, Sum(a2, b)).simplify()
