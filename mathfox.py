@@ -92,7 +92,6 @@ def function(**kwargs): # needs repr and f
 						return Quotient(Product(a, Log(Abs(b))), c)
 					elif type(b) == Sum: # a/(...+...)
 						d1, d2 = b.variables
-						print(d1, d2, type(d1), type(d2))
 						if type(d1) == Power and not contains_variable(d2, with_respect_to): # a/(...^+u^2)
 							if tuple(d1.variables) == (with_respect_to, 2):
 								u = Power(d2, Quotient(1, 2))
