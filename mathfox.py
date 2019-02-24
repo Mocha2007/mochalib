@@ -342,10 +342,10 @@ def function(**kwargs): # needs repr and f
 						return Product(a, Sin(inner))
 			# power identity
 			elif type(self) == Power:
-				if a in (0, 1):
-					if a == b == 0:
-						return self # don't simplify
-					return a
+				if a == 0:
+					return 0 if b else self # don't simplify
+				if a == 1:
+					return 1
 				if b == 0: # a^0 = 1
 					return 1
 				if b == 1: # a^1 = a
@@ -970,3 +970,6 @@ qa, qb, qc, qx, qy = [Variable(i) for i in 'abcxy']
 # test.graph(qx, -4, 4)
 # input()
 # print(Difference(Power(qx, 2), 1).critical_points(qx))
+# integrand = Quotient(1, Sum(1, Power(qx, 2)))
+# print(integrand.integral(qx).simplify())
+# WHY DOESNT THIS SIMPLIFY TO ARCTAN(X)?! SPENT AN HOUR DEBUGGING AND EVERYTHING INDICATES THE PROGRAM DOES SIMPLIFY, BUT REFUSES TO USE THE SIMPLIFIED VALUE?!
