@@ -187,34 +187,34 @@ def function(**kwargs): # needs repr and f
 					t = type(self), type(a)
 					if t in {(Sin, Arcsin), (Cos, Arccos), (Tan, Arctan)}:
 						return inner.simplify() if is_function(inner) else inner
-					elif t in {(Cos, Arccsc), (Sin, Arcsec), (Tan, Arccot)}:
+					if t in {(Cos, Arccsc), (Sin, Arcsec), (Tan, Arccot)}:
 						return Quotient(Power(Difference(Power(inner, 2), 1), Quotient(1, 2)), inner).simplify()
-					elif t in {(Cos, Arcsin), (Sin, Arccos)}:
+					if t in {(Cos, Arcsin), (Sin, Arccos)}:
 						return Power(Difference(1, Power(inner, 2)), Quotient(1, 2)).simplify()
-					elif t in {(Sin, Arctan), (Cos, Arccot)}:
+					if t in {(Sin, Arctan), (Cos, Arccot)}:
 						return Quotient(inner, Power(Sum(1, Power(inner, 2)), Quotient(1, 2))).simplify()
-					elif t in {(Cos, Arctan), (Sin, Arccot)}:
+					if t in {(Cos, Arctan), (Sin, Arccot)}:
 						return Quotient(1, Power(Sum(1, Power(inner, 2)), Quotient(1, 2))).simplify()
-					elif t in {(Sin, Arccsc), (Cos, Arcsec)}:
+					if t in {(Sin, Arccsc), (Cos, Arcsec)}:
 						return Quotient(1, inner).simplify()
-					elif t == (Tan, Arcsin):
+					if t == (Tan, Arcsin):
 						return Quotient(inner, Power(Difference(1, Power(inner, 2)), Quotient(1, 2))).simplify()
-					elif t == (Tan, Arccos):
+					if t == (Tan, Arccos):
 						return Quotient(Power(Difference(1, Power(inner, 2)), Quotient(1, 2)), inner).simplify()
-					elif t == (Tan, Arccsc):
+					if t == (Tan, Arccsc):
 						return Quotient(1, Power(Difference(Power(inner, 2), 1), Quotient(1, 2))).simplify()
-					elif t == (Tan, Arcsec):
+					if t == (Tan, Arcsec):
 						return Power(Difference(Power(inner, 2), 1), Quotient(1, 2)).simplify()
-				if type(a) == Quotient and a.variables[0] == 1:
+				elif type(a) == Quotient and a.variables[0] == 1:
 					inner = a.variables[1]
 					ta = type(self)
 					if ta == Arcsin:
 						return Arccsc(inner).simplify()
-					elif ta == Arccos:
+					if ta == Arccos:
 						return Arcsec(inner).simplify()
-					elif ta == Arcsec:
+					if ta == Arcsec:
 						return Arccos(inner).simplify()
-					elif ta == Arccsc:
+					if ta == Arccsc:
 						return Arcsin(inner).simplify()
 				return self
 			# binary identities
