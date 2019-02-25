@@ -79,7 +79,7 @@ def divisors(n: int) -> set:
 	if n in (0, 1):
 		return {n}
 	allproducts = []
-	for i in range(1,int(n**.5)+1):
+	for i in range(1, int(n**.5)+1):
 		if n % i == 0:
 			allproducts.append(i)
 	for i in list(allproducts):
@@ -466,31 +466,42 @@ def ack(m,n):
 	
 # NEW FUNCTIONS
 
-def cubicstats(a,b,c,d):
-	print("Zeroes","*shrug*")
-	print("Extrema",quadratic(3*a,2*b,c))
-	print("Inflection Point",-b/3/a)
-	
-#sqrt(n+sqrt(n+sqrt(n+...
-#equivalent to positive solution to x^2-x-n=0
-def infiniroot(n):
+
+def cubicstats(a: float, b: float, c: float, d: float):
+	print("Zeroes", "*shrug*")
+	print("Extrema", quadratic(3*a, 2*b, c))
+	print("Inflection Point", -b/3/a)
+
+
+# sqrt(n+sqrt(n+sqrt(n+...
+# equivalent to positive solution to x^2-x-n=0
+def infiniroot(n: float) -> float:
 	return (1+(1+4*n)**.5)/2
-	
-def maximizerect(P,m,n):
-	return P**2/(4*(m+1)*(n+1))
-#coord systems
-def cyl2rect(r,theta,z):
-	'''Converts from cylindrical coordinates to rectangular coordinates'''
-	return r*cos(theta),r*sin(theta),z
-def rect2cyl(x,y,z):
-	'''Converts from rectangular coordinates to cylindrical coordinates'''
-	return (x**2+y**2)**.5,atan(y/x),z
-def rect2sphere(x,y,z):
-	'''Converts from rectangular coordinates to spherical coordinates'''
-	return (x**2+y**2+z**2)**.5,atan(y/x),acos(z/(x**2+y**2+z**2)**.5)
-def sphere2rect(rho,theta,phi):
-	'''Converts from spherical coordinates to rectangular coordinates'''
-	return rho*sin(phi)*cos(theta),rho*sin(phi)*sin(theta),rho*cos(phi)
+
+
+def maximizerect(perimeter: float, m: float, n: float) -> float:
+	return perimeter**2/(4*(m+1)*(n+1))
+
+
+# coord systems
+def cyl2rect(r: float, theta: float, z: float) -> (float, float, float):
+	"""Converts from cylindrical coordinates to rectangular coordinates"""
+	return r*cos(theta), r*sin(theta), z
+
+
+def rect2cyl(x: float, y: float, z: float) -> (float, float, float):
+	"""Converts from rectangular coordinates to cylindrical coordinates"""
+	return (x**2+y**2)**.5, atan(y/x), z
+
+
+def rect2sphere(x: float, y: float, z: float) -> (float, float, float):
+	"""Converts from rectangular coordinates to spherical coordinates"""
+	return (x**2+y**2+z**2)**.5, atan(y/x), acos(z/(x**2+y**2+z**2)**.5)
+
+
+def sphere2rect(rho: float, theta: float, phi: float) -> (float, float, float):
+	"""Converts from spherical coordinates to rectangular coordinates"""
+	return rho*sin(phi)*cos(theta), rho*sin(phi)*sin(theta), rho*cos(phi)
 
 # 21 Dec 2018
 
