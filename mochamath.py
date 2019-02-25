@@ -1,69 +1,83 @@
-#mocha's math library
-from math import acos,atan,ceil,cos,e,erf,factorial,floor,gcd,inf,pi,log
-from random import choice,randint
-#math.factorial()
+# mocha's math library
+from math import acos, atan, ceil, cos, e, erf, factorial, gcd, pi, log
+from random import choice, randint
+# math.factorial()
+# shoelace formula
+# area((0,0),(1,0),(1,1),(0,1))
+# area((3,4),(5,6),(9,5),(12,8),(5,11))
 
-#shoelace formula
-#area((0,0),(1,0),(1,1),(0,1))
-#area((3,4),(5,6),(9,5),(12,8),(5,11))
 
-def area(*points):
+def area(*points) -> float:
 	points.append(points[0])
 	return sum((points[i][0]*points[i+1][1] - points[i][1]*points[i+1][0]) for i in range(len(points)-1))/2
 
-def areacircle(r):
+
+def areacircle(r: float) -> float:
 	return pi*r**2
 
-def areacone(r,h):
+
+def areacone(r: float, h: float) -> float:
 	return pi*r*(r+(r**2+h**2)**.5)
 
-def areacylinder(r,h):
+
+def areacylinder(r: float, h: float) -> float:
 	return 2*pi*r*(r+h)
 
-def areasphere(r):
+
+def areasphere(r: float) -> float:
 	return 4*pi*r**2
 
-def areatetrahedron(l):
+
+def areatetrahedron(l: float) -> float:
 	return l*3**.5
+
 
 def bounding(*points): # eg point: (1,2,3)
 	return tuple(map(min, zip(*points))), tuple(map(max, zip(*points)))
-	
-def cdf(x):#cumulative distribution function
-    return (1+erf(x/2**.5))/2
 
-def circumference(r):
+
+def cdf(x: float) -> float: # cumulative distribution function
+	return (1+erf(x/2**.5))/2
+
+
+def circumference(r: float) -> float:
 	return 2*pi*r
-	
+
+
 def continuedfraction(*series):
-	series=series[::-1]
-	for i in range(len(series)):
-		if i==0:
-			sum=series[0]
-		else:
-			sum=series[i]+1/sum
-	return sum
-		
-	
-def dpoly(coefficients,n):#derivative of a polynomial: input is a LIST or TUPLE and the nth derivative you want
-	if coefficients==[0]:return [0]
-	newcfs=[]
+	series = series[::-1]
+	s = 0
+	for i, si in enumerate(series):
+		s = si+1/s if i else si
+	return s
+
+
+def dpoly(coefficients: list, n: int) -> list:
+	"""derivative of a polynomial: input is a LIST or TUPLE and the nth derivative you want"""
+	if coefficients == [0]:
+		return [0]
+	newcfs = []
 	for i in range(len(coefficients)):
-		newcfs+=[coefficients[i]*(len(coefficients)-i-1)]
+		newcfs += [coefficients[i]*(len(coefficients)-i-1)]
 	del newcfs[len(newcfs)-1]
-	if newcfs==[]:return [0]
-	if n==1:return newcfs
-	return dpoly(newcfs,n-1)
-	
-def dist(a,b):#works in any dimension! a and b are lists
-	s=0
-	for i in range(len(a)):
-		s+=(a[i]-b[i])**2
+	if not newcfs:
+		return [0]
+	if n == 1:
+		return newcfs
+	return dpoly(newcfs, n-1)
+
+
+def dist(a: list, b: list) -> float:
+	"""works in any dimension! a and b are lists"""
+	s = 0
+	for i, ai in enumerate(a):
+		s += (ai-b[i])**2
 	return s**.5
+
 
 def divisors(n: int) -> set:
 	if n in (0, 1):
-		return [n]
+		return {n}
 	allproducts = []
 	for i in range(1,int(n**.5)+1):
 		if n % i == 0:
@@ -71,16 +85,19 @@ def divisors(n: int) -> set:
 	for i in list(allproducts):
 		allproducts.append(n//i)
 	return set(allproducts)
-	
-def divisorfunction(n,x):
-	divisorlist=divisors(n)
-	s=0
-	for i in range(len(divisorlist)):
-		s+=divisorlist[i]**x
+
+
+def divisorfunction(n: int, x: int) -> int:
+	divisorlist = divisors(n)
+	s = 0
+	for i in divisorlist:
+		s += i**x
 	return s
-	
-def doublefactorial(n):
-	if n==1 or n==2:return n
+
+
+def doublefactorial(n: int) -> int:
+	if n in (1, 2):
+		return n
 	return n*doublefactorial(n-2)
 
 def fitts(a,b,d,w):
