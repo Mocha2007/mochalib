@@ -208,20 +208,25 @@ def volumesphere(r):
 def volumetetrahedron(l):
 	return l/6/2**.5
 
-#weierstrass(0,5/6,7)
-def weierstrass(x,a,b):
-	if not 0<a<1:raise ValueError("A must be between 0 and 1 exclusive!")
-	if b%2==0 or b<0:raise ValueError("B must be a positive odd integer!")
-	if not a*b>1+3*pi/2:raise ValueError("A and B must be such that ab>1+3*pi/2")
-	sum=0
-	n=-1
-	oldsum=-1
-	while oldsum!=sum:
-		oldsum=sum
-		n+=1
-		sum+=a**n*cos(b**n*pi*x)
-	return sum
-	
+
+# weierstrass(0,5/6,7)
+def weierstrass(x: float, a: float, b: int) -> float:
+	if not 0 < a < 1:
+		raise ValueError("A must be between 0 and 1 exclusive!")
+	if b % 2 == 0 or b < 0:
+		raise ValueError("B must be a positive odd integer!")
+	if not a*b > 1+3*pi/2:
+		raise ValueError("A and B must be such that ab>1+3*pi/2")
+	s = 0
+	n = -1
+	oldsum = -1
+	while oldsum != s:
+		oldsum = s
+		n += 1
+		s += a**n*cos(b**n*pi*x)
+	return s
+
+
 def woodall(n):
 	return n*2**n-1
 	
