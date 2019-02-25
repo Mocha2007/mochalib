@@ -36,7 +36,7 @@ def deltemplates(string: str) -> str:
 	return sub(compile(r'{{[\w\W]+?}}'), '', string)
 
 
-def link2text(string: str):
+def link2text(string: str) -> str:
 	if search(r'\[\[File:[^\]]+?]]', string):
 		return '' # file
 	if search(r'\[\[[^\]|]+?]]', string):
@@ -68,5 +68,5 @@ def main(site: str, page: str) -> str:
 	return cleanup(read(site, page))[:limit]+'...'
 
 
-def main2(site: str, page: str):
+def main2(site: str, page: str) -> str:
 	return cleanup(read2(site, page))[:limit]+'...'
