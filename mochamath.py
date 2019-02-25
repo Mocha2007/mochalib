@@ -494,11 +494,13 @@ def sphere2rect(rho,theta,phi):
 
 # 21 Dec 2018
 
+
 def prime_factors(n: int) -> set:
 	for i in range(2, int(n**.5)+1):
 		if n % i == 0:
 			return factors(n//i).add(i)
 	return {n}
+
 
 def factors(n: int) -> dict:
 	for i in range(2, int(n**.5)+1):
@@ -511,12 +513,14 @@ def factors(n: int) -> dict:
 			return dictionary
 	return {n: 1}
 
+
 def product(*n) -> float:
 	if len(n) == 0:
 		return 0
 	if len(n) == 1:
 		return n[0]
 	return product(*n[:-1]) * n[-1]
+
 
 def is_prime(n: int) -> bool:
 	for i in range(2, int(n**.5)+1):
