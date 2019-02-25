@@ -332,3 +332,4 @@ while 1:
 
 # sample programs:
 # (C B A)(,2@^,2@^,2@^+=) -> checks if lengths ABC form a right triangle
+# ,1,2,3_,4,5,6_~p\~_,7,8,9_~pp\p\;@@\~_zu

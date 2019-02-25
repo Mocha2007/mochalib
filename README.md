@@ -1,25 +1,25 @@
 # mochalib
 Various mathematical and scientific functions I've needed
 
-# MathFox
+## MathFox
 Adds functions/variables as classes to simplify, solve derivatives, etc.
 sample usage:
 x = Variable('x')
 Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 
-# 24 Game Library Documentation
-## Functions
+## 24 Game Library Documentation
+### Functions
 * allorder - Every number achievable with the four given integers.
 * twentyfour - Every number achievable with the four given integers, used in order.
 * operations - Performs every possible ordering of math operations on four integers, in that order.
 
-# Astronomical Library Documentation
-## Fundamental Constants:
+## Astronomical Library Documentation
+### Fundamental Constants
 
 * c - Speed of Light. m/s
 * g - Gravitational Constant. m^3/kgs^2
 
-## Length Constants:
+### Length Constants
 * au - Astronomical Unit. m
 * a_moon - Lunar Distance. m
 * a_planck - Planck length. m
@@ -32,7 +32,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * r_sun - Solar Radius. m
 * ly - Light-Year. m
 
-## Mass Constants
+### Mass Constants
 
 * lb - Pound. kg
 * m_e - Terran Mass. kg
@@ -42,7 +42,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * m_planck - Planck Mass. kg
 * m_sun - Solar Mass. kg
 
-## Time Constants
+### Time Constants
 
 * day - Day. s
 * hour - Hour. s
@@ -52,21 +52,21 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * t_planck - Planck Time. s
 * year - Gregorian Year. s
 
-## Power Constants
+### Power Constants
 
 * l_planck - Planck Power. W
 * l_sun - Solar Luminosity. W
 
-## Body Dictionaries:
+### Body Dictionaries
 
-### Each of these dictionaries contain four components:
+#### Each of these dictionaries contain four components
 
 * a - Semimajor Axis. m
 * e - Eccentricity. [Dimensionless]
 * m - Mass. kg
 * r - Radius. m
 
-### List:
+#### List
 
 * earth - Earth.
 * jupiter - Jupiter.
@@ -78,7 +78,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * uranus - Uranus.
 * venus - Venus.
 
-## Functions:
+### Functions
 
 * absmag - Absolute magnitude of specified star. [Dimensionless],m -> [Dimensionless]
 * acc - The derivative of *speed*. m,m,kg -> m/s^2
@@ -117,12 +117,12 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,[Dimensionless],kg -> m/s,m/s
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s
 
-# Change Library Documentation
-## Functions
+## Change Library Documentation
+### Functions
 * change - If there is a way to find n coins totalling $m, it will find it. Otherwise, returns False.
 
-# Math Library Documentation
-## Functions
+## Math Library Documentation
+### Functions
 
 * abundancy - Abundancy of n.
 * area - Area of non-intersecting polygon defined by points.
@@ -173,7 +173,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * zeta - Riemann zeta function.
 * zipf - Zipf's law.
 
-## Googological Functions
+### Googological Functions
 
 * ack - Ackermann Function.
 * arrayed - Linear array notation.
@@ -184,7 +184,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * pentation - Tetration.
 * tetration - Tetration.
 
-## Random etc. tools
+### Random etc. tools
 
 * averagetimestooccur - Average time for an event with probability p to occur.
 * card - random playing card
@@ -197,31 +197,31 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * pascal - Returns nth row of Pascal's triangle.
 * pascalrow - Identical to *pascal*, deprecated
 
-## Series
+### Series
 
 * iproduct - Infinite Summation.
 * isum - Infinite Product.
 * pproduct - Product.
 * ssum - Summation.
 
-## Sets
+### Sets
 
 * isburningship - Is c in the burning ship set?
 * ismandelbrot - Is c in the mandelbrot set?
 
-# Primality Library Documentation
-## Functions
+## Primality Library Documentation
+### Functions
 * primality - Attempts to primecheck n.
 
-# Runs or Straights Library Documentation
-## Functions
+## Runs or Straights Library Documentation
+### Functions
 * runs - Finds all runs in a set.
 * sor - Returns greatest straight or run in a set.
 * straights - Finds all straights in a set.
 
-# Wavefunction Library Documentation
+## Wavefunction Library Documentation
 All functions require three components - *x* (Time in s), *freq* (Frequency in hz), and *amp* (Amplitude). They all return a y-value.
-## Functions
+### Functions
 * f2n - turns a frequency into a musical note
 * n2f - turns a musical note into a frequency
 * sawtooth - Sawtooth wave function. Uses modulo.
@@ -231,18 +231,18 @@ All functions require three components - *x* (Time in s), *freq* (Frequency in h
 * square1 - Square wave function. Uses the imaginary part of ln(sin(x)).
 * triangle - Triangle wave function.
 
-# Chemistry Library Documentation
+## Chemistry Library Documentation
 
-# Language Library Documentation
+## Language Library Documentation
 
 VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 
-# Matrix Library Documentation
-## Variables
+## Matrix Library Documentation
+### Variables
 * lm - a dictionary of 5x5 matrices containing the alphabet
 * long - a large sample markov matrix
 
-## Functions
+### Functions
 * adj - finds the adjugate of the matrix
 * augmatrixsolve - solves the augmented matrix
 * companion - finds the companion matrix of the given polynomial coefficients
