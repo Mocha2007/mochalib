@@ -1,48 +1,54 @@
 from random import random
-from math import cos,sin
+from math import cos, sin
 
-def rmatrix(rows,columns):
-	newmatrix=[]
+
+def rmatrix(rows: int, columns: int) -> list:
+	newmatrix = []
 	for row in range(rows):
-		newrow=[]
+		newrow = []
 		for column in range(columns):
-			newrow+=[random()]
-		newmatrix+=[newrow]
+			newrow.append(random())
+		newmatrix.append(newrow)
 	return newmatrix
 
-def matrixadd(m1,m2):
-	if [len(m1),len(m1[0])]!=[len(m2),len(m2[0])]:raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
+
+def matrixadd(m1: list, m2: list) -> list:
+	if [len(m1), len(m1[0])] != [len(m2), len(m2[0])]:
+		raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	for row in range(len(m1)):
-		for column in range(len(m1[row])):
-			m2[row][column]+=m1[row][column]
+		for column in m1[row]:
+			m2[row][column] += column
 	return m2
-	
-def matrixmul(m1,m2):
-	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
-	new=[]
+
+
+def matrixmul(m1: list, m2: list) -> list:
+	if len(m1[0]) != len(m2):
+		raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
+	new = []
 	for row in range(len(m1)):
-		newrow=[]
+		newrow = []
 		for column in range(len(m1[row])):
-			if column==0:#cells dont exist yet, so i have to make them
+			if column == 0: # cells don't exist yet, so i have to make them
 				for value in m2[0]:
-					newrow+=[m1[row][0]*value]
-			else:#now i can just add
+					newrow += [m1[row][0]*value]
+			else: # now i can just add
 				for value in range(len(m2)):
 					try:
-						newrow[value]+=m1[row][column]*m2[column][value]
+						newrow[value] += m1[row][column]*m2[column][value]
 					except IndexError:
 						pass
-						#print('WARN: IndexError @ Alpha',row,column,value,m1,m2,newrow)
-		new+=[newrow]
+						# print('WARN: IndexError @ Alpha',row,column,value,m1,m2,newrow)
+		new += [newrow]
 	return new
-	
-def matrixscalar(matrix,c):
-	newmatrix=[]
+
+
+def matrixscalar(matrix: list, c: float) -> list:
+	newmatrix = []
 	for row in matrix:
-		newrow=[]
+		newrow = []
 		for value in row:
-			newrow+=[value*c]
-		newmatrix+=[newrow]
+			newrow.append(value*c)
+		newmatrix.append(newrow)
 	return newmatrix
 
 def matrixsub(m1,m2):
