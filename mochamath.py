@@ -1,6 +1,6 @@
 # mocha's math library
-from math import acos, atan, ceil, cos, e, erf, factorial, gcd, pi, log
-from random import choice, randint
+from math import acos, atan, ceil, cos, e, erf, factorial, gcd, pi, log, sin
+from random import choice, randint, random
 # math.factorial()
 # shoelace formula
 # area((0,0),(1,0),(1,1),(0,1))
@@ -188,7 +188,7 @@ def normal(x,mu,sigma):
 	return snormal((x-mu)/sigma)/sigma
 
 def randomspherepoint():
-	return 2*pi*random.random(),acos(2*random.random()-1)
+	return 2*pi*random(), acos(2*random()-1)
 	
 def standardlogistic(x):
 	return 1/(1+e**-x)
