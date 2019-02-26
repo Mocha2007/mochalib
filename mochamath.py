@@ -270,33 +270,38 @@ def zeta(s):
 	
 def zipf(k,s,n):
 	return 1/(k**s*harmonic(n,s))
-	
-#random tools
 
-def averagetimestooccur(chance):#eg an event with a 6% chance of occuring has a 50% chance after n number of times
+
+# random tools
+def averagetimestooccur(chance: float) -> float:
+	# eg an event with a 6% chance of occurring has a 50% chance after n number of times
 	return -log(2)/log(1-chance)
 
-def chanceofoccuring(chance,times):#eg an event with a 6% chance of occuring has had the opportunity to happen 15 times
+
+def chanceofoccuring(chance: float,times: int) -> float:
+	# eg an event with a 6% chance of occurring has had the opportunity to happen 15 times
 	return 1-(1-chance)**times
-	
+
+
 def card():
-	faces=["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
-	deck=[]
+	faces = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+	suits = "♦♥♣♠"
+	deck = []
 	for i in faces:
-		deck+=[(i+"♦")]
-		deck+=[(i+"♥")]
-		deck+=[(i+"♣")]
-		deck+=[(i+"♠")]
+		for j in suits:
+			deck.append(i+j)
 	return choice(deck)
 
-def dice(n,sides,bonus):
-	s=0
-	for i in range(n):
-		s+=randint(1,sides)
+
+def dice(n: int, sides: int, bonus: int) -> int:
+	s = 0
+	for _ in range(n):
+		s += randint(1, sides)
 	return s+bonus
 
-def mnm():
-	bag=["Blue"]*24+["Brown"]*13+["Green"]*16+["Orange"]*20+["Red"]*13+["Yellow"]*14
+
+def mnm() -> str:
+	bag = ["Blue"]*24+["Brown"]*13+["Green"]*16+["Orange"]*20+["Red"]*13+["Yellow"]*14
 	return choice(bag)
 	
 #return the nth row of pascal's triangle. Taken from http://stackoverflow.com/a/40067541
