@@ -53,41 +53,42 @@ def matrixscalar(matrix: list, c: float) -> list:
 		newmatrix.append(newrow)
 	return newmatrix
 
-def matrixsub(m1,m2):
-	return matrixadd(m1,matrixscalar(m2,-1))
-	
-def transpose(matrix):
-	newmatrix=[]
-	for row in range(max(len(matrix),len(matrix[0]))):
-		newrow=[]
-		for column in range(max(len(matrix),len(matrix[0]))):
+
+def matrixsub(m1: list, m2: list) -> list:
+	return matrixadd(m1, matrixscalar(m2, -1))
+
+
+def transpose(matrix: list) -> list:
+	newmatrix = []
+	for row in range(max(len(matrix), len(matrix[0]))):
+		newrow = []
+		for column in range(max(len(matrix), len(matrix[0]))):
 			try:
-				newrow+=[matrix[column][row]]
+				newrow += [matrix[column][row]]
 			except IndexError:
 				pass
-		newmatrix+=[newrow] if newrow!=[] else []
+		newmatrix += [newrow] if newrow != [] else []
 	return newmatrix
 
-def identity(size):
-	if size%1!=0 or size<1:raise ValueError('The size must be a natural number!')
-	matrix=[]
+
+def identity(size: int) -> list:
+	if size % 1 or size < 1:
+		raise ValueError('The size must be a natural number!')
+	matrix = []
 	for row in range(size):
-		newrow=[]
+		newrow = []
 		for column in range(size):
-			newrow+=[1 if row==column else 0]
-		matrix+=[newrow]
+			newrow.append(int(row == column))
+		matrix.append(newrow)
 	return matrix
 
-def zero(size):
-	if size%1!=0 or size<1:raise ValueError('The size must be a natural number!')
-	matrix=[]
-	for row in range(size):
-		newrow=[]
-		for column in range(size):
-			newrow+=[0]
-		matrix+=[newrow]
-	return matrix
-	
+
+def zero(size: int) -> list:
+	if size % 1 or size < 1:
+		raise ValueError('The size must be a natural number!')
+	return [[0]*size]*size
+
+
 def det(matrix):
 	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
 	if len(matrix)==1:return matrix[0][0]
