@@ -15,10 +15,10 @@ def t2d(n):#doesn't acct for negs yet
 	minutes=remainder//sm
 	seconds=remainder%sm
 	monthmonth=0
-	for i in range(len(mos)):
-		print(days,mos[i])
-		if days<=mos[i]:
-			monthmonth=i
+	for i, mi in enumerate(mos):
+		print(days, mi)
+		if days <= mi:
+			monthmonth = i
 			break
 	days=days-mos[monthmonth-1]
 	return int(1970+years),mnames[monthmonth],int(days),int(hours),int(minutes),seconds
