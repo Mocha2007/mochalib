@@ -312,52 +312,52 @@ def pascalrow(n):
          line.append(line[k]*(n-k)//(k+1))             
      return line
 	 
-#sum. function must use x.
-def ssum(min,max,function):
-	total=0
-	for x in range(min,max+1):
-		total+=eval(function)
-	return total
-#product. function must use x.
-def pproduct(min,max,function):
-	total=1
-	for _ in range(min,max+1):
-		total=total*eval(function)
-	return total
+# sum. function must use x.
+# def ssum(min,max,function):
+# 	total=0
+# 	for x in range(min,max+1):
+# 		total+=eval(function)
+# 	return total
+# product. function must use x.
+# def pproduct(min,max,function):
+# 	total=1
+# 	for _ in range(min,max+1):
+# 		total=total*eval(function)
+# 	return total
 	
-#infinite sum
-def isum(min,function):
-	previous=-1
-	s=0
-	x=min
-	while previous!=s and abs(s)<10**10:
-		previous=s
-		s+=eval(function)
-		x+=1
-		#print(x,s)
-	if s<10**10:
-		return s
-	elif s>10**10:
-		return "+inf"
-	return "-inf"
-#infinite product
-def iproduct(min,function):
-	previous=-1
-	s=1
-	x=min
-	while previous!=s and abs(s)<10**10:
-		previous=s
-		s=s*eval(function)
-		x+=1
-		#print(x,s)
-	if s<10**10:
-		return s
-	elif s>10**10:
-		return "+inf"
-	return "-inf"
-	
-#is in set?
+# infinite sum
+# def isum(min,function):
+# 	previous=-1
+# 	s=0
+# 	x=min
+# 	while previous!=s and abs(s)<10**10:
+# 		previous=s
+# 		s+=eval(function)
+# 		x+=1
+# 		#print(x,s)
+# 	if s<10**10:
+# 		return s
+# 	elif s>10**10:
+# 		return "+inf"
+# 	return "-inf"
+# infinite product
+# def iproduct(min,function):
+#	previous=-1
+# 	s=1
+# 	x=min
+# 	while previous!=s and abs(s)<10**10:
+# 		previous=s
+# 		s=s*eval(function)
+# 		x+=1
+# 		#print(x,s)
+# 	if s<10**10:
+# 		return s
+# 	elif s>10**10:
+# 		return "+inf"
+# 	return "-inf"
 
+
+# is in set?
 def isburningship(c):
 	z=0
 	for i in range(1000):
