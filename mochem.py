@@ -77,7 +77,7 @@ for line in aliasfile:
 		else:
 			break
 	alias+=[[chem,aka]]
-	
+
 def verify(string):
 	if string not in elements:
 		for entry in alias:
@@ -105,7 +105,7 @@ while 1:
 			pass
 		elif [chem,aka] in alias:
 			print('The attempted alias already exists!')
-		elif chem not in elements:	
+		elif chem not in elements:
 			print('This chemical is unindexed!')
 		else:
 			alias+=[[chem,aka]]
