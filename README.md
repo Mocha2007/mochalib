@@ -62,7 +62,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 #### Each of these dictionaries contain four components
 
 * a - Semimajor Axis. m
-* e - Eccentricity. [Dimensionless]
+* e - Eccentricity. \[Dimensionless]
 * m - Mass. kg
 * r - Radius. m
 
@@ -80,27 +80,27 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 
 ### Functions
 
-* absmag - Absolute magnitude of specified star. [Dimensionless],m -> [Dimensionless]
+* absmag - Absolute magnitude of specified star. \[Dimensionless],m -> \[Dimensionless]
 * acc - The derivative of *speed*. m,m,kg -> m/s^2
-* apsides - Apsides of the specified orbit. Inverse of *apsides2ecc*. m,[Dimensionless] -> m,m
-* apsides2ecc - Eccentricity of the specified orbit. Inverse of *apsides*. m,m -> m,[Dimensionless]
+* apsides - Apsides of the specified orbit. Inverse of *apsides2ecc*. m,\[Dimensionless] -> m,m
+* apsides2ecc - Eccentricity of the specified orbit. Inverse of *apsides*. m,m -> m,\[Dimensionless]
 * bielliptic - Calculates Delta-v required to perform specified Bielliptic transfer manoeuvre. m,m,m,kg -> m/s
 * biellipticinf - Calculates theoretical minimum Delta-v required to perform specified Bielliptic transfer manoeuvre. m,m,kg -> m/s
 * bielliptictime - Calculates time required to perform specified Bielliptic transfer manoeuvre. m,m,m,kg -> s
 * density - Density of the sphere. kg,m -> kg/m^3
-* drake - Drake Equation. Use -1 to specify default estimate. 1/y,[Dimensionless],[Dimensionless],[Dimensionless],[Dimensionless],[Dimensionless],y -> [Dimensionless]
+* drake - Drake Equation. Use -1 to specify default estimate. 1/y,\[Dimensionless],\[Dimensionless],\[Dimensionless],\[Dimensionless],\[Dimensionless],y -> \[Dimensionless]
 * energy - Calculates rest energy of specified object. kg -> J
-* esi - Calculates the Earth Similarity Index of specified object. m,kg,K -> [Dimensionless]
+* esi - Calculates the Earth Similarity Index of specified object. m,kg,K -> \[Dimensionless]
 * gravbinding - Gravitational binding energy of specified body. m,kg -> J
 * gravbinding2 - Gravitational binding energy of specified body, using density instead of mass. m,kg/m^3 -> J
 * habitablezone - Approximates inner and outer bounds of the habitable zone of a hypothetical star with specified mass. kg-> m,m
-* hill - Calculates hill sphere of specified body. cf. *soi*. kg,kg,m,[Dimensionless] -> m
+* hill - Calculates hill sphere of specified body. cf. *soi*. kg,kg,m,\[Dimensionless] -> m
 * hohmann - Calculates Delta-v required to perform specified Hohmann transfer manoeuvre. m,m,kg -> m/s
-* inclinationburn - Calculates Delta-v required to perform specified plane change manoeuvre. rad,[Dimensionless],rad,rad,rad,m -> m/s
-* itemp - Calculates SMA from Temp. K,m,[Dimensionless],K -> m
+* inclinationburn - Calculates Delta-v required to perform specified plane change manoeuvre. rad,\[Dimensionless],rad,rad,rad,m -> m/s
+* itemp - Calculates SMA from Temp. K,m,\[Dimensionless],K -> m
 * mass - Calculates relativistic mass of specified object. J -> kg
 * mov - Mean orbital velocity of the specified orbit. kg,m -> m/s
-* optimal - Calculates which of Hohmann or Bielliptic transfer manoeuvres is more efficient. m,m,kg->[String]
+* optimal - Calculates which of Hohmann or Bielliptic transfer manoeuvres is more efficient. m,m,kg->\[String]
 * orbitenergy - Calculates the specific orbital energy of the orbit. kg,m -> m^2/s^2
 * p - Period of the specified orbit. kg,m -> s
 * peakwavelength - Calculates peak wavelength of an object with temperature T. K -> m
@@ -112,9 +112,9 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 * surfacegravity - Calculates surface gravity of specified body. kg,m->m/s^2
 * synchronous - Semimajor axis of the synchronous orbit around a body. s,kg -> m
 * synodic - Calculates synodic period of two specified bodies. s,s -> s
-* temp - Calculates planetary equilibrium temperature. K,m,,m[Dimensionless] -> K
+* temp - Calculates planetary equilibrium temperature. K,m,,m\[Dimensionless] -> K
 * vescape - Calculates escape velocity of specified body. kg,m->m/s
-* vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,[Dimensionless],kg -> m/s,m/s
+* vextrema - Orbital velocity at periapsis and apoapsis of the specified orbit, respectively. m,\[Dimensionless],kg -> m/s,m/s
 * vtan - Calculates tangental velocity of specified rotating sphere. s,m->m/s
 
 ## Change Library Documentation
