@@ -14,7 +14,8 @@ def rmatrix(rows: int, columns: int) -> list:
 
 def matrixadd(m1: list, m2: list) -> list:
 	if [len(m1), len(m1[0])] != [len(m2), len(m2[0])]:
-		raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
+		raise Exception('The matrices must be the same size!\n' +
+						str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	for i, row in enumerate(m1):
 		for j, column in enumerate(row):
 			m2[i][j] += column
@@ -23,7 +24,8 @@ def matrixadd(m1: list, m2: list) -> list:
 
 def matrixmul(m1: list, m2: list) -> list:
 	if len(m1[0]) != len(m2):
-		raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
+		raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n' +
+						str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	new = []
 	for row in range(len(m1)):
 		newrow = []
@@ -135,17 +137,18 @@ def matrixdiv(m1,m2):
 	if det(m2)==0:raise ZeroDivisionError('The determinant of the divisor must be nonzero!')
 	return matrixmul(m1,inverse(m2))
 
-def matrixexp(matrix,exp):
-	nm=[]
+
+def matrixexp(matrix: list, exp: int) -> list:
+	nm = []
 	for r in matrix:
-		nr=[]
+		nr = []
 		for c in r:
-			nr+=[c]
-		nm+=[nr]
-	for i in range(exp-1):
-		nm=matrixmul(nm,matrix)
+			nr.append(c)
+		nm.append(nr)
+	for _ in range(exp-1):
+		nm = matrixmul(nm, matrix)
 	return nm
-	
+
 def augmatrixsolve(matrix,augment):
 	return matrixdiv(transpose(augment),transpose(matrix))
 
@@ -406,13 +409,14 @@ def lss(A,b):#Ax=b
 	newb=matrixmul(transpose(A),b)
 	return matrixmul(inverse(newA),newb)
 
-# turn a set of points into a list of coefficients for a polynomial passing through them!
 
+# turn a set of points into a list of coefficients for a polynomial passing through them!
 def polynomial_points_solve(set_of_points: set) -> list:
 	matrix_construct = []
 	for x, y in set_of_points:
 		matrix_construct.append([x**i for i in range(len(set_of_points))]+[y])
 	return rre(matrix_construct)
+
 
 def obfuscator(text: str) -> str:
 	owo_points = set(map(lambda x: (x[0], ord(x[1])), enumerate(text)))
@@ -422,7 +426,7 @@ def obfuscator(text: str) -> str:
 	return "''.join([chr(round((" + test3 + ')(i))) for i in range(' + str(len(text)) + ')])'
 	
 
-alphabet='abcdefghijklmnopqrstuvwxyz'
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
 lm = {
 	'a': [[1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 1, 1, 1, 1], [1, 0, 0, 0, 1], [1, 0, 0, 0, 1]],
 	'b': [[1, 1, 1, 1, 0], [1, 0, 0, 0, 1], [1, 1, 1, 1, 0], [1, 0, 0, 0, 1], [1, 1, 1, 1, 0]],
