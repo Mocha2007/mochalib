@@ -338,21 +338,26 @@ def rre(matrix):
 					matrix[j][k]-=c*matrix[i][k]
 	return clean(matrix)
 
-def vectordot(va,vb):
-	s=0
-	for i in range(len(va)):
-		s+=va[i]*vb[i]
+
+def vectordot(va: list, vb: list) -> float:
+	s = 0
+	for i, vai in enumerate(va):
+		s += vai*vb[i]
 	return s
 
-def vectorcross(va,vb):
-	return [va[1]*vb[2]-va[2]*vb[1],va[2]*vb[0]-va[0]*vb[2],va[0]*vb[1]-va[1]*vb[0]]
 
-def eigenhelp(matrix,eigenvalue):
-	return rre(matrixadd(matrix,matrixscalar(identity(len(matrix)),-eigenvalue)))
+def vectorcross(va: list, vb: list) -> list:
+	return [va[1]*vb[2]-va[2]*vb[1], va[2]*vb[0]-va[0]*vb[2], va[0]*vb[1]-va[1]*vb[0]]
 
-#undocumented!!!
 
-def csb(matrix):#columnspace basis
+def eigenhelp(matrix: list, eigenvalue: float):
+	return rre(matrixadd(matrix, matrixscalar(identity(len(matrix)), -eigenvalue)))
+
+# undocumented!!!
+
+
+def csb(matrix: list):
+	"""columnspace basis"""
 	oldmatrixt=transpose(matrix)
 	matrix=rre(oldmatrixt)
 	pivotcolumns=[]
@@ -369,12 +374,6 @@ def csb(matrix):#columnspace basis
 				fullrow+=[oldmatrixt[i][j]]
 			newmatrix+=[fullrow]
 	return newmatrix#bases are transposed
-	
-def vectordot(u,v):
-	s=0
-	for i in range(len(u)):
-		s+=u[i]*v[i]
-	return s
 	
 def innerproduct(u,v):
 	return matrixmul(transpose(u),v)
