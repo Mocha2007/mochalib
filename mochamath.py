@@ -303,15 +303,16 @@ def dice(n: int, sides: int, bonus: int) -> int:
 def mnm() -> str:
 	bag = ["Blue"]*24+["Brown"]*13+["Green"]*16+["Orange"]*20+["Red"]*13+["Yellow"]*14
 	return choice(bag)
-	
-#return the nth row of pascal's triangle. Taken from http://stackoverflow.com/a/40067541
-def pascalrow(n):
-     n-=1
-     line=[1]
-     for k in range(max(n,0)):             
-         line.append(line[k]*(n-k)//(k+1))             
-     return line
-	 
+
+
+# return the nth row of pascal's triangle. Taken from http://stackoverflow.com/a/40067541
+def pascalrow(n: int) -> list:
+	n -= 1
+	line = [1]
+	for k in range(max(n, 0)):
+		line.append(line[k]*(n-k)//(k+1))
+	return line
+
 # sum. function must use x.
 # def ssum(min,max,function):
 # 	total=0
@@ -342,7 +343,7 @@ def pascalrow(n):
 # 	return "-inf"
 # infinite product
 # def iproduct(min,function):
-#	previous=-1
+# 	previous=-1
 # 	s=1
 # 	x=min
 # 	while previous!=s and abs(s)<10**10:
