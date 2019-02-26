@@ -178,6 +178,7 @@ def disp(matrix):
 		print(row)
 
 def companion(*coefficients):
+	coefficients = list(coefficients)
 	if coefficients[0]!=1:
 		c=coefficients[0]
 		for i in range(len(coefficients)):
