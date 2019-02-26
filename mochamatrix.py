@@ -366,7 +366,7 @@ def csb(matrix: list):
 	matrix = rre(oldmatrixt)
 	pivotcolumns = []
 	for i, row in enumerate(matrix):
-		for j, column in enumerate(row):
+		for column in row:
 			if column:
 				pivotcolumns.append(i)
 				break
@@ -374,7 +374,7 @@ def csb(matrix: list):
 	for i, row in enumerate(oldmatrixt):
 		if i in pivotcolumns:
 			fullrow = []
-			for j, column in enumerate(row):
+			for column in row:
 				fullrow.append(column)
 			newmatrix.append(fullrow)
 	return newmatrix # bases are transposed
