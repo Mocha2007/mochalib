@@ -46,9 +46,9 @@ def cleanup(j):
 	temp = round(k2c(j['main']['temp']), 2)
 	tempf = round(k2f(j['main']['temp']), 2)
 	cloudiness = ' ('+str(j['clouds']['all'])+'% cloudy)'
-	dir = j['wind']['deg']
-	dirw = dir2w(dir)
-	wind = str(j['wind']['speed'])+' m/s ('+str(round(m2mi(j['wind']['speed']), 1))+' mi/h) '+str(dir)+'\xb0 ('+dirw+')'
+	direction = j['wind']['deg']
+	dirw = dir2w(direction)
+	wind = str(j['wind']['speed'])+' m/s ('+str(round(m2mi(j['wind']['speed']), 1))+' mi/h) '+str(direction)+'\xb0 ('+dirw+')'
 	return '```\n'+str(temp)+'\xb0C ('+str(tempf)+'\xb0F)\n'+state+cloudiness+'\nWind '+wind+'\n```'
 
 
@@ -63,11 +63,11 @@ huracan = telnetlib.Telnet(host='rainmaker.wunderground.com')
 def hurricane(x):
 	try:
 		x = int(x)
-		if not 0 < x < 6:
-			x = 1
-		x = str(x)
-	except:
-		x = '1'
+	except ValueError:
+		x = 1
+	if not 0 < x < 6:
+		x = 1
+	x = str(x)
 	huracan.read_until(b':', timeout=1) # PRESS RETURN TO CONTINUE
 	huracan.write(b'\n')
 	huracan.read_until(b'-- ', timeout=1) # PRESS RETURN FOR MENU
