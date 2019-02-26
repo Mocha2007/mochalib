@@ -1,6 +1,5 @@
-import urllib.request,mochamw,telnetlib
-from re import compile,sub,findall,search,M
-from random import randint
+import urllib.request, mochamw, telnetlib
+from re import compile, sub, findall, search, M
 from json import load
 from io import StringIO
 
@@ -8,7 +7,7 @@ linkpattern = r'\[\[[^\]]+?\]\]'
 limit = 499
 
 user_agent = 'MochaWeb/1.0 (https://github.com/Mocha2007/mochalib)'
-headers={'User-Agent':user_agent,}
+headers = {'User-Agent':user_agent,}
 
 def l(url): #load
 	request=urllib.request.Request(url,None,headers)

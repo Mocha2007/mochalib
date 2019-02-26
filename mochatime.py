@@ -1,5 +1,3 @@
-from time import time as t
-
 def t2d(n):#doesn't acct for negs yet
 	mos=(31,59,90,120,151,181,212,243,273,304,334,365)
 	mnames=('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')
