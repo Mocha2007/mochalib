@@ -321,7 +321,7 @@ def ssum(min,max,function):
 #product. function must use x.
 def pproduct(min,max,function):
 	total=1
-	for x in range(min,max+1):
+	for _ in range(min,max+1):
 		total=total*eval(function)
 	return total
 	
@@ -367,7 +367,7 @@ def isburningship(c):
 
 def ismandelbrot(c):
 	z=0
-	for i in range(1000):
+	for _ in range(1000):
 		z=z**2+c
 		if abs(z)>2:return False
 	return True
@@ -376,12 +376,12 @@ def ismandelbrot(c):
 
 def tetration(x,y):
 	o=1
-	for i in range(y):o=x**o
+	for _ in range(y):o=x**o
 	return o
 
 def pentation(x,y):
 	o=1
-	for i in range(y):o=tetration(x,o)
+	for _ in range(y):o=tetration(x,o)
 	return o
 
 def arrow(a,b,power):
