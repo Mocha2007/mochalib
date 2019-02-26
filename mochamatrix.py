@@ -356,58 +356,66 @@ def vectorcross(va: list, vb: list) -> list:
 def eigenhelp(matrix: list, eigenvalue: float):
 	return rre(matrixadd(matrix, matrixscalar(identity(len(matrix)), -eigenvalue)))
 
+
 # undocumented!!!
-
-
 def csb(matrix: list):
 	"""columnspace basis"""
-	oldmatrixt=transpose(matrix)
-	matrix=rre(oldmatrixt)
-	pivotcolumns=[]
-	for i in range(len(matrix)):
-		for j in range(len(matrix)):
-			if matrix[i][j]!=0:
-				pivotcolumns+=[i]
+	oldmatrixt = transpose(matrix)
+	matrix = rre(oldmatrixt)
+	pivotcolumns = []
+	for i, row in enumerate(matrix):
+		for j, column in enumerate(row):
+			if column:
+				pivotcolumns.append(i)
 				break
-	newmatrix=[]
-	for i in range(len(oldmatrixt)):
+	newmatrix = []
+	for i, row in enumerate(oldmatrixt):
 		if i in pivotcolumns:
-			fullrow=[]
-			for j in range(len(oldmatrixt)):
-				fullrow+=[oldmatrixt[i][j]]
-			newmatrix+=[fullrow]
-	return newmatrix#bases are transposed
-	
-def innerproduct(u,v):
-	return matrixmul(transpose(u),v)
-	
-def mag(vector):
-	#temp fix
-	if type(vector[0])==type([]):vector=vector[0]
-	#pls delete that asap
-	s=0
-	for dim in vector:
-		s+=dim**2
-	return s**.5
-	
-def proj(u,v):#https://en.wikipedia.org/wiki/Projection_(linear_algebra)
-	c=innerproduct(u,v)/innerproduct(u,u)
-	return matrixscalar([u],c)
+			fullrow = []
+			for j, column in enumerate(row):
+				fullrow.append(column)
+			newmatrix.append(fullrow)
+	return newmatrix # bases are transposed
 
-def orthonormalize(bases):#Gram–Schmidt process BROKEN
-	orthonormalized=[bases[0]]
-	for basisn in range(1,len(bases)):
-		s=bases[basisn]
-		olds=s
+
+def innerproduct(u: list, v: list) -> list:
+	return matrixmul(transpose(u), v)
+
+
+def mag(vector: list) -> float:
+	# temp fix
+	if isinstance(vector[0], list):
+		vector = vector[0]
+	# pls delete that asap
+	s = 0
+	for dim in vector:
+		s += dim**2
+	return s**.5
+
+
+def proj(u: list, v: list) -> list:
+	# https://en.wikipedia.org/wiki/Projection_(linear_algebra)
+	c = innerproduct(u, v)/innerproduct(u, u)
+	return matrixscalar([u], c)
+
+
+def orthonormalize(bases: list):
+	# Gram–Schmidt process BROKEN
+	orthonormalized = [bases[0]]
+	for basisn in range(1, len(bases)):
+		s = bases[basisn]
+		olds = s
 		for i in range(basisn):
-			s=matrixsub(s,proj(orthonormalized[i],olds))
-		orthonormalized+=[s]
+			s = matrixsub(s, proj(orthonormalized[i], olds))
+		orthonormalized += [s]
 	return orthonormalized
-	
-def lss(A,b):#Ax=b
-	newA=matrixmul(transpose(A),A)
-	newb=matrixmul(transpose(A),b)
-	return matrixmul(inverse(newA),newb)
+
+
+def lss(a: list, b: list):
+	# Ax=b
+	newa = matrixmul(transpose(a), a)
+	newb = matrixmul(transpose(a), b)
+	return matrixmul(inverse(newa), newb)
 
 
 # turn a set of points into a list of coefficients for a polynomial passing through them!
