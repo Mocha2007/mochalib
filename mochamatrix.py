@@ -4,9 +4,9 @@ from math import cos, sin
 
 def rmatrix(rows: int, columns: int) -> list:
 	newmatrix = []
-	for row in range(rows):
+	for _ in range(rows):
 		newrow = []
-		for column in range(columns):
+		for _ in range(columns):
 			newrow.append(random())
 		newmatrix.append(newrow)
 	return newmatrix
@@ -15,9 +15,9 @@ def rmatrix(rows: int, columns: int) -> list:
 def matrixadd(m1: list, m2: list) -> list:
 	if [len(m1), len(m1[0])] != [len(m2), len(m2[0])]:
 		raise Exception('The matrices must be the same size!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
-	for row in range(len(m1)):
-		for column in m1[row]:
-			m2[row][column] += column
+	for i, row in enumerate(m1):
+		for j, column in enumerate(row):
+			m2[i][j] += column
 	return m2
 
 
