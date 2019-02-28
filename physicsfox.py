@@ -29,6 +29,9 @@ class Dimension:
 	def __bool__(self) -> bool:
 		return bool(self.dimensions)
 
+	def __eq__(self, other) -> bool:
+		return self.dimensions == other.dimensions
+
 	def __invert__(self):
 		return Dimension(**{key: -value for key, value in self.dimensions.items()})
 
@@ -57,6 +60,9 @@ class Unit:
 
 	def __repr__(self) -> str:
 		return self.symbol
+
+	def __eq__(self, other) -> bool:
+		return self.dimension == other.dimension and self.si_multiple == other.si_multiple
 
 	def __invert__(self):
 		return Unit('/'+self.symbol, 1/self.si_multiple, ~self.dimension)
@@ -108,6 +114,13 @@ class Value:
 		assert self.unit.dimension == desired_unit.dimension
 		scalar = self.unit // desired_unit
 		return Value(self.value*scalar, desired_unit, self.uncertainty*scalar)
+
+	def __eq__(self, other) -> bool:
+		if self.unit != other.unit:
+			return False
+		amin, amax = self.value-self.uncertainty, self.value+self.uncertainty
+		bmin, bmax = other.value-other.uncertainty, other.value+other.uncertainty
+		return amin <= bmax and bmin <= amax
 
 	def __neg__(self):
 		return Value(-self.value, self.unit, self.uncertainty)
