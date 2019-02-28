@@ -125,6 +125,9 @@ class Value:
 	def __neg__(self):
 		return Value(-self.value, self.unit, self.uncertainty)
 
+	def __abs__(self):
+		return Value(abs(self.value), self.unit, self.uncertainty)
+
 	def __add__(self, other):
 		assert self.unit.dimension == other.unit.dimension
 		scalar = other.unit // self.unit
