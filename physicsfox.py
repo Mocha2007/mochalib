@@ -19,7 +19,7 @@ def add_dims(a: Dict[str, int], b: Dict[str, int]) -> Dict[str, int]:
 
 
 class Unit:
-	def __init__(self, symbol: str = '', si_multiple: float = 1, dimension: Dict[str, int] = {}):
+	def __init__(self, symbol: str = '', si_multiple: float = 1, dimension: Dict[str, int] = None):
 		self.symbol = symbol
 		self.si_multiple = si_multiple
 		self.dimension = dimension
