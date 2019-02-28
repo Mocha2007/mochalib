@@ -29,7 +29,9 @@ class Unit:
 
 	def __mul__(self, other):
 		dimension = add_dims(self.dimension, other.dimension)
-		return Unit(self.symbol+other.symbol, self.si_multiple*other.si_multiple, dimension)
+		if dimension:
+			return Unit(self.symbol+other.symbol, self.si_multiple*other.si_multiple, dimension)
+		return self.si_multiple*other.si_multiple
 
 	def __truediv__(self, other):
 		return self * Unit('/'+other.symbol, other.si_multiple, {key: -val for key, val in other.dimension.items()})
@@ -96,6 +98,7 @@ joule = newton * meter
 joule.symbol = 'J'
 watt = joule / second
 watt.symbol = 'W'
+foot = Unit('ft', 0.3048, {'m': 1})
 
 # tests
 # print(meter) # m
