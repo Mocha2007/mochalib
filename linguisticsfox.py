@@ -61,6 +61,11 @@ class Phonotactics:
 					morph.append(choice(tuple(phoneme_set)))
 		return morph if self.obeys(morph) else self.generate_morpheme()
 
+	def syllable_count_chance(self, count: int) -> float:
+		assert 0 < count
+		a = self.dropoff
+		return (1-a)*a**(count-1)
+
 	def obeys(self, morph: Morpheme) -> bool:
 		for i, phoneme in enumerate(morph):
 			for phoneme_set, environment, b in self.constraints:
