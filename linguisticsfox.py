@@ -1,5 +1,10 @@
 from typing import Dict, Set, Tuple
 from random import choice, random
+from math import e, log, pi
+
+
+def log_normal(x: float, sigma: float, mu: float) -> float:
+	return e**-((log(x)-mu)**2/(2*sigma**2)) / (x*sigma*(2*pi)**.5)
 
 
 class Phoneme:
@@ -44,28 +49,28 @@ class Environment:
 class Phonotactics:
 	def __init__(self, syllable_structure: Tuple[Tuple[Tuple[Set[Phoneme], bool]]], # bool is for "is this mandatory?"
 				constraints: Tuple[Tuple[Set[Phoneme], Environment, bool]], syllable_count: (int, int) = (1, 4),
-				dropoff: float = 0.5):
+				distribution: (float, float) = (0.48, 0.95)):
+		# distribution defaults to English-like; use (0.38, 1.13) for a French-like distribution
 		self.syllable_strcuture = syllable_structure
 		self.constraints = constraints
 		assert 0 < syllable_count[0] < syllable_count[1]
 		self.syllable_count = syllable_count
-		assert 0 < dropoff < 1
-		self.dropoff = dropoff
+		self.distribution = distribution
 
 	def generate_morpheme(self) -> Morpheme:
 		morph = Morpheme()
-		for _ in range(*self.syllable_count):
+		for _ in range(self.generate_syllable_count()):
 			syllable_template = choice(self.syllable_strcuture)
 			for phoneme_set, b in syllable_template:
-				if b or random() < self.dropoff:
+				if b or random() < .5:
 					morph.append(choice(tuple(phoneme_set)))
 		return morph if self.obeys(morph) else self.generate_morpheme()
 
-	def syllable_count_chance(self, count: int) -> float:
-		"""Returns the probability of a morpheme with [count] syllables being generated, assuming no limit."""
-		assert 0 < count
-		a = self.dropoff
-		return (1-a)*a**(count-1)
+	def generate_syllable_count(self) -> int:
+		"""Randomly generate syllable count"""
+		items = [[i]*int(100*log_normal(i, *self.distribution)) for i in range(*self.syllable_count)]
+		items = [i for j in items for i in j]
+		return choice(items)
 
 	def obeys(self, morph: Morpheme) -> bool:
 		for i, phoneme in enumerate(morph):
