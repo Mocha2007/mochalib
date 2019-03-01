@@ -43,17 +43,19 @@ class Environment:
 
 class Phonotactics:
 	def __init__(self, syllable_structure: Tuple[Tuple[Tuple[Set[Phoneme], bool]]], # bool is for "is this mandatory?"
-				constraints: Tuple[Tuple[Set[Phoneme], Environment, bool]], syllable_count: (int, int) = (1, 4)):
+				constraints: Tuple[Tuple[Set[Phoneme], Environment, bool]], syllable_count: (int, int) = (1, 4),
+				dropoff: float = 0.5):
 		self.syllable_strcuture = syllable_structure
 		self.constraints = constraints
 		self.syllable_count = syllable_count
+		self.dropoff = dropoff
 
 	def generate_morpheme(self) -> Morpheme:
 		morph = Morpheme()
 		for _ in range(*self.syllable_count):
 			syllable_template = choice(self.syllable_strcuture)
 			for phoneme_set, b in syllable_template:
-				if b or .5 < random():
+				if b or random() < self.dropoff:
 					morph.append(choice(tuple(phoneme_set)))
 		return morph if self.obeys(morph) else self.generate_morpheme()
 
@@ -66,6 +68,7 @@ class Phonotactics:
 				after = morph[i+1] if i+1 < len(morph) else None
 				if not (environment.obeys(before, after) == b):
 					return False
+		# todo account for syllable structure here, or better yet in another function
 		return True
 
 
