@@ -47,7 +47,9 @@ class Phonotactics:
 				dropoff: float = 0.5):
 		self.syllable_strcuture = syllable_structure
 		self.constraints = constraints
+		assert 0 < syllable_count[0] < syllable_count[1]
 		self.syllable_count = syllable_count
+		assert 0 < dropoff < 1
 		self.dropoff = dropoff
 
 	def generate_morpheme(self) -> Morpheme:
