@@ -62,6 +62,7 @@ class Phonotactics:
 		return morph if self.obeys(morph) else self.generate_morpheme()
 
 	def syllable_count_chance(self, count: int) -> float:
+		"""Returns the probability of a morpheme with [count] syllables being generated, assuming no limit."""
 		assert 0 < count
 		a = self.dropoff
 		return (1-a)*a**(count-1)
