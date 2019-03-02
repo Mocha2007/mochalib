@@ -5,19 +5,6 @@ si_prefix = ' kMGTPEZY'
 si_prefix2 = ' mµnpfazy'
 
 
-def add_dims(a: Dict[str, int], b: Dict[str, int]) -> Dict[str, int]:
-	new_dict = {}
-	for key in set(a) | set(b):
-		new_dict[key] = 0
-		if key in a:
-			new_dict[key] += a[key]
-		if key in b:
-			new_dict[key] += b[key]
-		if new_dict[key] == 0:
-			del new_dict[key]
-	return new_dict
-
-
 class Dimension:
 	def __init__(self, **dimensions):
 		self.dimensions = dimensions # type: Dict[str, int]
@@ -103,7 +90,7 @@ class Value:
 		return '{0} {1}'.format(self.value, self.unit.symbol)
 
 	def si_pretty(self) -> str:
-		index = floor(log10(abs(self.value)))//3
+		index = floor(log10(abs(self.value)))//3 # type: int
 		if index == 0:
 			return self.__repr__()
 		prefix = [si_prefix2, si_prefix][int(0 < index)][abs(index)]
