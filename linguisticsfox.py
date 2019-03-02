@@ -72,7 +72,7 @@ class Phonotactics:
 		items = [i for j in items for i in j]
 		return choice(items)
 
-	def obeys(self, morph: Morpheme) -> bool:
+	def obeys(self, morph: Morpheme, check_syllables: bool = False) -> bool:
 		for i, phoneme in enumerate(morph):
 			for phoneme_set, environment, b in self.constraints:
 				if phoneme not in phoneme_set:
@@ -81,7 +81,19 @@ class Phonotactics:
 				after = morph[i+1] if i+1 < len(morph) else None
 				if not (environment.obeys(before, after) == b):
 					return False
-		# todo account for syllable structure here, or better yet in another function
+		if check_syllables:
+			# check for syllable structure here - may or may not be broken
+			for structure in self.syllable_strcuture:
+				looking_at = 0
+				works = True
+				for phones, mandatory in structure:
+					if looking_at in phones or not mandatory:
+						looking_at += 1
+					else:
+						works = False
+						break
+				if works:
+					return self.obeys(Morpheme(morph.phonemes[looking_at:]), check_syllables=True)
 		return True
 
 
