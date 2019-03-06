@@ -69,10 +69,7 @@ def dpoly(coefficients: list, n: int) -> list:
 
 def dist(a: list, b: list) -> float:
 	"""works in any dimension! a and b are lists"""
-	s = 0
-	for i, ai in enumerate(a):
-		s += (ai-b[i])**2
-	return s**.5
+	return sum((i-j)**2 for i, j in zip(a, b))**.5
 
 
 def divisors(n: int) -> set:
