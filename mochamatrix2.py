@@ -38,7 +38,7 @@ class Matrix:
 	def __mul__(self, other):
 		assert len(self.data[0]) == len(other.data)
 		newmatrix = []
-		for row_id, row in enumerate(self.data):
+		for row in self.data:
 			newrow = []
 			for col_id, _ in enumerate(other[0]):
 				newrow.append(sum(datum * other[i][col_id] for i, datum in enumerate(row)))
@@ -97,7 +97,7 @@ class Matrix:
 		for i, row in enumerate(new_matrix.data):
 			if i == 0:
 				continue
-			for j, datum in enumerate(new_matrix.data):
+			for j, _ in enumerate(new_matrix.data):
 				if j == 0:
 					continue
 				new_matrix[i][j] = bottom_right[i-1][j-1]
@@ -119,7 +119,7 @@ class Matrix:
 		return self != zero(*self.size())
 
 	def __eq__(self, other) -> bool:
-		if type(self) != type(other):
+		if not isinstance(other, Matrix):
 			return False
 		return self.data == other.data
 
