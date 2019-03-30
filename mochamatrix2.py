@@ -232,7 +232,7 @@ class Vector:
 		return -1 * self
 
 	def __repr__(self) -> str:
-		return str(self.data).replace(",", "")
+		return '<' + str(self.data).replace(",", "")[1:-1] + '>'
 
 	def __rmul__(self, other: float):
 		return Vector([i*other for i in self.data])
