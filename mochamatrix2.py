@@ -17,8 +17,9 @@ class Matrix:
 
 	def __abs__(self) -> float:
 		# determinant
-		assert len(self.data) == len(self[0])
-		if len(self.data) == 1:
+		m, n = self.size()
+		assert m == n
+		if m == 1:
 			return self[0][0]
 		s = 0
 		for i, datum in enumerate(self[0]):
