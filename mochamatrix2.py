@@ -254,9 +254,8 @@ class Vector:
 
 	def cross(self, *others):
 		assert {i.size() for i in others} <= {self.size()} # all same size
-		assert self.size() == len(others) + 2 # dimension - 1 matrices total
-		adj = Matrix([i.data for i in list(others) + [self, Vector([0]*self.size())]]).adjugate()
-		return -Vector(adj.get_col(-1))
+		assert self.size() == len(others) + 2 # dimension - 1 vectors total
+		return -Vector(Matrix([i.data for i in list(others) + [self, Vector([0]*self.size())]]).adjugate().get_col(-1))
 
 	def normalize(self):
 		return 1/abs(self) * self
