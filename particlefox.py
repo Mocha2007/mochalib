@@ -8,6 +8,9 @@ Da = 1.66053906660e-27 # kg; atomic mass unit AKA Dalton
 # mu_0 = 4*pi*1.00000000082e-7 # H/m
 N_A = 6.02214076e23 # kg/mol
 q_e = 1.602176634e-19 # C
+R_H = 1.097e7# 1/m; Rydberg constant
+wavelength_violet = 380e-9
+wavelength_red = 740e-9
 
 # derived
 eV = 1.602176634e-19 # J
@@ -32,6 +35,10 @@ symbols = ['H', 'He',
 # https://en.wikipedia.org/wiki/Electron_affinity_(data_page)
 # in J/mol
 affinity = [72769, -48000, 59632.6, -48000, 26989, 121776.3, -6800, 140976, 328164.9, -116000, 52867, -40000, 41762, 134068.4, 72037, 200410.1, 348575, -96000, 48383, 2370, 18000, 7289, 50911, 65210, -50000, 14785, 63898, 111650, 119235, -58000, 41000, 118935.2, 77650, 194958.7, 324537, -96000, 46884, 5023, 29600, 41806, 88516, 72100, 53000, 100960, 110270, 54240, 125862, -68000, 37043, 107298.4, 101059, 190161, 295153.1, -77000, 45505, 13954, 53000, 55000, 93000, 184870, 12450, 15630, 11200, 13220, 112400, 33960, 32610, 30100, 99000, -1930, 23040, 17180, 31000, 78760, 5827.3, 103990, 150940, 205041, 222747, -48000, 36400, 34418.3, 90924, 136000, 233000, -68000, 46890, 9648.5, 33770, 112720, 53030, 50940, 45850, -48330, 9930, 27170, -165240, -97310, -28600, 33960, 93910, -223220, -30040, 151000, 66600, 35300, 74900, 165900, 5403.18, 63870, 2030, 55000]
+
+
+def electron_transition(z: int, n1: int, n2: int) -> float:
+	return 1/(R_H * z**2 * (1/n1**2 - 1/n2**2))
 
 
 def lorentz(v: float) -> float:
@@ -145,11 +152,6 @@ class Isotope:
 		return Isotope(self.z+1).period
 
 	@property
-	def shells(self) -> int:
-		"""Number of electron shells in an atom. Inaccurate above z=34"""
-		return ceil((self.e-2)/4)
-
-	@property
 	def mass_excess(self) -> float:
 		return self.properties['mass'] - (self.z + self.n)*Da
 
@@ -162,6 +164,43 @@ class Isotope:
 		pt = 1 if Z % 2 == 0 == N % 2 else (-1 if Z % 2 == 1 == N % 2 else 0)
 		# print(pt, e/A**(7/4))
 		return a - b/A**(4/3) - c*Z**2/A**(4/3) - d*(N-Z)**2/A**2 + pt*e/A**(7/4)
+
+	@property
+	def shells(self) -> int:
+		"""Number of electron shells in an atom. Inaccurate above z=34"""
+		return ceil((self.e-2)/4)
+
+	@property
+	def spectrum(self) -> set:
+		"""SWAG of spectrum"""
+		# http://hyperphysics.phy-astr.gsu.edu/hbase/hyde.html
+		z = self.z
+		n1 = 1
+		# bring ns down to UV
+		while wavelength_violet < electron_transition(z, n1, n1+1):
+			n1 -= 1
+		# now, increase, collect all good lambdas, meh
+		wavelengths = set()
+		while 1:
+			n1 += 1
+			# print('n1', n1)
+			# if even n2=inf doesn't give a small enough wavelength, break
+			if wavelength_red < electron_transition(z, n1, float('inf')):
+				break
+			n2 = n1
+			while 1: # increase n2; n2 max set to 10 to prevent infinite loops
+				n2 += 1
+				# print('n2', n2)
+				l = electron_transition(z, n1, n2)
+				# print('\t->', l)
+				if l < wavelength_violet: # too far!!!
+					break
+				if electron_transition(z, n1, n2) < wavelength_red: # good lambda
+					wavelengths.add(l)
+				# else you can keep going
+			if n2 == n1+1: # couldn't find any more
+				break
+		return wavelengths
 
 	@property
 	def symbol(self) -> str:
@@ -255,6 +294,10 @@ class Element:
 	@property
 	def period(self) -> str:
 		return self.any_isotope.period
+	
+	@property
+	def spectrum(self) -> str:
+		return self.any_isotope.spectrum
 	
 	@property
 	def symbol(self) -> str:
@@ -357,3 +400,6 @@ water = Molecule(
 	[hydrogen, oxygen, hydrogen],
 	{(0, 1, 1), (2, 1, 1)}
 )
+
+# test
+# hydrogen.spectrum
