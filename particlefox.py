@@ -416,6 +416,7 @@ deuterium = Isotope(1, 1, mass=2.013553212745*Da)
 tritium = Isotope(1, 2, mass=3.0160492*Da)
 He4 = Isotope(2, 2, mass=4.002602*Da)
 C12 = Isotope(6, 6, mass=12*Da)
+N14 = Isotope(7, 7, mass=14.00307400446*Da)
 O16 = Isotope(8, 8, mass=15.99491461956*Da)
 Fe56 = Isotope(26, 32, mass=55.9349363*Da)
 Pb208 = Isotope(82, 126, mass=207.9766521*Da)
@@ -425,6 +426,7 @@ isotopes = {
 	protium, deuterium, tritium,
 	He4,
 	C12,
+	N14,
 	O16,
 	Fe56,
 	Pb208,
@@ -436,6 +438,7 @@ isotopes = {
 hydrogen = Element({protium: .99985, deuterium: .015, tritium: 0})
 helium = Element({He4: .99999863})
 carbon = Element({C12: .9893})
+nitrogen = Element({N14: .99636})
 oxygen = Element({O16: .9976})
 iron = Element({Fe56: .9175})
 lead = Element({Pb208: .524})
@@ -443,7 +446,7 @@ uranium = Element({U238: .992745})
 plutonium = Element({Pu244: 8e7})
 elements = { # sort by period
 	hydrogen, helium,
-	carbon, oxygen,
+	carbon, nitrogen, oxygen,
 	iron,
 	lead, uranium, plutonium,
 }
