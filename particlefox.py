@@ -313,7 +313,7 @@ class Isotope:
 		zlist = []
 		# todo plot roots
 		for l in lambdas:
-			x = l*10**9
+			x = round(l*10**9)
 			plt.axvline(x=x, color=wavelength_to_rgb(l))
 			# numeric label
 			y = (l-wavelength_violet)/(wavelength_red-wavelength_violet)
