@@ -17,6 +17,14 @@ MeVc2 = MeV / c**2 # kg
 m_e = 9.10938356e-31 # kg
 
 # a_0 = h_ / (m_e * c * alpha) # m
+symbols = ['H', 'He', 
+	'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 
+	'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 
+	'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 
+	'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe', 
+	'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 
+	'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
+]
 
 
 def lorentz(v: float) -> float:
@@ -70,7 +78,7 @@ class Composite:
 		return self.properties['mass'] if 'mass' in self.properties else gamma*sum(i.mass for i in self.constituents)
 
 
-class Atom:
+class Isotope:
 	def __init__(self, z: int=1, n: int=0, e: int=None, **properties):
 		self.z = z
 		self.n = n
@@ -141,10 +149,6 @@ class Atom:
 
 	@property
 	def symbol(self) -> str:
-		symbols = [
-			'H', 'He', 
-			'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
-		]
 		return symbols[self.z-1]
 	
 	# decay modes
@@ -152,22 +156,22 @@ class Atom:
 	@property
 	def alpha_decay(self):
 		z, n = self.z, self.n
-		return Atom(z-2, n-2)
+		return Isotope(z-2, n-2)
 
 	@property
 	def beta_decay(self):
 		z, n = self.z, self.n
-		return Atom(z+1, n-1)
+		return Isotope(z+1, n-1)
 
 	@property
 	def beta_plus_decay(self):
 		z, n = self.z, self.n
-		return Atom(z-1, n+1)
+		return Isotope(z-1, n+1)
 
 	@property
 	def electron_capture(self):
 		z, n = self.z, self.n
-		return Atom(z-1, n)
+		return Isotope(z-1, n)
 
 	# double underscore methods
 	
@@ -176,6 +180,9 @@ class Atom:
 	
 	def __hash__(self) -> int:
 		return hash((self.z, self.n, self.e))
+	
+	def __str__(self) -> str:
+		return '<Isotope {0}{1}>'.format(self.symbol, self.a)
 
 	# methods
 	def ionization_energy(self, n: int) -> float:
@@ -183,26 +190,48 @@ class Atom:
 		z = self.z
 		return 13.6*eV*z**2/n**2
 
-# todo: split Atom class into Isotope and Element classes, for a set of all isotopes
+class Element:
+	def __init__(self, isotopic_abundances: dict, **properties):
+		self.isotopic_abundances = isotopic_abundances
+		self.properties = properties
+	
+	@property
+	def mass(self) -> float:
+		s = sum(abundance for abundance in self.isotopic_abundances.values())
+		return sum(None for isotope, abundance in self.isotopic_abundances.items())/s
+	
+	@property
+	def symbol(self) -> str:
+		return list(self.isotopic_abundances)[0].symbol
+
+	# double underscore methods
+	
+	def __str__(self) -> str:
+		return '<Element {0}>'.format(self.symbol)
 
 
 class Molecule:
-	def __init__(self, atoms: list, bonds: set): # Set[(from_id: int, to_id: int, type: int)]
-		self.atoms = atoms
+	def __init__(self, elements: list, bonds: set): # Set[(from_id: int, to_id: int, type: int)]
+		self.elements = elements
 		self.bonds = bonds
 
 	@property
 	def chemical_formula(self) -> str:
-		unique = sorted(list(set(self.atoms)), key=lambda x: x.symbol)
-		return ''.join([atom.symbol + (str(self.atoms.count(atom)) if 1 < self.atoms.count(atom) else '') for atom in unique])
+		unique = sorted(list(set(self.elements)), key=lambda x: x.symbol)
+		return ''.join([element.symbol + (str(self.elements.count(element)) if 1 < self.elements.count(element) else '') for element in unique])
 
 	@property
 	def mass(self) -> float:
-		return sum(atom.mass for atom in self.atoms)
+		return sum(element.mass for element in self.elements)
 
 	@property
 	def molar_mass(self) -> float:
 		return self.mass * N_A
+
+	# double underscore methods
+
+	def __str__(self) -> str:
+		return '<Molecule {0}>'.format(self.chemical_formula)
 
 
 # Elementary Particles
@@ -229,22 +258,38 @@ proton = Composite('Proton', {
 	down_quark: 1,
 }, mass=1.67262192369e-27)
 
-# Atoms
-hydrogen = Atom(mass=1.007825*Da)
-deuterium = Atom(1, 1, mass=2.013553212745*Da)
-tritium = Atom(1, 2, mass=3.0160492*Da)
-helium = Atom(2, 2, mass=4.002602*Da)
-carbon = Atom(6, 6, mass=12*Da)
-oxygen = Atom(8, 8, mass=15.99491461956*Da)
-lead = Atom(82, 126, mass=207.9766521*Da)
-uranium = Atom(92, 146, mass=238.05078826*Da)
+# Isotopes
+protium = Isotope(mass=1.007825*Da)
+deuterium = Isotope(1, 1, mass=2.013553212745*Da)
+tritium = Isotope(1, 2, mass=3.0160492*Da)
+He4 = Isotope(2, 2, mass=4.002602*Da)
+C12 = Isotope(6, 6, mass=12*Da)
+O16 = Isotope(8, 8, mass=15.99491461956*Da)
+Pb208 = Isotope(82, 126, mass=207.9766521*Da)
+U238 = Isotope(92, 146, mass=238.05078826*Da)
+Pu244 = Isotope(94, 150, mass=244.0642044*Da)
 isotopes = {
-	hydrogen, deuterium, tritium,
-	helium,
-	carbon,
-	oxygen,
-	lead,
-	uranium,
+	protium, deuterium, tritium,
+	He4,
+	C12,
+	O16,
+	Pb208,
+	U238,
+	Pu244,
+}
+
+# Elements
+hydrogen = Element({protium: .99985, deuterium: .015, tritium: 0})
+helium = Element({He4: .99999863})
+carbon = Element({C12: .9893})
+oxygen = Element({O16: .9976})
+lead = Element({Pb208: .524})
+uranium = Element({U238: .992745})
+plutonium = Element({Pu244: 8e7})
+elements = { # sort by period
+	hydrogen, helium,
+	carbon, oxygen,
+	lead, uranium, plutonium,
 }
 
 # Molecules
