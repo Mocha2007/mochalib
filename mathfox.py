@@ -607,6 +607,10 @@ def function(**kwargs): # needs repr and f
 
 		def average_value(self, with_respect_to: Variable, from_x: float, to_x: float):
 			return Quotient(self.integral(with_respect_to, from_x, to_x), Difference(to_x, from_x)).simplify()
+		
+		def laplace(self, with_respect_to: Variable):
+			s = Variable('s')
+			return Product(Power(Euler, Difference(0, Product(s, with_respect_to))), self).integral(with_respect_to, 0, inf)
 	evaluable.add(Function)
 	return Function
 
