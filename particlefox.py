@@ -210,21 +210,21 @@ class Isotope:
 		wavelengths = set()
 		while 1:
 			n1 += 1
-			print('n1', n1)
+			# print('n1', n1)
 			# if even n2=inf doesn't give a small enough wavelength, break
 			if wavelength_red < electron_transition(z, n1, float('inf')):
 				break
 			n2 = n1
 			while n2 - n1 < 8: # increase n2; n2 max set to 8 to prevent infinite loops
 				n2 += 1
-				print('n2', n2)
+				# print('n2', n2)
 				l = electron_transition(z, n1, n2)
-				print('\t->', int(l*10**9), 'nm')
+				# print('\t->', int(l*10**9), 'nm')
 				if l < wavelength_violet: # too far!!!
 					break
 				if electron_transition(z, n1, n2) < wavelength_red: # good lambda
 					wavelengths.add(l)
-					print('\t   GOOD')
+					# print('\t   GOOD')
 				# else you can keep going
 			# if n2 == n1+1: # couldn't find any more
 			#	break
