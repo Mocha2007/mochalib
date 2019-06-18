@@ -116,10 +116,10 @@ class Atom:
 		"""Number of electron shells in an atom. Inaccurate above z=34"""
 		return ceil((self.e-2)/4)
 
-	@property
-	def mass_excess(self) -> float:
-		return self.mass/Da - self.z - self.n
-		return ceil((self.e-2)/4)
+	# @property turns out this is wrong, needs the actual, observed mass
+	# def mass_excess(self) -> float:
+	# 	return self.mass/Da - self.z - self.n
+	# 	return ceil((self.e-2)/4)
 
 	@property
 	def nuclear_binding_energy(self) -> float:
