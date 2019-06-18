@@ -61,11 +61,15 @@ def subshell_size(n: int) -> int:
 def wavelength_to_rgb(wavelength: float) -> (float, float, float):
 	# super simplistic cause i have no fucking idea what's goin on in http://www.fourmilab.ch/documents/specrend/
 	wavelength *= 10 ** 9
-	# red (740) -> yellow (580)
+	# infrared
 	if 740 < wavelength:
 		return 0, 0, 0
+	# reds
+	if 625 < wavelength:
+		return 1, 0, 0
+	# red (625) -> yellow (580)
 	if 580 < wavelength:
-		return 1, 1-(wavelength-580)/160, 0
+		return 1, 1-(wavelength-580)/45, 0
 	# yellow (580) -> green (530)
 	if 530 < wavelength:
 		return (wavelength-530)/50, 1, 0
@@ -78,7 +82,7 @@ def wavelength_to_rgb(wavelength: float) -> (float, float, float):
 	# blue (470) -> magenta (380)
 	if 380 < wavelength:
 		return 1-(wavelength-380)/90, 0, 1
-	# invisible
+	# ultraviolet
 	return .0, .0, .0
 
 
