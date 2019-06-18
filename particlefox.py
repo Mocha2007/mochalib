@@ -19,6 +19,12 @@ m_e = 9.10938356e-31 # kg
 # a_0 = h_ / (m_e * c * alpha) # m
 
 
+def lorentz(v: float) -> float:
+	"""Lorentz Factor (dimensionless)"""
+	beta2 = v**2 / c**2
+	return (1-beta2)**-.5
+
+
 def shell_name(n: int) -> str:
 	return chr(n+75)
 
@@ -48,7 +54,7 @@ class Particle:
 
 class Composite:
 	"""Composite particle"""
-	def __init__(self, name: str, constituents: dict, properties: dict):
+	def __init__(self, name: str, constituents: dict, **properties):
 		self.name = name
 		self.constituents = constituents # type: Dict[Particle, int]
 		self.properties = properties
@@ -59,14 +65,17 @@ class Composite:
 
 	@property
 	def mass(self) -> float:
-		return self.properties['mass'] if 'mass' in self.properties else sum(i.mass for i in self.constituents)
+		gamma = 103.10682287477916 # PROTONS lorentz(0.99995*c)
+		gamma = 80.99701770276388 # NEUTRONS lorentz(0.99992*c)
+		return self.properties['mass'] if 'mass' in self.properties else gamma*sum(i.mass for i in self.constituents)
 
 
 class Atom:
-	def __init__(self, z: int=1, n: int=0, e: int=None):
+	def __init__(self, z: int=1, n: int=0, e: int=None, **properties):
 		self.z = z
 		self.n = n
 		self.e = z if e is None else e
+		self.properties = properties
 
 	@property
 	def a(self) -> int:
@@ -116,16 +125,19 @@ class Atom:
 		"""Number of electron shells in an atom. Inaccurate above z=34"""
 		return ceil((self.e-2)/4)
 
-	# @property turns out this is wrong, needs the actual, observed mass
-	# def mass_excess(self) -> float:
-	# 	return self.mass/Da - self.z - self.n
-	# 	return ceil((self.e-2)/4)
+	@property
+	def mass_excess(self) -> float:
+		return self.properties['mass'] - (self.z + self.n)*Da
 
 	@property
 	def nuclear_binding_energy(self) -> float:
-		"""Nuclear binding energy (whole nucleus), in J"""
-		# https://www.chem.purdue.edu/gchelp/howtosolveit/Nuclear/nuclear_binding_energy.htm
-		return self.mass_excess * Da * c**2
+		"""Nuclear binding energy (per nucleon), in MeV"""
+		# https://en.wikipedia.org/wiki/Nuclear_binding_energy#Semiempirical_formula_for_nuclear_binding_energy
+		a, b, c, d, e = 14, 13, .585, 19.3, 33
+		A, Z, N = self.a, self.z, self.n
+		pt = 1 if Z % 2 == 0 == N % 2 else (-1 if Z % 2 == 1 == N % 2 else 0)
+		# print(pt, e/A**(7/4))
+		return a - b/A**(4/3) - c*Z**2/A**(4/3) - d*(N-Z)**2/A**2 + pt*e/A**(7/4)
 
 	@property
 	def symbol(self) -> str:
@@ -211,18 +223,27 @@ up_quark = Particle('Up quark', {
 neutron = Composite('Neutron', {
 	up_quark: 1,
 	down_quark: 2,
-}, {'mass': 1.674927471e-27})
+}, mass=1.674927471e-27)
 proton = Composite('Proton', {
 	up_quark: 2,
 	down_quark: 1,
-}, {'mass': 1.67262192369e-27})
+}, mass=1.67262192369e-27)
 
 # Atoms
-hydrogen = Atom()
-tritium = Atom(1, 2)
-carbon = Atom(6, 6)
-oxygen = Atom(8, 8)
-uranium = Atom(146, 92)
+hydrogen = Atom(mass=1.007825*Da)
+deuterium = Atom(1, 1, mass=2.013553212745*Da)
+tritium = Atom(1, 2, mass=3.0160492*Da)
+helium = Atom(2, 2, mass=4.002602*Da)
+carbon = Atom(6, 6, mass=12*Da)
+oxygen = Atom(8, 8, mass=15.99491461956*Da)
+uranium = Atom(146, 92, mass=238.05078826*Da)
+isotopes = {
+	hydrogen, deuterium, tritium,
+	helium,
+	carbon,
+	oxygen,
+	uranium,
+}
 
 # Molecules
 water = Molecule(
