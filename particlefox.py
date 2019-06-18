@@ -314,7 +314,7 @@ class Isotope:
 			plt.axvline(x=l*10**9, color=wavelength_to_rgb(l))
 		plt.title('{} Spectral lines'.format(self.symbol))
 		plt.xlabel('wavelength (nm)')
-		plt.xlim(10**9 * wavelength_red, 10**9 * wavelength_violet)
+		plt.xlim(10**9 * wavelength_violet, 10**9 * wavelength_red)
 		plt.ylim(0, 1)
 		plt.show()
 
