@@ -236,12 +236,14 @@ tritium = Atom(1, 2, mass=3.0160492*Da)
 helium = Atom(2, 2, mass=4.002602*Da)
 carbon = Atom(6, 6, mass=12*Da)
 oxygen = Atom(8, 8, mass=15.99491461956*Da)
-uranium = Atom(146, 92, mass=238.05078826*Da)
+lead = Atom(82, 126, mass=207.9766521*Da)
+uranium = Atom(92, 146, mass=238.05078826*Da)
 isotopes = {
 	hydrogen, deuterium, tritium,
 	helium,
 	carbon,
 	oxygen,
+	lead,
 	uranium,
 }
 
