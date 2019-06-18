@@ -223,6 +223,7 @@ class Isotope:
 				if l < wavelength_violet: # too far!!!
 					break
 				if electron_transition(z, n1, n2) < wavelength_red: # good lambda
+					# wavelengths.add((l, n2 - n1))
 					wavelengths.add(l)
 					# print('\t   GOOD')
 				# else you can keep going
@@ -312,7 +313,11 @@ class Isotope:
 		zlist = []
 		# todo plot roots
 		for l in lambdas:
-			plt.axvline(x=l*10**9, color=wavelength_to_rgb(l))
+			x = l*10**9
+			plt.axvline(x=x, color=wavelength_to_rgb(l))
+			# numeric label
+			y = (l-wavelength_violet)/(wavelength_red-wavelength_violet)
+			plt.text(x, y, '{0} nm'.format(int(x)), fontdict={'size': 8})
 		plt.title('{} Spectral lines'.format(self.symbol))
 		plt.xlabel('wavelength (nm)')
 		plt.xlim(10**9 * wavelength_violet, 10**9 * wavelength_red)
