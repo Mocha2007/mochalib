@@ -12,11 +12,14 @@ q_e = 1.602176634e-19 # C
 # derived
 eV = 1.602176634e-19 # J
 # h_ = h/(2*pi) # J*s
+keV = 1e3 * eV
 MeV = 1e6 * eV # J
 MeVc2 = MeV / c**2 # kg
 m_e = 9.10938356e-31 # kg
 
 # a_0 = h_ / (m_e * c * alpha) # m
+
+# data
 nobles = [2, 10, 18, 36, 54, 86, 172]
 symbols = ['H', 'He', 
 	'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 
@@ -26,6 +29,9 @@ symbols = ['H', 'He',
 	'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 
 	'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
 ]
+# https://en.wikipedia.org/wiki/Electron_affinity_(data_page)
+# in J/mol
+affinity = [72769, -48000, 59632.6, -48000, 26989, 121776.3, -6800, 140976, 328164.9, -116000, 52867, -40000, 41762, 134068.4, 72037, 200410.1, 348575, -96000, 48383, 2370, 18000, 7289, 50911, 65210, -50000, 14785, 63898, 111650, 119235, -58000, 41000, 118935.2, 77650, 194958.7, 324537, -96000, 46884, 5023, 29600, 41806, 88516, 72100, 53000, 100960, 110270, 54240, 125862, -68000, 37043, 107298.4, 101059, 190161, 295153.1, -77000, 45505, 13954, 53000, 55000, 93000, 184870, 12450, 15630, 11200, 13220, 112400, 33960, 32610, 30100, 99000, -1930, 23040, 17180, 31000, 78760, 5827.3, 103990, 150940, 205041, 222747, -48000, 36400, 34418.3, 90924, 136000, 233000, -68000, 46890, 9648.5, 33770, 112720, 53030, 50940, 45850, -48330, 9930, 27170, -165240, -97310, -28600, 33960, 93910, -223220, -30040, 151000, 66600, 35300, 74900, 165900, 5403.18, 63870, 2030, 55000]
 
 
 def lorentz(v: float) -> float:
@@ -97,8 +103,6 @@ class Isotope:
 	
 	@property
 	def electron_affinity(self) -> float:
-		# https://en.wikipedia.org/wiki/Electron_affinity_(data_page)
-		affinity = [72769, 72807, -48000, 59632.6, 121776.3, 121775.5] # todo 
 		return affinity[self.z]
 
 	@property
@@ -122,7 +126,12 @@ class Isotope:
 	@property
 	def electronegativity(self) -> float:
 		"""Mulliken electronegativity"""
-		return (self.ionization_energy(1) + self.electron_affinity)/2
+		return (self.ionization_energy(1) + self.electron_affinity/N_A)/2
+
+	@property
+	def electronegativity2(self) -> float:
+		"""Mulliken pseudo-Pauling electronegativity"""
+		return 0.374 * self.electronegativity/keV + 0.17
 
 	@property
 	def mass(self) -> float:
@@ -166,7 +175,7 @@ class Isotope:
 		return Isotope(z-2, n-2)
 
 	@property
-	def beta_decay(self):
+	def beta_minus_decay(self):
 		z, n = self.z, self.n
 		return Isotope(z+1, n-1)
 
@@ -179,6 +188,37 @@ class Isotope:
 	def electron_capture(self):
 		z, n = self.z, self.n
 		return Isotope(z-1, n)
+
+	@property
+	def neutron_emission(self):
+		z, n = self.z, self.n
+		return Isotope(z, n-1)
+
+	@property
+	def proton_emission(self):
+		z, n = self.z, self.n
+		return Isotope(z-1, n)
+
+	@property
+	def predict_decay(self):
+		"""Very simplistic model"""
+		z, n = self.z, self.n
+		if 83 < z:
+			return 'a', self.alpha_decay
+		# extreme cases
+		if 2.3 < n/z:
+			return 'N', self.neutron_emission
+		if n+4 < z:
+			return 'EC', self.proton_emission
+		
+		# beta decay
+		if z < 20:
+			ratio = n/z
+		else:
+			ratio = (.61 * n + 5)/z
+		if ratio < 1:
+			return 'b+', self.beta_plus_decay
+		return 'b-', self.beta_minus_decay	
 
 	# double underscore methods
 	
@@ -281,6 +321,7 @@ tritium = Isotope(1, 2, mass=3.0160492*Da)
 He4 = Isotope(2, 2, mass=4.002602*Da)
 C12 = Isotope(6, 6, mass=12*Da)
 O16 = Isotope(8, 8, mass=15.99491461956*Da)
+Fe56 = Isotope(26, 32, mass=55.9349363*Da)
 Pb208 = Isotope(82, 126, mass=207.9766521*Da)
 U238 = Isotope(92, 146, mass=238.05078826*Da)
 Pu244 = Isotope(94, 150, mass=244.0642044*Da)
@@ -289,6 +330,7 @@ isotopes = {
 	He4,
 	C12,
 	O16,
+	Fe56,
 	Pb208,
 	U238,
 	Pu244,
@@ -299,12 +341,14 @@ hydrogen = Element({protium: .99985, deuterium: .015, tritium: 0})
 helium = Element({He4: .99999863})
 carbon = Element({C12: .9893})
 oxygen = Element({O16: .9976})
+iron = Element({Fe56: .9175})
 lead = Element({Pb208: .524})
 uranium = Element({U238: .992745})
 plutonium = Element({Pu244: 8e7})
 elements = { # sort by period
 	hydrogen, helium,
 	carbon, oxygen,
+	iron,
 	lead, uranium, plutonium,
 }
 
