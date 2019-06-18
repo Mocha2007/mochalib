@@ -316,7 +316,7 @@ class Isotope:
 			x = round(l*10**9)
 			plt.axvline(x=x, color=wavelength_to_rgb(l))
 			# numeric label
-			y = (l-wavelength_violet)/(wavelength_red-wavelength_violet)
+			y = (x-380)/360
 			plt.text(x, y, '{0} nm'.format(int(x)), fontdict={'size': 8})
 		plt.title('{} Spectral lines'.format(self.symbol))
 		plt.xlabel('wavelength (nm)')
