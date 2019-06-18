@@ -17,6 +17,7 @@ MeVc2 = MeV / c**2 # kg
 m_e = 9.10938356e-31 # kg
 
 # a_0 = h_ / (m_e * c * alpha) # m
+nobles = [2, 10, 18, 36, 54, 86, 172]
 symbols = ['H', 'He', 
 	'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 
 	'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 
@@ -129,6 +130,12 @@ class Isotope:
 		return z*proton.mass + n*neutron.mass + e*electron.mass
 
 	@property
+	def period(self) -> int:
+		if self.z in nobles:
+			return nobles.index(self.z) + 1
+		return Isotope(self.z+1).period
+
+	@property
 	def shells(self) -> int:
 		"""Number of electron shells in an atom. Inaccurate above z=34"""
 		return ceil((self.e-2)/4)
@@ -196,13 +203,22 @@ class Element:
 		self.properties = properties
 	
 	@property
+	def any_isotope(self) -> float:
+		"""For when any isotope can be used for a calculation"""
+		return list(self.isotopic_abundances)[0]
+	
+	@property
 	def mass(self) -> float:
 		s = sum(abundance for abundance in self.isotopic_abundances.values())
 		return sum(None for isotope, abundance in self.isotopic_abundances.items())/s
 	
 	@property
+	def period(self) -> str:
+		return self.any_isotope.period
+	
+	@property
 	def symbol(self) -> str:
-		return list(self.isotopic_abundances)[0].symbol
+		return self.any_isotope.symbol
 
 	# double underscore methods
 	
