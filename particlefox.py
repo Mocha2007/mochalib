@@ -58,6 +58,29 @@ def subshell_name(n: int) -> str:
 def subshell_size(n: int) -> int:
 	return 4*n+2
 
+def wavelength_to_rgb(wavelength: float) -> (float, float, float):
+	# super simplistic cause i have no fucking idea what's goin on in http://www.fourmilab.ch/documents/specrend/
+	wavelength *= 10 ** 9
+	# red (740) -> yellow (580)
+	if 740 < wavelength:
+		return 0, 0, 0
+	if 580 < wavelength:
+		return 1, 1-(wavelength-580)/160, 0
+	# yellow (580) -> green (530)
+	if 530 < wavelength:
+		return (wavelength-530)/50, 1, 0
+	# green (530) -> cyan (505)
+	if 505 < wavelength:
+		return 0, 1, 1-(wavelength-505)/25
+	# cyan (505) -> blue (470)
+	if 470 < wavelength:
+		return 0, (wavelength-470)/35, 1
+	# blue (470) -> magenta (380)
+	if 380 < wavelength:
+		return 1-(wavelength-380)/90, 0, 1
+	# invisible
+	return .0, .0, .0
+
 
 def wiki(object) -> str:
 	return 'https://en.wikipedia.org/wiki/' + object.name
@@ -275,6 +298,21 @@ class Isotope:
 		# https://en.wikipedia.org/wiki/Ionization_energy#Electrostatic_explanation
 		z = self.z
 		return 13.6*eV*z**2/n**2
+	
+	def plot_spectrum(self):
+		import matplotlib.pyplot as plt
+		lambdas = self.spectrum
+		plt.subplot(1, 1, 1)
+		ilist = []
+		zlist = []
+		# todo plot roots
+		for l in lambdas:
+			plt.axvline(x=l*10**9, color=wavelength_to_rgb(l))
+		plt.title('{} Spectral lines'.format(self.symbol))
+		plt.xlabel('wavelength (nm)')
+		plt.xlim(10**9 * wavelength_red, 10**9 * wavelength_violet)
+		plt.ylim(0, 1)
+		plt.show()
 
 class Element:
 	def __init__(self, isotopic_abundances: dict, **properties):
@@ -307,6 +345,11 @@ class Element:
 	
 	def __str__(self) -> str:
 		return '<Element {0}>'.format(self.symbol)
+
+	# methods
+	
+	def plot_spectrum(self):
+		self.any_isotope.plot_spectrum()
 
 
 class Molecule:
@@ -402,4 +445,4 @@ water = Molecule(
 )
 
 # test
-# hydrogen.spectrum
+hydrogen.plot_spectrum()
