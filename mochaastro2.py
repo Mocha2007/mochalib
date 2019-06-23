@@ -105,7 +105,7 @@ class Orbit:
 	def T_kozai(self, other) -> float:
 		"""Kozai oscillation timescale (s)"""
 		# other is type Body
-		e, M, m_2, p, p_2 = other.orbit.e, self.primary.mass, other.mass, self.p, other.p
+		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
 
 	def v_at(self, r: float) -> float:
