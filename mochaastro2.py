@@ -461,3 +461,15 @@ jupiter = Body(**{
 	'radius': 6.9911e7,
 	'albedo': .538,
 })
+
+planet_nine = Body(**{
+	# http://www.findplanetnine.com/2019/02/version-2x.html
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 600*au,
+		'e': .2,
+		'i': .3,
+	}),
+	'mass': 3e25,
+	'radius': 1.2e7,
+})
