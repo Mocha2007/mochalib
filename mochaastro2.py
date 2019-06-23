@@ -1,7 +1,7 @@
 from math import cos, exp, inf, log10, pi
 
 # constants
-g = 6.67408e-11 # standard gravitational constant
+g = 6.674e-11 # standard gravitational constant
 c = 299792458 # m/s
 
 pc = 3.0857e16 # m
