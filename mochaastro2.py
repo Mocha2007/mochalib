@@ -3,14 +3,14 @@ from math import cos, exp, inf, log10, pi
 # constants
 g = 6.674e-11 # standard gravitational constant
 c = 299792458 # m/s
+L_0 = 3.0128e28 # W
 
 pc = 3.0857e16 # m
 ly = 9.4607e15 # m
 au = 149597870700 # m
-L_0 = 3.0128e28 # W
+mi = 1609.344 # m
 
 lb = 0.45359237 # kg
-mi = 1609.344 # m
 minute = 60 # s
 hour = 3600 # s
 day = 86400 # s
