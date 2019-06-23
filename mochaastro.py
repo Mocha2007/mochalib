@@ -141,7 +141,7 @@ def speed(a: float, r: float, m: float) -> float:
 # based on dv/dr(speed)
 def acc(a: float, r: float, m: float) -> float:
 	mu = g*m
-	return mu/(2*a**2*(mu*(2/r-1/a))**.5)
+	return mu/(a**2*(mu*(2/r-1/a))**.5)
 
 
 def surfacegravity(m: float, r: float) -> float:
