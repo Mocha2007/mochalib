@@ -566,9 +566,9 @@ class System:
 			ax.set_zlim(-limit, limit)
 			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 			for body in self.bodies:
-				cs = [body.orbit.cartesian((t+i)*outerp/n) for t in range(100)]
+				cs = [body.orbit.cartesian((t+i)*outerp/n) for t in range(1)] # change to range(n) if orbits on
 				xs, ys, zs, vxs, vys, vzs = zip(*cs)
-				# ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+				# ax.plot(xs, ys, zs, color='k', zorder=1)
 				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
