@@ -99,7 +99,7 @@ class Orbit:
 		ts = [i*self.p/n for i in range(n)]
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs) # seems right
-		plt.subplot(1, 1, 1)
+		plt.subplot(1, 1, 1, aspect='equal')
 		plt.scatter(xs, ys)
 		plt.title('Orbit')
 		plt.xlabel('x')
