@@ -719,4 +719,4 @@ planet_nine = Body(**{
 })
 # todo other planets
 # todo rotational axis RA and DEC
-planet_nine.orbit.plot
+# planet_nine.orbit.plot
