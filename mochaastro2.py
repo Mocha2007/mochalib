@@ -1,4 +1,4 @@
-from math import cos, exp, inf, log10, pi
+from math import acos, cos, exp, inf, log10, pi, sin
 
 # constants
 g = 6.674e-11 # standard gravitational constant
@@ -29,6 +29,11 @@ class Orbit:
 		return self.properties['sma']
 
 	@property
+	def aop(self) -> float:
+		"""Argument of periapsis (radians)"""
+		return self.properties['aop']
+
+	@property
 	def apo(self) -> float:
 		"""Apoapsis (m)"""
 		return (1+self.e)*self.a
@@ -39,9 +44,25 @@ class Orbit:
 		return self.properties['e']
 
 	@property
+	def eccentric_anomaly(self) -> float:
+		"""Eccentric anomaly (radians)"""
+		# E = M + e*sin(E)
+		E = self.man
+		while 1: # ~2 digits per loop
+			E_ = self.man + self.e*sin(E)
+			if E == E_:
+				return E
+			E = E_
+
+	@property
 	def i(self) -> float:
 		"""Inclination (radians)"""
 		return self.properties['i']
+
+	@property
+	def lan(self) -> float:
+		"""Longitude of the ascending node (radians)"""
+		return self.properties['lan']
 
 	@property
 	def L_z(self) -> float:
@@ -49,15 +70,24 @@ class Orbit:
 		return (1-self.e**2)**.5*cos(self.i)
 
 	@property
-	def orbit_energy(self) -> float:
+	def man(self) -> float:
+		"""Mean Anomaly (radians)"""
+		return self.properties['man']
+
+	@property
+	def mean_longitude(self) -> float:
+		"""Mean Longitude (radians)"""
+		return self.lan + self.aop + self.man
+
+	@property
+	def orbital_energy(self) -> float:
 		"""Specific orbital energy (J)"""
-		return -self.primary.mass*g/2/self.a
+		return -self.primary.mu/2/self.a
 
 	@property
 	def p(self) -> float:
 		"""Period (seconds)"""
-		mu = g*self.parent.mass
-		return 2*pi*(self.a**3/mu)**.5
+		return 2*pi*(self.a**3/self.parent.mu)**.5
 
 	@property
 	def parent(self):
@@ -70,28 +100,31 @@ class Orbit:
 		return (1-self.e)*self.a
 
 	@property
+	def true_anomaly(self) -> float:
+		"""True anomaly (rad)"""
+		E, e = cos(self.eccentric_anomaly), self.e
+		return acos((E - e)/(1 - e*E))
+
+	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
-		mu = g*self.parent.mass
-		return (self.a/mu)**-.5
+		return (self.a/self.parent.mu)**-.5
 
 	@property
 	def v_apo(self) -> float:
 		"""Orbital velocity at apoapsis (m/s)"""
 		if e == 0:
 			return self.v
-		mu = g*self.parent.mass
 		e = self.e
-		return ((1-e)*mu/(1+e)/self.a)**.5
+		return ((1-e)*self.parent.mu/(1+e)/self.a)**.5
 
 	@property
 	def v_peri(self) -> float:
 		"""Orbital velocity at periapsis (m/s)"""
 		if e == 0:
 			return self.v
-		mu = g*self.parent.mass
 		e = self.e
-		return ((1+e)*mu/(1-e)/self.a)**.5
+		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
 
 	# methods
 
@@ -110,8 +143,7 @@ class Orbit:
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
-		mu = g*self.parent.mass
-		return (mu*(2/r-1/self.a))**.5
+		return (self.parent.mu*(2/r-1/self.a))**.5
 
 
 class Rotation:
@@ -245,12 +277,17 @@ class Body:
 	@property
 	def gravbinding(self) -> float:
 		"""gravitational binding energy (J)"""
-		return 3*g*self.mass**2/5/self.radius
+		return 3*g*self.mass**2/(5*self.radius)
 
 	@property
 	def mass(self) -> float:
 		"""Mass (kg)"""
 		return self.properties['mass']
+
+	@property
+	def mu(self) -> float:
+		"""Gravitational parameter (m^3/s^2)"""
+		return g * self.mass
 
 	@property
 	def radius(self) -> float:
@@ -265,17 +302,17 @@ class Body:
 	@property
 	def surface_gravity(self) -> float:
 		"""Surface gravity (m/s^2)"""
-		return g*self.mass/self.radius**2
+		return self.mu/self.radius**2
 
 	@property
 	def schwarzschild(self) -> float:
 		"""Schwarzschild radius (m)"""
-		return 2*g*self.mass/c**2
+		return 2*self.mu/c**2
 
 	@property
 	def v_e(self) -> float:
 		"""Surface escape velocity (m/s)"""
-		return (2*g*self.mass/self.radius)**.5
+		return (2*self.mu/self.radius)**.5
 
 	@property
 	def volume(self) -> float:
@@ -293,7 +330,7 @@ class Body:
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
 		i, m, o = inner.a, mid.a, outer.a
-		mu = self.mass*g
+		mu = self.mu
 		a1 = (i+m)/2
 		a2 = (m+o)/2
 		dv1 = (2*mu/i-mu/a1)**.5-(mu/i)**.5
@@ -304,7 +341,7 @@ class Body:
 	def hohmann(self, inner: Orbit, outer: Orbit) -> float:
 		"""Hohmann transfer delta-v (m/s)"""
 		i, o = inner.a, outer.a
-		mu = self.mass*g
+		mu = self.mu
 		dv1 = (mu/i)**.5*((2*o/(i+o))**.5-1)
 		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
 		return dv1 + dv2
@@ -406,9 +443,12 @@ sun = Star(**{
 earth = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
-		'sma': 2.7e20,
+		'sma': 1.49598023e11,
 		'e': .0167086,
 		'i': .1249,
+		'lan': -.1965352,
+		'aop': 1.9933027,
+		'man': .1249,
 	}),
 	'rotation': Rotation(**{
 		'period': 86164.100352,
@@ -448,6 +488,9 @@ jupiter = Body(**{
 		'sma': 5.2044*au,
 		'e': .0489,
 		'i': .02774,
+		'lan': 1.75343,
+		'aop': 4.77988,
+		'man': .34941,
 	}),
 	'rotation': Rotation(**{
 		'period': 9.925*hour,
@@ -469,6 +512,8 @@ planet_nine = Body(**{
 		'sma': 600*au,
 		'e': .2,
 		'i': .3,
+		'lan': 1.6,
+		'aop': 2.6,
 	}),
 	'mass': 3e25,
 	'radius': 1.2e7,
