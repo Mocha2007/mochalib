@@ -436,7 +436,7 @@ class Body:
 
 	def angular_diameter_at(self, dist: float) -> float:
 		"""Angular diameter at distance (rad)"""
-		return atan2(self.diameter, dist)
+		return 2*atan2(self.radius, dist)
 
 	def app_mag(self, other: Orbit) -> (float, float):
 		"""Apparent magnitude, min and max (dimensionless)"""
