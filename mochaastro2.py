@@ -40,6 +40,33 @@ class Orbit:
 	def apo(self) -> float:
 		"""Apoapsis (m)"""
 		return (1+self.e)*self.a
+	
+	@property
+	def cartesian(self) -> (float, float, float, float, float, float):
+		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
+		# todo 1 set mean anomaly at new epoch
+		# 2 eccentric anomaly
+		E = self.eccentric_anomaly
+		# 3 true anomaly
+		nu = self.true_anomaly
+		# 4 distance to central body
+		a, e = self.a, self.e
+		r_c = a*(1-e*cos(E))
+		# 5 get pos and vel vectors o and o_
+		mu = self.parent.mu
+		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
+		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
+		# transform o, o_ into inertial frame
+		i = self.i
+		omega, Omega = self.aop, self.lan
+		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
+		R = lambda x: (
+			x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
+			x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
+			x[0]*(s*sin(i))         + x[1]*(c*sin(i))
+		)
+		r, r_ = R(o), R(o_)
+		return r + r_
 
 	@property
 	def e(self) -> float:
