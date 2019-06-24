@@ -186,6 +186,14 @@ class Orbit:
 		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
 
+	def distance(self, other) -> (float, float):
+		# other is of type Orbit
+		"""Min and max distances (rad)"""
+		ds = abs(self.peri - other.apo), abs(self.apo - other.peri), \
+			 abs(self.peri + other.apo), abs(self.apo + other.peri)
+		dmin, dmax = min(ds), max(ds)
+		return dmin, dmax
+
 	def eccentric_anomaly(self, t: float=0) -> float:
 		"""Eccentric anomaly (radians)"""
 		# get new anomaly
@@ -418,16 +426,20 @@ class Body:
 	# methods
 	def angular_diameter(self, other: Orbit) -> (float, float):
 		"""Angular diameter, min and max (rad)"""
-		ds = abs(self.orbit.peri - other.apo), abs(self.orbit.apo - other.peri), \
-			 abs(self.orbit.peri + other.apo), abs(self.orbit.apo + other.peri)
-		d1, d2 = max(ds), min(ds)
-		# print(d1/au, d2/au)
-		minimum = atan2(2*self.radius, d1)
-		maximum = atan2(2*self.radius, d2)
-		return minimum, maximum
+		dmin, dmax = self.orbit.distance(other)
+		return self.angular_diameter_at(dmax) , self.angular_diameter_at(dmin)
 
-	def app_mag(self, dist: float) -> float:
-		"""Apparent magnitude (dimensionless)"""
+	def angular_diameter_at(self, dist: float) -> (float, float):
+		"""Angular diameter at distance (rad)"""
+		return atan2(2*self.radius, dist)
+
+	def app_mag(self, other: Orbit) -> (float, float):
+		"""Apparent magnitude, min and max (dimensionless)"""
+		dmin, dmax = self.orbit.distance(other)
+		return self.app_mag_at(dmax) , self.app_mag_at(dmin)
+
+	def app_mag_at(self, dist: float) -> float:
+		"""Apparent magnitude at distance (dimensionless)"""
 		# https://astronomy.stackexchange.com/a/5983
 		correction = 8 # solution given in SE gives high results
 		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.orbit.a, self.orbit.parent.abs_mag
