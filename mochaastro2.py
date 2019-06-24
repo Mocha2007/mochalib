@@ -100,7 +100,7 @@ class Orbit:
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs) # seems right
 		plt.subplot(1, 1, 1, aspect='equal')
-		plt.scatter(xs, ys, color='k')
+		plt.plot(xs+(xs[0],), ys+(ys[0],), color='k')
 		plt.scatter(0, 0, marker='*', color='y')
 		plt.title('Orbit')
 		plt.xlabel('x (m)')
