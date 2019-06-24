@@ -337,7 +337,7 @@ class Body:
 		ds = abs(self.orbit.peri - other.apo), abs(self.orbit.apo - other.peri), \
 			 abs(self.orbit.peri + other.apo), abs(self.orbit.apo + other.peri)
 		d1, d2 = max(ds), min(ds)
-		print(d1/au, d2/au)
+		# print(d1/au, d2/au)
 		minimum = atan2(2*self.radius, d1)
 		maximum = atan2(2*self.radius, d2)
 		return minimum, maximum
