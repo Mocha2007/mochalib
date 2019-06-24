@@ -455,6 +455,29 @@ sun = Star(**{
 	'temperature': 5778,
 })
 
+venus = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 1.08208e11,
+		'e': .006772,
+		'i': .0592466,
+		'lan': 1.33832,
+		'aop': .95791,
+		'man': .87467,
+	}),
+	'rotation': Rotation(**{
+		'period': 243.025 * day,
+		'tilt': 3.0955,
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 15900,
+		'surface_pressure': 9.2e6,
+	}),
+	'mass': 4.8675e24,
+	'radius': 6.0518e6,
+	'albedo': .689,
+})
+
 earth = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
