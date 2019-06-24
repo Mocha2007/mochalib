@@ -372,6 +372,11 @@ class Body:
 		return self.mass/self.volume
 
 	@property
+	def diameter(self) -> float:
+		"""Diameter (m)"""
+		return 2*self.radius
+
+	@property
 	def gravbinding(self) -> float:
 		"""gravitational binding energy (J)"""
 		return 3*g*self.mass**2/(5*self.radius)
@@ -431,7 +436,7 @@ class Body:
 
 	def angular_diameter_at(self, dist: float) -> float:
 		"""Angular diameter at distance (rad)"""
-		return atan2(2*self.radius, dist)
+		return atan2(self.diameter, dist)
 
 	def app_mag(self, other: Orbit) -> (float, float):
 		"""Apparent magnitude, min and max (dimensionless)"""
