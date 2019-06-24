@@ -16,6 +16,9 @@ hour = 3600 # s
 day = 86400 # s
 year = 31556952 # s
 jyear = 31536000 # s
+deg = 2*pi/360 # rad
+arcmin = deg/60 # rad
+arcsec = arcmin/60 # rad
 
 
 # classes
@@ -591,3 +594,5 @@ planet_nine = Body(**{
 	'mass': 3e25,
 	'radius': 1.2e7,
 })
+# todo other planets
+# todo rotational axis RA and DEC
