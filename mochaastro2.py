@@ -100,7 +100,8 @@ class Orbit:
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs) # seems right
 		plt.subplot(1, 1, 1, aspect='equal')
-		plt.scatter(xs, ys)
+		plt.scatter(xs, ys, color='k')
+		plt.scatter(0, 0, marker='*', color='y')
 		plt.title('Orbit')
 		plt.xlabel('x (m)')
 		plt.ylabel('y (m)')
@@ -683,6 +684,7 @@ planet_nine = Body(**{
 		'i': .3,
 		'lan': 1.6,
 		'aop': 2.6,
+		'man': 0,
 	}),
 	'mass': 3e25,
 	'radius': 1.2e7,
