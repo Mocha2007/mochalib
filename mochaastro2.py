@@ -531,6 +531,56 @@ class Star(Body):
 		"""Apparent Magnitude (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
 
+class System:
+	"""Set of orbiting bodies"""
+	def __init__(self, *bodies):
+		self.bodies = set(bodies)
+
+	@property
+	def any_body(self) -> Body:
+		"""Returns a body (may or may not be the same each time)"""
+		return list(self.bodies)[0]
+
+	@property
+	def plot(self):
+		"""Plot system with pyplot"""
+		# see above plot for notes and sources
+		import matplotlib.pyplot as plt
+		from matplotlib.animation import FuncAnimation
+		from mpl_toolkits.mplot3d import Axes3D
+
+		n = 100
+		outerp = self.sorted_bodies[-1].orbit.p
+		limit = sorted(list(self.bodies), key=lambda x: x.orbit.apo)[-1].orbit.apo
+
+		fig = plt.figure(figsize=(7, 7))
+		ax = Axes3D(fig)
+		def update(i: int):
+			i %= n
+			plt.cla()
+			ax.set_title('Orbit')
+			ax.set_xlabel('x (m)')
+			ax.set_ylabel('y (m)')
+			ax.set_zlabel('z (m)')
+			ax.set_xlim(-limit, limit)
+			ax.set_ylim(-limit, limit)
+			ax.set_zlim(-limit, limit)
+			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+			for body in self.bodies:
+				cs = [body.orbit.cartesian((t+i)*outerp/n) for t in range(100)]
+				xs, ys, zs, vxs, vys, vzs = zip(*cs)
+				# ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+				ax.scatter(xs[i], ys[i], zs[i], marker='o', s=15, zorder=3) # , color='b'
+			axisEqual3D(ax)
+
+		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
+		plt.show()
+
+	@property
+	def sorted_bodies(self) -> Body:
+		"""List of bodies sorted by semimajor axis"""
+		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
+
 
 # bodies
 sun = Star(**{
@@ -660,6 +710,7 @@ mars = Body(**{
 		'i': .03229,
 		'lan': .86495,
 		'aop': 5.0004,
+		'man': 0.33326,
 	}),
 	'rotation': Rotation(**{
 		'period': 1.025957*day,
@@ -801,5 +852,7 @@ planet_nine = Body(**{
 	'mass': 3e25,
 	'radius': 1.2e7,
 })
+
+solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
 # todo rotational axis RA and DEC
 # planet_nine.orbit.plot
