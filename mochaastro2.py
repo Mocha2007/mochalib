@@ -703,6 +703,73 @@ saturn = Body(**{
 	'albedo': .499,
 })
 
+uranus = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 19.2184*au,
+		'e': .046381,
+		'i': .0135,
+		'lan': 1.2916,
+		'aop': 1.6929494,
+		'man': 2.48253189,
+	}),
+	'rotation': Rotation(**{
+		'period': .71833*day,
+		'tilt': 1.706, # to orbit
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 27700,
+	}),
+	'mass': 8.681e25,
+	'radius': 2.5362e7,
+	'albedo': .488,
+})
+
+neptune = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 30.11*au,
+		'e': .009456,
+		'i': .03085698,
+		'lan': 2.30006,
+		'aop': 4.82297,
+		'man': 4.47202,
+	}),
+	'rotation': Rotation(**{
+		'period': .6713*day,
+		'tilt': .4943, # to orbit
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 19700,
+	}),
+	'mass': 1.02413e26,
+	'radius': 2.4622e7,
+	'albedo': .442,
+})
+
+pluto = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 39.48*au,
+		'e': .2488,
+		'i': .2995,
+		'lan': 1.92508,
+		'aop': 1.98678,
+		'man': .2536,
+	}),
+	'rotation': Rotation(**{
+		'period': 6.38723*day,
+		'tilt': 2.1386, # to orbit
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 60000,
+		'surface_pressure': 1,
+	}),
+	'mass': 1.303e22,
+	'radius': 1.1883e6,
+	'albedo': .6,
+})
+
 planet_nine = Body(**{
 	# http://www.findplanetnine.com/2019/02/version-2x.html
 	'orbit': Orbit(**{
@@ -717,6 +784,5 @@ planet_nine = Body(**{
 	'mass': 3e25,
 	'radius': 1.2e7,
 })
-# todo other planets
 # todo rotational axis RA and DEC
 # planet_nine.orbit.plot
