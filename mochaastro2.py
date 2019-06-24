@@ -429,7 +429,7 @@ class Body:
 		dmin, dmax = self.orbit.distance(other)
 		return self.angular_diameter_at(dmax) , self.angular_diameter_at(dmin)
 
-	def angular_diameter_at(self, dist: float) -> (float, float):
+	def angular_diameter_at(self, dist: float) -> float:
 		"""Angular diameter at distance (rad)"""
 		return atan2(2*self.radius, dist)
 
