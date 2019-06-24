@@ -1,4 +1,4 @@
-from math import acos, atan2, cos, exp, inf, log10, pi, sin
+from math import atan2, cos, exp, inf, log10, pi, sin
 
 # constants
 g = 6.674e-11 # standard gravitational constant
@@ -92,6 +92,21 @@ class Orbit:
 		return (1-self.e)*self.a
 
 	@property
+	def plot(self):
+		"""Plot orbit with pyplot"""
+		import matplotlib.pyplot as plt
+		n = 100
+		ts = [i*self.p/n for i in range(n)]
+		cs = [self.cartesian(t) for t in ts]
+		xs, ys, zs, vxs, vys, vzs = zip(*cs) # seems right
+		plt.subplot(1, 1, 1)
+		plt.scatter(xs, ys)
+		plt.title('Orbit')
+		plt.xlabel('x')
+		plt.xlabel('y')
+		plt.show()
+
+	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
 		return (self.a/self.parent.mu)**-.5
@@ -124,10 +139,12 @@ class Orbit:
 		a, e = self.a, self.e
 		r_c = a*(1-e*cos(E))
 		# 5 get pos and vel vectors o and o_
+		# FIXME something in the O-s is wrong
 		mu = self.parent.mu
 		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
 		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
 		# transform o, o_ into inertial frame
+		# todo fix whatever the fuck is broken here
 		i = self.i
 		omega, Omega = self.aop, self.lan
 		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
@@ -137,19 +154,21 @@ class Orbit:
 			x[0]*(s*sin(i))         + x[1]*(c*sin(i))
 		)
 		r, r_ = R(o), R(o_)
+		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
 
 	def eccentric_anomaly(self, t: float=0) -> float:
 		"""Eccentric anomaly (radians)"""
 		# get new anomaly
-		a, mu = self.a, self.parent.mu
-		dt = day * t
-		M = self.man + dt*(mu/a**3)**.5
+		tol = 1e-10
+		a, e, mu = self.a, self.e, self.parent.mu
+		# dt = day * t
+		M = (self.man + t*(mu/a**3)**.5) % (2*pi)
 		# E = M + e*sin(E)
 		E = M
 		while 1: # ~2 digits per loop
-			E_ = M + self.e*sin(E)
-			if E == E_:
+			E_ = M + e*sin(E)
+			if abs(E-E_) < tol:
 				return E
 			E = E_
 
@@ -169,7 +188,7 @@ class Orbit:
 	def true_anomaly(self, t: float=0) -> float:
 		"""True anomaly (rad)"""
 		E, e = cos(self.eccentric_anomaly(t)), self.e
-		return acos((E - e)/(1 - e*E))
+		return 2 * atan2((1+e)**.5 * sin(E/2), (1-e)**.5 * cos(E/2))
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
