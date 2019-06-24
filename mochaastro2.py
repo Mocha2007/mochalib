@@ -596,12 +596,35 @@ jupiter = Body(**{
 		'tilt': .0546, # to orbit
 	}),
 	'atmosphere': Atmosphere(**{
-		'scale_height': 2.7e4,
+		'scale_height': 27000,
 		'surface_pressure': 7e5,
 	}),
 	'mass': 1.8982e27,
 	'radius': 6.9911e7,
 	'albedo': .538,
+})
+
+saturn = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 9.5826*au,
+		'e': .0565,
+		'i': .04337,
+		'lan': 1.98383,
+		'aop': 5.92351,
+		'man': 5.53304,
+	}),
+	'rotation': Rotation(**{
+		'period': 10*hour + 33*minute + 38,
+		'tilt': .4665, # to orbit
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 59500,
+		'surface_pressure': 1.4e5,
+	}),
+	'mass': 5.6834e26,
+	'radius': 5.8232e7,
+	'albedo': .499,
 })
 
 planet_nine = Body(**{
