@@ -21,6 +21,18 @@ arcmin = deg/60 # rad
 arcsec = arcmin/60 # rad
 
 
+# functions
+def axisEqual3D(ax):
+	import numpy as np
+	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
+	sz = extents[:,1] - extents[:,0]
+	centers = np.mean(extents, axis=1)
+	maxsize = max(abs(sz))
+	r = maxsize/2
+	for ctr, dim in zip(centers, 'xyz'):
+		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
+
+
 # classes
 class Orbit:
 	def __init__(self, **properties):
@@ -104,11 +116,13 @@ class Orbit:
 		xs, ys, zs, vxs, vys, vzs = zip(*cs)
 
 		fig = plt.figure(figsize=(7, 7))
-		fig.add_subplot(1, 1, 1, aspect='equal')
 		ax = Axes3D(fig)
 		def update(i: int):
 			i %= n
 			plt.cla()
+			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years... yeah, guess that'll never happen...
+			# https://github.com/matplotlib/matplotlib/issues/1077/
+			# https://stackoverflow.com/a/19248731/2579798
 			ax.set_title('Orbit')
 			ax.set_xlabel('x (m)')
 			ax.set_ylabel('y (m)')
@@ -116,6 +130,7 @@ class Orbit:
 			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
 			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
+			axisEqual3D(ax)
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
