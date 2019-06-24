@@ -1,4 +1,4 @@
-from math import acos, cos, exp, inf, log10, pi, sin
+from math import acos, atan2, cos, exp, inf, log10, pi, sin
 
 # constants
 g = 6.674e-11 # standard gravitational constant
@@ -332,6 +332,16 @@ class Body:
 		return (mu*self.rotation.p**2/4/pi**2)**(1/3)
 	
 	# methods
+	def angular_diameter(self, other: Orbit) -> (float, float):
+		"""Angular diameter, min and max (rad)"""
+		ds = abs(self.orbit.peri - other.apo), abs(self.orbit.apo - other.peri), \
+			 abs(self.orbit.peri + other.apo), abs(self.orbit.apo + other.peri)
+		d1, d2 = max(ds), min(ds)
+		print(d1/au, d2/au)
+		minimum = atan2(2*self.radius, d1)
+		maximum = atan2(2*self.radius, d2)
+		return minimum, maximum
+
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
 		i, m, o = inner.a, mid.a, outer.a
@@ -490,7 +500,7 @@ moon = Body(**{
 mars = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
-		'sma': 2.279392e8,
+		'sma': 2.279392e11,
 		'e': .0934,
 		'i': .03229,
 		'lan': .86495,
