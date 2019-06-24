@@ -471,6 +471,29 @@ sun = Star(**{
 	'temperature': 5778,
 })
 
+mercury = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 5.790905e10,
+		'e': .20563,
+		'i': .1223,
+		'lan': .84354,
+		'aop': .50831,
+		'man': 3.05077,
+	}),
+	'rotation': Rotation(**{
+		'period': 58.646 * day,
+		'tilt': .00059, # to orbit
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 26000,
+		'surface_pressure': 5e-10,
+	}),
+	'mass': 3.3011e23,
+	'radius': 2.4397e6,
+	'albedo': .142,
+})
+
 venus = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
