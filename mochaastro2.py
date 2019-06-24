@@ -95,26 +95,29 @@ class Orbit:
 	def plot(self):
 		"""Plot orbit with pyplot"""
 		import matplotlib.pyplot as plt
+		from matplotlib.animation import FuncAnimation
+		from mpl_toolkits.mplot3d import Axes3D
+
 		n = 100
 		ts = [i*self.p/n for i in range(n)]
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs)
 
-		plt.subplot(1, 2, 1, aspect='equal')
-		plt.plot(xs+(xs[0],), ys+(ys[0],), color='k', zorder=1)
-		plt.scatter(0, 0, marker='*', color='y', zorder=2)
-		plt.scatter(xs[0], ys[0], marker='o', color='b', s=15, zorder=3)
-		plt.title('Orbit')
-		plt.xlabel('x (m)')
-		plt.ylabel('y (m)')
+		fig = plt.figure(figsize=(7, 7))
+		fig.add_subplot(1, 1, 1, aspect='equal')
+		ax = Axes3D(fig)
+		ax.set_title('Orbit')
+		ax.set_xlabel('x (m)')
+		ax.set_ylabel('y (m)')
+		ax.set_zlabel('z (m)')
+		def update(i: int):
+			i %= n
+			plt.cla()
+			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+			ax.scatter(0, 0, 0, marker='*', color='y', zorder=2)
+			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
 
-		plt.subplot(1, 2, 2, aspect='equal')
-		plt.plot(xs+(xs[0],), zs+(zs[0],), color='k', zorder=1)
-		plt.scatter(0, 0, marker='*', color='y', zorder=2)
-		plt.scatter(xs[0], zs[0], marker='o', color='b', s=15, zorder=3)
-		plt.title('Orbit')
-		plt.xlabel('x (m)')
-		plt.ylabel('z (m)')
+		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
 
 	@property
@@ -701,3 +704,4 @@ planet_nine = Body(**{
 })
 # todo other planets
 # todo rotational axis RA and DEC
+planet_nine.orbit.plot
