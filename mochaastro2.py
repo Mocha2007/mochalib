@@ -40,49 +40,11 @@ class Orbit:
 	def apo(self) -> float:
 		"""Apoapsis (m)"""
 		return (1+self.e)*self.a
-	
-	@property
-	def cartesian(self) -> (float, float, float, float, float, float):
-		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-		# todo 1 set mean anomaly at new epoch
-		# 2 eccentric anomaly
-		E = self.eccentric_anomaly
-		# 3 true anomaly
-		nu = self.true_anomaly
-		# 4 distance to central body
-		a, e = self.a, self.e
-		r_c = a*(1-e*cos(E))
-		# 5 get pos and vel vectors o and o_
-		mu = self.parent.mu
-		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
-		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
-		# transform o, o_ into inertial frame
-		i = self.i
-		omega, Omega = self.aop, self.lan
-		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
-		R = lambda x: (
-			x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
-			x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
-			x[0]*(s*sin(i))         + x[1]*(c*sin(i))
-		)
-		r, r_ = R(o), R(o_)
-		return r + r_
 
 	@property
 	def e(self) -> float:
 		"""Eccentricity (dimensionless)"""
 		return self.properties['e']
-
-	@property
-	def eccentric_anomaly(self) -> float:
-		"""Eccentric anomaly (radians)"""
-		# E = M + e*sin(E)
-		E = self.man
-		while 1: # ~2 digits per loop
-			E_ = self.man + self.e*sin(E)
-			if E == E_:
-				return E
-			E = E_
 
 	@property
 	def i(self) -> float:
@@ -130,12 +92,6 @@ class Orbit:
 		return (1-self.e)*self.a
 
 	@property
-	def true_anomaly(self) -> float:
-		"""True anomaly (rad)"""
-		E, e = cos(self.eccentric_anomaly), self.e
-		return acos((E - e)/(1 - e*E))
-
-	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
 		return (self.a/self.parent.mu)**-.5
@@ -157,6 +113,45 @@ class Orbit:
 		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
 
 	# methods
+	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
+		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
+		# todo 1 set mean anomaly at new epoch
+		# 2 eccentric anomaly
+		E = self.eccentric_anomaly(t)
+		# 3 true anomaly
+		nu = self.true_anomaly(t)
+		# 4 distance to central body
+		a, e = self.a, self.e
+		r_c = a*(1-e*cos(E))
+		# 5 get pos and vel vectors o and o_
+		mu = self.parent.mu
+		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
+		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
+		# transform o, o_ into inertial frame
+		i = self.i
+		omega, Omega = self.aop, self.lan
+		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
+		R = lambda x: (
+			x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
+			x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
+			x[0]*(s*sin(i))         + x[1]*(c*sin(i))
+		)
+		r, r_ = R(o), R(o_)
+		return r + r_
+
+	def eccentric_anomaly(self, t: float=0) -> float:
+		"""Eccentric anomaly (radians)"""
+		# get new anomaly
+		a, mu = self.a, self.parent.mu
+		dt = day * t
+		M = self.man + dt*(mu/a**3)**.5
+		# E = M + e*sin(E)
+		E = M
+		while 1: # ~2 digits per loop
+			E_ = M + self.e*sin(E)
+			if E == E_:
+				return E
+			E = E_
 
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
@@ -170,6 +165,11 @@ class Orbit:
 		# other is type Body
 		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
+
+	def true_anomaly(self, t: float=0) -> float:
+		"""True anomaly (rad)"""
+		E, e = cos(self.eccentric_anomaly(t)), self.e
+		return acos((E - e)/(1 - e*E))
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
