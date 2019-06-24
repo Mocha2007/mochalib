@@ -106,15 +106,15 @@ class Orbit:
 		fig = plt.figure(figsize=(7, 7))
 		fig.add_subplot(1, 1, 1, aspect='equal')
 		ax = Axes3D(fig)
-		ax.set_title('Orbit')
-		ax.set_xlabel('x (m)')
-		ax.set_ylabel('y (m)')
-		ax.set_zlabel('z (m)')
 		def update(i: int):
 			i %= n
 			plt.cla()
+			ax.set_title('Orbit')
+			ax.set_xlabel('x (m)')
+			ax.set_ylabel('y (m)')
+			ax.set_zlabel('z (m)')
 			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-			ax.scatter(0, 0, 0, marker='*', color='y', zorder=2)
+			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
