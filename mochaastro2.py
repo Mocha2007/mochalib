@@ -131,7 +131,7 @@ class Orbit:
 	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
 		# todo 1 set mean anomaly at new epoch
-		# 2 eccentric anomaly
+		# 2 GOOD eccentric anomaly
 		E = self.eccentric_anomaly(t)
 		# 3 true anomaly
 		nu = self.true_anomaly(t)
@@ -160,10 +160,11 @@ class Orbit:
 	def eccentric_anomaly(self, t: float=0) -> float:
 		"""Eccentric anomaly (radians)"""
 		# get new anomaly
+		tau = 2*pi
 		tol = 1e-10
-		a, e, mu = self.a, self.e, self.parent.mu
+		e, p = self.e, self.p
 		# dt = day * t
-		M = (self.man + t*(mu/a**3)**.5) % (2*pi)
+		M = (self.man + tau*t/p) % tau
 		# E = M + e*sin(E)
 		E = M
 		while 1: # ~2 digits per loop
@@ -187,7 +188,7 @@ class Orbit:
 
 	def true_anomaly(self, t: float=0) -> float:
 		"""True anomaly (rad)"""
-		E, e = cos(self.eccentric_anomaly(t)), self.e
+		E, e = self.eccentric_anomaly(t), self.e
 		return 2 * atan2((1+e)**.5 * sin(E/2), (1-e)**.5 * cos(E/2))
 
 	def v_at(self, r: float) -> float:
