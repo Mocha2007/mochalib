@@ -260,6 +260,11 @@ class Body:
 
 	# physical properties
 	@property
+	def albedo(self) -> float:
+		"""Albedo (dimensionless)"""
+		return self.properties['albedo']
+
+	@property
 	def area(self) -> float:
 		"""Surface area (m^2)"""
 		return 4*pi*self.radius**2
@@ -342,6 +347,14 @@ class Body:
 		maximum = atan2(2*self.radius, d2)
 		return minimum, maximum
 
+	def app_mag(self, dist: float) -> float:
+		"""Apparent magnitude (dimensionless)"""
+		# https://astronomy.stackexchange.com/a/5983
+		correction = 8 # solution given in SE gives high results
+		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.orbit.a, self.orbit.parent.abs_mag
+		v_planet = -2.5*log10(a_p * r_p**2 / (4*d_s**2)) - v_sun + correction
+		return v_planet + 5*log10(dist / (10*pc))
+
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
 		i, m, o = inner.a, mid.a, outer.a
@@ -372,7 +385,7 @@ class Star(Body):
 	@property
 	def abs_mag(self) -> float:
 		"""Absolute Magnitude (dimensionless)"""
-		return -2.5 * log(self.luminosity / L_0)
+		return -2.5 * log10(self.luminosity / L_0)
 
 	@property
 	def habitable_zone(self) -> (float, float):
