@@ -102,8 +102,8 @@ class Orbit:
 		plt.subplot(1, 1, 1, aspect='equal')
 		plt.scatter(xs, ys)
 		plt.title('Orbit')
-		plt.xlabel('x (km)')
-		plt.ylabel('y (km)')
+		plt.xlabel('x (m)')
+		plt.ylabel('y (m)')
 		plt.show()
 
 	@property
