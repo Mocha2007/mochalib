@@ -584,21 +584,21 @@ def plot_delta_between(body1: Body, body2: Body):
 
 	fig = plt.figure(figsize=(7, 7))
 	ax = Axes3D(fig)
-	ax.set_title('Body Delta')
-	ax.set_xlabel('x (m)')
-	ax.set_ylabel('y (m)')
-	ax.set_zlabel('z (m)')
-	ax.set_xlim(-limit, limit)
-	ax.set_ylim(-limit, limit)
-	ax.set_zlim(-limit, limit)
-	# body1
-	ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 	def update(i: int):
-		# plt.cla()
-		# plot points
-		x, y, z, vx, vy, vz = [a-b for a, b in zip(body1.orbit.cartesian(i*outerp/n), body2.orbit.cartesian(i*outerp/n))]
-		# ax.plot(xs, ys, zs, color='k', zorder=1)
-		ax.scatter(x, y, z, color='k', zorder=1)
+		plt.cla()
+		ax.set_title('Body Delta')
+		ax.set_xlabel('dx (m)')
+		ax.set_ylabel('dy (m)')
+		ax.set_zlabel('dz (m)')
+		ax.set_xlim(-limit, limit)
+		ax.set_ylim(-limit, limit)
+		ax.set_zlim(-limit, limit)
+		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+		b1s = [body1.orbit.cartesian((t+i)*outerp/n) for t in range(8*n)]
+		b2s = [body2.orbit.cartesian((t+i)*outerp/n) for t in range(8*n)]
+		cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
+		xs, ys, zs, vxs, vys, vzs = zip(*cs)
+		ax.plot(xs, ys, zs, color='k', zorder=1)
 
 	xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 	plt.show()
