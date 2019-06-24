@@ -82,7 +82,7 @@ class Orbit:
 	@property
 	def orbital_energy(self) -> float:
 		"""Specific orbital energy (J)"""
-		return -self.primary.mu/2/self.a
+		return -self.parent.mu/(2*self.a)
 
 	@property
 	def p(self) -> float:
@@ -218,7 +218,7 @@ class Body:
 	@property
 	def hill(self) -> float:
 		"""Hill Sphere (m)"""
-		a, e, m, M = self.orbit.a, self.orbit.e, self.mass, self.orbit.primary.mass
+		a, e, m, M = self.orbit.a, self.orbit.e, self.mass, self.orbit.parent.mass
 		return a*(1-e)*(m/3/M)**(1/3)
 
 	@property
@@ -229,8 +229,13 @@ class Body:
 	@property
 	def temp(self) -> float:
 		"""Planetary equilibrium temperature (K)"""
-		a, R, sma, T = self.albedo, self.orbit.primary.radius, self.orbit.a, self.orbit.primary.temperature
+		a, R, sma, T = self.albedo, self.orbit.parent.radius, self.orbit.a, self.orbit.parent.temperature
 		return T*(1-a)**.25*(R/2/sma)**.5
+
+	@property
+	def tidal_locking(self) -> float:
+		"""Tidal locking timeframe (s)"""
+		return 5e28 * self.orbit.a**6 * self.radius / (self.mass * self.orbit.parent.mass**2)
 
 	# rotation properties
 	@property
