@@ -487,6 +487,28 @@ moon = Body(**{
 	'radius': 1.7371e6,
 })
 
+mars = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 2.279392e8,
+		'e': .0934,
+		'i': .03229,
+		'lan': .86495,
+		'aop': 5.0004,
+	}),
+	'rotation': Rotation(**{
+		'period': 1.025957*day,
+		'tilt': .4396, # to orbital plane
+	}),
+	'atmosphere': Atmosphere(**{
+		'scale_height': 11100,
+		'surface_pressure': 636,
+	}),
+	'mass': 6.4171e23,
+	'radius': 3.3895e6,
+	'albedo': .17,
+})
+
 jupiter = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
