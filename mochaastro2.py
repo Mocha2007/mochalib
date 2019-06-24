@@ -549,14 +549,13 @@ class System:
 		from matplotlib.animation import FuncAnimation
 		from mpl_toolkits.mplot3d import Axes3D
 
-		n = 100
+		n = 1000
 		outerp = self.sorted_bodies[-1].orbit.p
 		limit = sorted(list(self.bodies), key=lambda x: x.orbit.apo)[-1].orbit.apo
 
 		fig = plt.figure(figsize=(7, 7))
 		ax = Axes3D(fig)
 		def update(i: int):
-			i %= n
 			plt.cla()
 			ax.set_title('Orbit')
 			ax.set_xlabel('x (m)')
@@ -570,7 +569,7 @@ class System:
 				cs = [body.orbit.cartesian((t+i)*outerp/n) for t in range(100)]
 				xs, ys, zs, vxs, vys, vzs = zip(*cs)
 				# ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-				ax.scatter(xs[i], ys[i], zs[i], marker='o', s=15, zorder=3) # , color='b'
+				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
 			axisEqual3D(ax)
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
