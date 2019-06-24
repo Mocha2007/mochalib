@@ -570,7 +570,6 @@ class System:
 				xs, ys, zs, vxs, vys, vzs = zip(*cs)
 				# ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
 				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
-			axisEqual3D(ax)
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
