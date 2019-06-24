@@ -598,7 +598,7 @@ earth = Body(**{
 		'parent': sun,
 		'sma': 1.49598023e11,
 		'e': .0167086,
-		'i': .1249,
+		'i': 0, # by definition
 		'lan': -.1965352,
 		'aop': 1.9933027,
 		'man': .1249,
