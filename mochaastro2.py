@@ -480,7 +480,7 @@ class Body:
 
 		# legend
 		plt.legend(handles=[
-			Patch(color='y', label='Sun'),
+			Patch(color='y', label='Star'),
 			Patch(color='grey', label='Moon'),
 		])
 
@@ -823,6 +823,20 @@ moon = Body(**{
 	}),
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
+})
+
+ISS = Body(**{
+	'orbit': Orbit(**{
+		'parent': earth,
+		'sma': 6.791e6,
+		'e': 8.293e-4,
+		'i': .9013,
+		'lan': 5.643,
+		'aop': .8070,
+		'man': 0, # unknown
+	}),
+	'mass': 419725,
+	'radius': (72.8**2 + 108.5**2 + 20**2)**.5 / 2,
 })
 
 mars = Body(**{
