@@ -373,6 +373,38 @@ class Body:
 	def area(self) -> float:
 		"""Surface area (m^2)"""
 		return 4*pi*self.radius**2
+	
+	@property
+	def category(self) -> str:
+		"""Attempt to categorize the body"""
+		if isinstance(self, Star):
+			return 'star'
+		isround = 2e5 < self.radius
+		if isinstance(self.orbit.parent, Star):
+			# heliocentric
+			if not isround:
+				return 'asteroid'
+			# planets and dwarf planets
+			if self.planetary_discriminant < 1:
+				return 'dwarf planet'
+			# planets
+			if self.radius < mercury.radius:
+				return 'mesoplanet'
+			if self.radius < 4/5 * earth.radius:
+				return 'subearth'
+			if self.radius < 5/4 * earth.radius:
+				return 'earthlike'
+			if self.mass < 10 * earth.mass:
+				return 'superearth'
+			if self.mass < 3e26: # SWAG
+				return 'ice giant'
+			if self.mass < 13*jupiter.mass:
+				return 'gas giant'
+			return 'brown dwarf'
+		# moons
+		if isround:
+			return 'major moon'
+		return 'minor moon'
 
 	@property
 	def circumference(self) -> float:
