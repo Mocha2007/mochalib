@@ -1,6 +1,7 @@
 from math import atan2, cos, exp, inf, log10, pi, sin
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.patches import Circle
 from mpl_toolkits.mplot3d import Axes3D
 
 # constants
@@ -415,6 +416,32 @@ class Body:
 	def schwarzschild(self) -> float:
 		"""Schwarzschild radius (m)"""
 		return 2*self.mu/c**2
+
+	@property
+	def solar_eclipse(self) -> float:
+		"""Draw maximum eclipsing radii"""
+		moon, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
+		moon_radius = moon.angular_diameter_at(moon.orbit.peri - planet.radius)
+		star_radius = star.angular_diameter_at(planet.orbit.apo - planet.radius)
+
+		resolution = 1000
+
+		fig, ax = plt.subplots()
+		ax.axis('scaled')
+		plt.title('Apparent Diameters from Surface')
+		plt.xlabel('x (rad)')
+		plt.ylabel('y (rad)')
+		# star
+		star_circle = Circle((0, 0), radius=star_radius, color='y')
+		star_ring = Circle((0, 0), radius=star_radius, color='k', linestyle='-', fill=False)
+		# moon
+		moon_circle = Circle((0, 0), radius=moon_radius, color='grey')
+
+		ax.add_artist(star_circle)
+		ax.add_artist(moon_circle)
+		ax.add_artist(star_ring)
+
+		plt.show()
 
 	@property
 	def v_e(self) -> float:
