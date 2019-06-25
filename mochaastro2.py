@@ -478,6 +478,13 @@ class Body:
 		ax.add_artist(moon_circle)
 		ax.add_artist(star_ring)
 
+		# legend
+		plt.legend(handles=[
+			Patch(color='y', label='Sun (Visible)'),
+			Patch(color='k', label='Sun (Invisible)'),
+			Patch(color='grey', label='Moon'),
+		])
+
 		plt.show()
 
 	@property
