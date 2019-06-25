@@ -472,7 +472,7 @@ class Body:
 		star_circle = Circle((0, 0), radius=star_radius, color='y')
 		star_ring = Circle((0, 0), radius=star_radius, color='y', linestyle='-', fill=False)
 		# moon
-		moon_circle = Circle((0, 0), radius=moon_radius, color='grey')
+		moon_circle = Circle((0, 0), radius=moon_radius, color='k')
 
 		ax.add_artist(star_circle)
 		ax.add_artist(moon_circle)
@@ -481,7 +481,7 @@ class Body:
 		# legend
 		plt.legend(handles=[
 			Patch(color='y', label='Star'),
-			Patch(color='grey', label='Moon'),
+			Patch(color='k', label='Moon'),
 		])
 
 		plt.show()
