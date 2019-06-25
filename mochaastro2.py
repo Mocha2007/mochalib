@@ -193,6 +193,12 @@ class Orbit:
 		dmin, dmax = min(ds), max(ds)
 		return dmin, dmax
 
+	def distance_to(self, other, t: float) -> float:
+		# other is of type Orbit
+		"""Distance between orbits at time t (m)"""
+		a, b = self.cartesian(t)[:3], other.cartesian(t)[:3]
+		return sum((i-j)**2 for i, j in zip(a, b))**.5
+
 	def eccentric_anomaly(self, t: float=0) -> float:
 		"""Eccentric anomaly (radians)"""
 		# get new anomaly
@@ -585,7 +591,6 @@ def plot_delta_between(body1: Body, body2: Body):
 
 	fig = plt.figure(figsize=(7, 7))
 	ax = Axes3D(fig)
-	plt.cla()
 	ax.set_title('Body Delta')
 	ax.set_xlabel('dx (m)')
 	ax.set_ylabel('dy (m)')
@@ -599,6 +604,24 @@ def plot_delta_between(body1: Body, body2: Body):
 	cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
 	xs, ys, zs, vxs, vys, vzs = zip(*cs)
 	ax.plot(xs, ys, zs, color='k', zorder=1)
+
+	plt.show()
+
+
+# functions
+def plot_distance(body1: Body, body2: Body):
+	"""Plot distance between two bodies over several orbits"""
+	resolution = 100
+	orbits = 8
+	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+
+	fig = plt.figure(figsize=(7, 7))
+	plt.title('Body Delta')
+	plt.xlabel('time since epoch (s)')
+	plt.ylabel('distance (m)')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
+	plt.plot(ts, xs, color='k')
 
 	plt.show()
 
@@ -876,4 +899,5 @@ planet_nine = Body(**{
 inner_solar_system = System(mercury, venus, earth, mars)
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
 # todo rotational axis RA and DEC
+# todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
