@@ -864,6 +864,20 @@ earth = Body(**{
 	'albedo': .367,
 })
 
+ISS = Body(**{
+	'orbit': Orbit(**{
+		'parent': earth,
+		'sma': 6.791e6,
+		'e': 8.293e-4,
+		'i': .9013,
+		'lan': 5.643,
+		'aop': .8070,
+		'man': 0, # unknown
+	}),
+	'mass': 419725,
+	'radius': (72.8**2 + 108.5**2 + 20**2)**.5 / 2,
+})
+
 moon = Body(**{
 	'orbit': Orbit(**{
 		'parent': earth,
@@ -884,20 +898,6 @@ moon = Body(**{
 	}),
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
-})
-
-ISS = Body(**{
-	'orbit': Orbit(**{
-		'parent': earth,
-		'sma': 6.791e6,
-		'e': 8.293e-4,
-		'i': .9013,
-		'lan': 5.643,
-		'aop': .8070,
-		'man': 0, # unknown
-	}),
-	'mass': 419725,
-	'radius': (72.8**2 + 108.5**2 + 20**2)**.5 / 2,
 })
 
 mars = Body(**{
@@ -921,6 +921,25 @@ mars = Body(**{
 	'mass': 6.4171e23,
 	'radius': 3.3895e6,
 	'albedo': .17,
+})
+
+ceres = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 2.7675*au,
+		'e': .075823,
+		'i': .18488,
+		'lan': 1.40201,
+		'aop': 1.26575,
+		'man': 1.67533,
+	}),
+	'rotation': Rotation(**{
+		'period': 9.074170*hour,
+		'tilt': .07,
+	}),
+	'mass': 9.393e20,
+	'radius': 473000,
+	'albedo': .09,
 })
 
 jupiter = Body(**{
