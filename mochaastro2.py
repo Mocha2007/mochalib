@@ -739,6 +739,21 @@ class System:
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
+	
+	@property
+	def mass_pie(self):
+		"""Mass pie chart"""
+		system_masses = [i.mass for i in self.bodies]
+
+		plt.subplot(1, 2, 1)
+		plt.title('System mass')
+		plt.pie(system_masses + [self.any_body.orbit.parent.mass])
+
+		plt.subplot(1, 2, 2)
+		plt.title('System mass (excl. primary)')
+		plt.pie(system_masses)
+
+		plt.show()
 
 	@property
 	def sorted_bodies(self) -> Body:
