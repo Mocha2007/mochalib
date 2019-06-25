@@ -1,7 +1,7 @@
 from math import atan2, cos, exp, inf, log10, pi, sin
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from matplotlib.patches import Circle
+from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 
 # constants
@@ -388,6 +388,45 @@ class Body:
 		return 3*g*self.mass**2/(5*self.radius)
 
 	@property
+	def lunar_eclipse(self) -> float:
+		"""Draw average eclipsing radii"""
+		moon, planet = self, self.orbit.parent
+		a = moon.orbit.a
+		moon_radius = moon.angular_diameter_at(a - planet.radius)
+		umbra_radius = atan2(planet.umbra_at(a), a)
+		penumbra_radius = atan2(planet.penumbra_at(a), a)
+		print(moon_radius, umbra_radius, penumbra_radius)
+
+		fig, ax = plt.subplots()
+		ax.axis('scaled')
+		plt.title('Apparent Diameters from Surface')
+		plt.xlabel('x (rad)')
+		plt.ylabel('y (rad)')
+		# umbra
+		umbra_circle = Circle((0, 0), radius=umbra_radius, color='k')
+		umbra_ring = Circle((0, 0), radius=umbra_radius, color='k', linestyle='-', fill=False)
+		# penumbra
+		penumbra_circle = Circle((0, 0), radius=penumbra_radius, color='grey')
+		penumbra_ring = Circle((0, 0), radius=penumbra_radius, color='grey', linestyle='-', fill=False)
+		# moon
+		moon_circle = Circle((0, 0), radius=moon_radius, color='cyan')
+
+		ax.add_artist(penumbra_circle)
+		ax.add_artist(umbra_circle)
+		ax.add_artist(moon_circle)
+		ax.add_artist(penumbra_ring)
+		ax.add_artist(umbra_ring)
+
+		# legend
+		plt.legend(handles=[
+			Patch(color='cyan', label='Moon'),
+			Patch(color='black', label='Umbra'),
+			Patch(color='grey', label='Penumbra'),
+		])
+
+		plt.show()
+
+	@property
 	def mass(self) -> float:
 		"""Mass (kg)"""
 		return self.properties['mass']
@@ -423,8 +462,6 @@ class Body:
 		moon, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
 		moon_radius = moon.angular_diameter_at(moon.orbit.peri - planet.radius)
 		star_radius = star.angular_diameter_at(planet.orbit.apo - planet.radius)
-
-		resolution = 1000
 
 		fig, ax = plt.subplots()
 		ax.axis('scaled')
@@ -502,10 +539,20 @@ class Body:
 		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
 		return dv1 + dv2
 
+	def penumbra_at(self, distance: float) -> float:
+		planet, star = self, self.orbit.parent
+		slope = (planet.radius+star.radius) / planet.orbit.a # line drawn from "top of star" to "bottom of planet"
+		return slope*distance + planet.radius
+
 	def roche(self, other) -> float:
 		"""Roche limit of a body orbiting this one (m)"""
 		m, rho = self.mass, other.density
 		return (9*m/4/pi/rho)**(1/3)
+
+	def umbra_at(self, distance: float) -> float:
+		planet, star = self, self.orbit.parent
+		slope = (planet.radius-star.radius) / planet.orbit.a # line drawn from "top of star" to "top of planet"
+		return slope*distance + planet.radius
 
 
 # ty https://www.python-course.eu/python3_inheritance.php
