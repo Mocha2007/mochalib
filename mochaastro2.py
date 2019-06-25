@@ -504,6 +504,10 @@ class Body:
 		return (mu*self.rotation.p**2/4/pi**2)**(1/3)
 	
 	# methods
+	def acc_towards(self, other, t: float) -> float:
+		"""Acceleration of self towards other body at time t (m/s^2)"""
+		return self.force_between(other, t) / self.mass
+
 	def angular_diameter(self, other: Orbit) -> (float, float):
 		"""Angular diameter, min and max (rad)"""
 		dmin, dmax = self.orbit.distance(other)
@@ -536,6 +540,12 @@ class Body:
 		dv2 = (2*mu/m-mu/a2)**.5-(2*mu/m-mu/a1)**.5
 		dv3 = (2*mu/o-mu/a2)**.5-(mu/o)**.5
 		return dv1 + dv2 + dv3
+
+	def force_between(self, other, t: float) -> float:
+		"""Force between two bodies at time t (N)"""
+		m1, m2 = self.mass, other.mass
+		r = self.orbit.distance_to(other.orbit, t)
+		return g*m1*m2/r**2
 
 	def hohmann(self, inner: Orbit, outer: Orbit) -> float:
 		"""Hohmann transfer delta-v (m/s)"""
@@ -688,7 +698,6 @@ def plot_delta_between(body1: Body, body2: Body):
 	plt.show()
 
 
-# functions
 def plot_distance(body1: Body, body2: Body):
 	"""Plot distance between two bodies over several orbits"""
 	resolution = 1000
@@ -701,6 +710,24 @@ def plot_distance(body1: Body, body2: Body):
 	plt.ylabel('distance (m)')
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
 	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
+	plt.plot(ts, xs, color='k')
+
+	plt.show()
+
+
+def plot_grav_acc(body1: Body, body2: Body):
+	"""Plot gravitational acceleration from one body to another over several orbits"""
+	resolution = 1000
+	orbits = 8
+	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+
+	fig = plt.figure(figsize=(7, 7))
+	plt.title('Body Delta')
+	plt.xlabel('time since epoch (s)')
+	plt.ylabel('acceleration (m/s^2)')
+	plt.yscale('log')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs = [body1.acc_towards(body2, t) for t in ts]
 	plt.plot(ts, xs, color='k')
 
 	plt.show()
