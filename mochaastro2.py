@@ -965,6 +965,24 @@ jupiter = Body(**{
 	'albedo': .538,
 })
 
+hektor = Body(**{ # 624 Hektor; largest trojan
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 5.2571*au,
+		'e': .0238,
+		'i': .31706,
+		'lan': 1.4020,
+		'aop': 5.9828,
+		'man': 2.3752,
+	}),
+	'rotation': Rotation(**{
+		'period': 6.9205*hour,
+	}),
+	'mass': 9.95e18,
+	'radius': 1e5,
+	'albedo': .05,
+})
+
 saturn = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
