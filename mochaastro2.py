@@ -449,6 +449,19 @@ class Body:
 		return g * self.mass
 
 	@property
+	def planetary_discriminant(self) -> float:
+		"""Margot's planetary discriminant (dimensionless)"""
+		a, m, M = self.orbit.a/au, self.mass/earth.mass, self.orbit.parent.mass/sun.mass
+		# everything above is confirmed correct
+		# https://en.wikipedia.org/wiki/Clearing_the_neighbourhood#cite_note-5
+		# C, m_earth, m_sun, t_sun = 2*3**.5, earth.mass, sun.mass, sun.lifespan/year
+		# k = 3**.5 * C**(-3/2) * (100*t_sun)**(3/4) * m_earth/m_sun
+		# everything below is confirmed correct
+		# print(807, '~', k)
+		k = 807
+		return k*m/(M**(5/2)*a**(9/8))
+
+	@property
 	def radius(self) -> float:
 		"""Radius (m)"""
 		return self.properties['radius']
@@ -612,8 +625,8 @@ class Star(Body):
 
 	@property
 	def lifespan(self) -> float:
-		"""Estimated lifespam (s)"""
-		return 3.97310184e17*self.mass**-2.5162
+		"""Estimated lifespan (s)"""
+		return 3e17*(self.mass/sun.mass)**-2.5162
 
 	@property
 	def luminosity(self) -> float:
