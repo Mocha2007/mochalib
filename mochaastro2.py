@@ -409,7 +409,7 @@ class Body:
 		penumbra_circle = Circle((0, 0), radius=penumbra_radius, color='grey')
 		penumbra_ring = Circle((0, 0), radius=penumbra_radius, color='grey', linestyle='-', fill=False)
 		# moon
-		moon_circle = Circle((0, 0), radius=moon_radius, color='cyan')
+		moon_circle = Circle((0, 0), radius=moon_radius, color='orange')
 
 		ax.add_artist(penumbra_circle)
 		ax.add_artist(umbra_circle)
@@ -419,7 +419,7 @@ class Body:
 
 		# legend
 		plt.legend(handles=[
-			Patch(color='cyan', label='Moon'),
+			Patch(color='orange', label='Moon'),
 			Patch(color='black', label='Umbra'),
 			Patch(color='grey', label='Penumbra'),
 		])
