@@ -611,7 +611,7 @@ def plot_delta_between(body1: Body, body2: Body):
 # functions
 def plot_distance(body1: Body, body2: Body):
 	"""Plot distance between two bodies over several orbits"""
-	resolution = 100
+	resolution = 1000
 	orbits = 8
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
 
