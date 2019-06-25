@@ -1,4 +1,4 @@
-from math import atan2, cos, exp, inf, log10, pi, sin
+from math import acos, atan2, cos, exp, inf, log10, pi, sin
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
@@ -215,6 +215,14 @@ class Orbit:
 			if abs(E-E_) < tol:
 				return E
 			E = E_
+	
+	def relative_inclination(self, other) -> float:
+		import numpy as np
+		t, p , T, P = self.i, self.lan, other.i, other.lan
+		# vectors perpendicular to orbital planes
+		v_self = np.array([sin(t)*cos(p), sin(t)*sin(p), cos(t)])
+		v_other = np.array([sin(T)*cos(P), sin(T)*sin(P), cos(T)])
+		return acos(np.dot(v_self, v_other))
 
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
@@ -228,6 +236,10 @@ class Orbit:
 		# other is type Body
 		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
+	
+	def tisserand(self, other) -> float:
+		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
+		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
 
 	def true_anomaly(self, t: float=0) -> float:
 		"""True anomaly (rad)"""
@@ -966,6 +978,7 @@ jupiter = Body(**{
 })
 
 hektor = Body(**{ # 624 Hektor; largest trojan
+	# fixme Epoch 23 March 2018
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 5.2571*au,
