@@ -975,6 +975,24 @@ pluto = Body(**{
 	'albedo': .6,
 })
 
+sedna = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 506.8*au,
+		'e': .85491,
+		'i': .2081954,
+		'lan': 2.52280,
+		'aop': 5.4330,
+		'man': 6.25112,
+	}),
+	'rotation': Rotation(**{
+		'period': 10.3*hour,
+	}),
+	'mass': 9e20, # SWAG from Pluto
+	'radius': 5e5,
+	'albedo': .32,
+})
+
 planet_nine = Body(**{
 	# http://www.findplanetnine.com/2019/02/version-2x.html
 	'orbit': Orbit(**{
@@ -992,6 +1010,7 @@ planet_nine = Body(**{
 
 inner_solar_system = System(mercury, venus, earth, mars)
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
+kuiper = System(neptune, pluto, sedna, planet_nine)
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
