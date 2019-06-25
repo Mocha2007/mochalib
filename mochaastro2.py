@@ -155,6 +155,13 @@ class Orbit:
 			return self.v
 		e = self.e
 		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
+	
+	# double underscore methods
+	def __gt__(self, other) -> bool:
+		return other.apo < self.peri
+
+	def __lt__(self, other) -> bool:
+		return self.apo < other.peri
 
 	# methods
 	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
@@ -225,6 +232,12 @@ class Orbit:
 		v_self = np.array([sin(t)*cos(p), sin(t)*sin(p), cos(t)])
 		v_other = np.array([sin(T)*cos(P), sin(T)*sin(P), cos(T)])
 		return acos(np.dot(v_self, v_other))
+
+	def resonant(self, ratio: float):
+		"""Get a resonant orbit from this one"""
+		p = {key: value for key, value in self.properties.items()}
+		p['sma'] = self.a * ratio**(2/3)
+		return Orbit(**p)
 
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
