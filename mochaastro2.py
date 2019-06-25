@@ -890,10 +890,10 @@ planet_nine = Body(**{
 		'i': .3,
 		'lan': 1.6,
 		'aop': 2.6,
-		'man': 0,
+		'man': 0, # could be literally anything in [0, 2pi)
 	}),
 	'mass': 3e25,
-	'radius': 1.2e7,
+	'radius': 1.2e7, # SWAG
 })
 
 inner_solar_system = System(mercury, venus, earth, mars)
