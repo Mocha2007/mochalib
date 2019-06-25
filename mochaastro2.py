@@ -870,6 +870,9 @@ moon = Body(**{
 		'sma': 3.84399e8,
 		'e': .0549,
 		'i': .0898,
+		'lan': 0, # unknown
+		'aop': 0, # unknown
+		'man': 0, # unknown
 	}),
 	'rotation': Rotation(**{
 		'period': 27.321661*day,
