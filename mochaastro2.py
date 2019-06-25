@@ -508,6 +508,18 @@ class Body:
 		"""Acceleration of self towards other body at time t (m/s^2)"""
 		return self.force_between(other, t) / self.mass
 
+	def acc_vector_towards(self, other, t: float) -> (float, float, float):
+		"""Acceleration vector of self towards other body at time t (m/s^2)"""
+		a, b = self.orbit.cartesian(t)[:3], other.orbit.cartesian(t)[:3]
+		dx, dy, dz = [i-j for i, j in zip(a, b)]
+		scale_factor = (dx**2 + dy**2 + dz**2)**.5
+		acc = self.acc_towards(other, t)
+		ax, ay, az = [acc*i/scale_factor for i in (dx, dy, dz)] # scale_factor*i is in [0, 1]
+		# print(self.acc_towards(other, t))
+		# print(ax, ay, az)
+		# print('plot_grav_acc_vector(sedna, planet_nine)')
+		return ax, ay, az
+
 	def angular_diameter(self, other: Orbit) -> (float, float):
 		"""Angular diameter, min and max (rad)"""
 		dmin, dmax = self.orbit.distance(other)
@@ -729,6 +741,24 @@ def plot_grav_acc(body1: Body, body2: Body):
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
 	xs = [body1.acc_towards(body2, t) for t in ts]
 	plt.plot(ts, xs, color='k')
+
+	plt.show()
+
+def plot_grav_acc_vector(body1: Body, body2: Body):
+	"""Plot gravitational acceleration vector from one body to another over several orbits"""
+	resolution = 100
+	orbits = 8
+	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+
+	fig = plt.figure(figsize=(7, 7))
+	ax = Axes3D(fig)
+	ax.set_title('Acceleration')
+	ax.set_xlabel('x (m/s^2)')
+	ax.set_ylabel('y (m/s^2)')
+	ax.set_zlabel('z (m/s^2)')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs, ys, zs = zip(*[body1.acc_vector_towards(body2, t) for t in ts])
+	ax.plot(xs, ys, zs, color='k')
 
 	plt.show()
 
