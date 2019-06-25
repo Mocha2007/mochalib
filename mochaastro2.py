@@ -392,9 +392,10 @@ class Body:
 		"""Draw maximum eclipsing radii"""
 		moon, planet = self, self.orbit.parent
 		a = moon.orbit.peri
-		moon_radius = moon.angular_diameter_at(a - planet.radius)
-		umbra_radius = atan2(planet.umbra_at(a), a)
-		penumbra_radius = atan2(planet.penumbra_at(a), a)
+		r = planet.radius
+		moon_radius = moon.angular_diameter_at(a-r)
+		umbra_radius = atan2(planet.umbra_at(a), a-r)
+		penumbra_radius = atan2(planet.penumbra_at(a), a-r)
 
 		fig, ax = plt.subplots()
 		ax.axis('scaled')
