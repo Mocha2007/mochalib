@@ -759,6 +759,7 @@ def plot_grav_acc_vector(body1: Body, body2: Body):
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
 	xs, ys, zs = zip(*[body1.acc_vector_towards(body2, t) for t in ts])
 	ax.plot(xs, ys, zs, color='k')
+	axisEqual3D(ax)
 
 	plt.show()
 
