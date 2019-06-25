@@ -470,7 +470,7 @@ class Body:
 		plt.ylabel('y (rad)')
 		# star
 		star_circle = Circle((0, 0), radius=star_radius, color='y')
-		star_ring = Circle((0, 0), radius=star_radius, color='k', linestyle='-', fill=False)
+		star_ring = Circle((0, 0), radius=star_radius, color='y', linestyle='-', fill=False)
 		# moon
 		moon_circle = Circle((0, 0), radius=moon_radius, color='grey')
 
@@ -480,8 +480,7 @@ class Body:
 
 		# legend
 		plt.legend(handles=[
-			Patch(color='y', label='Sun (Visible)'),
-			Patch(color='k', label='Sun (Invisible)'),
+			Patch(color='y', label='Sun'),
 			Patch(color='grey', label='Moon'),
 		])
 
