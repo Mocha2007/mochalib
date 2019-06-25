@@ -576,6 +576,14 @@ class Body:
 		mu = g*self.mass
 		return (mu*self.rotation.p**2/4/pi**2)**(1/3)
 	
+	# double underscore methods
+	def __gt__(self, other) -> bool:
+		# WA uses radius, so despite my better judgement, so will I
+		return other.radius < self.radius
+
+	def __lt__(self, other) -> bool:
+		return self.radius < other.radius
+	
 	# methods
 	def acc_towards(self, other, t: float) -> float:
 		"""Acceleration of self towards other body at time t (m/s^2)"""
