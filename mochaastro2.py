@@ -578,7 +578,8 @@ class System:
 # functions
 def plot_delta_between(body1: Body, body2: Body):
 	"""Plot system with pyplot"""
-	n = 50
+	resolution = 100
+	orbits = 8
 	limit = max([body1, body2], key=lambda x: x.orbit.apo).orbit.apo*2
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
 
@@ -593,8 +594,8 @@ def plot_delta_between(body1: Body, body2: Body):
 	ax.set_ylim(-limit, limit)
 	ax.set_zlim(-limit, limit)
 	ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-	b1s = [body1.orbit.cartesian(t*outerp/n) for t in range(8*n)]
-	b2s = [body2.orbit.cartesian(t*outerp/n) for t in range(8*n)]
+	b1s = [body1.orbit.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
+	b2s = [body2.orbit.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
 	cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
 	xs, ys, zs, vxs, vys, vzs = zip(*cs)
 	ax.plot(xs, ys, zs, color='k', zorder=1)
