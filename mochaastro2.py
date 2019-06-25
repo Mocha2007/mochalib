@@ -890,6 +890,22 @@ ISS = Body(**{
 	'radius': (72.8**2 + 108.5**2 + 20**2)**.5 / 2,
 })
 
+_6Q0B44E = Body(**{
+	'orbit': Orbit(**{
+		# fixme epoch 2004
+		'parent': earth,
+		'sma': 7.84e8,
+		'e': .254,
+		'i': .1,
+		'lan': 5.2,
+		'aop': .6,
+		'man': 5.6,
+	}),
+	'mass': 1e4, # assume like J002E3
+	'radius': 5, # Its density has been estimated as around 15 kg/m3
+	'albedo': .12,
+})
+
 moon = Body(**{
 	'orbit': Orbit(**{
 		'parent': earth,
