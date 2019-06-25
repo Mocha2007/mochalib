@@ -158,6 +158,7 @@ class Orbit:
 
 	# methods
 	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
+		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
 		# todo 1 set mean anomaly at new epoch
 		# 2 GOOD eccentric anomaly
@@ -217,6 +218,7 @@ class Orbit:
 			E = E_
 	
 	def relative_inclination(self, other) -> float:
+		"""Relative inclination between two orbital planes (rad)"""
 		import numpy as np
 		t, p , T, P = self.i, self.lan, other.i, other.lan
 		# vectors perpendicular to orbital planes
@@ -238,6 +240,7 @@ class Orbit:
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
 	
 	def tisserand(self, other) -> float:
+		"""Tisserand's parameter (dimensionless)"""
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
 
@@ -625,6 +628,7 @@ class Body:
 		return dv1 + dv2
 
 	def penumbra_at(self, distance: float) -> float:
+		"""Penumbra radius at distance (m)"""
 		planet, star = self, self.orbit.parent
 		slope = (planet.radius+star.radius) / planet.orbit.a # line drawn from "top of star" to "bottom of planet"
 		return slope*distance + planet.radius
@@ -635,6 +639,7 @@ class Body:
 		return (9*m/4/pi/rho)**(1/3)
 
 	def umbra_at(self, distance: float) -> float:
+		"""Umbra radius at distance (m)"""
 		planet, star = self, self.orbit.parent
 		slope = (planet.radius-star.radius) / planet.orbit.a # line drawn from "top of star" to "top of planet"
 		return slope*distance + planet.radius
@@ -698,6 +703,7 @@ class Star(Body):
 class System:
 	"""Set of orbiting bodies"""
 	def __init__(self, *bodies):
+		"""Star system containing bodies.\nDoesn't need to be ordered."""
 		self.bodies = set(bodies)
 
 	@property
