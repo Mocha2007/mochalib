@@ -50,7 +50,7 @@ class Orbit:
 	@property
 	def animate(self):
 		"""Animate orbit with pyplot"""
-		n = 100
+		n = 1000
 		ts = [i*self.p/n for i in range(n)]
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs)
@@ -58,6 +58,7 @@ class Orbit:
 		fig = plt.figure(figsize=(7, 7))
 		ax = Axes3D(fig)
 		def update(i: int):
+			i *= 5
 			i %= n
 			plt.cla()
 			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years... yeah, guess that'll never happen...
@@ -138,7 +139,7 @@ class Orbit:
 	@property
 	def plot(self):
 		"""Plot orbit with pyplot"""
-		n = 100
+		n = 1000
 		ts = [i*self.p/n for i in range(n)]
 		cs = [self.cartesian(t) for t in ts]
 		xs, ys, zs, vxs, vys, vzs = zip(*cs)
