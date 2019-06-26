@@ -315,6 +315,12 @@ class Atmosphere:
 		return self.properties['composition']
 
 	@property
+	def greenhouse(self) -> float:
+		"""Estimate greenhouse factor (dimensionless)"""
+		c = (288/earth.temp)/earth.atmosphere.partial_pressure('CO2') # fraction increase per Pa CO2
+		return c * self.partial_pressure('CO2')
+
+	@property
 	def scale_height(self) -> float:
 		"""Scale height (m)"""
 		return self.properties['scale_height']
@@ -325,6 +331,10 @@ class Atmosphere:
 		return self.properties['surface_pressure']
 
 	# methods
+	def partial_pressure(self, molecule: str) -> float:
+		"""Partial pressure of a molecule on the surface (Pa)"""
+		return self.surface_pressure * self.composition[molecule]
+
 	def pressure(self, altitude: float) -> float:
 		"""Pressure at altitude (Pa)"""
 		return self.surface_pressure * exp(-altitude / self.scale_height)
@@ -803,6 +813,10 @@ class System:
 
 
 # functions
+def apsides2ecc(apo: float, peri: float) -> (float, float):
+	return (apo+peri)/2, (apo-peri)/(apo+peri)
+
+
 def plot_delta_between(body1: Body, body2: Body):
 	"""Plot system with pyplot"""
 	resolution = 100
@@ -897,7 +911,7 @@ def stargen(m: float) -> Star:
 	else:
 		lum = .2264*m**2.52
 	return Star(**{
-		'mass': m,
+		'mass': m*sun.mass,
 		'radius': sun.radius*m**0.96,
 		'luminosity': sun.luminosity*lum,
 		'temperature': 5772*m**.54,
@@ -999,6 +1013,9 @@ earth = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 8500,
 		'surface_pressure': 101325,
+		'composition': { # todo: rest
+			'CO2':  4.08e-4,
+		},
 	}),
 	'mass': 5.97237e24,
 	'radius': 6.371e6,
