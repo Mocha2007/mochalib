@@ -1119,6 +1119,24 @@ saturn = Body(**{
 	'albedo': .499,
 })
 
+halley = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 17.834*au,
+		'e': .96714,
+		'i': 2.8320,
+		'lan': 1.020,
+		'aop': 1.9431,
+		'man': .6699,
+	}),
+	'rotation': Rotation(**{
+		'period': 2.2*day,
+	}),
+	'mass': 2.2e14,
+	'radius': 5.5e3,
+	'albedo': .04,
+})
+
 uranus = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
