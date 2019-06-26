@@ -286,14 +286,6 @@ class Atmosphere:
 	def __init__(self, **properties):
 		self.properties = properties
 
-	# THIS IS WRONG
-	# @property
-	# def mass(self) -> float:
-	# 	"""Atmospheric mass (kg)"""
-	# 	# derived via integration
-	# 	c = 6e9
-	# 	return c * self.scale_height * self.surface_pressure
-
 	@property
 	def composition(self) -> dict:
 		"""Composition (element: fraction)"""
@@ -373,6 +365,11 @@ class Body:
 	def v_tan(self) -> float:
 		"""Equatorial rotation velocity (m/s)"""
 		return 2*pi*self.radius/self.rotation.p
+
+	@property
+	def atmosphere_mass(self) -> float:
+		"""Mass of the atmosphere (kg)"""
+		return self.atmosphere.surface_pressure * self.area / self.surface_gravity
 
 	# atmospheric properties
 	@property
