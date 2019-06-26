@@ -863,6 +863,7 @@ def plot_grav_acc(body1: Body, body2: Body):
 
 	plt.show()
 
+
 def plot_grav_acc_vector(body1: Body, body2: Body):
 	"""Plot gravitational acceleration vector from one body to another over several orbits"""
 	resolution = 100
@@ -881,6 +882,27 @@ def plot_grav_acc_vector(body1: Body, body2: Body):
 	axisEqual3D(ax)
 
 	plt.show()
+
+
+def stargen(m: float) -> Star:
+	"""Generate star from mass"""
+	m /= sun.mass
+	# default exponents: .74,3,.505,-2.5
+	# I find 0.96 a better approximation than 0.74, at least for smaller stars.
+	# I find 0.54 a very slightly better approximation than 0.505, at least for smaller stars.
+	# Luminosity and time values from https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
+	# L
+	if m > .45:
+		lum = 1.148*m**3.4751
+	else:
+		lum = .2264*m**2.52
+	return Star(**{
+		'mass': m,
+		'radius': sun.radius*m**0.96,
+		'luminosity': sun.luminosity*lum,
+		'temperature': 5772*m**.54,
+	})
+
 
 # bodies
 sun = Star(**{
