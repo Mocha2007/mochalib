@@ -1186,6 +1186,24 @@ pluto = Body(**{
 	'albedo': .6,
 })
 
+eris = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 67.781*au,
+		'e': .44068,
+		'i': .768722,
+		'lan': .627500,
+		'aop': 2.63505,
+		'man': 3.5633,
+	}),
+	'rotation': Rotation(**{
+		'period': 25.9*hour,
+	}),
+	'mass': 1.66e22,
+	'radius': 1.163e6,
+	'albedo': .96,
+})
+
 sedna = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
@@ -1219,9 +1237,9 @@ planet_nine = Body(**{
 	'radius': 1.2e7, # SWAG
 })
 
-inner_solar_system = System(mercury, venus, earth, mars)
-solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
-kuiper = System(neptune, pluto, sedna, planet_nine)
+inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
+solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
+kuiper = System(neptune, pluto, eris, sedna, planet_nine) # a >= neptune
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
