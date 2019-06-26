@@ -48,6 +48,34 @@ class Orbit:
 		return self.properties['sma']
 
 	@property
+	def animate(self):
+		"""Animate orbit with pyplot"""
+		n = 100
+		ts = [i*self.p/n for i in range(n)]
+		cs = [self.cartesian(t) for t in ts]
+		xs, ys, zs, vxs, vys, vzs = zip(*cs)
+
+		fig = plt.figure(figsize=(7, 7))
+		ax = Axes3D(fig)
+		def update(i: int):
+			i %= n
+			plt.cla()
+			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years... yeah, guess that'll never happen...
+			# https://github.com/matplotlib/matplotlib/issues/1077/
+			# https://stackoverflow.com/a/19248731/2579798
+			ax.set_title('Orbit')
+			ax.set_xlabel('x (m)')
+			ax.set_ylabel('y (m)')
+			ax.set_zlabel('z (m)')
+			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
+			axisEqual3D(ax)
+
+		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
+		plt.show()
+
+	@property
 	def aop(self) -> float:
 		"""Argument of periapsis (radians)"""
 		return self.properties['aop']
@@ -117,22 +145,16 @@ class Orbit:
 
 		fig = plt.figure(figsize=(7, 7))
 		ax = Axes3D(fig)
-		def update(i: int):
-			i %= n
-			plt.cla()
-			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years... yeah, guess that'll never happen...
-			# https://github.com/matplotlib/matplotlib/issues/1077/
-			# https://stackoverflow.com/a/19248731/2579798
-			ax.set_title('Orbit')
-			ax.set_xlabel('x (m)')
-			ax.set_ylabel('y (m)')
-			ax.set_zlabel('z (m)')
-			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
-			axisEqual3D(ax)
+		plt.cla()
+		ax.set_title('Orbit')
+		ax.set_xlabel('x (m)')
+		ax.set_ylabel('y (m)')
+		ax.set_zlabel('z (m)')
+		ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+		ax.scatter(xs[0], ys[0], zs[0], marker='o', color='b', s=15, zorder=3)
+		axisEqual3D(ax)
 
-		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
 
 	@property
