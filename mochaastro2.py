@@ -706,7 +706,7 @@ class Star(Body):
 	@property
 	def habitable_zone(self) -> (float, float):
 		"""Inner and outer habitable zone (m)"""
-		center = au*self.luminosity**.5
+		center = au*(self.luminosity/sun.luminosity)**.5
 		inner = .95*center
 		outer = 1.37*center
 		return inner, outer
