@@ -1243,6 +1243,19 @@ neptune = Body(**{
 	'albedo': .442,
 })
 
+pons_gambart = Body(**{
+	'orbit': Orbit(**{
+		'parent': sun,
+		'sma': 32.354*au,
+		'e': .97509,
+		'i': 136.39*deg,
+		'lan': 0, # unk
+		'aop': 0, # unk
+		'man': 0, # unk
+	}),
+	'mass': 2e14, # SWAG
+})
+
 pluto = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
@@ -1332,7 +1345,7 @@ planet_nine = Body(**{
 
 inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
-kuiper = System(neptune, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
+kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
