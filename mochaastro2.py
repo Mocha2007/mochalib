@@ -827,7 +827,7 @@ class System:
 		for body in self.bodies:
 			cs = [body.orbit.cartesian(t*body.orbit.p/n) for t in range(n)]
 			xs, ys, zs, vxs, vys, vzs = zip(*cs)
-			plt.plot(xs, ys, zs, color='k', zorder=1)
+			plt.plot(xs, ys, color='k', zorder=1)
 			plt.scatter(xs[0], ys[0], marker='o', s=15, zorder=3)
 
 		plt.show()
