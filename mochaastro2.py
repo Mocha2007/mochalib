@@ -1187,7 +1187,7 @@ io = Body(**{
 		'parent': jupiter,
 		'sma': 421700,
 		'e': .0041,
-		'i': 2.213, # ecliptic
+		'i': 2.213*deg, # ecliptic
 		'lan': 0, # unk
 		'aop': 0,
 		'man': 0,
@@ -1204,6 +1204,27 @@ io = Body(**{
 	'mass': 8.931938e22,
 	'radius': 1.8216e6,
 	'albedo': .63,
+})
+
+europa = Body(**{
+	'orbit': Orbit(**{
+		'parent': jupiter,
+		'sma': 670900,
+		'e': .009,
+		'i': 1.791*deg, # ecliptic
+		'lan': 0, # unk
+		'aop': 0,
+		'man': 0,
+	}),
+	'rotation': Rotation(**{
+		'period': 3.551181*day,
+	}),
+	'atmosphere': Atmosphere(**{
+		'surface_pressure': .1e-6,
+	}),
+	'mass': 4.799844e22,
+	'radius': 1.5608e6,
+	'albedo': .67,
 })
 
 hektor = Body(**{ # 624 Hektor; largest trojan
@@ -1412,6 +1433,7 @@ planet_nine = Body(**{
 
 inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
+jupiter_system = System(io, europa)
 kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
