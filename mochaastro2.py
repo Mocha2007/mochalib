@@ -758,13 +758,8 @@ class System:
 		self.bodies = set(bodies)
 
 	@property
-	def any_body(self) -> Body:
-		"""Returns a body (may or may not be the same each time)"""
-		return list(self.bodies)[0]
-
-	@property
-	def plot(self):
-		"""Plot system with pyplot"""
+	def animation(self):
+		"""Plot animated system with pyplot"""
 		# see above plot for notes and sources
 		n = 1000
 		outerp = self.sorted_bodies[-1].orbit.p
@@ -789,6 +784,33 @@ class System:
 				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
 
 		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
+		plt.show()
+
+	@property
+	def any_body(self) -> Body:
+		"""Returns a body (may or may not be the same each time)"""
+		return list(self.bodies)[0]
+
+	@property
+	def plot(self):
+		"""Plot system with pyplot"""
+		# see above plot for notes and sources
+		n = 1000
+
+		fig = plt.figure(figsize=(7, 7))
+		ax = Axes3D(fig)
+		ax.set_title('Orbit')
+		ax.set_xlabel('x (m)')
+		ax.set_ylabel('y (m)')
+		ax.set_zlabel('z (m)')
+		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+		for body in self.bodies:
+			cs = [body.orbit.cartesian(t*body.orbit.p/n) for t in range(n)]
+			xs, ys, zs, vxs, vys, vzs = zip(*cs)
+			ax.plot(xs, ys, zs, color='k', zorder=1)
+			ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3)
+
+		axisEqual3D(ax)
 		plt.show()
 	
 	@property
