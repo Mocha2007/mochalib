@@ -1187,7 +1187,7 @@ io = Body(**{
 		'parent': jupiter,
 		'sma': 421700,
 		'e': .0041,
-		'i': 2.213*deg, # ecliptic
+		'i': .05*deg, # equator
 		'lan': 0, # unk
 		'aop': 0,
 		'man': 0,
@@ -1211,13 +1211,14 @@ europa = Body(**{
 		'parent': jupiter,
 		'sma': 670900,
 		'e': .009,
-		'i': 1.791*deg, # ecliptic
+		'i': .470*deg, # equator
 		'lan': 0, # unk
 		'aop': 0,
 		'man': 0,
 	}),
 	'rotation': Rotation(**{
 		'period': 3.551181*day,
+		'tilt': .1*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'surface_pressure': .1e-6,
@@ -1225,6 +1226,54 @@ europa = Body(**{
 	'mass': 4.799844e22,
 	'radius': 1.5608e6,
 	'albedo': .67,
+})
+
+ganymede = Body(**{
+	'orbit': Orbit(**{
+		'parent': jupiter,
+		'sma': 1.0704e9,
+		'e': .0013,
+		'i': .2*deg, # equator
+		'lan': 0, # unk
+		'aop': 0,
+		'man': 0,
+	}),
+	'rotation': Rotation(**{
+		'period': 7.15455296*day,
+		'tilt': .2*deg,
+	}),
+	'atmosphere': Atmosphere(**{
+		'surface_pressure': .7e-6,
+	}),
+	'mass': 1.4819e23,
+	'radius': 2.6341e6,
+	'albedo': .43,
+})
+
+callisto = Body(**{
+	'orbit': Orbit(**{
+		'parent': jupiter,
+		'sma': 1.8827e9,
+		'e': .0074,
+		'i': .192*deg, # to local Laplace planes
+		'lan': 0, # unk
+		'aop': 0,
+		'man': 0,
+	}),
+	'rotation': Rotation(**{
+		'period': 16.6890184*day,
+		'tilt': 0, # known
+	}),
+	'atmosphere': Atmosphere(**{
+		'surface_pressure': 7.5e-13,
+		'composition': {
+			'CO2':  .995,
+			'O2':  .005,
+		},
+	}),
+	'mass': 1.4819e23,
+	'radius': 2.6341e6,
+	'albedo': .43,
 })
 
 hektor = Body(**{ # 624 Hektor; largest trojan
@@ -1433,7 +1482,7 @@ planet_nine = Body(**{
 
 inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
-jupiter_system = System(io, europa)
+jupiter_system = System(io, europa, ganymede, callisto)
 kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
