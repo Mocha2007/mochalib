@@ -812,6 +812,25 @@ class System:
 
 		axisEqual3D(ax)
 		plt.show()
+
+	@property
+	def plot2d(self):
+		"""2D Plot system with pyplot"""
+		# see above plot for notes and sources
+		n = 1000
+
+		fig = plt.figure(figsize=(7, 7))
+		plt.title('Orbit')
+		plt.xlabel('x (m)')
+		plt.ylabel('y (m)')
+		plt.scatter(0, 0, marker='*', color='y', s=50, zorder=2)
+		for body in self.bodies:
+			cs = [body.orbit.cartesian(t*body.orbit.p/n) for t in range(n)]
+			xs, ys, zs, vxs, vys, vzs = zip(*cs)
+			plt.plot(xs, ys, zs, color='k', zorder=1)
+			plt.scatter(xs[0], ys[0], marker='o', s=15, zorder=3)
+
+		plt.show()
 	
 	@property
 	def mass_pie(self):
