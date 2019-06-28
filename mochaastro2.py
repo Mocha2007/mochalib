@@ -1180,6 +1180,32 @@ jupiter = Body(**{
 	'albedo': .538,
 })
 
+# todo galileian moons
+
+io = Body(**{
+	'orbit': Orbit(**{
+		'parent': jupiter,
+		'sma': 421700,
+		'e': .0041,
+		'i': 2.213, # ecliptic
+		'lan': 0, # unk
+		'aop': 0,
+		'man': 0,
+	}),
+	'rotation': Rotation(**{
+		'period': 152853.5047,
+	}),
+	'atmosphere': Atmosphere(**{
+		'surface_pressure': 7e5,
+		'composition': {
+			'SO2': .9,
+		},
+	}),
+	'mass': 8.931938e22,
+	'radius': 1.8216e6,
+	'albedo': .63,
+})
+
 hektor = Body(**{ # 624 Hektor; largest trojan
 	# fixme Epoch 23 March 2018
 	'orbit': Orbit(**{
