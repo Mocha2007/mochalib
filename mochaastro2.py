@@ -1031,6 +1031,18 @@ venus = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 15900,
 		'surface_pressure': 9.2e6,
+		'composition': {
+			'CO2': .965,
+			'N2':  .035,
+			'SO2': 1.5e-4,
+			'Ar':  7e-5,
+			'H2O': 2e-5,
+			'CO':  1.7e-5,
+			'He':  1.2e-5,
+			'Ne':  7e-6,
+			'HCl': 4e-7,
+			'HF':  3e-9,
+		},
 	}),
 	'mass': 4.8675e24,
 	'radius': 6.0518e6,
@@ -1054,8 +1066,15 @@ earth = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 8500,
 		'surface_pressure': 101325,
-		'composition': { # todo: rest
-			'CO2':  4.08e-4,
+		'composition': {
+			'N2':  .78084,
+			'O2':  .20946,
+			'Ar':  .00934,
+			'CO2': 4.08e-4,
+			'Ne':  1.818e-5,
+			'He':  5.24e-6,
+			'CH4': 1.87e-6,
+			'Kr':  1.14e-6,
 		},
 	}),
 	'mass': 5.97237e24,
@@ -1132,6 +1151,14 @@ mars = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 11100,
 		'surface_pressure': 636,
+		'composition': {
+			'CO2': .949,
+			'N2':  .026,
+			'Ar':  .019,
+			'O2':  .00174,
+			'CO':  .000747,
+			'H2O': .0003,
+		},
 	}),
 	'mass': 6.4171e23,
 	'radius': 3.3895e6,
