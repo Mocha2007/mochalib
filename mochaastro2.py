@@ -317,8 +317,18 @@ class Atmosphere:
 	@property
 	def greenhouse(self) -> float:
 		"""Estimate greenhouse factor (dimensionless)"""
-		c = (288/earth.temp)/earth.atmosphere.partial_pressure('CO2') # fraction increase per Pa CO2
-		return c * self.partial_pressure('CO2')
+		# based on trial and error
+		# desired results:
+		# venus.atmosphere.greenhouse -> 3.01
+		# earth.atmosphere.greenhouse -> 1.16
+		# mars.atmosphere.greenhouse  -> .975
+		pp_ratio = self.partial_pressure('CO2') / earth.atmosphere.partial_pressure('CO2')
+		c = 288/earth.temp # ratio for earth
+		# return c * pp_ratio ** .08
+		x, y = 0.05466933153152969, 0.06302583949080053
+		s_ratio = self.surface_pressure / earth.atmosphere.surface_pressure
+		print(c, pp_ratio, 'x', s_ratio, 'y')
+		return c * pp_ratio ** x * s_ratio ** y
 
 	@property
 	def scale_height(self) -> float:
