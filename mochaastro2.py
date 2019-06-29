@@ -1,4 +1,4 @@
-from math import acos, atan2, cos, erf, exp, inf, log10, pi, sin
+from math import acos, atan, atan2, cos, erf, exp, inf, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
@@ -190,6 +190,20 @@ class Orbit:
 
 	def __lt__(self, other) -> bool:
 		return self.apo < other.peri
+
+	def __str__(self) -> str:
+		bits = [
+			'<Orbit',
+			'\tParent: {parent}',
+			'\ta:      {sma}',
+			'\te:      {e}',
+			'\ti:      {i}',
+			'\tOmega:  {lan}',
+			'\tomega:  {aop}',
+			'\tM:      {man}',
+			'>',
+		]
+		return '\n'.join(bits).format(**self.properties)
 
 	# methods
 	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
@@ -904,6 +918,60 @@ def apsides2ecc(apo: float, peri: float) -> (float, float):
 	return (apo+peri)/2, (apo-peri)/(apo+peri)
 
 
+def keplerian(parent: Body, cartesian: (float, float, float, float, float, float)) -> Orbit:
+	"""Get keplerian orbital parameters (a, e, i, O, o, m)"""
+	# https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
+	r, r_ = np.array(cartesian[:3]), np.array(cartesian[3:])
+	mu = parent.mu
+	# 1a Calculate orbital momentum vector h
+	h = np.cross(r, r_)
+	# 1b Obtain the eccentricity vector e [1] from
+	e = np.cross(r_, h) / mu - r / np.linalg.norm(r)
+	# 1c Determine the vector n pointing towards the ascending node and the true anomaly nu with
+	n = np.cross(np.transpose((0, 0, 1)), h)
+	temp = acos(np.dot(e, r) / (np.linalg.norm(e) * np.linalg.norm(r)))
+	if 0 <= np.dot(r, r_):
+		nu = temp
+	else:
+		nu = 2*pi - temp
+	# 2 Calculate the orbit inclination i by using the orbital momentum vector h, 
+	# where h z is the third component of h:
+	h_z = h[2]
+	i = acos(h_z / np.linalg.norm(h))
+	# 3 Determine the orbit eccentricity e [1], 
+	# which is simply the magnitude of the eccentricity vector e, and the eccentric anomaly E [1]:
+	eccentricity = np.linalg.norm(e)
+	E = 2 * atan(tan(nu/2) / ((1+eccentricity)/(1-eccentricity))**.5)
+	# 4 Obtain the longitude of the ascending node Omega and the argument of periapsis omega:
+	if np.linalg.norm(n):
+		temp = acos(n[0] / np.linalg.norm(n))
+		if 0 <= n[1]:
+			Omega = temp
+		else:
+			Omega = 2*pi - temp
+		temp = acos(np.dot(n, e) / (np.linalg.norm(n) * np.linalg.norm(e)))
+		if 0 <= e[2]:
+			omega = temp
+		else:
+			omega = 2*pi - temp
+	else:
+		Omega, omega = 0, 0
+	# 5 Compute the mean anomaly M with help of Kepler’s Equation from the eccentric anomaly E 
+	# and the eccentricity e:
+	M = E - eccentricity * sin(E)
+	# 6 Finally, the semi-major axis a is found from the expression
+	a = 1 / (2/np.linalg.norm(r) - np.linalg.norm(r_)**2/mu)
+	return Orbit(**{
+		'parent': parent,
+		'sma': a,
+		'e': eccentricity,
+		'i': i,
+		'lan': Omega,
+		'aop': omega,
+		'man': M,
+	})
+
+
 def plot_delta_between(body1: Body, body2: Body):
 	"""Plot system with pyplot"""
 	resolution = 100
@@ -1040,6 +1108,12 @@ def stargen(m: float) -> Star:
 	})
 
 
+def test_functions():
+	print(str(earth.orbit))
+	print('~'*40)
+	print(str(keplerian(sun, earth.orbit.cartesian(0))))
+
+
 # bodies
 sun = Star(**{
 	'orbit': Orbit(**{
@@ -1136,8 +1210,8 @@ earth = Body(**{
 		'sma': 1.49598023e11,
 		'e': .0167086,
 		'i': 0, # by definition
-		'lan': -.1965352,
-		'aop': 1.9933027,
+		'lan': 0, # -.1965352,
+		'aop': 0, # 1.9933027,
 		'man': .1249,
 	}),
 	'rotation': Rotation(**{
