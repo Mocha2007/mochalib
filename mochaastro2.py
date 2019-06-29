@@ -262,8 +262,9 @@ class Orbit:
 			d = inner/outer - q
 			p = resonance_probability(d, outer)
 			if p < best[2]:
-				best = outer, inner, p
-		return best[:2]
+				# print('\t->', p)
+				best = inner, outer, p
+		return min(best[:2]), max(best)
 	
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
