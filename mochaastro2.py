@@ -39,7 +39,7 @@ def axisEqual3D(ax):
 
 def resonance_probability(mismatch: float, outer: int) -> float:
 	"""Return probability a particular resonance is by chance rather than gravitational"""
-	return 1-(1-abs(mismatch)/pi)**outer
+	return 1-(1-abs(mismatch))**outer
 
 
 # classes
@@ -261,11 +261,11 @@ class Orbit:
 		best = 0, 0, 1
 		while 1:
 			outer += 1
-			inner = round(outer * q)
-			d = inner/outer - q
+			inner = round(outer / q)
+			d = outer/inner - q
 			p = resonance_probability(d, outer)
 			if p < best[2]:
-				# print('\t {0}:{1}\t-> {2}'.format(inner, outer, p))
+				# print('\t {0}:{1}\t-> {2}'.format(outer, inner, p))
 				best = inner, outer, p
 			# certain?
 			if best[2] < 1 - erf(sigma/2**.5):
