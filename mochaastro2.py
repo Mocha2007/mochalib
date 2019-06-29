@@ -256,7 +256,7 @@ class Orbit:
 		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
 		q = self.p / other.p
 		if 1 < q:
-			return other.get_resonance(self, limit)
+			return other.get_resonance(self, sigma)
 		outer = 0
 		best = 0, 0, 1
 		while 1:
