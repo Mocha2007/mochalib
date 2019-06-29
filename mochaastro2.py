@@ -327,7 +327,7 @@ class Atmosphere:
 		# return c * pp_ratio ** .08
 		x, y = 0.05466933153152969, 0.06302583949080053
 		s_ratio = self.surface_pressure / earth.atmosphere.surface_pressure
-		print(c, pp_ratio, 'x', s_ratio, 'y')
+		# print(c, pp_ratio, 'x', s_ratio, 'y')
 		return c * pp_ratio ** x * s_ratio ** y
 
 	@property
