@@ -1,4 +1,4 @@
-from math import acos, atan2, cos, exp, inf, log10, pi, sin
+from math import acos, atan2, cos, erf, exp, inf, log10, pi, sin
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
@@ -252,20 +252,24 @@ class Orbit:
 				return E
 			E = E_
 
-	def get_resonance(self, other, limit: int=100) -> (int, int):
-		"""Estimate resonance from periods (outer, inner)"""
+	def get_resonance(self, other, sigma: int=3) -> (int, int):
+		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
 		q = self.p / other.p
 		if 1 < q:
 			return other.get_resonance(self, limit)
-		inner, outer = 1, 1
+		outer = 0
 		best = 0, 0, 1
-		for outer in range(1, limit+1):
+		while 1:
+			outer += 1
 			inner = round(outer * q)
 			d = inner/outer - q
 			p = resonance_probability(d, outer)
 			if p < best[2]:
 				# print('\t {0}:{1}\t-> {2}'.format(inner, outer, p))
 				best = inner, outer, p
+			# certain?
+			if best[2] < 1 - erf(sigma/2**.5):
+				break
 		return best[:2]
 
 	def relative_inclination(self, other) -> float:
