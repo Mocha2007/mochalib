@@ -1,5 +1,6 @@
 from math import acos, atan2, cos, exp, inf, log10, pi, sin
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
@@ -27,7 +28,6 @@ arcsec = arcmin/60 # rad
 
 # functions
 def axisEqual3D(ax):
-	import numpy as np
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
 	sz = extents[:,1] - extents[:,0]
 	centers = np.mean(extents, axis=1)
@@ -249,7 +249,6 @@ class Orbit:
 	
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
-		import numpy as np
 		t, p , T, P = self.i, self.lan, other.i, other.lan
 		# vectors perpendicular to orbital planes
 		v_self = np.array([sin(t)*cos(p), sin(t)*sin(p), cos(t)])
@@ -923,6 +922,41 @@ def plot_distance(body1: Body, body2: Body):
 	plt.show()
 
 
+def distance_audio(body1: Body, body2: Body):
+	"""Play wave of plot_distance
+	Encoding   | Signed 32-bit PCM
+	Byte order | little endian
+	Channels   | 1 channel mono
+	"""
+	print("* recording")
+
+	frames = []
+
+	# begin plot_distance
+	# if the product of these is 44100 it will last 1s
+	resolution = 441
+	orbits = 100 # this will be close to the output frequency
+	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+
+	fig = plt.figure(figsize=(7, 7))
+	plt.title('Body Delta')
+	plt.xlabel('time since epoch (s)')
+	plt.ylabel('distance (m)')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
+	# normalize xs to [-1, 1]
+	xs_m, xs_M = np.amin(xs), np.amax(xs)
+	xs = np.array([2 * (i-xs_m)/(xs_M-xs_m) - 1 for i in xs])
+	# print(xs, np.amin(xs), np.amax(xs))
+	frames = (0x7FFFFFFF * np.array(xs)).astype(np.int32)
+	# print(frames, np.amin(frames), np.amax(frames))
+	# end plot_distance
+
+	print("* done recording")
+	with open('audacity.txt', 'wb+') as file:
+		file.write(frames.tobytes())
+
+
 def plot_grav_acc(body1: Body, body2: Body):
 	"""Plot gravitational acceleration from one body to another over several orbits"""
 	resolution = 1000
@@ -1536,3 +1570,4 @@ kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_n
 # todo rotational axis RA and DEC
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
+# distance_audio(earth, mars)
