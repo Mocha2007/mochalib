@@ -255,6 +255,8 @@ class Orbit:
 	def get_resonance(self, other, limit: int=100) -> (int, int):
 		"""Estimate resonance from periods (outer, inner)"""
 		q = self.p / other.p
+		if 1 < q:
+			return other.get_resonance(self, limit)
 		inner, outer = 1, 1
 		best = 0, 0, 1
 		for outer in range(1, limit+1):
@@ -262,10 +264,10 @@ class Orbit:
 			d = inner/outer - q
 			p = resonance_probability(d, outer)
 			if p < best[2]:
-				# print('\t->', p)
+				# print('\t {0}:{1}\t-> {2}'.format(inner, outer, p))
 				best = inner, outer, p
-		return min(best[:2]), max(best)
-	
+		return best[:2]
+
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
 		t, p , T, P = self.i, self.lan, other.i, other.lan
