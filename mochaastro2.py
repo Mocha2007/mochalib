@@ -389,9 +389,15 @@ class Body:
 		return p if isinstance(p, Star) else p.star
 
 	@property
+	def star_dist(self): # -> Star
+		"""Get the distance to the nearest star in the hierarchy"""
+		p = self.orbit.parent
+		return self.orbit.a if isinstance(p, Star) else p.star_dist
+
+	@property
 	def temp(self) -> float:
 		"""Planetary equilibrium temperature (K)"""
-		a, R, sma, T = self.albedo, self.orbit.parent.radius, self.orbit.a, self.star.temperature
+		a, R, sma, T = self.albedo, self.orbit.parent.radius, self.star_dist, self.star.temperature
 		return T*(1-a)**.25*(R/2/sma)**.5
 
 	@property
