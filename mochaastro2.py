@@ -37,6 +37,11 @@ def axisEqual3D(ax):
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
 
 
+def resonance_probability(mismatch: float, outer: int) -> float:
+	"""Return probability a particular resonance is by chance rather than gravitational"""
+	return 1-(1-abs(mismatch)/pi)**outer
+
+
 # classes
 class Orbit:
 	def __init__(self, **properties):
@@ -246,6 +251,19 @@ class Orbit:
 			if abs(E-E_) < tol:
 				return E
 			E = E_
+
+	def get_resonance(self, other, limit: int=100) -> (int, int):
+		"""Estimate resonance from periods (outer, inner)"""
+		q = self.p / other.p
+		inner, outer = 1, 1
+		best = 0, 0, 1
+		for outer in range(1, limit+1):
+			inner = round(outer * q)
+			d = inner/outer - q
+			p = resonance_probability(d, outer)
+			if p < best[2]:
+				best = outer, inner, p
+		return best[:2]
 	
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
