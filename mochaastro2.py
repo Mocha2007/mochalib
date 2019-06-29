@@ -1293,7 +1293,7 @@ jupiter = Body(**{
 io = Body(**{
 	'orbit': Orbit(**{
 		'parent': jupiter,
-		'sma': 421700,
+		'sma': 4.217e8,
 		'e': .0041,
 		'i': .05*deg, # equator
 		'lan': 0, # unk
@@ -1317,7 +1317,7 @@ io = Body(**{
 europa = Body(**{
 	'orbit': Orbit(**{
 		'parent': jupiter,
-		'sma': 670900,
+		'sma': 6.709e8,
 		'e': .009,
 		'i': .470*deg, # equator
 		'lan': 0, # unk
