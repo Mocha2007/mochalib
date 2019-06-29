@@ -266,7 +266,7 @@ class Orbit:
 			p = resonance_probability(d, outer)
 			if p < best[2]:
 				# print('\t {0}:{1}\t-> {2}'.format(outer, inner, p))
-				best = inner, outer, p
+				best = outer, inner, p
 			# certain?
 			if best[2] < 1 - erf(sigma/2**.5):
 				break
