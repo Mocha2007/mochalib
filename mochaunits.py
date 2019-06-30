@@ -58,6 +58,16 @@ class Dimension:
 		assert type(self) == type(other)
 		return type(self)(self.value-other.value, *self.tags)
 
+	def __truediv__(self, other): # returns either type(self) or Multidimension
+		if isinstance(other, Dimension):
+			if type(self) == type(other):
+				return self.value / other.value
+			return Multidimension(self.value / other.value, {type(self): 1, type(other): -1}, *self.tags)
+		if isinstance(other, Multidimension): # call rtruediv of multidimension
+			raise NotImplementedError
+		return type(self)(self.value/other, *self.tags)
+	# todo divmod radd rmul rsub rtruediv
+
 
 class Length(Dimension):
 	# properties
