@@ -1783,6 +1783,7 @@ jupiter_system = System(io, europa, ganymede, callisto)
 kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # todo body1 body2 to orbit1 orbit2
+# todo switch to json file for body storage
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
 # solar_system.sim
