@@ -393,6 +393,7 @@ class Orbit:
 	def transfer(self, other, t: float = 0,
 		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
 		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
+		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
 		max_attempts = 16
 		n = self.synodic(other) / self.p
 		# initial guess for t is close approach time, plus phase angle
