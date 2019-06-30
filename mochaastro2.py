@@ -51,6 +51,24 @@ def resonance_probability(mismatch: float, outer: int) -> float:
 
 
 # classes
+class Length:
+	def __init__(self, value):
+		self.value = value
+
+	def __repr__(self) -> str:
+		return 'Length({0})'.format(self.value)
+
+	def __str__(self) -> str:
+		x = self.value
+		if x < 1e3:
+			return str(x) + ' m'
+		if x < 1e6:
+			return str(x/1e3) + ' km'
+		if x < 1e9:
+			return str(x/1e6) + ' Mm'
+		return str(x/1e9) + ' Gm'
+
+
 class Orbit:
 	def __init__(self, **properties):
 		self.properties = properties
@@ -929,7 +947,7 @@ class System:
 
 		orbit_res = 32
 		dot_radius = 2
-		black, blue, white, yellow = (0,)*3, (0, 0, 255), (255,)*3, (192, 192, 0)
+		black, blue, white = (0,)*3, (0, 0, 255), (255,)*3
 		timerate = self.sorted_bodies[0].orbit.p/orbit_res
 		max_a = self.sorted_bodies[-1].orbit.apo
 		parent = self.any_body.orbit.parent
@@ -942,6 +960,8 @@ class System:
 		refresh = pygame.display.flip
 		title = str(self)
 		pygame.display.set_caption(title)
+		fontsize = 20
+		font = pygame.font.SysFont('Courier New', fontsize)
 
 		t = 0
 		# frame
@@ -951,8 +971,12 @@ class System:
 			screen.fill(black)
 			# show bodies
 			# show star
-			# screen.set_at((width//2, height//2), yellow)
-			pygame.draw.circle(screen, yellow, (width//2, height//2), dot_radius)
+			star_radius = round(parent.radius/max_a * width)
+			try:
+				pygame.draw.circle(screen, white, (width//2, height//2), \
+					star_radius if dot_radius < star_radius else dot_radius)
+			except OverflowError:
+				pass
 			# show planets
 			xmap = linear_map((-max_a, max_a), (0, width))
 			ymap = linear_map((-max_a, max_a), (height, 0))
@@ -966,13 +990,22 @@ class System:
 					start_pos = int(round(xmap(x))), int(round(ymap(y)))
 					x, y, z, vx, vy, vz = body.orbit.cartesian(t+(i+1)*p/orbit_res)
 					end_pos = int(round(xmap(x))), int(round(ymap(y)))
-					pygame.draw.line(screen, blue, start_pos, end_pos)
-				# screen.set_at(coords, white)
-				pygame.draw.circle(screen, white, coords, dot_radius)
+					try:
+						pygame.draw.line(screen, blue, start_pos, end_pos)
+					except TypeError:
+						pass
+				body_radius = round(body.radius/max_a * width)
+				try:
+					pygame.draw.circle(screen, white, coords, \
+						body_radius if dot_radius < body_radius else dot_radius)
+				except OverflowError:
+					pass
 			# print date
-			font = pygame.font.SysFont('Courier New', 30)
 			textsurface = font.render(str(epoch+timedelta(seconds=t)), True, white)
-			screen.blit(textsurface,(0,0))
+			screen.blit(textsurface, (0, 0))
+			# print scale
+			textsurface = font.render(str(Length(max_a)), True, white)
+			screen.blit(textsurface, (0, fontsize))
 			refresh()
 			# event handling
 			for event in pygame.event.get():
