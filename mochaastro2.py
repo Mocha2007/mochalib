@@ -971,7 +971,7 @@ class System:
 				pygame.draw.circle(screen, white, coords, dot_radius)
 			# print date
 			font = pygame.font.SysFont('Courier New', 30)
-			textsurface = font.render(str(epoch+timedelta(seconds=t)), False, white)
+			textsurface = font.render(str(epoch+timedelta(seconds=t)), True, white)
 			screen.blit(textsurface,(0,0))
 			refresh()
 			# event handling
