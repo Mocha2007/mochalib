@@ -60,6 +60,9 @@ class Dimension:
 	def __pos__(self):
 		return self
 
+	def __pow__(self, other):
+		return self.multi ** other
+
 	def __repr__(self) -> str:
 		return '{0}({1}, *{2})'.format(type(self).__name__, self.value, self.tags)
 
@@ -79,7 +82,7 @@ class Dimension:
 				return self.value / other.value
 			return self.multi / other.multi
 		if isinstance(other, Multidimension): # call rtruediv of multidimension
-			return self.multi / multi
+			return self.multi / other
 		return type(self)(self.value/other, *self.tags)
 
 
@@ -167,6 +170,10 @@ class Multidimension:
 
 	def __pos__(self):
 		return self
+
+	def __pow__(self, other):
+		assert isinstance(other, int)
+		return Multidimension(self.value**other, {t: other*i for t, i in self.dimensions.items()}, *self.tags)
 
 	def __repr__(self) -> str:
 		return 'Multivalue({0}, {1}, *{2})'.format(self.value, self.dimensions, self.tags)
