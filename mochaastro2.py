@@ -400,7 +400,6 @@ class Orbit:
 			(0, 0, 0, -delta_t_tol),
 		)
 		for attempt in range(max_attempts):
-			# print(attempt)
 			if new_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
 				# print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
@@ -434,7 +433,7 @@ class Orbit:
 						# multiplier is too big!
 						# print('old mul was', mul)
 						mul >>= 1
-			# print(attempt, 'Transfer failed...', dv_best)
+			# print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
 		# earth.orbit.transfer(mars.orbit)
 		# autopsy
 		# return System(earth, mars, Body(orbit=burn_orbit))
