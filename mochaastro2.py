@@ -391,10 +391,10 @@ class Orbit:
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
 
 	def transfer(self, other, t: float = 0,
-		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
+		delta_t_tol: float = 1e2, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
 		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
 		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
-		max_attempts = 16
+		max_attempts = 8
 		n = self.synodic(other) / self.p
 		# initial guess for t is close approach time, plus phase angle
 		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.phase_angle(other)*other.p
@@ -409,14 +409,14 @@ class Orbit:
 		new_close_approach_dist = initial_guess.distance_to(other, t_burn)
 		# order of deltas to attempt
 		base_order = (
-			(dv_tol, 0, 0, 0),
-			(-dv_tol, 0, 0, 0),
-			(0, dv_tol, 0, 0),
-			(0, -dv_tol, 0, 0),
-			(0, 0, dv_tol, 0),
-			(0, 0, -dv_tol, 0),
 			(0, 0, 0, delta_t_tol),
 			(0, 0, 0, -delta_t_tol),
+			(0, 0, dv_tol, 0),
+			(0, 0, -dv_tol, 0),
+			(0, dv_tol, 0, 0),
+			(0, -dv_tol, 0, 0),
+			(dv_tol, 0, 0, 0),
+			(-dv_tol, 0, 0, 0),
 		)
 		for attempt in range(max_attempts):
 			if new_close_approach_dist < delta_x_tol: # success!
@@ -425,7 +425,7 @@ class Orbit:
 				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
 				return dv_best
 			for modifiers in base_order:
-				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit
+				mul = 2**13
 				while 1 <= mul:
 					dvx_mod, dvy_mod, dvz_mod, dt_mod = tuple(i*mul for i in modifiers)
 					# start by testing if adding a minute dx improves close approach
@@ -438,7 +438,7 @@ class Orbit:
 					# print(self, burn_orbit)
 					# now, to check if burn_orbit makes it closer...
 					try:
-						new_close_approach_time = burn_orbit.close_approach(other, dt, n, delta_t_tol)
+						new_close_approach_time = burn_orbit.close_approach(other, dt, 1, delta_t_tol)
 					except AssertionError:
 						mul >>= 1
 						continue
