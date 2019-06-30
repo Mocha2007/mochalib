@@ -33,7 +33,7 @@ arcsec = arcmin/60 # rad
 # functions
 def axisEqual3D(ax):
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
-	sz = extents[:,1] - extents[:,0]
+	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
 	maxsize = max(abs(sz))
 	r = maxsize/2
@@ -71,11 +71,13 @@ class Orbit:
 
 		fig = plt.figure(figsize=(7, 7))
 		ax = Axes3D(fig)
+
 		def update(i: int):
 			i *= 5
 			i %= n
 			plt.cla()
-			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years... yeah, guess that'll never happen...
+			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years...
+			# yeah, guess that'll never happen...
 			# https://github.com/matplotlib/matplotlib/issues/1077/
 			# https://stackoverflow.com/a/19248731/2579798
 			ax.set_title('Orbit')
@@ -87,7 +89,7 @@ class Orbit:
 			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
 			axisEqual3D(ax)
 
-		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
+		FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
 
 	@property
@@ -180,7 +182,7 @@ class Orbit:
 	@property
 	def v_apo(self) -> float:
 		"""Orbital velocity at apoapsis (m/s)"""
-		if e == 0:
+		if self.e == 0:
 			return self.v
 		e = self.e
 		return ((1-e)*self.parent.mu/(1+e)/self.a)**.5
@@ -188,7 +190,7 @@ class Orbit:
 	@property
 	def v_peri(self) -> float:
 		"""Orbital velocity at periapsis (m/s)"""
-		if e == 0:
+		if self.e == 0:
 			return self.v
 		e = self.e
 		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
@@ -215,10 +217,9 @@ class Orbit:
 		return '\n'.join(bits).format(**self.properties)
 
 	# methods
-	def cartesian(self, t: float=0) -> (float, float, float, float, float, float):
+	def cartesian(self, t: float = 0) -> (float, float, float, float, float, float):
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-		# todo 1 set mean anomaly at new epoch
 		# 2 GOOD eccentric anomaly
 		E = self.eccentric_anomaly(t)
 		# 3 true anomaly
@@ -227,12 +228,10 @@ class Orbit:
 		a, e = self.a, self.e
 		r_c = a*(1-e*cos(E))
 		# 5 get pos and vel vectors o and o_
-		# FIXME something in the O-s is wrong
 		mu = self.parent.mu
 		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
 		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
 		# transform o, o_ into inertial frame
-		# todo fix whatever the fuck is broken here
 		i = self.i
 		omega, Omega = self.aop, self.lan
 		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
@@ -259,7 +258,7 @@ class Orbit:
 		a, b = self.cartesian(t)[:3], other.cartesian(t)[:3]
 		return sum((i-j)**2 for i, j in zip(a, b))**.5
 
-	def eccentric_anomaly(self, t: float=0) -> float:
+	def eccentric_anomaly(self, t: float = 0) -> float:
 		"""Eccentric anomaly (radians)"""
 		# get new anomaly
 		tau = 2*pi
@@ -275,7 +274,7 @@ class Orbit:
 				return E
 			E = E_
 
-	def get_resonance(self, other, sigma: int=3) -> (int, int):
+	def get_resonance(self, other, sigma: int = 3) -> (int, int):
 		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
 		q = self.p / other.p
 		if 1 < q:
@@ -297,7 +296,7 @@ class Orbit:
 
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
-		t, p , T, P = self.i, self.lan, other.i, other.lan
+		t, p, T, P = self.i, self.lan, other.i, other.lan
 		# vectors perpendicular to orbital planes
 		v_self = np.array([sin(t)*cos(p), sin(t)*sin(p), cos(t)])
 		v_other = np.array([sin(T)*cos(P), sin(T)*sin(P), cos(T)])
@@ -327,7 +326,7 @@ class Orbit:
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
 
-	def true_anomaly(self, t: float=0) -> float:
+	def true_anomaly(self, t: float = 0) -> float:
 		"""True anomaly (rad)"""
 		E, e = self.eccentric_anomaly(t), self.e
 		return 2 * atan2((1+e)**.5 * sin(E/2), (1-e)**.5 * cos(E/2))
@@ -407,7 +406,7 @@ class Body:
 		return self.properties['orbit']
 
 	@property
-	def esi(r: float, m: float, T: float) -> float:
+	def esi(self) -> float:
 		# Radius, Density, Escape Velocity, Temperature
 		"""Earth similarity index (dimensionless)"""
 		r, m, T = self.radius, self.mass, self.temp
@@ -547,7 +546,7 @@ class Body:
 		return 3*g*self.mass**2/(5*self.radius)
 
 	@property
-	def lunar_eclipse(self) -> float:
+	def lunar_eclipse(self):
 		"""Draw maximum eclipsing radii"""
 		moon, planet = self, self.orbit.parent
 		a = moon.orbit.peri
@@ -629,7 +628,7 @@ class Body:
 		return 2*self.mu/c**2
 
 	@property
-	def solar_eclipse(self) -> float:
+	def solar_eclipse(self):
 		"""Draw maximum eclipsing radii"""
 		moon, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
 		moon_radius = moon.angular_diameter_at(moon.orbit.peri - planet.radius)
@@ -703,7 +702,7 @@ class Body:
 	def angular_diameter(self, other: Orbit) -> (float, float):
 		"""Angular diameter, min and max (rad)"""
 		dmin, dmax = self.orbit.distance(other)
-		return self.angular_diameter_at(dmax) , self.angular_diameter_at(dmin)
+		return self.angular_diameter_at(dmax), self.angular_diameter_at(dmin)
 
 	def angular_diameter_at(self, dist: float) -> float:
 		"""Angular diameter at distance (rad)"""
@@ -712,7 +711,7 @@ class Body:
 	def app_mag(self, other: Orbit) -> (float, float):
 		"""Apparent magnitude, min and max (dimensionless)"""
 		dmin, dmax = self.orbit.distance(other)
-		return self.app_mag_at(dmax) , self.app_mag_at(dmin)
+		return self.app_mag_at(dmax), self.app_mag_at(dmin)
 
 	def app_mag_at(self, dist: float) -> float:
 		"""Apparent magnitude at distance (dimensionless)"""
@@ -806,17 +805,17 @@ class Star(Body):
 		return self.properties['temperature']
 
 	@property
-	def X(self) -> dict:
+	def X(self) -> float:
 		"""Hydrogen composition (dimensionless)"""
 		return self.composition['H']
 
 	@property
-	def Y(self) -> dict:
+	def Y(self) -> float:
 		"""Helium composition (dimensionless)"""
 		return self.composition['He']
 
 	@property
-	def Z(self) -> dict:
+	def Z(self) -> float:
 		"""Metal composition (dimensionless)"""
 		return 1 - self.X - self.Y
 
@@ -824,6 +823,7 @@ class Star(Body):
 	def app_mag(self, dist: float) -> float:
 		"""Apparent Magnitude (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
+
 
 class System:
 	"""Set of orbiting bodies"""
@@ -841,6 +841,7 @@ class System:
 
 		fig = plt.figure(figsize=(7, 7))
 		ax = Axes3D(fig)
+
 		def update(i: int):
 			plt.cla()
 			ax.set_title('Orbit')
@@ -857,7 +858,7 @@ class System:
 				# ax.plot(xs, ys, zs, color='k', zorder=1)
 				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
 
-		xyanimation = FuncAnimation(fig, update, interval=50) # 20 fps
+		FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
 
 	@property
@@ -893,7 +894,7 @@ class System:
 		# see above plot for notes and sources
 		n = 1000
 
-		fig = plt.figure(figsize=(7, 7))
+		plt.figure(figsize=(7, 7))
 		plt.title('Orbit')
 		plt.xlabel('x (m)')
 		plt.ylabel('y (m)')
@@ -925,7 +926,6 @@ class System:
 	def sim(self):
 		"""Use pygame to produce a better simulation, albeit in 2D"""
 		import pygame
-		from copy import deepcopy
 		from time import sleep
 
 		orbit_res = 32
@@ -956,7 +956,7 @@ class System:
 			# show star
 			star_radius = round(parent.radius/max_a * width)
 			try:
-				pygame.draw.circle(screen, white, (width//2, height//2), \
+				pygame.draw.circle(screen, white, (width//2, height//2),
 					star_radius if dot_radius < star_radius else dot_radius)
 			except OverflowError:
 				pass
@@ -982,7 +982,7 @@ class System:
 				except KeyError:
 					body_radius = 0
 				try:
-					pygame.draw.circle(screen, white, coords, \
+					pygame.draw.circle(screen, white, coords,
 						body_radius if dot_radius < body_radius else dot_radius)
 				except OverflowError:
 					pass
@@ -1009,9 +1009,10 @@ class System:
 						max_a /= 2
 					if event.button == 5: # zoom out
 						max_a *= 2
+			sleep(1/30)
 
 	@property
-	def sorted_bodies(self) -> Body:
+	def sorted_bodies(self) -> list:
 		"""List of bodies sorted by semimajor axis"""
 		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
 
@@ -1107,7 +1108,7 @@ def plot_distance(body1: Body, body2: Body):
 	orbits = 8
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
 
-	fig = plt.figure(figsize=(7, 7))
+	plt.figure(figsize=(7, 7))
 	plt.title('Body Delta')
 	plt.xlabel('time since epoch (s)')
 	plt.ylabel('distance (m)')
@@ -1126,18 +1127,11 @@ def distance_audio(body1: Body, body2: Body):
 	"""
 	print("* recording")
 
-	frames = []
-
 	# begin plot_distance
 	# if the product of these is 44100 it will last 1s
 	resolution = 441
 	orbits = 100 # this will be close to the output frequency
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
-
-	fig = plt.figure(figsize=(7, 7))
-	plt.title('Body Delta')
-	plt.xlabel('time since epoch (s)')
-	plt.ylabel('distance (m)')
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
 	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
 	# normalize xs to [-1, 1]
@@ -1159,7 +1153,7 @@ def plot_grav_acc(body1: Body, body2: Body):
 	orbits = 8
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
 
-	fig = plt.figure(figsize=(7, 7))
+	plt.figure(figsize=(7, 7))
 	plt.title('Body Delta')
 	plt.xlabel('time since epoch (s)')
 	plt.ylabel('acceleration (m/s^2)')

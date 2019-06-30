@@ -51,6 +51,7 @@ class Dimension:
 		assert type(self) == type(other)
 		return type(self)(self.value-other.value, *self.tags)
 
+
 class Length(Dimension):
 	# properties
 	@property
@@ -105,4 +106,3 @@ class Length(Dimension):
 		if x < 1e12:
 			return str(x/1e9) + ' Gm'
 		return str(x/1e12) + ' Tm'
-	
