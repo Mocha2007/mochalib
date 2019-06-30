@@ -435,7 +435,12 @@ class Orbit:
 		# earth.orbit.transfer(mars.orbit)
 		# autopsy
 		# return System(earth, mars, Body(orbit=burn_orbit))
-		raise ValueError('Arguments do not lead to a transfer orbit.\nPerhaps you set your tolerances too high/low?')
+		errorstring = '\n'.join((
+			'Arguments do not lead to a transfer orbit.',
+			'Perhaps you set your tolerances too high/low?',
+			'{0} < {1}'.format(*(Length(i, 'astro') for i in (delta_x_tol, old_close_approach_dist))),
+		))
+		raise ValueError(errorstring)
 
 	def true_anomaly(self, t: float = 0) -> float:
 		"""True anomaly (rad)"""
