@@ -5,6 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
+from mochaunits import Length
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -51,24 +52,6 @@ def resonance_probability(mismatch: float, outer: int) -> float:
 
 
 # classes
-class Length:
-	def __init__(self, value):
-		self.value = value
-
-	def __repr__(self) -> str:
-		return 'Length({0})'.format(self.value)
-
-	def __str__(self) -> str:
-		x = self.value
-		if x < 1e3:
-			return str(x) + ' m'
-		if x < 1e6:
-			return str(x/1e3) + ' km'
-		if x < 1e9:
-			return str(x/1e6) + ' Mm'
-		return str(x/1e9) + ' Gm'
-
-
 class Orbit:
 	def __init__(self, **properties):
 		self.properties = properties
