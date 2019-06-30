@@ -1,4 +1,4 @@
-from math import acos, atan, atan2, cos, erf, exp, inf, log10, pi, sin, tan
+from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
@@ -101,6 +101,11 @@ class Orbit:
 	def apo(self) -> float:
 		"""Apoapsis (m)"""
 		return (1+self.e)*self.a
+
+	@property
+	def copy(self):
+		from copy import deepcopy
+		return deepcopy(self)
 
 	@property
 	def e(self) -> float:
@@ -287,6 +292,7 @@ class Orbit:
 		e, p = self.e, self.p
 		# dt = day * t
 		M = (self.man + tau*t/p) % tau
+		assert isfinite(M)
 		# E = M + e*sin(E)
 		E = M
 		while 1: # ~2 digits per loop
@@ -329,6 +335,25 @@ class Orbit:
 		p['sma'] = self.a * ratio**(2/3)
 		return Orbit(**p)
 
+	def stretch_to(self, other):
+		"""Stretch one orbit to another, doing the minimum to make them cross"""
+		# if already crossing
+		if self.peri <= other.peri <= self.apo or self.peri <= other.apo <= self.apo:
+			return self # nothing to do, already done!
+		new = self.copy
+		# if self is inferior to other
+		if self.a < other.a:
+			# increase apo to other.peri
+			apo, peri = other.peri, self.peri
+		# else must be superior
+		else:
+			# decrease peri to other.apo
+			apo, peri = self.apo, other.apo
+		a, e = apsides2ecc(apo, peri)
+		new.properties['sma'] = a
+		new.properties['e'] = e
+		return new
+
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
 		p1, p2 = self.p, other.p
@@ -346,6 +371,71 @@ class Orbit:
 		"""Tisserand's parameter (dimensionless)"""
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
+
+	def transfer(self, other, t: float = 0,
+		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
+		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
+		max_attempts = 64
+		n = self.synodic(other) / self.p
+		# initial guess for t is close approach time, plus half a synodic period
+		t_burn = self.close_approach(other, t, n, delta_t_tol) + self.synodic(other)/2
+		old_close_approach_dist = self.distance_to(other, t_burn)
+		# initial guess needs to be "bring my apo up/peri down to the orbit
+		initial_guess = self.stretch_to(other)
+		# System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
+		time_at_guess = self.close_approach(initial_guess, t_burn, n, delta_t_tol)
+		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(time_at_guess), initial_guess.cartesian(time_at_guess)))[-3:]
+		dv_best = dv_of_guess + (t_burn,) # includes time
+		# compute quality of initial guess
+		new_close_approach_dist = initial_guess.close_approach(other, t_burn, n, delta_t_tol)
+		# order of deltas to attempt
+		base_order = (
+			(dv_tol, 0, 0, 0),
+			(-dv_tol, 0, 0, 0),
+			(0, dv_tol, 0, 0),
+			(0, -dv_tol, 0, 0),
+			(0, 0, dv_tol, 0),
+			(0, 0, -dv_tol, 0),
+			(0, 0, 0, delta_t_tol),
+			(0, 0, 0, -delta_t_tol),
+		)
+		for attempt in range(max_attempts):
+			if new_close_approach_dist < delta_x_tol: # success!
+				# print('it finally works!')
+				return dv_best
+			for modifiers in base_order:
+				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit
+				while 1 <= mul:
+					dvx_mod, dvy_mod, dvz_mod, dt_mod = tuple(i*mul for i in modifiers)
+					# start by testing if adding a minute dx improves close approach
+					dvx, dvy, dvz = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod
+					old_cartesian = self.cartesian(dv_best[3]+dt_mod)
+					x, y, z, vx, vy, vz = old_cartesian
+					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
+					burn_orbit = keplerian(self.parent, new_cartesian)
+					# print(self, burn_orbit)
+					# now, to check if burn_orbit makes it closer...
+					try:
+						new_close_approach_time = burn_orbit.close_approach(other, dv_best[3], n, delta_t_tol)
+					except AssertionError:
+						mul >>= 1
+						continue
+					new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
+					if new_close_approach_dist < old_close_approach_dist:
+						# print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+						# good! continue along this path, then.
+						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
+						dv_best = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod, dv_best[3]+dt_mod
+						old_close_approach_dist = new_close_approach_dist
+					else:
+						# multiplier is too big!
+						# print('old mul was', mul)
+						mul >>= 1
+			# print(attempt, 'Transfer failed...', dv_best)
+		# earth.orbit.transfer(mars.orbit)
+		# autopsy
+		# return System(earth, mars, Body(orbit=burn_orbit))
+		raise ValueError('Arguments do not lead to a transfer orbit.\nPerhaps you set your tolerances too high/low?')
 
 	def true_anomaly(self, t: float = 0) -> float:
 		"""True anomaly (rad)"""
@@ -1039,7 +1129,6 @@ class System:
 				if event.type == pygame.QUIT:
 					pygame.display.quit()
 					pygame.quit()
-					exit()
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_KP_PLUS: # timerate up
 						timerate *= 2
@@ -1087,6 +1176,8 @@ def keplerian(parent: Body, cartesian: (float, float, float, float, float, float
 	# which is simply the magnitude of the eccentricity vector e, and the eccentric anomaly E [1]:
 	eccentricity = np.linalg.norm(e)
 	E = 2 * atan(tan(nu/2) / ((1+eccentricity)/(1-eccentricity))**.5)
+	# print(nu, eccentricity, '-> E =', E)
+	# E = 2 * atan2(((1+eccentricity)/(1-eccentricity))**.5, tan(nu/2))
 	# 4 Obtain the longitude of the ascending node Omega and the argument of periapsis omega:
 	if np.linalg.norm(n):
 		temp = acos(n[0] / np.linalg.norm(n))
@@ -1104,6 +1195,7 @@ def keplerian(parent: Body, cartesian: (float, float, float, float, float, float
 	# 5 Compute the mean anomaly M with help of Kepler’s Equation from the eccentric anomaly E 
 	# and the eccentricity e:
 	M = E - eccentricity * sin(E)
+	# print(E, eccentricity, '-> M =', M)
 	# 6 Finally, the semi-major axis a is found from the expression
 	a = 1 / (2/np.linalg.norm(r) - np.linalg.norm(r_)**2/mu)
 	return Orbit(**{
@@ -1811,3 +1903,4 @@ comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
 # solar_system.sim
+# burn = earth.orbit.transfer(mars.orbit)
