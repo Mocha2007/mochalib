@@ -4,8 +4,11 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
+from datetime import datetime, timedelta
 
 # constants
+epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
+
 g = 6.674e-11 # standard gravitational constant
 c = 299792458 # m/s
 L_0 = 3.0128e28 # W
@@ -35,6 +38,11 @@ def axisEqual3D(ax):
 	r = maxsize/2
 	for ctr, dim in zip(centers, 'xyz'):
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
+
+
+def linear_map(interval1: (float, float), interval2: (float, float)):
+	"""Create a linear map from one interval to another"""
+	return lambda x: (x - interval1[0]) / (interval1[1] - interval1[0]) * (interval2[1] - interval2[0]) + interval2[0]
 
 
 def resonance_probability(mismatch: float, outer: int) -> float:
@@ -738,6 +746,11 @@ class Body:
 		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
 		return dv1 + dv2
 
+	def net_grav_acc_vector(self, system, t: float) -> (float, float, float):
+		"""Net gravitational acceleration vector (m/s^2)"""
+		vectors = [self.acc_vector_towards(body, t) for body in system.bodies if body != self]
+		return tuple(map(sum, zip(*vectors)))
+
 	def penumbra_at(self, distance: float) -> float:
 		"""Penumbra radius at distance (m)"""
 		planet, star = self, self.orbit.parent
@@ -906,6 +919,77 @@ class System:
 		plt.pie(system_masses)
 
 		plt.show()
+
+	@property
+	def sim(self):
+		"""Use pygame to produce a better simulation, albeit in 2D"""
+		import pygame
+		from copy import deepcopy
+		from time import sleep
+
+		orbit_res = 32
+		dot_radius = 2
+		black, blue, white, yellow = (0,)*3, (0, 0, 255), (255,)*3, (192, 192, 0)
+		timerate = self.sorted_bodies[0].orbit.p/orbit_res
+		max_a = self.sorted_bodies[-1].orbit.apo
+		parent = self.any_body.orbit.parent
+
+		size = 800, 800
+		width, height = size
+
+		pygame.init()
+		screen = pygame.display.set_mode(size)
+		refresh = pygame.display.flip
+		title = str(self)
+		pygame.display.set_caption(title)
+
+		t = 0
+		# frame
+		while 1:
+			# print('t =', t)
+			t += timerate
+			screen.fill(black)
+			# show bodies
+			# show star
+			# screen.set_at((width//2, height//2), yellow)
+			pygame.draw.circle(screen, yellow, (width//2, height//2), dot_radius)
+			# show planets
+			xmap = linear_map((-max_a, max_a), (0, width))
+			ymap = linear_map((-max_a, max_a), (height, 0))
+			for body in self.bodies:
+				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
+				coords = int(round(xmap(x))), int(round(ymap(y)))
+				# orbit
+				for i in range(orbit_res):
+					p = body.orbit.p
+					x, y, z, vx, vy, vz = body.orbit.cartesian(t+i*p/orbit_res)
+					start_pos = int(round(xmap(x))), int(round(ymap(y)))
+					x, y, z, vx, vy, vz = body.orbit.cartesian(t+(i+1)*p/orbit_res)
+					end_pos = int(round(xmap(x))), int(round(ymap(y)))
+					pygame.draw.line(screen, blue, start_pos, end_pos)
+				# screen.set_at(coords, white)
+				pygame.draw.circle(screen, white, coords, dot_radius)
+			# print date
+			font = pygame.font.SysFont('Courier New', 30)
+			textsurface = font.render(str(epoch+timedelta(seconds=t)), False, white)
+			screen.blit(textsurface,(0,0))
+			refresh()
+			# event handling
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					pygame.display.quit()
+					pygame.quit()
+					exit()
+				elif event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_KP_PLUS: # timerate up
+						timerate *= 2
+					elif event.key == pygame.K_KP_MINUS: # timerate down
+						timerate /= 2
+				elif event.type == pygame.MOUSEBUTTONDOWN:
+					if event.button == 4: # zoom in
+						max_a /= 2
+					if event.button == 5: # zoom out
+						max_a *= 2
 
 	@property
 	def sorted_bodies(self) -> Body:
@@ -1670,3 +1754,4 @@ kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_n
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
+# solar_system.sim
