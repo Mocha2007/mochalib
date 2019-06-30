@@ -31,6 +31,10 @@ class Length:
 
 	def __str__(self) -> str:
 		x = self.value
+		if x < 1e-6:
+			return str(x*1e9) + ' nm'
+		if x < 1e-3:
+			return str(x*1e6) + ' μm'
 		if x < 1:
 			return str(x*1e3) + ' mm'
 		if x < 1e3:
