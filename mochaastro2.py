@@ -1781,6 +1781,7 @@ inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
 jupiter_system = System(io, europa, ganymede, callisto)
 kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
+comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # todo body1 body2 to orbit1 orbit2
 # todo switch to json file for body storage
