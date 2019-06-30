@@ -1,7 +1,16 @@
+def is_number(x) -> bool:
+	return type(x) in {int, float, complex}
+
+
 class Dimension:
 	def __init__(self, value, *tags):
 		self.value = value
 		self.tags = set(tags)
+
+	# properties
+	@property
+	def multi(self):
+		return Multidimension(self.value, {type(self): 1}, *self.tags)
 
 	# double underscore methods
 	def __abs__(self):
@@ -40,7 +49,7 @@ class Dimension:
 
 	def __mul__(self, other): # returns either type(self) or Multidimension
 		if isinstance(other, Dimension):
-			return Multidimension(self.value * other.value, {type(self): 1, type(other): 1}, *self.tags)
+			return self.multi * other.multi
 		if isinstance(other, Multidimension):
 			return other * self
 		return type(self)(self.value*other, *self.tags)
@@ -54,6 +63,12 @@ class Dimension:
 	def __repr__(self) -> str:
 		return '{0}({1}, *{2})'.format(type(self).__name__, self.value, self.tags)
 
+	def __rmul__(self, other):
+		return self * other
+
+	def __rtruediv__(self, other):
+		return other / self.multi
+
 	def __sub__(self, other):
 		assert type(self) == type(other)
 		return type(self)(self.value-other.value, *self.tags)
@@ -62,11 +77,10 @@ class Dimension:
 		if isinstance(other, Dimension):
 			if type(self) == type(other):
 				return self.value / other.value
-			return Multidimension(self.value / other.value, {type(self): 1, type(other): -1}, *self.tags)
+			return self.multi / other.multi
 		if isinstance(other, Multidimension): # call rtruediv of multidimension
-			raise NotImplementedError
+			return self.multi / multi
 		return type(self)(self.value/other, *self.tags)
-	# todo divmod radd rmul rsub rtruediv
 
 
 class Length(Dimension):
@@ -131,15 +145,13 @@ class Multidimension:
 		self.tags = set(tags)
 
 	# double underscore methods
+	def __add__(self, other):
+		assert self.dimensions == other.dimensions
+		return Multidimension(self.value + other.value, self.dimensions, *self.tags)
+
 	def __mul__(self, other):
 		if isinstance(other, Dimension):
-			dimensions = self.dimensions.copy()
-			t = type(other)
-			if t in dimensions:
-				dimensions[t] += 1
-			else:
-				dimensions[t] = 1
-			return Multidimension(self.value * other.value, dimensions, *self.tags)
+			return self * other.multi
 		if isinstance(other, Multidimension):
 			dimensions = self.dimensions.copy()
 			for dimension, i in other.dimensions.items():
@@ -149,3 +161,31 @@ class Multidimension:
 					dimensions[dimension] = i
 			return Multidimension(self.value * other.value, dimensions, *self.tags)
 		return Multidimension(self.value*other, self.dimensions, *self.tags)
+
+	def __neg__(self):
+		return Multidimension(-self.value, self.dimensions, *self.tags)
+
+	def __pos__(self):
+		return self
+
+	def __repr__(self) -> str:
+		return 'Multivalue({0}, {1}, *{2})'.format(self.value, self.dimensions, self.tags)
+
+	def __rtruediv__(self, other):
+		return Multidimension(other, {}, *self.tags) / self
+
+	def __sub__(self, other):
+		return self + -other
+
+	def __truediv__(self, other): # possibilities: other is number or dimension
+		dimensions = self.dimensions.copy()
+		if isinstance(other, Dimension):
+			return self / other.multi
+		if isinstance(other, Multidimension):
+			for dimension in other.dimensions:
+				if dimension in dimensions:
+					dimensions[dimension] -= 1
+				else:
+					dimensions[dimension] = -1
+			return Multidimension(other.value / self.value, dimensions, *self.tags)
+		return Multidimension(other / self.value, dimensions, *self.tags)
