@@ -235,11 +235,13 @@ class Orbit:
 		i = self.i
 		omega, Omega = self.aop, self.lan
 		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
-		R = lambda x: (
-			x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
-			x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
-			x[0]*(s*sin(i))         + x[1]*(c*sin(i))
-		)
+
+		def R(x: (float, float, float)) -> (float, float, float):
+			return (
+				x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
+				x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
+				x[0]*(s*sin(i)) + x[1]*(c*sin(i))
+			)
 		r, r_ = R(o), R(o_)
 		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
@@ -248,7 +250,7 @@ class Orbit:
 		# other is of type Orbit
 		"""Min and max distances (rad)"""
 		ds = abs(self.peri - other.apo), abs(self.apo - other.peri), \
-			 abs(self.peri + other.apo), abs(self.apo + other.peri)
+			abs(self.peri + other.apo), abs(self.apo + other.peri)
 		dmin, dmax = min(ds), max(ds)
 		return dmin, dmax
 
@@ -369,12 +371,12 @@ class Atmosphere:
 		# earth.atmosphere.greenhouse -> 1.16
 		# mars.atmosphere.greenhouse  -> .975
 		pp_ratio = self.partial_pressure('CO2') / earth.atmosphere.partial_pressure('CO2')
-		c = 288/earth.temp # ratio for earth
-		# return c * pp_ratio ** .08
+		constant = 288/earth.temp # ratio for earth
+		# return constant * pp_ratio ** .08
 		x, y = 0.05466933153152969, 0.06302583949080053
 		s_ratio = self.surface_pressure / earth.atmosphere.surface_pressure
-		# print(c, pp_ratio, 'x', s_ratio, 'y')
-		return c * pp_ratio ** x * s_ratio ** y
+		# print(constant, pp_ratio, 'x', s_ratio, 'y')
+		return constant * pp_ratio ** x * s_ratio ** y
 
 	@property
 	def scale_height(self) -> float:
@@ -548,10 +550,10 @@ class Body:
 	@property
 	def lunar_eclipse(self):
 		"""Draw maximum eclipsing radii"""
-		moon, planet = self, self.orbit.parent
-		a = moon.orbit.peri
+		satellite, planet = self, self.orbit.parent
+		a = satellite.orbit.peri
 		r = planet.radius
-		moon_radius = moon.angular_diameter_at(a-r)
+		moon_radius = satellite.angular_diameter_at(a-r)
 		umbra_radius = atan2(planet.umbra_at(a), a-r)
 		penumbra_radius = atan2(planet.penumbra_at(a), a-r)
 
@@ -630,8 +632,8 @@ class Body:
 	@property
 	def solar_eclipse(self):
 		"""Draw maximum eclipsing radii"""
-		moon, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
-		moon_radius = moon.angular_diameter_at(moon.orbit.peri - planet.radius)
+		satellite, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
+		moon_radius = satellite.angular_diameter_at(satellite.orbit.peri - planet.radius)
 		star_radius = star.angular_diameter_at(planet.orbit.apo - planet.radius)
 
 		fig, ax = plt.subplots()
