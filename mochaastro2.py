@@ -343,9 +343,25 @@ class Rotation:
 		self.properties = properties
 
 	@property
+	def axis_vector(self) -> (float, float, float):
+		"""Return unit vector of axis (dimensionless)"""
+		theta, phi = self.dec, self.ra
+		return sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)
+
+	@property
+	def dec(self) -> float:
+		"""Declination of axis (rad)"""
+		return self.properties['dec']
+
+	@property
 	def p(self) -> float:
 		"""Period (s)"""
 		return self.properties['period']
+
+	@property
+	def ra(self) -> float:
+		"""Right ascension of axis (rad)"""
+		return self.properties['ra']
 
 	@property
 	def tilt(self) -> float:
@@ -1316,6 +1332,8 @@ earth = Body(**{
 	'rotation': Rotation(**{
 		'period': 86164.100352,
 		'tilt': .4090926295,
+		'ra': 0,
+		'dec': 90*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 8500,
@@ -1460,8 +1478,6 @@ jupiter = Body(**{
 	'radius': 6.9911e7,
 	'albedo': .538,
 })
-
-# todo galileian moons
 
 io = Body(**{
 	'orbit': Orbit(**{
@@ -1765,7 +1781,7 @@ inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
 jupiter_system = System(io, europa, ganymede, callisto)
 kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
-# todo rotational axis RA and DEC
+# todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
