@@ -1,8 +1,57 @@
-class Length:
+class Dimension:
 	def __init__(self, value, *tags):
 		self.value = value
 		self.tags = set(tags)
 
+	# double underscore methods
+	def __abs__(self):
+		return type(self)(abs(self.value))
+
+	def __add__(self, other):
+		assert type(self) == type(other)
+		return type(self)(self.value+other.value)
+
+	def __bool__(self) -> bool:
+		return bool(self.value)
+
+	def __complex__(self) -> complex:
+		return complex(self.value)
+
+	def __eq__(self, other) -> bool:
+		assert type(self) == type(other)
+		return self.value == other.value
+
+	def __float__(self) -> float:
+		return float(self.value)
+
+	def __hash__(self) -> int:
+		return hash(self.value)
+
+	def __int__(self) -> int:
+		return int(self.value)
+
+	def __le__(self, other) -> bool:
+		assert type(self) == type(other)
+		return self.value <= other.value
+
+	def __lt__(self, other) -> bool:
+		assert type(self) == type(other)
+		return self.value < other.value
+
+	def __neg__(self):
+		return type(self)(-self.value)
+
+	def __pos__(self):
+		return self
+
+	def __repr__(self) -> str:
+		return '{0}({1}, *{2})'.format(type(self).__name__, self.value, self.tags)
+
+	def __sub__(self, other):
+		assert type(self) == type(other)
+		return type(self)(self.value-other.value)
+
+class Length(Dimension):
 	# properties
 	@property
 	def astro(self) -> str:
@@ -32,26 +81,6 @@ class Length:
 		return str(x/mi) + ' mi'
 
 	# double underscore methods
-	def __add__(self, other):
-		return Length(self.value+other.value)
-
-	def __eq__(self, other) -> bool:
-		return self.value == other.value
-
-	def __le__(self, other) -> bool:
-		return self.value <= other.value
-
-	def __lt__(self, other) -> bool:
-		return self.value < other.value
-
-	def __neg__(self):
-		return Length(-self.value)
-
-	def __pos__(self):
-		return self
-
-	def __repr__(self) -> str:
-		return 'Length({0})'.format(self.value)
 
 	def __str__(self) -> str:
 		if 'imperial' in self.tags:
@@ -74,6 +103,4 @@ class Length:
 		if x < 1e12:
 			return str(x/1e9) + ' Gm'
 		return str(x/1e12) + ' Tm'
-
-	def __sub__(self, other):
-		return Length(self.value-other.value)
+	
