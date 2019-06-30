@@ -5,11 +5,11 @@ class Dimension:
 
 	# double underscore methods
 	def __abs__(self):
-		return type(self)(abs(self.value))
+		return type(self)(abs(self.value), *self.tags)
 
 	def __add__(self, other):
 		assert type(self) == type(other)
-		return type(self)(self.value+other.value)
+		return type(self)(self.value+other.value, *self.tags)
 
 	def __bool__(self) -> bool:
 		return bool(self.value)
@@ -39,7 +39,7 @@ class Dimension:
 		return self.value < other.value
 
 	def __neg__(self):
-		return type(self)(-self.value)
+		return type(self)(-self.value, *self.tags)
 
 	def __pos__(self):
 		return self
@@ -49,7 +49,7 @@ class Dimension:
 
 	def __sub__(self, other):
 		assert type(self) == type(other)
-		return type(self)(self.value-other.value)
+		return type(self)(self.value-other.value, *self.tags)
 
 class Length(Dimension):
 	# properties
