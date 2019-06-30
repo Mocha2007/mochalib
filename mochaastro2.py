@@ -944,9 +944,9 @@ class System:
 	def sim(self):
 		"""Use pygame to produce a better simulation, albeit in 2D"""
 		import pygame
-		from time import sleep
+		from time import sleep, time
 
-		orbit_res = 32
+		orbit_res = 64
 		dot_radius = 2
 		black, blue, white = (0,)*3, (0, 0, 255), (255,)*3
 		timerate = self.sorted_bodies[0].orbit.p/32
@@ -965,6 +965,9 @@ class System:
 		font = pygame.font.SysFont('Courier New', fontsize)
 
 		t = 0
+		# precompute orbits
+		orbits = {body: tuple((body.orbit.cartesian(t+i*body.orbit.p/orbit_res)[:2],
+		body.orbit.cartesian(t+(i+1)*body.orbit.p/orbit_res)[:2]) for i in range(orbit_res)) for body in self.bodies}
 		# frame
 		while 1:
 			# print('t =', t)
@@ -981,18 +984,18 @@ class System:
 			# show planets
 			xmap = linear_map((-max_a, max_a), (0, width))
 			ymap = linear_map((-max_a, max_a), (height, 0))
-			for body in self.bodies:
+			# start_time = time()
+			for body in self.bodies: # ~500 μs/body @ orbit_res = 64
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
 				coords = int(round(xmap(x))), int(round(ymap(y)))
-				# orbit
-				for i in range(orbit_res):
-					p = body.orbit.p
-					x, y, z, vx, vy, vz = body.orbit.cartesian(t+i*p/orbit_res)
-					start_pos = int(round(xmap(x))), int(round(ymap(y)))
-					x, y, z, vx, vy, vz = body.orbit.cartesian(t+(i+1)*p/orbit_res)
-					end_pos = int(round(xmap(x))), int(round(ymap(y)))
+				# redraw orbit
+				for start_pos, end_pos in orbits[body]:
+					x, y = start_pos
+					start_coords = int(round(xmap(x))), int(round(ymap(y)))
+					x, y = end_pos
+					end_coords = int(round(xmap(x))), int(round(ymap(y)))
 					try:
-						pygame.draw.line(screen, blue, start_pos, end_pos)
+						pygame.draw.line(screen, blue, start_coords, end_coords)
 					except TypeError:
 						pass
 				try:
@@ -1004,6 +1007,7 @@ class System:
 						body_radius if dot_radius < body_radius else dot_radius)
 				except OverflowError:
 					pass
+			# print((time() - start_time)/len(self.bodies))
 			# print date
 			textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(timerate)), True, white)
 			screen.blit(textsurface, (0, 0))
