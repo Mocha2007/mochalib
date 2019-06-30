@@ -86,6 +86,8 @@ class Length(Dimension):
 		if 'imperial' in self.tags:
 			return self.imperial
 		x = self.value
+		if x == 0:
+			return '0 m'
 		if x < 1e-6:
 			return str(x*1e9) + ' nm'
 		if x < 1e-3:
