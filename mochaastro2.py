@@ -222,6 +222,13 @@ class Orbit:
 		return '\n'.join(bits).format(**self.properties)
 
 	# methods
+	def at_time(self, t: float):
+		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
+		new = self.copy
+		new.properties['man'] += t/self.p * 2*pi
+		new.properties['man'] %= 2*pi
+		return new
+
 	def cartesian(self, t: float = 0) -> (float, float, float, float, float, float):
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
@@ -251,7 +258,7 @@ class Orbit:
 		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
 
-	def close_approach(self, other, t: float = 0, n: float = 1, delta_t_tolerance: float = 1) -> float:
+	def close_approach(self, other, t: float = 0, n: float = 1, delta_t_tolerance: float = 1, after_only=True) -> float:
 		"""Get close approach time between two orbits after epoch t, searching +/-n orbits of self. (s)"""
 		delta_t = self.p * n
 		if delta_t < delta_t_tolerance:
@@ -262,13 +269,13 @@ class Orbit:
 		# print(d_bef, d_0, d_aft)
 		if d_bef > d_aft < d_0: # the best point must be between middle and positive end
 			# print('aft')
-			return self.close_approach(other, t+delta_t/2, n/2, delta_t_tolerance)
-		if d_bef < d_0: # the best point must be between middle and negative end
+			return self.close_approach(other, t+delta_t/2, n/2, delta_t_tolerance, after_only)
+		if not after_only and d_bef < d_0: # the best point must be between middle and negative end
 			# print('bef')
 			return self.close_approach(other, t-delta_t/2, n/2, delta_t_tolerance)
 		# the best point must be near middle
 		# print('mid')
-		return self.close_approach(other, t, n/2, delta_t_tolerance)
+		return self.close_approach(other, t, n/2, delta_t_tolerance, after_only)
 
 	def distance(self, other) -> (float, float):
 		# other is of type Orbit
@@ -378,11 +385,11 @@ class Orbit:
 		max_attempts = 64
 		n = self.synodic(other) / self.p
 		# initial guess for t is close approach time, plus half a synodic period
-		t_burn = self.close_approach(other, t, n, delta_t_tol) + self.synodic(other)/2
+		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.synodic(other)/2
 		old_close_approach_dist = self.distance_to(other, t_burn)
 		# initial guess needs to be "bring my apo up/peri down to the orbit
 		initial_guess = self.stretch_to(other)
-		# System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
+		System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
 		time_at_guess = self.close_approach(initial_guess, t_burn, n, delta_t_tol)
 		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(time_at_guess), initial_guess.cartesian(time_at_guess)))[-3:]
 		dv_best = dv_of_guess + (t_burn,) # includes time
@@ -402,41 +409,42 @@ class Orbit:
 		for attempt in range(max_attempts):
 			if new_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
-				# print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
-				# System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
+				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
+				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
 				return dv_best
 			for modifiers in base_order:
 				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit
 				while 1 <= mul:
 					dvx_mod, dvy_mod, dvz_mod, dt_mod = tuple(i*mul for i in modifiers)
 					# start by testing if adding a minute dx improves close approach
-					dvx, dvy, dvz = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod
-					old_cartesian = self.cartesian(dv_best[3]+dt_mod)
+					dvx, dvy, dvz, dt = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod, dv_best[3]+dt_mod
+					old_cartesian = self.cartesian(dt)
 					x, y, z, vx, vy, vz = old_cartesian
 					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
-					burn_orbit = keplerian(self.parent, new_cartesian)
+					burn_orbit = keplerian(self.parent, new_cartesian).at_time(-dt)
+					# when t=0 for this orbit, the real time is dt, so we need to reverse it by dt seconds
 					# print(self, burn_orbit)
 					# now, to check if burn_orbit makes it closer...
 					try:
-						new_close_approach_time = burn_orbit.close_approach(other, dv_best[3], n, delta_t_tol)
+						new_close_approach_time = burn_orbit.close_approach(other, dt, n, delta_t_tol)
 					except AssertionError:
 						mul >>= 1
 						continue
 					new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
 					if new_close_approach_dist < old_close_approach_dist:
-						# print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+						print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+						# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
 						# good! continue along this path, then.
 						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
-						dv_best = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod, dv_best[3]+dt_mod
+						dv_best = dvx, dvy, dvz, dt
 						old_close_approach_dist = new_close_approach_dist
 					else:
 						# multiplier is too big!
 						# print('old mul was', mul)
 						mul >>= 1
-			# print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
-		# earth.orbit.transfer(mars.orbit)
+			print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
 		# autopsy
-		# return System(earth, mars, Body(orbit=burn_orbit))
+		System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
 		errorstring = '\n'.join((
 			'Arguments do not lead to a transfer orbit.',
 			'Perhaps you set your tolerances too high/low?',
