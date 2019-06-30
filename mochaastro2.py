@@ -931,7 +931,7 @@ class System:
 		orbit_res = 32
 		dot_radius = 2
 		black, blue, white = (0,)*3, (0, 0, 255), (255,)*3
-		timerate = self.sorted_bodies[0].orbit.p/orbit_res
+		timerate = self.sorted_bodies[0].orbit.p/32
 		max_a = self.sorted_bodies[-1].orbit.apo
 		parent = self.any_body.orbit.parent
 
@@ -977,7 +977,10 @@ class System:
 						pygame.draw.line(screen, blue, start_pos, end_pos)
 					except TypeError:
 						pass
-				body_radius = round(body.radius/max_a * width)
+				try:
+					body_radius = round(body.radius/max_a * width)
+				except KeyError:
+					body_radius = 0
 				try:
 					pygame.draw.circle(screen, white, coords, \
 						body_radius if dot_radius < body_radius else dot_radius)
@@ -987,7 +990,7 @@ class System:
 			textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(timerate)), True, white)
 			screen.blit(textsurface, (0, 0))
 			# print scale
-			textsurface = font.render(str(Length(max_a)), True, white)
+			textsurface = font.render(str(Length(max_a, 'astro')), True, white)
 			screen.blit(textsurface, (0, fontsize))
 			refresh()
 			# event handling
