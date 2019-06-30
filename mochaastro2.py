@@ -199,7 +199,7 @@ class Orbit:
 			return self.v
 		e = self.e
 		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
-	
+
 	# double underscore methods
 	def __gt__(self, other) -> bool:
 		return other.apo < self.peri
@@ -210,16 +210,15 @@ class Orbit:
 	def __str__(self) -> str:
 		bits = [
 			'<Orbit',
-			'\tParent: {parent}',
-			'\ta:      {sma}',
-			'\te:      {e}',
-			'\ti:      {i}',
-			'\tOmega:  {lan}',
-			'\tomega:  {aop}',
-			'\tM:      {man}',
-			'>',
+			'Parent: {parent}',
+			'a:      {sma}',
+			'e:      {e}',
+			'i:      {i}',
+			'Omega:  {lan}',
+			'omega:  {aop}',
+			'M:      {man}',
 		]
-		return '\n'.join(bits).format(**self.properties)
+		return '\n\t'.join(bits).format(**self.properties)+'\n>'
 
 	# methods
 	def at_time(self, t: float):
@@ -231,6 +230,7 @@ class Orbit:
 
 	def cartesian(self, t: float = 0) -> (float, float, float, float, float, float):
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
+		# ~29μs avg.
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
 		# 2 GOOD eccentric anomaly
 		E = self.eccentric_anomaly(t)
@@ -260,6 +260,7 @@ class Orbit:
 
 	def close_approach(self, other, t: float = 0, n: float = 1, delta_t_tolerance: float = 1, after_only=True) -> float:
 		"""Get close approach time between two orbits after epoch t, searching +/-n orbits of self. (s)"""
+		# ~5ms total to compute, at least for earth -> mars
 		delta_t = self.p * n
 		if delta_t < delta_t_tolerance:
 			return t
@@ -288,11 +289,13 @@ class Orbit:
 	def distance_to(self, other, t: float) -> float:
 		# other is of type Orbit
 		"""Distance between orbits at time t (m)"""
+		# ~65μs avg.
 		a, b = self.cartesian(t)[:3], other.cartesian(t)[:3]
 		return sum((i-j)**2 for i, j in zip(a, b))**.5
 
 	def eccentric_anomaly(self, t: float = 0) -> float:
 		"""Eccentric anomaly (radians)"""
+		# ~6μs avg.
 		# get new anomaly
 		tau = 2*pi
 		tol = 1e-10
@@ -310,6 +313,7 @@ class Orbit:
 
 	def get_resonance(self, other, sigma: int = 3) -> (int, int):
 		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
+		# ~102μs avg.
 		q = self.p / other.p
 		if 1 < q:
 			return other.get_resonance(self, sigma)
@@ -350,6 +354,7 @@ class Orbit:
 
 	def stretch_to(self, other):
 		"""Stretch one orbit to another, doing the minimum to make them cross"""
+		# ~156μs avg.
 		# if already crossing
 		if self.peri <= other.peri <= self.apo or self.peri <= other.apo <= self.apo:
 			return self # nothing to do, already done!
@@ -379,7 +384,7 @@ class Orbit:
 		# other is type Body
 		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
-	
+
 	def tisserand(self, other) -> float:
 		"""Tisserand's parameter (dimensionless)"""
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
@@ -388,7 +393,7 @@ class Orbit:
 	def transfer(self, other, t: float = 0,
 		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
 		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
-		max_attempts = 64
+		max_attempts = 16
 		n = self.synodic(other) / self.p
 		# initial guess for t is close approach time, plus phase angle
 		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.phase_angle(other)*other.p
@@ -458,71 +463,9 @@ class Orbit:
 		))
 		raise ValueError(errorstring)
 
-	def transfer_at(self, other, t: float = 0, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float):
-		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
-		max_attempts = 8
-		n = self.synodic(other) / self.p
-		old_close_approach_dist = self.distance_to(other, t)
-		dv_best = 0, 0, 0
-		# compute quality of initial guess
-		new_close_approach_dist = old_close_approach_dist
-		# order of deltas to attempt
-		base_order = (
-			(dv_tol, 0, 0),
-			(-dv_tol, 0, 0),
-			(0, dv_tol, 0),
-			(0, -dv_tol, 0),
-			(0, 0, dv_tol),
-			(0, 0, -dv_tol),
-		)
-		for attempt in range(max_attempts):
-			if new_close_approach_dist < delta_x_tol: # success!
-				# print('it finally works!')
-				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
-				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
-				return dv_best
-			for modifiers in base_order:
-				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit
-				while 1 <= mul:
-					dvx_mod, dvy_mod, dvz_mod = tuple(i*mul for i in modifiers)
-					# start by testing if adding a minute dx improves close approach
-					dvx, dvy, dvz = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod
-					old_cartesian = self.cartesian(t)
-					x, y, z, vx, vy, vz = old_cartesian
-					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
-					burn_orbit = keplerian(self.parent, new_cartesian).at_time(-t)
-					# when t=0 for this orbit, the real time is dt, so we need to reverse it by dt seconds
-					# print(self, burn_orbit)
-					# now, to check if burn_orbit makes it closer...
-					try:
-						new_close_approach_time = burn_orbit.close_approach(other, 0, n)
-					except AssertionError:
-						mul >>= 1
-						continue
-					new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
-					if new_close_approach_dist < old_close_approach_dist:
-						print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
-						# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
-						# good! continue along this path, then.
-						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
-						dv_best = dvx, dvy, dvz
-						old_close_approach_dist = new_close_approach_dist
-					else:
-						# multiplier is too big!
-						# print('old mul was', mul)
-						mul >>= 1
-			print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
-		# autopsy
-		System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
-		errorstring = '\n'.join((
-			'Arguments do not lead to a transfer orbit.',
-			'Perhaps you set your tolerances too high/low?',
-			'{0} < {1}'.format(*(Length(i, 'astro') for i in (delta_x_tol, old_close_approach_dist))),
-		))
-		raise ValueError(errorstring)
-
 	def true_anomaly(self, t: float = 0) -> float:
 		"""True anomaly (rad)"""
+		# ~8μs avg.
 		E, e = self.eccentric_anomaly(t), self.e
 		return 2 * atan2((1+e)**.5 * sin(E/2), (1-e)**.5 * cos(E/2))
 
