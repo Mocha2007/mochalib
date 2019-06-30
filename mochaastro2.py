@@ -328,6 +328,12 @@ class Orbit:
 				break
 		return best[:2]
 
+	def phase_angle(self, other) -> float:
+		"""Phase angle for transfer orbits, fraction of other's orbit (rad)"""
+		# https://forum.kerbalspaceprogram.com/index.php?/topic/62404-how-to-calculate-phase-angle-for-hohmann-transfer/#comment-944657
+		d, h = other.a, self.a
+		return pi/((d/h)**1.5)
+
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
 		t, p, T, P = self.i, self.lan, other.i, other.lan
@@ -384,8 +390,8 @@ class Orbit:
 		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
 		max_attempts = 64
 		n = self.synodic(other) / self.p
-		# initial guess for t is close approach time, plus half a synodic period
-		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.synodic(other)/2
+		# initial guess for t is close approach time, plus phase angle
+		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.phase_angle(other)*other.p
 		old_close_approach_dist = self.distance_to(other, t_burn)
 		# initial guess needs to be "bring my apo up/peri down to the orbit
 		initial_guess = self.stretch_to(other)
@@ -437,6 +443,69 @@ class Orbit:
 						# good! continue along this path, then.
 						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
 						dv_best = dvx, dvy, dvz, dt
+						old_close_approach_dist = new_close_approach_dist
+					else:
+						# multiplier is too big!
+						# print('old mul was', mul)
+						mul >>= 1
+			print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
+		# autopsy
+		System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+		errorstring = '\n'.join((
+			'Arguments do not lead to a transfer orbit.',
+			'Perhaps you set your tolerances too high/low?',
+			'{0} < {1}'.format(*(Length(i, 'astro') for i in (delta_x_tol, old_close_approach_dist))),
+		))
+		raise ValueError(errorstring)
+
+	def transfer_at(self, other, t: float = 0, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float):
+		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
+		max_attempts = 8
+		n = self.synodic(other) / self.p
+		old_close_approach_dist = self.distance_to(other, t)
+		dv_best = 0, 0, 0
+		# compute quality of initial guess
+		new_close_approach_dist = old_close_approach_dist
+		# order of deltas to attempt
+		base_order = (
+			(dv_tol, 0, 0),
+			(-dv_tol, 0, 0),
+			(0, dv_tol, 0),
+			(0, -dv_tol, 0),
+			(0, 0, dv_tol),
+			(0, 0, -dv_tol),
+		)
+		for attempt in range(max_attempts):
+			if new_close_approach_dist < delta_x_tol: # success!
+				# print('it finally works!')
+				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
+				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+				return dv_best
+			for modifiers in base_order:
+				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit
+				while 1 <= mul:
+					dvx_mod, dvy_mod, dvz_mod = tuple(i*mul for i in modifiers)
+					# start by testing if adding a minute dx improves close approach
+					dvx, dvy, dvz = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod
+					old_cartesian = self.cartesian(t)
+					x, y, z, vx, vy, vz = old_cartesian
+					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
+					burn_orbit = keplerian(self.parent, new_cartesian).at_time(-t)
+					# when t=0 for this orbit, the real time is dt, so we need to reverse it by dt seconds
+					# print(self, burn_orbit)
+					# now, to check if burn_orbit makes it closer...
+					try:
+						new_close_approach_time = burn_orbit.close_approach(other, 0, n)
+					except AssertionError:
+						mul >>= 1
+						continue
+					new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
+					if new_close_approach_dist < old_close_approach_dist:
+						print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+						# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
+						# good! continue along this path, then.
+						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
+						dv_best = dvx, dvy, dvz
 						old_close_approach_dist = new_close_approach_dist
 					else:
 						# multiplier is too big!
