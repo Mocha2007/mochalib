@@ -984,7 +984,7 @@ class System:
 				except OverflowError:
 					pass
 			# print date
-			textsurface = font.render(str(epoch+timedelta(seconds=t)), True, white)
+			textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(timerate)), True, white)
 			screen.blit(textsurface, (0, 0))
 			# print scale
 			textsurface = font.render(str(Length(max_a)), True, white)
