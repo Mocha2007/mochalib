@@ -387,7 +387,7 @@ class Orbit:
 		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(time_at_guess), initial_guess.cartesian(time_at_guess)))[-3:]
 		dv_best = dv_of_guess + (t_burn,) # includes time
 		# compute quality of initial guess
-		new_close_approach_dist = initial_guess.close_approach(other, t_burn, n, delta_t_tol)
+		new_close_approach_dist = initial_guess.distance_to(other, t_burn)
 		# order of deltas to attempt
 		base_order = (
 			(dv_tol, 0, 0, 0),
@@ -400,8 +400,11 @@ class Orbit:
 			(0, 0, 0, -delta_t_tol),
 		)
 		for attempt in range(max_attempts):
+			# print(attempt)
 			if new_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
+				# print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
+				# System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
 				return dv_best
 			for modifiers in base_order:
 				mul = 2**13 # 2**11 gives 758 Mm but a huge orbit

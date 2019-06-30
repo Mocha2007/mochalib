@@ -117,9 +117,11 @@ class Length(Dimension):
 
 	# double underscore methods
 	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
 		if 'imperial' in self.tags:
 			return self.imperial
-		x = self.value
 		if x == 0:
 			return '0 m'
 		if x < 1e-6:
