@@ -246,6 +246,25 @@ class Orbit:
 		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
 
+	def close_approach(self, other, t: float = 0, n: float = 1, delta_t_tolerance: float = 1) -> float:
+		"""Get close approach time between two orbits after epoch t, searching +/-n orbits of self. (s)"""
+		delta_t = self.p * n
+		if delta_t < delta_t_tolerance:
+			return t
+		d_0 = self.distance_to(other, t)
+		d_aft = self.distance_to(other, t + delta_t)
+		d_bef = self.distance_to(other, t - delta_t)
+		# print(d_bef, d_0, d_aft)
+		if d_bef > d_aft < d_0: # the best point must be between middle and positive end
+			# print('aft')
+			return self.close_approach(other, t+delta_t/2, n/2, delta_t_tolerance)
+		if d_bef < d_0: # the best point must be between middle and negative end
+			# print('bef')
+			return self.close_approach(other, t-delta_t/2, n/2, delta_t_tolerance)
+		# the best point must be near middle
+		# print('mid')
+		return self.close_approach(other, t, n/2, delta_t_tolerance)
+
 	def distance(self, other) -> (float, float):
 		# other is of type Orbit
 		"""Min and max distances (rad)"""
