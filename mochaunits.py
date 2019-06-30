@@ -38,6 +38,13 @@ class Dimension:
 		assert type(self) == type(other)
 		return self.value < other.value
 
+	def __mul__(self, other): # returns either type(self) or Multidimension
+		if isinstance(other, Dimension):
+			return Multidimension(self.value * other.value, {type(self): 1, type(other): 1}, *self.tags)
+		if isinstance(other, Multidimension):
+			return other * self
+		return type(self)(self.value*other, *self.tags)
+
 	def __neg__(self):
 		return type(self)(-self.value, *self.tags)
 
@@ -82,7 +89,6 @@ class Length(Dimension):
 		return str(x/mi) + ' mi'
 
 	# double underscore methods
-
 	def __str__(self) -> str:
 		if 'imperial' in self.tags:
 			return self.imperial
@@ -106,3 +112,30 @@ class Length(Dimension):
 		if x < 1e12:
 			return str(x/1e9) + ' Gm'
 		return str(x/1e12) + ' Tm'
+
+
+class Multidimension:
+	def __init__(self, value: float, dimensions: dict, *tags):
+		self.value = value
+		self.dimensions = dimensions # type dict Class -> int
+		self.tags = set(tags)
+
+	# double underscore methods
+	def __mul__(self, other):
+		if isinstance(other, Dimension):
+			dimensions = self.dimensions.copy()
+			t = type(other)
+			if t in dimensions:
+				dimensions[t] += 1
+			else:
+				dimensions[t] = 1
+			return Multidimension(self.value * other.value, dimensions, *self.tags)
+		if isinstance(other, Multidimension):
+			dimensions = self.dimensions.copy()
+			for dimension, i in other.dimensions.items():
+				if dimension in dimensions:
+					dimensions[dimension] += i
+				else:
+					dimensions[dimension] = i
+			return Multidimension(self.value * other.value, dimensions, *self.tags)
+		return Multidimension(self.value*other, self.dimensions, *self.tags)
