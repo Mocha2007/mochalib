@@ -464,6 +464,7 @@ class Orbit:
 			'Arguments do not lead to a transfer orbit.',
 			'Perhaps you set your tolerances too high/low?',
 			'{0} < {1}'.format(*(Length(i, 'astro') for i in (delta_x_tol, old_close_approach_dist))),
+			str(dv_best),
 		))
 		raise ValueError(errorstring)
 
