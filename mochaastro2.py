@@ -64,6 +64,7 @@ class Orbit:
 	@property
 	def animate(self):
 		"""Animate orbit with pyplot"""
+		# fixme - doesn't work anymore
 		n = 1000
 		ts = [i*self.p/n for i in range(n)]
 		cs = [self.cartesian(t) for t in ts]
