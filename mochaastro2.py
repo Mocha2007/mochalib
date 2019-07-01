@@ -456,7 +456,10 @@ class Orbit:
 						mul >>= 1
 			print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
 		# autopsy
-		System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+		try:
+			System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+		except AssertionError:
+			print(initial_guess, burn_orbit)
 		errorstring = '\n'.join((
 			'Arguments do not lead to a transfer orbit.',
 			'Perhaps you set your tolerances too high/low?',
