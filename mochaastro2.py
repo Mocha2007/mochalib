@@ -392,45 +392,64 @@ class Orbit:
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
 
 	def transfer(self, other, t: float = 0,
-		delta_t_tol: float = 1e2, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
+		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
 		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
 		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
-		max_attempts = 8
-		n = self.synodic(other) / self.p
-		# initial guess for t is close approach time, plus phase angle
-		t_burn = self.close_approach(other, t, n, delta_t_tol, False) + self.phase_angle(other)*other.p
-		old_close_approach_dist = self.distance_to(other, t_burn)
 		# initial guess needs to be "bring my apo up/peri down to the orbit
 		initial_guess = self.stretch_to(other)
 		System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
-		time_at_guess = self.close_approach(initial_guess, t_burn, n, delta_t_tol)
-		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(time_at_guess), initial_guess.cartesian(time_at_guess)))[-3:]
-		dv_best = dv_of_guess + (t_burn,) # includes time
+		time_at_guess = initial_guess.close_approach(other, t, 1, delta_t_tol)
+		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(t), initial_guess.cartesian(t)))[-3:]
+		dv_best = dv_of_guess + (t,) # includes time
 		# compute quality of initial guess
-		new_close_approach_dist = initial_guess.distance_to(other, t_burn)
+		old_close_approach_dist = initial_guess.distance_to(other, time_at_guess)
 		# order of deltas to attempt
 		base_order = (
-			(0, 0, 0, delta_t_tol),
-			(0, 0, 0, -delta_t_tol),
-			(0, 0, dv_tol, 0),
-			(0, 0, -dv_tol, 0),
-			(0, dv_tol, 0, 0),
-			(0, -dv_tol, 0, 0),
-			(dv_tol, 0, 0, 0),
-			(-dv_tol, 0, 0, 0),
+			(dv_tol, 0, 0),
+			(-dv_tol, 0, 0),
+			(0, dv_tol, 0),
+			(0, -dv_tol, 0),
+			(0, 0, dv_tol),
+			(0, 0, -dv_tol),
 		)
-		for attempt in range(max_attempts):
-			if new_close_approach_dist < delta_x_tol: # success!
+		delta_v_was_successful = True
+		while delta_v_was_successful:
+			if old_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
-				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (new_close_approach_dist, delta_x_tol))))
+				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (old_close_approach_dist, delta_x_tol))))
 				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
 				return dv_best
+			# try to change the time FIRST
+			mul = 2**16
+			while mul:
+				# check if changing the time helps
+				dt_mod = delta_t_tol*mul
+				# start by testing if adding a minute dt improves close approach
+				dt = dv_best[3]+dt_mod
+				burn_orbit = self.at_time(dt)
+				# now, to check if burn_orbit makes it closer...
+				new_close_approach_time = burn_orbit.close_approach(other, dt, 1, delta_t_tol)
+				new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
+				if new_close_approach_dist < old_close_approach_dist:
+					print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+					# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
+					# good! continue along this path, then.
+					print('good!', (0, 0, 0, dt_mod), '@', mul)
+					dv_best = dv_best[:3] + (dt,)
+					old_close_approach_dist = new_close_approach_dist
+					continue
+				# make mul neg if pos, make mul pos and halved if neg
+				mul = -mul
+				if 0 < mul:
+					mul >>= 1
+			delta_v_was_successful = False
 			for modifiers in base_order:
+				print('MODIFIERS', modifiers)
 				mul = 2**13
 				while 1 <= mul:
-					dvx_mod, dvy_mod, dvz_mod, dt_mod = tuple(i*mul for i in modifiers)
+					dvx_mod, dvy_mod, dvz_mod = tuple(i*mul for i in modifiers)
 					# start by testing if adding a minute dx improves close approach
-					dvx, dvy, dvz, dt = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod, dv_best[3]+dt_mod
+					dvx, dvy, dvz, dt = dv_best[0]+dvx_mod, dv_best[1]+dvy_mod, dv_best[2]+dvz_mod, dv_best[3]
 					old_cartesian = self.cartesian(dt)
 					x, y, z, vx, vy, vz = old_cartesian
 					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
@@ -448,14 +467,17 @@ class Orbit:
 						print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
 						# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
 						# good! continue along this path, then.
-						# print('good!', (dvx_mod, dvy_mod, dvz_mod, dt_mod), '@', mul)
+						print('good!', (dvx_mod, dvy_mod, dvz_mod, 0), '@', mul)
 						dv_best = dvx, dvy, dvz, dt
 						old_close_approach_dist = new_close_approach_dist
-					else:
-						# multiplier is too big!
-						# print('old mul was', mul)
-						mul >>= 1
-			print(attempt, 'Transfer failed...', Length(old_close_approach_dist, 'astro'))
+						delta_v_was_successful = True
+						break
+					# multiplier is too big!
+					# print('old mul was', mul)
+					mul >>= 1
+				if delta_v_was_successful:
+					break
+			print('Transfer failed...', Length(old_close_approach_dist, 'astro'))
 		# autopsy
 		try:
 			System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
