@@ -1006,8 +1006,6 @@ class Star(Body):
 	def app_mag(self, dist: float) -> float:
 		"""Apparent Magnitude (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
-	
-	# methods
 
 	def radiation_pressure_at(self, dist: float) -> float:
 		"""Stellar radiation pressure at a distance"""
