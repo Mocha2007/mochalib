@@ -82,6 +82,10 @@ class Sequence(Function):
 		return False
 
 	# double underscore methods
+	def __eq__(self, other) -> bool:
+		# not perfect, but still...
+		return self.generator == other.generator
+
 	def __getitem__(self, key: int) -> float:
 		return list(self.generator(key))[-1]
 
