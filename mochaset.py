@@ -90,6 +90,11 @@ class Function:
 	def f(self) -> function:
 		return self.kwargs['f']
 
+	@property
+	def limit_points(self): # -> Set
+		"""Set of all limit points"""
+		return self.kwargs['limit_points']
+
 	# methods
 	def domain_has(self, other) -> bool:
 		"""Optimized function to determine inclusion of an element in the domain"""
@@ -102,6 +107,12 @@ class Function:
 
 class Set(Function):
 	"""Function X -> B"""
+	# double underscore methods
+	def __str__(self) -> str:
+		if self == Empty:
+			return 'Empty'
+		raise NotImplementedError
+
 	# methods
 	def contains(self, other) -> bool:
 		return self.f(other)
@@ -193,32 +204,44 @@ class Sequence(Function):
 		return '{' + str(list(self.generator(10)))[1:-1] + ', ...}'
 
 
+Empty = Set(**{
+	'generator': lambda n: [],
+	'range_has': lambda x: False,
+})
+Empty.kwargs['limit_points'] = Empty
 P = Sequence(**{
 	'generator': p_generator,
 	'range_has': is_prime,
+	'limit_points': Empty,
 })
 N = Sequence(**{
 	'generator': n_generator,
 	'range_has': lambda x: 0 < x and x % 1 == 0,
+	'limit_points': Empty,
 })
 Z = Sequence(**{
 	'generator': z_generator,
 	'range_has': lambda x: x % 1 == 0,
+	'limit_points': Empty,
 })
 R = Interval(**{
 	'inf': -inf,
 	'sup': inf,
 })
+R.kwargs['limit_points'] = R
 Fib = Sequence(**{
 	'generator': fib_generator,
 	'range_has': fib_inclusion,
+	'limit_points': Empty,
 })
 Squares = Sequence(**{
 	'generator': square_generator,
 	'range_has': square_inclusion,
+	'limit_points': Empty,
 })
 unit_interval = Interval(**{
 	'min': 0,
 	'max': 1,
 })
+unit_interval.kwargs['limit_points'] = unit_interval
 # todo Q
