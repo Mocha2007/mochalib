@@ -107,6 +107,45 @@ class Function:
 
 class Set(Function):
 	"""Function X -> B"""
+	# properties
+	@property
+	def inf(self):
+		"""Infimum"""
+		return self.kwargs['min'] if 'min' in self.kwargs else self.kwargs['inf']
+
+	@property
+	def is_bounded(self) -> bool:
+		return self.range_mag < inf
+
+	@property
+	def is_compact(self) -> bool:
+		return self.is_bounded and self.is_closed
+
+	@property
+	def is_perfect(self) -> bool:
+		return self.isolated_points == Empty and self.is_closed
+
+	@property
+	def isolated_points(self):
+		return self.kwargs['isolated_points']
+
+	@property
+	def max(self):
+		return self.kwargs['max']
+
+	@property
+	def min(self):
+		return self.kwargs['min']
+
+	@property
+	def range_mag(self) -> float:
+		return abs(self.sup - self.min)
+
+	@property
+	def sup(self):
+		"""Supremum"""
+		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
+
 	# double underscore methods
 	def __str__(self) -> str:
 		if self == Empty:
@@ -127,22 +166,8 @@ class Interval(Set):
 		return 'min' in self.kwargs, 'max' in self.kwargs
 
 	@property
-	def inf(self):
-		"""Infimum"""
-		return self.kwargs['min'] if 'min' in self.kwargs else self.kwargs['inf']
-
-	@property
-	def max(self):
-		return self.kwargs['max']
-
-	@property
-	def min(self):
-		return self.kwargs['min']
-
-	@property
-	def sup(self):
-		"""Supremum"""
-		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
+	def isolated_points(self) -> Set:
+		return Empty
 
 	# double underscore methods
 	def __contains__(self, other) -> bool:
@@ -162,10 +187,20 @@ class Interval(Set):
 			return False
 		return True
 
+	def __len__(self) -> float:
+		return self.sup - self.inf
+
 	def __str__(self) -> str:
 		b, B = self.bound_closedness
 		m, M = '(['[b], ')]'[B]
 		return m + str(self.inf) + ', ' + str(self.sup) + M
+
+	# methods
+	def is_closed(self, other) -> bool:
+		return all(self.bound_closedness)
+
+	def is_open(self, other) -> bool:
+		return not is_closed if len(self) else True
 
 
 class Sequence(Function):
@@ -181,7 +216,11 @@ class Sequence(Function):
 		if 'is_finite' in self.kwargs:
 			return self.kwargs['is_finite']
 		return False
-	
+
+	@property
+	def isolated_points(self):
+		return self
+
 	@property
 	def set(self) -> Set:
 		return Set(f=self.range_has)
@@ -206,36 +245,45 @@ class Sequence(Function):
 
 Empty = Set(**{
 	'generator': lambda n: [],
+	'is_open': True,
 	'range_has': lambda x: False,
 })
 Empty.kwargs['limit_points'] = Empty
+Empty.kwargs['isolated_points'] = Empty
 P = Sequence(**{
 	'generator': p_generator,
+	'is_open': False,
 	'range_has': is_prime,
 	'limit_points': Empty,
 })
 N = Sequence(**{
 	'generator': n_generator,
+	'is_open': False,
 	'range_has': lambda x: 0 < x and x % 1 == 0,
 	'limit_points': Empty,
 })
 Z = Sequence(**{
 	'generator': z_generator,
+	'is_open': False,
 	'range_has': lambda x: x % 1 == 0,
 	'limit_points': Empty,
 })
 R = Interval(**{
 	'inf': -inf,
+	'is_open': True,
 	'sup': inf,
 })
 R.kwargs['limit_points'] = R
+R.kwargs['isolated_points'] = Empty
 Fib = Sequence(**{
 	'generator': fib_generator,
+	'is_open': False,
 	'range_has': fib_inclusion,
 	'limit_points': Empty,
 })
 Squares = Sequence(**{
 	'generator': square_generator,
+	'is_open': False,
 	'range_has': square_inclusion,
 	'limit_points': Empty,
 })
