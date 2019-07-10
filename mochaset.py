@@ -56,24 +56,69 @@ def fib_inclusion(n: int) -> bool:
 
 
 class Function:
-	pass
+	"""Function X -> X"""
+	def __init__(self, **kwargs):
+		self.kwargs = kwargs
+		# todo memory
+
+	# properties
+	@property
+	def f(self) -> function:
+		return self.kwargs['f']
+
 	# methods
-	# def __and__(self, other):
-	# 	"""Intersection"""
+	def domain_has(self, other) -> bool:
+		"""Optimized function to determine inclusion of an element in the domain"""
+		return self.kwargs['domain_has']
+
+	def range_has(self, other) -> bool:
+		"""Optimized function to determine inclusion of an element in the range"""
+		return self.kwargs['range_has']
+
+
+class Set(Function):
+	"""Function X -> B"""
+
+	# methods
+	def contains(self, other) -> bool:
+		return self.f(other)
+
+class Interval(Set):
+	@property
+	def sup(self):
+		"""Supremum"""
+		return self.kwargs['sup']
+	
 
 
 class Sequence(Function):
-	"""Functions N -> R"""
-
-	def __init__(self, generator: function, **kwargs):
-		self.generator = generator
-		self.kwargs = kwargs
-		# todo memory
-	
+	"""Function N -> X"""
+	# properties
 	@property
-	def inclusion(self) -> function:
-		"""Optimized function to determine inclusion of an element in the sequence"""
-		return self.kwargs['inclusion']
+	def bound_closedness(self) -> (bool, bool):
+		return self.kwargs['bound_closedness']
+
+	@property
+	def inf(self):
+		"""Infimum"""
+		return self.kwargs['inf']
+
+	@property
+	def max(self):
+		if not self.bound_closedness[1]:
+			raise ValueError('Maximum does not exist')
+		return self.sup
+
+	@property
+	def min(self):
+		if not self.bound_closedness[0]:
+			raise ValueError('Minimum does not exist')
+		return self.inf
+
+	@property
+	def sup(self):
+		"""Supremum"""
+		return self.kwargs['sup']
 	
 	@property
 	def is_finite(self) -> bool:
@@ -81,6 +126,10 @@ class Sequence(Function):
 		if 'is_finite' in self.kwargs:
 			return self.kwargs['is_finite']
 		return False
+	
+	@property
+	def set(self) -> Set:
+		return Set(f=self.range_has)
 
 	# double underscore methods
 	def __eq__(self, other) -> bool:
@@ -98,16 +147,24 @@ class Sequence(Function):
 	
 	# methods
 	def contains(self, other) -> bool:
-		return self.inclusion(other)
+		return self.range_has(other)
 
 
-N = Sequence(n_generator, **{
-	'inclusion': lambda x: 0 < x and x % 1 == 0
+N = Sequence(**{
+	'generator': n_generator,
+	'range_has': lambda x: 0 < x and x % 1 == 0,
 })
-Z = Sequence(z_generator, **{
-	'inclusion': lambda x: x % 1 == 0
+Z = Sequence(**{
+	'generator': z_generator,
+	'range_has': lambda x: x % 1 == 0,
 })
-Fib = Sequence(fib_generator, **{
-	'inclusion': fib_inclusion
+Fib = Sequence(**{
+	'generator': fib_generator,
+	'range_has': fib_inclusion,
+})
+unit_interval = Interval(**{
+	'inf': 0,
+	'sup': 0,
+	'bound_closedness': (True, False),
 })
 # todo Q
