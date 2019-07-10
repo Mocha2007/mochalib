@@ -1,15 +1,27 @@
-from mochamath import sgn
+from mochamath import is_prime, sgn
 # set and sequence library
 
 function = type(lambda:1)
 inf = float('inf')
 
 
+def p_generator(quantity: int) -> int:
+	"""Primes
+	https://oeis.org/A000040"""
+	i = 0
+	n = 2
+	while i < quantity:
+		if is_prime(n):
+			i += 1
+			yield n
+		n += 1
+
+
 def n_generator(n: int) -> int:
 	"""Natural numbers
 	https://oeis.org/A000027"""
 	i = 1
-	while i <= n:
+	while i < n:
 		yield i
 		i += 1
 
@@ -138,6 +150,10 @@ class Sequence(Function):
 	"""Function N -> X"""
 	# properties	
 	@property
+	def generator(self) -> function:
+		return self.kwargs['generator']
+
+	@property
 	def is_finite(self) -> bool:
 		"""Finite number of elements in sequence?"""
 		if 'is_finite' in self.kwargs:
@@ -167,6 +183,10 @@ class Sequence(Function):
 		return self.range_has(other)
 
 
+P = Sequence(**{
+	'generator': p_generator,
+	'range_has': is_prime,
+})
 N = Sequence(**{
 	'generator': n_generator,
 	'range_has': lambda x: 0 < x and x % 1 == 0,
