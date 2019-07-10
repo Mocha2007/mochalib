@@ -13,6 +13,7 @@ epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Ep
 g = 6.674e-11 # standard gravitational constant
 c = 299792458 # m/s
 L_0 = 3.0128e28 # W
+G_SC = 1361 # W/m^2
 
 pc = 3.0857e16 # m
 ly = 9.4607e15 # m
@@ -914,7 +915,7 @@ class Body:
 		dv3 = (2*mu/o-mu/a2)**.5-(mu/o)**.5
 		return dv1 + dv2 + dv3
 
-	def force_between(self, other, t: float) -> float:
+	def force_between(self, other, t: float=0) -> float:
 		"""Force between two bodies at time t (N)"""
 		m1, m2 = self.mass, other.mass
 		r = self.orbit.distance_to(other.orbit, t)
@@ -1005,6 +1006,18 @@ class Star(Body):
 	def app_mag(self, dist: float) -> float:
 		"""Apparent Magnitude (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
+
+	def radiation_pressure_at(self, dist: float) -> float:
+		"""Stellar radiation pressure at a distance"""
+		wattage = self.luminosity / sun.luminosity
+		return wattage * G_SC / (c*dist**2)
+
+	def radiation_force_at(self, object: Body, t: float=0) -> float:
+		"""Stellar radiation force on a planet at a time"""
+		wattage = self.luminosity / sun.luminosity
+		dist = sum(i**2 for i in object.orbit.cartesian(t)[:3])**.5 / au
+		area = object.area / 2
+		return wattage * G_SC / (c*dist**2) * area
 
 
 class System:
