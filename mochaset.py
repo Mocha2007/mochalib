@@ -78,21 +78,12 @@ class Function:
 
 class Set(Function):
 	"""Function X -> B"""
-
 	# methods
 	def contains(self, other) -> bool:
 		return self.f(other)
 
+
 class Interval(Set):
-	@property
-	def sup(self):
-		"""Supremum"""
-		return self.kwargs['sup']
-	
-
-
-class Sequence(Function):
-	"""Function N -> X"""
 	# properties
 	@property
 	def bound_closedness(self) -> (bool, bool):
@@ -117,7 +108,17 @@ class Sequence(Function):
 	def sup(self):
 		"""Supremum"""
 		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
-	
+
+	# double underscore methods
+	def __str__(self) -> str:
+		b, B = self.bound_closedness
+		m, M = '(['[b], ')]'[B]
+		return m + str(self.inf) + ', ' + str(self.sup) + M
+
+
+class Sequence(Function):
+	"""Function N -> X"""
+	# properties	
 	@property
 	def is_finite(self) -> bool:
 		"""Finite number of elements in sequence?"""
@@ -162,6 +163,6 @@ Fib = Sequence(**{
 })
 unit_interval = Interval(**{
 	'min': 0,
-	'sup': 1,
+	'max': 1,
 })
 # todo Q
