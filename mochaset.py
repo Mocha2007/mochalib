@@ -10,7 +10,7 @@ def p_generator(quantity: int) -> int:
 	https://oeis.org/A000040"""
 	i = 0
 	n = 2
-	while i < quantity:
+	while i <= quantity:
 		if is_prime(n):
 			i += 1
 			yield n
@@ -20,8 +20,8 @@ def p_generator(quantity: int) -> int:
 def n_generator(n: int) -> int:
 	"""Natural numbers
 	https://oeis.org/A000027"""
-	i = 1
-	while i < n:
+	i = 0
+	while i <= n:
 		yield i
 		i += 1
 
@@ -91,9 +91,27 @@ class Function:
 		return self.kwargs['f']
 
 	@property
+	def inf(self):
+		"""Infimum"""
+		return self.kwargs['min'] if 'min' in self.kwargs else self.kwargs['inf']
+
+	@property
 	def limit_points(self): # -> Set
 		"""Set of all limit points"""
 		return self.kwargs['limit_points']
+
+	@property
+	def max(self):
+		return self.kwargs['max']
+
+	@property
+	def min(self):
+		return self.kwargs['min']
+
+	@property
+	def sup(self):
+		"""Supremum"""
+		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
 
 	# methods
 	def domain_has(self, other) -> bool:
@@ -109,17 +127,20 @@ class Set(Function):
 	"""Function X -> B"""
 	# properties
 	@property
-	def inf(self):
-		"""Infimum"""
-		return self.kwargs['min'] if 'min' in self.kwargs else self.kwargs['inf']
-
-	@property
 	def is_bounded(self) -> bool:
 		return self.range_mag < inf
 
 	@property
+	def is_closed(self):
+		return self.kwargs['is_closed']
+
+	@property
 	def is_compact(self) -> bool:
 		return self.is_bounded and self.is_closed
+
+	@property
+	def is_open(self):
+		return self.kwargs['is_open']
 
 	@property
 	def is_perfect(self) -> bool:
@@ -130,21 +151,8 @@ class Set(Function):
 		return self.kwargs['isolated_points']
 
 	@property
-	def max(self):
-		return self.kwargs['max']
-
-	@property
-	def min(self):
-		return self.kwargs['min']
-
-	@property
 	def range_mag(self) -> float:
 		return abs(self.sup - self.min)
-
-	@property
-	def sup(self):
-		"""Supremum"""
-		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -211,6 +219,34 @@ class Sequence(Function):
 		return self.kwargs['generator']
 
 	@property
+	def max(self) -> bool:
+		if 'max' in self.kwargs:
+			return self.kwargs['max']
+		if self.monotone_decreasing:
+			return self[0]
+		raise NotImplementedError
+
+	@property
+	def min(self) -> bool:
+		if 'min' in self.kwargs:
+			return self.kwargs['min']
+		if self.monotone_increasing:
+			return self[0]
+		raise NotImplementedError
+
+	@property
+	def monotone(self) -> bool:
+		return self.kwargs['monotone']
+
+	@property
+	def monotone_decreasing(self) -> bool:
+		return self.monotone and self[0] > self[9]
+
+	@property
+	def monotone_increasing(self) -> bool:
+		return self.monotone and self[0] < self[9]
+
+	@property
 	def is_finite(self) -> bool:
 		"""Finite number of elements in sequence?"""
 		if 'is_finite' in self.kwargs:
@@ -218,12 +254,20 @@ class Sequence(Function):
 		return False
 
 	@property
-	def isolated_points(self):
-		return self
-
-	@property
 	def set(self) -> Set:
-		return Set(f=self.range_has)
+		kwargs = self.kwargs.copy()
+		kwargs['f'] = self.range_has
+		try:
+			kwargs['min'] = self.min
+		except NotImplementedError:
+			pass
+		try:
+			kwargs['max'] = self.max
+		except NotImplementedError:
+			pass
+		out = Set(**kwargs)
+		out.kwargs['isolated_points'] = out
+		return out
 
 	# double underscore methods
 	def __contains__(self, other) -> bool:
@@ -255,18 +299,24 @@ P = Sequence(**{
 	'is_open': False,
 	'range_has': is_prime,
 	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
 })
 N = Sequence(**{
 	'generator': n_generator,
 	'is_open': False,
 	'range_has': lambda x: 0 < x and x % 1 == 0,
 	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
 })
 Z = Sequence(**{
 	'generator': z_generator,
 	'is_open': False,
 	'range_has': lambda x: x % 1 == 0,
 	'limit_points': Empty,
+	'inf': -inf,
+	'sup': inf,
 })
 R = Interval(**{
 	'inf': -inf,
@@ -280,12 +330,16 @@ Fib = Sequence(**{
 	'is_open': False,
 	'range_has': fib_inclusion,
 	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
 })
 Squares = Sequence(**{
 	'generator': square_generator,
 	'is_open': False,
 	'range_has': square_inclusion,
 	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
 })
 unit_interval = Interval(**{
 	'min': 0,
