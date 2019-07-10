@@ -96,29 +96,27 @@ class Sequence(Function):
 	# properties
 	@property
 	def bound_closedness(self) -> (bool, bool):
-		return self.kwargs['bound_closedness']
+		if 'bound_closedness' in self.kwargs:
+			return self.kwargs['bound_closedness']
+		return 'min' in self.kwargs, 'max' in self.kwargs
 
 	@property
 	def inf(self):
 		"""Infimum"""
-		return self.kwargs['inf']
+		return self.kwargs['min'] if 'min' in self.kwargs else self.kwargs['inf']
 
 	@property
 	def max(self):
-		if not self.bound_closedness[1]:
-			raise ValueError('Maximum does not exist')
-		return self.sup
+		return self.kwargs['max']
 
 	@property
 	def min(self):
-		if not self.bound_closedness[0]:
-			raise ValueError('Minimum does not exist')
-		return self.inf
+		return self.kwargs['min']
 
 	@property
 	def sup(self):
 		"""Supremum"""
-		return self.kwargs['sup']
+		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
 	
 	@property
 	def is_finite(self) -> bool:
@@ -163,8 +161,7 @@ Fib = Sequence(**{
 	'range_has': fib_inclusion,
 })
 unit_interval = Interval(**{
-	'inf': 0,
-	'sup': 0,
-	'bound_closedness': (True, False),
+	'min': 0,
+	'sup': 1,
 })
 # todo Q
