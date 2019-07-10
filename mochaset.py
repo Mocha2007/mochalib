@@ -70,9 +70,23 @@ class Sequence(Function):
 		self.kwargs = kwargs
 	
 	@property
-	def inclusion(self) -> function: # -> function
+	def inclusion(self) -> function:
 		"""Optimized function to determine inclusion of an element in the sequence"""
 		return self.kwargs['inclusion']
+	
+	@property
+	def is_finite(self) -> bool:
+		"""Finite number of elements in sequence?"""
+		if 'is_finite' in self.kwargs:
+			return self.kwargs['is_finite']
+		return False
+
+	# double underscore methods
+	def __getitem__(self, key: int) -> float:
+		return list(self.generator(key))[-1]
+
+	def __len__(self) -> int:
+		return len(list(self.generator(inf))) if self.is_finite else 0
 
 	def __str__(self) -> str:
 		return '{' + str(list(self.generator(10)))[1:-1] + ', ...}'
