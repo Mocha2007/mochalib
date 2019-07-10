@@ -81,11 +81,11 @@ class Function:
 	# methods
 	def domain_has(self, other) -> bool:
 		"""Optimized function to determine inclusion of an element in the domain"""
-		return self.kwargs['domain_has']
+		return self.kwargs['domain_has'](other)
 
 	def range_has(self, other) -> bool:
 		"""Optimized function to determine inclusion of an element in the range"""
-		return self.kwargs['range_has']
+		return self.kwargs['range_has'](other)
 
 
 class Set(Function):
@@ -122,13 +122,7 @@ class Interval(Set):
 		return self.kwargs['max'] if 'max' in self.kwargs else self.kwargs['sup']
 
 	# double underscore methods
-	def __str__(self) -> str:
-		b, B = self.bound_closedness
-		m, M = '(['[b], ')]'[B]
-		return m + str(self.inf) + ', ' + str(self.sup) + M
-
-	# methods
-	def contains(self, other) -> bool:
+	def __contains__(self, other) -> bool:
 		b, B = self.bound_closedness
 		try:
 			if b:
@@ -144,6 +138,11 @@ class Interval(Set):
 		except TypeError:
 			return False
 		return True
+
+	def __str__(self) -> str:
+		b, B = self.bound_closedness
+		m, M = '(['[b], ')]'[B]
+		return m + str(self.inf) + ', ' + str(self.sup) + M
 
 
 class Sequence(Function):
@@ -165,6 +164,9 @@ class Sequence(Function):
 		return Set(f=self.range_has)
 
 	# double underscore methods
+	def __contains__(self, other) -> bool:
+		return self.range_has(other)
+
 	def __eq__(self, other) -> bool:
 		# not perfect, but still...
 		return self.generator == other.generator
@@ -177,10 +179,6 @@ class Sequence(Function):
 
 	def __str__(self) -> str:
 		return '{' + str(list(self.generator(10)))[1:-1] + ', ...}'
-	
-	# methods
-	def contains(self, other) -> bool:
-		return self.range_has(other)
 
 
 P = Sequence(**{
