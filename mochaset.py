@@ -20,10 +20,36 @@ def p_generator(quantity: int) -> int:
 def n_generator(n: int) -> int:
 	"""Natural numbers
 	https://oeis.org/A000027"""
-	i = 0
+	i = 1
 	while i <= n:
 		yield i
 		i += 1
+
+
+def q_generator(quantity: int) -> int:
+	"""Rationals (spiral method)"""
+	from fractions import Fraction
+	from math import gcd
+	yield Fraction(0, 1)
+	i = 1
+	y, x = 1, 1
+	while i <= quantity:
+		q = Fraction(y, x)
+		i += 1
+		yield q
+		if quantity < i:
+			break
+		i += 1
+		yield -q
+		while 1: # can't use break check b/c needs to run through at least once
+			if y < x:
+				y += 1
+			else:
+				x -= 1
+			if x == 0:
+				x, y = y+1, 1
+			if gcd(x, y) == 1:
+				break
 
 
 def z_generator(n: int) -> int:
@@ -284,7 +310,7 @@ class Sequence(Function):
 		return len(list(self.generator(inf))) if self.is_finite else 0
 
 	def __str__(self) -> str:
-		return '{' + str(list(self.generator(10)))[1:-1] + ', ...}'
+		return '{' + ', '.join(map(str, self.generator(10))) + ', ...}'
 
 
 Empty = Set(**{
@@ -325,6 +351,14 @@ R = Interval(**{
 })
 R.kwargs['limit_points'] = R
 R.kwargs['isolated_points'] = Empty
+Q = Sequence(**{
+	'generator': q_generator,
+	'is_open': False,
+	'range_has': lambda x: hasattr(x, 'numerator'),
+	'limit_points': R,
+	'inf': -inf,
+	'sup': inf,
+})
 Fib = Sequence(**{
 	'generator': fib_generator,
 	'is_open': False,
