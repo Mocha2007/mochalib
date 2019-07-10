@@ -68,6 +68,7 @@ class Sequence(Function):
 	def __init__(self, generator: function, **kwargs):
 		self.generator = generator
 		self.kwargs = kwargs
+		# todo memory
 	
 	@property
 	def inclusion(self) -> function:
