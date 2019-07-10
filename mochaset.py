@@ -67,6 +67,18 @@ def fib_inclusion(n: int) -> bool:
 		i += 1
 
 
+def square_generator(n: int) -> int:
+	"""Perfect Squares
+	https://oeis.org/A000290"""
+	for i in range(n):
+		yield i**2
+
+
+def square_inclusion(n: int) -> bool:
+	r = n**.5
+	return int(r) == r
+
+
 class Function:
 	"""Function X -> X"""
 	def __init__(self, **kwargs):
@@ -193,9 +205,17 @@ Z = Sequence(**{
 	'generator': z_generator,
 	'range_has': lambda x: x % 1 == 0,
 })
+R = Interval(**{
+	'inf': -inf,
+	'sup': inf,
+})
 Fib = Sequence(**{
 	'generator': fib_generator,
 	'range_has': fib_inclusion,
+})
+Squares = Sequence(**{
+	'generator': square_generator,
+	'range_has': square_inclusion,
 })
 unit_interval = Interval(**{
 	'min': 0,
