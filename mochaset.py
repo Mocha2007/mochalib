@@ -115,6 +115,24 @@ class Interval(Set):
 		m, M = '(['[b], ')]'[B]
 		return m + str(self.inf) + ', ' + str(self.sup) + M
 
+	# methods
+	def contains(self, other) -> bool:
+		b, B = self.bound_closedness
+		try:
+			if b:
+				if other < self.min:
+					return False
+			elif other <= self.min:
+				return False
+			if B:
+				if other > self.max:
+					return False
+			elif other >= self.max:
+				return False
+		except TypeError:
+			return False
+		return True
+
 
 class Sequence(Function):
 	"""Function N -> X"""
