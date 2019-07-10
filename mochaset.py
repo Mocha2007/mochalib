@@ -34,14 +34,16 @@ def z_generator(n: int) -> int:
 # Z = z_generator(inf)
 
 
-class Set:
+class Function:
 	pass
 	# methods
 	# def __and__(self, other):
 	# 	"""Intersection"""
 
 
-class Sequence(Set):
+class Sequence(Function):
+	"""Functions N -> R"""
+
 	def __init__(self, generator: function, **kwargs):
 		self.generator = generator
 		self.kwargs = kwargs
@@ -50,19 +52,6 @@ class Sequence(Set):
 	def inclusion(self) -> function: # -> function
 		"""Optimized function to determine inclusion of an element in the sequence"""
 		return self.kwargs['inclusion']
-	
-	# double underscore methods
-	def __add__(self, other):
-		assert not isinstance(other, Set)
-
-		def new_generator(n: int):
-			yield list(z_generator(n)) + other
-		
-		kwargs = {
-			'inclusion': lambda x: self.inclusion(x - other)
-		}
-
-		return Sequence(new_generator, **kwargs)
 
 	def __str__(self) -> str:
 		return '{' + str(list(self.generator(10)))[1:-1] + ', ...}'
