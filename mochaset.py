@@ -79,17 +79,20 @@ def lucas_like(a0: int, a1: int) -> function:
 	return output
 
 
-def fib_inclusion(n: int) -> bool:
-	if n % 1 or n < 0:
-		return False
-	i = 1
-	while 1:
-		f_n = list(fib_generator(0, 1)(i))
-		if n in f_n:
-			return True
-		if n < max(f_n):
+# fixme 1 in A000032
+def lucas_like_inclusion(a0: int, a1: int) -> function:
+	def output(n: int) -> bool:
+		if n % 1 or n < 0:
 			return False
-		i += 1
+		i = 1
+		while 1:
+			f_n = list(lucas_like(a0, a1)(i))
+			if n in f_n:
+				return True
+			if n < max(f_n):
+				return False
+			i += 1
+	return output
 
 
 def square_generator(n: int) -> int:
@@ -358,7 +361,7 @@ Q = Sequence(**{
 })
 Fib = Sequence(**{
 	'generator': lucas_like(0, 1),
-	'range_has': fib_inclusion,
+	'range_has': lucas_like_inclusion(0, 1),
 	'limit_points': Empty,
 	'monotone': True,
 	'sup': inf,
@@ -434,8 +437,9 @@ A000012 = Sequence(**{
 # Lucas numbers beginning at 2: L(n) = L(n-1) + L(n-2), L(0) = 2, L(1) = 1. 
 A000032 = Sequence(**{
 	'generator': lucas_like(2, 1),
+	'range_has': lucas_like_inclusion(2, 1),
 	'limit_points': Empty,
-	'monotone': True,
+	'monotone': False,
 	'sup': inf,
 })
 
