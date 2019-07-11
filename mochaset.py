@@ -68,16 +68,15 @@ def z_generator(n: int) -> int:
 			i = 1
 
 
-def fib_generator(n: int) -> int:
-	"""Natural numbers
-	https://oeis.org/A000045"""
-	yield 0
-	a, b = 0, 1
-	i = 1
-	while i < n:
-		yield b
-		a, b = b, a+b
-		i += 1
+def lucas_like(a0: int, a1: int) -> function:
+	def output(n: int) -> int:
+		a, b = a0, a1
+		i = 0
+		while i < n:
+			yield a
+			a, b = b, a+b
+			i += 1
+	return output
 
 
 def fib_inclusion(n: int) -> bool:
@@ -85,7 +84,7 @@ def fib_inclusion(n: int) -> bool:
 		return False
 	i = 1
 	while 1:
-		f_n = list(fib_generator(i))
+		f_n = list(fib_generator(0, 1)(i))
 		if n in f_n:
 			return True
 		if n < max(f_n):
@@ -358,7 +357,7 @@ Q = Sequence(**{
 	'sup': inf,
 })
 Fib = Sequence(**{
-	'generator': fib_generator,
+	'generator': lucas_like(0, 1),
 	'range_has': fib_inclusion,
 	'limit_points': Empty,
 	'monotone': True,
@@ -431,6 +430,14 @@ A000012 = Sequence(**{
 })
 
 # A000020, ..., 
+
+# Lucas numbers beginning at 2: L(n) = L(n-1) + L(n-2), L(0) = 2, L(1) = 1. 
+A000032 = Sequence(**{
+	'generator': lucas_like(2, 1),
+	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
+})
 
 # Powers of 2: a(n) = 2^n. 
 A000079 = Sequence(**{
