@@ -200,6 +200,14 @@ class Interval(Set):
 		return 'min' in self.kwargs, 'max' in self.kwargs
 
 	@property
+	def is_closed(self) -> bool:
+		return all(self.bound_closedness)
+
+	@property
+	def is_open(self) -> bool:
+		return not self.is_closed if len(self) else True
+
+	@property
 	def isolated_points(self) -> Set:
 		return Empty
 
@@ -228,13 +236,6 @@ class Interval(Set):
 		b, B = self.bound_closedness
 		m, M = '(['[b], ')]'[B]
 		return m + str(self.inf) + ', ' + str(self.sup) + M
-
-	# methods
-	def is_closed(self, other) -> bool:
-		return all(self.bound_closedness)
-
-	def is_open(self, other) -> bool:
-		return not is_closed if len(self) else True
 
 
 class Sequence(Function):
@@ -283,6 +284,7 @@ class Sequence(Function):
 	def set(self) -> Set:
 		kwargs = self.kwargs.copy()
 		kwargs['f'] = self.range_has
+		kwargs['is_open'] = False
 		try:
 			kwargs['min'] = self.min
 		except NotImplementedError:
@@ -322,7 +324,6 @@ Empty.kwargs['limit_points'] = Empty
 Empty.kwargs['isolated_points'] = Empty
 P = Sequence(**{
 	'generator': p_generator,
-	'is_open': False,
 	'range_has': is_prime,
 	'limit_points': Empty,
 	'monotone': True,
@@ -330,7 +331,6 @@ P = Sequence(**{
 })
 N = Sequence(**{
 	'generator': n_generator,
-	'is_open': False,
 	'range_has': lambda x: 0 < x and x % 1 == 0,
 	'limit_points': Empty,
 	'monotone': True,
@@ -338,7 +338,6 @@ N = Sequence(**{
 })
 Z = Sequence(**{
 	'generator': z_generator,
-	'is_open': False,
 	'range_has': lambda x: x % 1 == 0,
 	'limit_points': Empty,
 	'inf': -inf,
@@ -353,7 +352,6 @@ R.kwargs['limit_points'] = R
 R.kwargs['isolated_points'] = Empty
 Q = Sequence(**{
 	'generator': q_generator,
-	'is_open': False,
 	'range_has': lambda x: hasattr(x, 'numerator'),
 	'limit_points': R,
 	'inf': -inf,
@@ -361,7 +359,6 @@ Q = Sequence(**{
 })
 Fib = Sequence(**{
 	'generator': fib_generator,
-	'is_open': False,
 	'range_has': fib_inclusion,
 	'limit_points': Empty,
 	'monotone': True,
@@ -369,7 +366,6 @@ Fib = Sequence(**{
 })
 Squares = Sequence(**{
 	'generator': square_generator,
-	'is_open': False,
 	'range_has': square_inclusion,
 	'limit_points': Empty,
 	'monotone': True,
@@ -380,4 +376,56 @@ unit_interval = Interval(**{
 	'max': 1,
 })
 unit_interval.kwargs['limit_points'] = unit_interval
-# todo Q
+
+# less-useful sequences from OEIS
+from mochamath import divisors, totient
+
+# all zeroes
+A000004 = Sequence(**{
+	'generator': lambda n: [(yield 0) for _ in range(n)],
+	'range_has': lambda n: n == 0,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'max': 0,
+})
+
+# d(n) (also called tau(n) or sigma_0(n)), the number of divisors of n. 
+A000005 = Sequence(**{
+	'generator': lambda n: [(yield len(divisors(i))) for i in range(1, n+1)],
+	'range_has': lambda n: n in N,
+	'limit_points': Empty,
+	'monotone': False,
+	'min': 1,
+	'sup': inf,
+})
+
+# Integer part of square root of n-th prime. 
+A000006 = Sequence(**{
+	'generator': lambda n: [(yield int(P[i]**.5)) for i in range(n)],
+	'range_has': lambda n: n in N,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+
+# Euler totient function phi(n): count numbers <= n and prime to n. 
+A000010 = Sequence(**{
+	'generator': lambda n: [(yield totient(i)) for i in range(1, n+1)],
+	'range_has': lambda n: 0 < n and (n == 1 or n % 2 == 0),
+	'limit_points': Empty,
+	'monotone': False,
+	'min': 1,
+	'sup': inf,
+})
+
+# The simplest sequence of positive numbers: the all 1's sequence. 
+A000012 = Sequence(**{
+	'generator': lambda n: [(yield 1) for _ in range(n)],
+	'range_has': lambda n: n == 1,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'max': 1,
+})
