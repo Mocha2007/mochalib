@@ -1,4 +1,4 @@
-from mochamath import is_prime, sgn
+from mochamath import is_prime
 # set and sequence library
 
 function = type(lambda:1)
@@ -60,9 +60,9 @@ def z_generator(n: int) -> int:
 	while count <= n:
 		count += 1
 		yield i
-		if sgn(i) == 1:
+		if 0 < i:
 			i = -i
-		elif sgn(i) == -1:
+		elif i < 0:
 			i = 1-i
 		else:
 			i = 1
