@@ -438,6 +438,15 @@ A000079 = Sequence(**{
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
 
+# Catalan numbers: C(n) = binomial(2n,n)/(n+1) = (2n)!/(n!(n+1)!). Also called Segner numbers. 
+A000108 = Sequence(**{
+	'generator': lambda n: [(yield factorial(2*i) // (factorial(i) * factorial(i+1))) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+
 # Factorial numbers: n! = 1*2*3*4*...*n (order of symmetric group S_n, number of permutations of n letters). 
 A000142 = Sequence(**{
 	'generator': lambda n: [(yield factorial(i)) for i in range(n)],
