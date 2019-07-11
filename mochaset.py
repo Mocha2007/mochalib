@@ -442,6 +442,26 @@ A000079 = Sequence(**{
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
 
+# The nonnegative even numbers: a(n) = 2n. 
+A005408 = Sequence(**{
+	'generator': lambda n: [(yield 2*i+1) for i in range(n)],
+	'range_has': lambda n: 0 < n and n % 2 == 1,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+
+# The nonnegative even numbers: a(n) = 2n. 
+A005843 = Sequence(**{
+	'generator': lambda n: [(yield 2*i) for i in range(n)],
+	'range_has': lambda n: 0 <= n and n % 2 == 0,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
 # Powers of 2: a(n) = 2^n. 
 A033999 = Sequence(**{
 	'generator': lambda n: [(yield (-1)**i) for i in range(n)],
