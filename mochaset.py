@@ -429,3 +429,15 @@ A000012 = Sequence(**{
 	'min': 1,
 	'max': 1,
 })
+
+# A000020, ..., 
+
+# Powers of 2: a(n) = 2^n. 
+A000079 = Sequence(**{
+	'generator': lambda n: [(yield 2**i) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
