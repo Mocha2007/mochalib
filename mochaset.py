@@ -442,8 +442,16 @@ A000079 = Sequence(**{
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
 
+# a(n) = 2^n - 1. (Sometimes called Mersenne numbers, although that name is usually reserved for A001348.) 
+A000225 = Sequence(**{
+	'generator': lambda n: [(yield 2**i - 1) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
 def perfect_generator(quantity: int) -> int:
-	"""Rationals (spiral method)"""
 	if quantity:
 		yield 6
 	n = 28
@@ -460,6 +468,24 @@ A000396 = Sequence(**{
 	'limit_points': Empty,
 	'monotone': True,
 	'min': 6,
+	'sup': inf,
+})
+
+def abundant_generator(quantity: int) -> int:
+	n = 12
+	i = 0
+	while i < quantity:
+		if n < sum(divisors(n) - {n}):
+			i += 1
+			yield n
+		n += 1
+
+# Abundant numbers (sum of divisors of n exceeds 2n). 
+A005101 = Sequence(**{
+	'generator': abundant_generator,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 12,
 	'sup': inf,
 })
 
@@ -480,6 +506,15 @@ A005843 = Sequence(**{
 	'limit_points': Empty,
 	'monotone': True,
 	'min': 0,
+	'sup': inf,
+})
+
+# Fermat primes: primes of the form 2^(2^k) + 1, for some k >= 0.
+A019434 = Sequence(**{
+	'generator': lambda n: [(yield 2**(2**i) + 1) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 3,
 	'sup': inf,
 })
 
