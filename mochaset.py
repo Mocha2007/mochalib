@@ -456,6 +456,15 @@ A000142 = Sequence(**{
 	'sup': inf,
 })
 
+# Triangular numbers: a(n) = binomial(n+1,2) = n(n+1)/2 = 0 + 1 + 2 + ... + n. 
+A000217 = Sequence(**{
+	'generator': lambda n: [(yield i * (i+1) // 2) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
 # a(n) = 2^n - 1. (Sometimes called Mersenne numbers, although that name is usually reserved for A001348.) 
 A000225 = Sequence(**{
 	'generator': lambda n: [(yield 2**i - 1) for i in range(n)],
