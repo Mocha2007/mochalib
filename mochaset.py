@@ -79,9 +79,10 @@ def lucas_like(a0: int, a1: int) -> function:
 	return output
 
 
-# fixme 1 in A000032
 def lucas_like_inclusion(a0: int, a1: int) -> function:
 	def output(n: int) -> bool:
+		if n in list(lucas_like(a0, a1)(2)): # first 2 elements
+			return True
 		if n % 1 or n < 0:
 			return False
 		i = 1
