@@ -348,13 +348,6 @@ Q = Sequence(**{
 	'inf': -inf,
 	'sup': inf,
 })
-Fib = Sequence(**{
-	'generator': lucas_like(0, 1),
-	'range_has': lucas_like_inclusion(0, 1),
-	'limit_points': Empty,
-	'monotone': True,
-	'sup': inf,
-})
 unit_interval = Interval(**{
 	'min': 0,
 	'max': 1,
@@ -425,6 +418,15 @@ A000032 = Sequence(**{
 	'sup': inf,
 })
 
+# Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1. 
+A000045 = Sequence(**{
+	'generator': lucas_like(0, 1),
+	'range_has': lucas_like_inclusion(0, 1),
+	'limit_points': Empty,
+	'monotone': True,
+	'sup': inf,
+})
+
 # Powers of 2: a(n) = 2^n. 
 A000079 = Sequence(**{
 	'generator': lambda n: [(yield 2**i) for i in range(n)],
@@ -444,6 +446,7 @@ A000225 = Sequence(**{
 	'sup': inf,
 })
 
+# The squares: a(n) = n^2. 
 A000290 = Sequence(**{
 	'generator': lambda n: [(yield i**2) for i in range(n)],
 	'range_has': lambda x: x**.5 % 1 == 0,
