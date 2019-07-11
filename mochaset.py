@@ -96,18 +96,6 @@ def lucas_like_inclusion(a0: int, a1: int) -> function:
 	return output
 
 
-def square_generator(n: int) -> int:
-	"""Perfect Squares
-	https://oeis.org/A000290"""
-	for i in range(n):
-		yield i**2
-
-
-def square_inclusion(n: int) -> bool:
-	r = n**.5
-	return int(r) == r
-
-
 class Function:
 	"""Function X -> X"""
 	def __init__(self, **kwargs):
@@ -367,13 +355,6 @@ Fib = Sequence(**{
 	'monotone': True,
 	'sup': inf,
 })
-Squares = Sequence(**{
-	'generator': square_generator,
-	'range_has': square_inclusion,
-	'limit_points': Empty,
-	'monotone': True,
-	'sup': inf,
-})
 unit_interval = Interval(**{
 	'min': 0,
 	'max': 1,
@@ -460,6 +441,14 @@ A000225 = Sequence(**{
 	'limit_points': Empty,
 	'monotone': True,
 	'min': 0,
+	'sup': inf,
+})
+
+A000290 = Sequence(**{
+	'generator': lambda n: [(yield i**2) for i in range(n)],
+	'range_has': lambda x: x**.5 % 1 == 0,
+	'limit_points': Empty,
+	'monotone': True,
 	'sup': inf,
 })
 
