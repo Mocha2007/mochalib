@@ -305,6 +305,15 @@ class Sequence(Function):
 	def __str__(self) -> str:
 		return '{' + ', '.join(map(str, self.generator(10))) + ', ...}'
 
+	# methods
+	def index(self, other) -> int:
+		"""Returns the index of the first instance"""
+		assert other in self # idiot-proofing
+		i = 0
+		while self[i] != other:
+			i += 1
+		return i
+
 
 Empty = Set(**{
 	'generator': lambda n: [],
