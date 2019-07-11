@@ -442,6 +442,27 @@ A000079 = Sequence(**{
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
 
+def perfect_generator(quantity: int) -> int:
+	"""Rationals (spiral method)"""
+	if quantity:
+		yield 6
+	n = 28
+	i = 1
+	while i < quantity:
+		if sum(divisors(n) - {n}) == n:
+			i += 1
+			yield n
+		n += 18 # perfect numbers mod 18 == 10 for all > 6
+
+# Perfect numbers n: n is equal to the sum of the proper divisors of n. 
+A000396 = Sequence(**{
+	'generator': perfect_generator,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 6,
+	'sup': inf,
+})
+
 # The nonnegative even numbers: a(n) = 2n. 
 A005408 = Sequence(**{
 	'generator': lambda n: [(yield 2*i+1) for i in range(n)],
