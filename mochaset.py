@@ -355,6 +355,7 @@ unit_interval = Interval(**{
 unit_interval.kwargs['limit_points'] = unit_interval
 
 # less-useful sequences from OEIS
+from math import factorial
 from mochamath import divisors, totient
 
 # all zeroes
@@ -436,6 +437,15 @@ A000079 = Sequence(**{
 	'sup': inf,
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
+
+# Factorial numbers: n! = 1*2*3*4*...*n (order of symmetric group S_n, number of permutations of n letters). 
+A000142 = Sequence(**{
+	'generator': lambda n: [(yield factorial(i)) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
 
 # a(n) = 2^n - 1. (Sometimes called Mersenne numbers, although that name is usually reserved for A001348.) 
 A000225 = Sequence(**{
