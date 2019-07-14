@@ -1,0 +1,100 @@
+[
+	{
+		"name": "Io",
+		"class": "moon",
+		"mass": 8.931938e22,
+		"radius": 1.8216e6,
+		"albedo": 0.63,
+		"orbit": {
+			"parent": "jupiter",
+			"sma": 4.217e8,
+			"e": 0.0041,
+			"i": ".05*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": 152853.5047
+		},
+		"atmosphere": {
+			"surface_pressure": 7e5,
+			"composition": {
+				"SO2": 0.9
+			}
+		}
+	},
+	{
+		"name": "Europa",
+		"class": "moon",
+		"mass": 4.799844e22,
+		"radius": 1.5608e6,
+		"albedo": 0.67,
+		"orbit": {
+			"parent": "jupiter",
+			"sma": 6.709e8,
+			"e": 0.009,
+			"i": ".470*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "3.551181*day",
+			"tilt": ".1*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": 1e-7
+		}
+	},
+	{
+		"name": "Ganymede",
+		"class": "moon",
+		"mass": 1.4819e23,
+		"radius": 2.6341e6,
+		"albedo": 0.43,
+		"orbit": {
+			"parent": "jupiter",
+			"sma": 1.0704e9,
+			"e": 0.0013,
+			"i": ".2*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "7.15455296*day",
+			"tilt": ".2*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": 7e-7
+		}
+	},
+	{
+		"name": "Callisto",
+		"class": "moon",
+		"mass": 1.4819e23,
+		"radius": 2.6341e6,
+		"albedo": 0.43,
+		"orbit": {
+			"parent": "jupiter",
+			"sma": 1.8827e9,
+			"e": 0.0074,
+			"i": ".192*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "16.6890184*day",
+			"tilt": 0
+		},
+		"atmosphere": {
+			"surface_pressure": 7.5e-13,
+			"composition": {
+				"CO2":	0.995,
+				"O2":  0.005
+			}
+		}
+	}
+]

@@ -1,0 +1,23 @@
+[
+	{
+		"name": "Ceres",
+		"class": "dwarf planet",
+		"mass": 9.393e20,
+		"radius": 473000,
+		"albedo": 0.09,
+		"orbit": {
+			"parent": "sun",
+			"sma": "5.2571*au",
+			"sma": "2.7675*au",
+			"e": 0.075823,
+			"i": 0.18488,
+			"lan": 1.40201,
+			"aop": 1.26575,
+			"man": 1.67533
+		},
+		"rotation": {
+			"period": "9.074170*hour",
+			"tilt": 0.07
+		}
+	}
+]

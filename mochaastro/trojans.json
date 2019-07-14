@@ -1,0 +1,22 @@
+[
+	{
+		"name": "Hektor",
+		"class": "trojan",
+		"mass": 9.95e18,
+		"radius": 1e5,
+		"albedo": 0.05,
+		"orbit": {
+			"parent": "sun",
+			"sma": "5.2571*au",
+			"e": 0.0238,
+			"i": 0.31706,
+			"lan": 1.4020,
+			"aop": 5.9828,
+			"man": 2.3752,
+			"epoch": "datetime(2018, 3, 23)"
+		},
+		"rotation": {
+			"period": "6.9205*hour"
+		}
+	}
+]

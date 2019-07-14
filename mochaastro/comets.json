@@ -1,0 +1,49 @@
+[
+	{
+		"name": "Halley",
+		"class": "comet",
+		"mass": 2.2e14,
+		"radius": 5.5e3,
+		"albedo": 0.04,
+		"orbit": {
+			"parent": "sun",
+			"sma": "17.834*au",
+			"e": 0.96714,
+			"i": 2.8320,
+			"lan": 1.020,
+			"aop": 1.9431,
+			"man": 0.6699
+		},
+		"rotation": {
+			"period": "2.2*day"
+		}
+	},
+	{
+		"name": "Ikeya-Zhang",
+		"class": "comet",
+		"mass": 2e14,
+		"orbit": {
+			"parent": "sun",
+			"sma": "51.2136*au",
+			"e": 0.990098,
+			"i": 0.490785,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		}
+	},
+	{
+		"name": "Pons-Gambart",
+		"class": "comet",
+		"mass": 2e14,
+		"orbit": {
+			"parent": "sun",
+			"sma": "32.354*au",
+			"e": 0.97509,
+			"i": "136.39*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		}
+	}
+]

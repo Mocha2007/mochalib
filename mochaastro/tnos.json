@@ -1,0 +1,79 @@
+[
+	{
+		"name": "Pluto",
+		"class": "dwarf planet",
+		"mass": 1.303e22,
+		"radius": 1.1883e6,
+		"albedo": 0.6,
+		"orbit": {
+			"parent": "sun",
+			"sma": "39.48*au",
+			"e": 0.2488,
+			"i": 0.2995,
+			"lan": 1.92508,
+			"aop": 1.98678,
+			"man": 0.2536
+		},
+		"rotation": {
+			"period": "6.38723*day",
+			"tilt": 2.1386
+		},
+		"atmosphere": {
+			"scale_height": 6e4,
+			"surface_pressure": 1
+		}
+	},
+	{
+		"name": "Eris",
+		"class": "dwarf planet",
+		"mass": 1.66e22,
+		"radius": 1.163e6,
+		"albedo": 0.96,
+		"orbit": {
+			"parent": "sun",
+			"sma": "67.781*au",
+			"e": 0.44068,
+			"i": 0.768722,
+			"lan": 0.627500,
+			"aop": 2.63505,
+			"man": 3.5633
+		},
+		"rotation": {
+			"period": "25.9*hour"
+		}
+	},
+	{
+		"name": "Sedna",
+		"class": "TNO",
+		"mass": 9e20,
+		"radius": 5e5,
+		"albedo": 0.32,
+		"orbit": {
+			"parent": "sun",
+			"sma": "506.8*au",
+			"e": 0.85491,
+			"i": 0.2081954,
+			"lan": 2.52280,
+			"aop": 5.4330,
+			"man": 6.25112
+		},
+		"rotation": {
+			"period": "10.3*hour"
+		}
+	},
+	{
+		"name": "Planet Nine",
+		"class": "planet",
+		"mass": 3e25,
+		"radius": 1.2e7,
+		"orbit": {
+			"parent": "sun",
+			"sma": "600*au",
+			"e": 0.2,
+			"i": 0.3,
+			"lan": 1.6,
+			"aop": 2.6,
+			"man": 0
+		}
+	}
+]

@@ -1348,6 +1348,47 @@ def distance_audio(body1: Body, body2: Body):
 		file.write(frames.tobytes())
 
 
+def convert_atmosphere(data: dict) -> Atmosphere:
+	return Atmosphere(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+
+
+def convert_orbit(data: dict, current_universe: dict) -> Orbit:
+	return Orbit(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+
+
+def convert_rotation(data: dict) -> Rotation:
+	return Rotation(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+
+
+def convert_body(data: dict, current_universe: dict, datatype = Body) -> Body:
+	body_data = {}
+	for key, value in data.items():
+		if key == 'atmosphere':
+			body_data[key] = convert_atmosphere(value)
+		elif key == 'orbit':
+			body_data[key] = convert_orbit(value, current_universe)
+		elif key == 'rotation':
+			body_data[key] = convert_rotation(value)
+		else:
+			body_data[key] = value
+	return datatype(**body_data)
+
+
+def load_data(seed: dict) -> dict:
+	import os
+	from json import load
+
+	loc = os.path.dirname(os.path.abspath(__file__)) + '\\mochaastro'
+	universe_data = seed
+	for file in [f for f in os.listdir(loc) if f.endswith('.json')]:
+		print('Loading', file, '...')
+		json_data = load(open(loc + '\\' + file, 'r'))
+		for object in json_data:
+			universe_data[object['name']] = convert_body(object, universe_data, (Star if object['class'] == 'star' else Body))
+
+	return universe_data
+
+
 def plot_grav_acc(body1: Body, body2: Body):
 	"""Plot gravitational acceleration from one body to another over several orbits"""
 	resolution = 1000
@@ -1412,7 +1453,7 @@ def test_functions():
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
-# bodies
+# bodies - this file only contains the sun, moon, and planets. json files provide the rest.
 sun = Star(**{
 	'orbit': Orbit(**{
 		'sma': 2.7e20,
@@ -1537,36 +1578,6 @@ earth = Body(**{
 	'albedo': .367,
 })
 
-ISS = Body(**{
-	'orbit': Orbit(**{
-		'parent': earth,
-		'sma': 6.791e6,
-		'e': 8.293e-4,
-		'i': .9013,
-		'lan': 5.643,
-		'aop': .8070,
-		'man': 0, # unknown
-	}),
-	'mass': 419725,
-	'radius': (72.8**2 + 108.5**2 + 20**2)**.5 / 2,
-})
-
-_6Q0B44E = Body(**{
-	'orbit': Orbit(**{
-		# fixme epoch 2004
-		'parent': earth,
-		'sma': 7.84e8,
-		'e': .254,
-		'i': .1,
-		'lan': 5.2,
-		'aop': .6,
-		'man': 5.6,
-	}),
-	'mass': 1e4, # assume like J002E3
-	'radius': 5, # Its density has been estimated as around 15 kg/m3
-	'albedo': .12,
-})
-
 moon = Body(**{
 	'orbit': Orbit(**{
 		'parent': earth,
@@ -1620,25 +1631,6 @@ mars = Body(**{
 	'albedo': .17,
 })
 
-ceres = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 2.7675*au,
-		'e': .075823,
-		'i': .18488,
-		'lan': 1.40201,
-		'aop': 1.26575,
-		'man': 1.67533,
-	}),
-	'rotation': Rotation(**{
-		'period': 9.074170*hour,
-		'tilt': .07,
-	}),
-	'mass': 9.393e20,
-	'radius': 473000,
-	'albedo': .09,
-})
-
 jupiter = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
@@ -1662,119 +1654,6 @@ jupiter = Body(**{
 	'albedo': .538,
 })
 
-io = Body(**{
-	'orbit': Orbit(**{
-		'parent': jupiter,
-		'sma': 4.217e8,
-		'e': .0041,
-		'i': .05*deg, # equator
-		'lan': 0, # unk
-		'aop': 0,
-		'man': 0,
-	}),
-	'rotation': Rotation(**{
-		'period': 152853.5047,
-	}),
-	'atmosphere': Atmosphere(**{
-		'surface_pressure': 7e5,
-		'composition': {
-			'SO2': .9,
-		},
-	}),
-	'mass': 8.931938e22,
-	'radius': 1.8216e6,
-	'albedo': .63,
-})
-
-europa = Body(**{
-	'orbit': Orbit(**{
-		'parent': jupiter,
-		'sma': 6.709e8,
-		'e': .009,
-		'i': .470*deg, # equator
-		'lan': 0, # unk
-		'aop': 0,
-		'man': 0,
-	}),
-	'rotation': Rotation(**{
-		'period': 3.551181*day,
-		'tilt': .1*deg,
-	}),
-	'atmosphere': Atmosphere(**{
-		'surface_pressure': .1e-6,
-	}),
-	'mass': 4.799844e22,
-	'radius': 1.5608e6,
-	'albedo': .67,
-})
-
-ganymede = Body(**{
-	'orbit': Orbit(**{
-		'parent': jupiter,
-		'sma': 1.0704e9,
-		'e': .0013,
-		'i': .2*deg, # equator
-		'lan': 0, # unk
-		'aop': 0,
-		'man': 0,
-	}),
-	'rotation': Rotation(**{
-		'period': 7.15455296*day,
-		'tilt': .2*deg,
-	}),
-	'atmosphere': Atmosphere(**{
-		'surface_pressure': .7e-6,
-	}),
-	'mass': 1.4819e23,
-	'radius': 2.6341e6,
-	'albedo': .43,
-})
-
-callisto = Body(**{
-	'orbit': Orbit(**{
-		'parent': jupiter,
-		'sma': 1.8827e9,
-		'e': .0074,
-		'i': .192*deg, # to local Laplace planes
-		'lan': 0, # unk
-		'aop': 0,
-		'man': 0,
-	}),
-	'rotation': Rotation(**{
-		'period': 16.6890184*day,
-		'tilt': 0, # known
-	}),
-	'atmosphere': Atmosphere(**{
-		'surface_pressure': 7.5e-13,
-		'composition': {
-			'CO2':  .995,
-			'O2':  .005,
-		},
-	}),
-	'mass': 1.4819e23,
-	'radius': 2.6341e6,
-	'albedo': .43,
-})
-
-hektor = Body(**{ # 624 Hektor; largest trojan
-	# fixme Epoch 23 March 2018
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 5.2571*au,
-		'e': .0238,
-		'i': .31706,
-		'lan': 1.4020,
-		'aop': 5.9828,
-		'man': 2.3752,
-	}),
-	'rotation': Rotation(**{
-		'period': 6.9205*hour,
-	}),
-	'mass': 9.95e18,
-	'radius': 1e5,
-	'albedo': .05,
-})
-
 saturn = Body(**{
 	'orbit': Orbit(**{
 		'parent': sun,
@@ -1796,25 +1675,7 @@ saturn = Body(**{
 	'mass': 5.6834e26,
 	'radius': 5.8232e7,
 	'albedo': .499,
-})
-
-halley = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 17.834*au,
-		'e': .96714,
-		'i': 2.8320,
-		'lan': 1.020,
-		'aop': 1.9431,
-		'man': .6699,
-	}),
-	'rotation': Rotation(**{
-		'period': 2.2*day,
-	}),
-	'mass': 2.2e14,
-	'radius': 5.5e3,
-	'albedo': .04,
-})
+})\
 
 uranus = Body(**{
 	'orbit': Orbit(**{
@@ -1860,114 +1721,25 @@ neptune = Body(**{
 	'albedo': .442,
 })
 
-pons_gambart = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 32.354*au,
-		'e': .97509,
-		'i': 136.39*deg,
-		'lan': 0, # unk
-		'aop': 0, # unk
-		'man': 0, # unk
-	}),
-	'mass': 2e14, # SWAG
-})
-
-pluto = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 39.48*au,
-		'e': .2488,
-		'i': .2995,
-		'lan': 1.92508,
-		'aop': 1.98678,
-		'man': .2536,
-	}),
-	'rotation': Rotation(**{
-		'period': 6.38723*day,
-		'tilt': 2.1386, # to orbit
-	}),
-	'atmosphere': Atmosphere(**{
-		'scale_height': 60000,
-		'surface_pressure': 1,
-	}),
-	'mass': 1.303e22,
-	'radius': 1.1883e6,
-	'albedo': .6,
-})
-
-ikeya_zhang = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 51.2136*au,
-		'e': .990098,
-		'i': .490785,
-		'lan': 0, # unk
-		'aop': 0, # unk
-		'man': 0, # unk
-	}),
-	'mass': 2e14, # SWAG
-})
-
-eris = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 67.781*au,
-		'e': .44068,
-		'i': .768722,
-		'lan': .627500,
-		'aop': 2.63505,
-		'man': 3.5633,
-	}),
-	'rotation': Rotation(**{
-		'period': 25.9*hour,
-	}),
-	'mass': 1.66e22,
-	'radius': 1.163e6,
-	'albedo': .96,
-})
-
-sedna = Body(**{
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 506.8*au,
-		'e': .85491,
-		'i': .2081954,
-		'lan': 2.52280,
-		'aop': 5.4330,
-		'man': 6.25112,
-	}),
-	'rotation': Rotation(**{
-		'period': 10.3*hour,
-	}),
-	'mass': 9e20, # SWAG from Pluto
-	'radius': 5e5,
-	'albedo': .32,
-})
-
-planet_nine = Body(**{
-	# http://www.findplanetnine.com/2019/02/version-2x.html
-	'orbit': Orbit(**{
-		'parent': sun,
-		'sma': 600*au,
-		'e': .2,
-		'i': .3,
-		'lan': 1.6,
-		'aop': 2.6,
-		'man': 0, # could be literally anything in [0, 2pi)
-	}),
-	'mass': 3e25,
-	'radius': 1.2e7, # SWAG
-})
-
-inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
+# inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
-jupiter_system = System(io, europa, ganymede, callisto)
-kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
-comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
+# jupiter_system = System(io, europa, ganymede, callisto)
+# kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
+# comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
+universe = load_data({
+	'sun': sun,
+	'mercury': mercury,
+	'venus': venus,
+	'earth': earth,
+	'moon': moon,
+	'mars': mars,
+	'jupiter': jupiter,
+	'saturn': saturn,
+	'uranus': uranus,
+	'neptune': neptune,
+})
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # todo body1 body2 to orbit1 orbit2
-# todo switch to json file for body storage
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
 # solar_system.sim
