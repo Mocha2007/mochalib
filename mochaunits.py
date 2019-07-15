@@ -262,6 +262,7 @@ class Multidimension:
 	@property
 	def inverse(self):
 		new = self.copy
+		new.value = 1/self.value
 		new.dimensions = {key: -value for key, value in self.dimensions.items()}
 		return new
 
