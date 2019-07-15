@@ -773,6 +773,21 @@ class Body:
 		return self.properties['mass']
 
 	@property
+	def metal_report(self):
+		"""Information regarding important metals"""
+		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		try:
+			Fe, Ni, Cu, Pt, Au, Ag, U = [(self if sym in self.composition else earth).composition[sym]*self.mass for sym in symbols]
+		except KeyError:
+			Fe, Ni, Cu, Pt, Au, Ag, U = [earth.composition[sym]*self.mass for sym in symbols]
+		if any([Fe, Ni]):
+			print('Base Metals\n\tFe: {} kg\n\tNi: {} kg'.format(Fe, Ni))
+		if any([Pt, Au, Ag]):
+			print('Precious\n\tAu: {} kg\n\tAg: {} kg\n\tPt: {} kg'.format(Au, Ag, Pt))
+		if any([Cu, U]):
+			print('Other\n\tCu: {} kg\n\tU: {} kg'.format(Cu, U))
+
+	@property
 	def mu(self) -> float:
 		"""Gravitational parameter (m^3/s^2)"""
 		return g * self.mass
@@ -1573,6 +1588,50 @@ earth = Body(**{
 			'Kr':  1.14e-6,
 		},
 	}),
+	'composition': { # by mass https://en.wikipedia.org/wiki/Abundance_of_the_chemical_elements#Earth
+		'Fe': .319,
+		'O':  .297,
+		'Si': .161,
+		'Mg': .154,
+		'Ni': 1.822e-2,
+		'Ca': 1.71e-2,
+		'Al': 1.59e-2,
+		'S':  6.35e-3,
+		'Cr': 4.7e-3,
+		'Na': 1.8e-3,
+		'Mn': 1.7e-3,
+		'P':  1.21e-3,
+		'Co': 8.8e-4,
+		'Ti': 8.1e-4,
+		'C':  7.3e-4,
+		'H':  2.6e-4,
+		'K':  1.6e-4,
+		'V':  1.05e-4,
+		'Cl': 7.6e-5,
+		'Cu': 6e-5,
+		'Zn': 4e-5,
+		'N':  2.5e-5,
+		'Sr': 1.3e-5,
+		'Sc': 1.1e-5,
+		'F':  1e-5,
+		'Zr': 7.1e-6,
+		'Ge': 7e-6,
+		'Ba': 4.5e-6,
+		'Ga': 3e-6,
+		'Y':  2.9e-6,
+		'Se': 2.7e-6,
+		'Pt': 1.9e-6,
+		'As': 1.7e-6,
+		'Mo': 1.7e-6,
+		'Ru': 1.3e-6,
+		'Ce': 1.13e-6,
+		'Li': 1.1e-6,
+		'Pd': 1e-6,
+		# skip a few... Au Ag U
+		'Au': 1.6e-7,
+		'Ag': 5e-8,
+		'U':  2e-8,
+	},
 	'mass': 5.97237e24,
 	'radius': 6.371e6,
 	'albedo': .367,
