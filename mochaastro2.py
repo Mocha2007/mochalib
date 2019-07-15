@@ -10,25 +10,25 @@ from mochaunits import Length, Mass, Time
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
 
-g = 6.674e-11 # standard gravitational constant
-c = 299792458 # m/s
-L_0 = 3.0128e28 # W
-G_SC = 1361 # W/m^2
+g = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
+c = 299792458 # m/s; exact; speed of light
+L_0 = 3.0128e28 # W; exact; zero point luminosity
+G_SC = 1360.8 # W/m^2; appx; solar constant
 
-pc = 3.0857e16 # m
-ly = 9.4607e15 # m
-au = 149597870700 # m
-mi = 1609.344 # m
+lb = 0.45359237 # kg; exact; pound
+minute = 60 # s; exact; minute
+hour = 3600 # s; exact; hour
+day = 86400 # s; exact; day
+year = 31556952 # s; exact; gregorian year
+jyear = 31536000 # s; exact; julian year
+deg = pi/180 # rad; exact; degree
+arcmin = deg/60 # rad; exact; arcminute
+arcsec = arcmin/60 # rad; exact; arcsecond
 
-lb = 0.45359237 # kg
-minute = 60 # s
-hour = 3600 # s
-day = 86400 # s
-year = 31556952 # s
-jyear = 31536000 # s
-deg = 2*pi/360 # rad
-arcmin = deg/60 # rad
-arcsec = arcmin/60 # rad
+ly = c * jyear # m; exact; light-year
+au = 149597870700 # m; exact; astronomical unit
+pc = 648000/pi * au # m; exact; parsec
+mi = 1609.344 # m; exact; mile
 
 
 # functions
