@@ -233,6 +233,34 @@ class Time(Dimension):
 		return '{} {}s'.format(*get_si(x))
 
 
+class Temperature(Dimension):
+	# properties
+	@property
+	def celsius(self) -> str:
+		return '{} °C'.format(self.value - 273.15)
+
+	@property
+	def imperial(self) -> str:
+		return '{} °F'.format(9/5 * self.value - 459.67)
+
+	# double underscore methods
+	def __str__(self) -> str:
+		if 'imperial' in self.tags:
+			return self.imperial
+		if 'celsius' in self.tags:
+			return self.celsius
+		return '{} K'.format(self.value)
+
+
+class Current(Dimension):
+	# double underscore methods
+	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
+		return '{} {}A'.format(*get_si(x))
+
+
 quantities = [
 	({Length: 1, Time: -2}, 'Acceleration', 'm/s^2'),
 	({Length: 2, Mass: 1, Time: -2}, 'Energy', 'J'),
@@ -242,6 +270,7 @@ quantities = [
 	({Length: 2, Mass: 1, Time: -3}, 'Power', 'W'),
 	({Length: -1, Mass: 1, Time: -2}, 'Pressure', 'Pa'),
 	({Length: 1, Time: -1}, 'Speed', 'm/s'),
+	# w/ other units
 ]
 
 
