@@ -37,6 +37,11 @@ class Dimension:
 
 	# properties
 	@property
+	def copy(self):
+		from copy import deepcopy
+		return deepcopy(self)
+
+	@property
 	def multi(self):
 		return Multidimension(self.value, {type(self): 1}, *self.tags)
 
