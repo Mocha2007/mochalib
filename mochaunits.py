@@ -1,7 +1,9 @@
+from copy import deepcopy
 from math import floor, log10
 
 prefixes = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
 prefixes[0] = '' # set up prefix dict
+
 
 def get_si(value: float) -> (float, str):
 	if value == 0:
@@ -20,7 +22,6 @@ class Dimension:
 	# properties
 	@property
 	def copy(self):
-		from copy import deepcopy
 		return deepcopy(self)
 
 	@property
@@ -96,7 +97,7 @@ class Dimension:
 			if type(self) == type(other):
 				return self.value / other.value
 			return self.multi / other.multi
-		if isinstance(other, Multidimension): # call rtruediv of multidimension
+		if isinstance(other, Multidimension): # call rtruediv of Multidimension
 			return self.multi / other
 		return type(self)(self.value/other, *self.tags)
 
@@ -351,7 +352,8 @@ class Multidimension:
 		x = self.value
 		if x < 0:
 			return '-' + str(-self)
-		return '{} {}{}'.format(*(get_si(x) + (self.unit,)))
+		val, prefix = get_si(x)
+		return '{} {}{}'.format(val, prefix, self.unit)
 
 	def __sub__(self, other):
 		return self + -other
