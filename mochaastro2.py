@@ -1496,6 +1496,13 @@ sun = Star(**{
 		'Si': .0007,
 		'Mg': .0005,
 		'S':  .0004,
+		# https://web.archive.org/web/20151107043527/http://weft.astro.washington.edu/courses/astro557/LODDERS.pdf
+		'Ni': 9.1e-5,
+		'Cu': 1e-6,
+		'Pt': 2.6e-9,
+		'Ag': 9.4e-10,
+		'Au': 3.7e-10,
+		'U':  1.8e-11,
 	},
 	# stellar properties
 	'luminosity': 3.828e26,

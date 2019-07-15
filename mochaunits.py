@@ -147,12 +147,11 @@ class Mass(Dimension):
 	# properties
 	@property
 	def astro(self) -> str:
-		from mochaastro2 import earth, jupiter, moon, sun
 		x = self.value
-		m_m = moon.mass
-		m_e = earth.mass
-		m_j = jupiter.mass
-		m_s = sun.mass
+		m_m = 7.342e22
+		m_e = 5.97237e24
+		m_j = 1.8982e27
+		m_s = 1.98847e30
 		if self.value < m_e:
 			return str(x/m_m) + ' Lunar Masses'
 		if self.value < m_j:
@@ -177,6 +176,8 @@ class Mass(Dimension):
 			return '-' + str(-self)
 		if 'imperial' in self.tags:
 			return self.imperial
+		if 1e23 < x and 'astro' in self.tags:
+			return self.astro
 		if x == 0:
 			return '0 kg'
 		if x < 1e-6:
@@ -199,8 +200,6 @@ class Mass(Dimension):
 			return str(x/1e15) + ' Eg'
 		if x < 1e21:
 			return str(x/1e18) + ' Zg'
-		if 'astro' in self.tags:
-			return self.astro
 		return str(x/1e21) + ' Yg'
 
 
