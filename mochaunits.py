@@ -263,14 +263,28 @@ class Current(Dimension):
 
 quantities = [
 	({Length: 1, Time: -2}, 'Acceleration', 'm/s^2'),
+	({Length: 2, Mass: 1, Time: -1}, 'Angular Momentum', 'N*m*s'),
+	({Length: 2}, 'Area', 'm^2'),
+	({Length: -3, Mass: 1}, 'Density', 'kg/m^3'),
 	({Length: 2, Mass: 1, Time: -2}, 'Energy', 'J'),
 	({Length: 1, Mass: 1, Time: -2}, 'Force', 'N'),
-	({Length: 1, Mass: 1, Time: -1}, 'Momentum', 'kg*m/s'),
+	({Length: 1, Mass: 1, Time: -1}, 'Momentum', 'N*s'),
 	({Time: -1}, 'Frequency', 'Hz'),
 	({Length: 2, Mass: 1, Time: -3}, 'Power', 'W'),
 	({Length: -1, Mass: 1, Time: -2}, 'Pressure', 'Pa'),
 	({Length: 1, Time: -1}, 'Speed', 'm/s'),
-	# w/ other units
+	({Length: 3}, 'Volume', 'm^3'),
+	# w/ temperature
+	({Length: 2, Mass: 1, Temperature: -1, Time: -2}, 'Entropy', 'J/K'),
+	# w/ current
+	({Current: 1, Time: 1}, 'Electric Charge', 'C'),
+	({Current: 2, Length: -2, Mass: -1, Time: 4}, 'Electrical Capacitance', 'F'),
+	({Current: 2, Length: -2, Mass: -1, Time: 3}, 'Electrical Conductance', 'S'),
+	({Current: -2, Length: 2, Mass: 1, Time: -2}, 'Electrical Inductance', 'H'),
+	({Current: -2, Length: 2, Mass: 1, Time: -3}, 'Electrical Resistance', 'Ω'),
+	({Current: -1, Length: 2, Mass: 1, Time: -2}, 'Magnetic Flux', 'Wb'),
+	({Current: -1, Mass: 1, Time: -2}, 'Magnetic Induction', 'T'),
+	({Current: -1, Length: 2, Mass: 1, Time: -3}, 'Voltage', 'V'),
 ]
 
 
