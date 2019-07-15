@@ -776,18 +776,53 @@ class Body:
 	def metal_report(self):
 		"""Information regarding important metals"""
 		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		ms, assume = self.metals
 		print('COMPOSITION REPORT')
-		try:
-			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass((self.composition[sym] if sym in self.composition else 0)*self.mass, 'astro') for sym in symbols]
-		except KeyError:
-			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass(earth.composition[sym]*self.mass, 'astro') for sym in symbols]
-			print('(Assuming Earthlike composition')
+		Fe, Ni, Cu, Pt, Au, Ag, U = [Mass(ms[sym]*self.mass, 'astro') for sym in symbols]
+		if assume:
+			print('(Assuming Earthlike composition)')
 		if any([Fe, Ni]):
 			print('Base Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni))
 		if any([Pt, Au, Ag]):
 			print('Precious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt))
 		if any([Cu, U]):
 			print('Other\n\tCu: {}\n\tU: {}'.format(Cu, U))
+
+	@property
+	def metals(self):
+		"""Metal data for metal/mining reports"""
+		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		assume = False
+		try:
+			ms = {sym: (self.composition[sym] if sym in self.composition else None) for sym in symbols}
+		except KeyError:
+			ms = {sym: earth.composition[sym] for sym in symbols}
+			assume = True
+		return ms, assume
+
+	@property
+	def mining_report(self):
+		"""Information regarding mining"""
+		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		print('MINING REPORT\nMinable metal mass (<5km deep):')
+		mass = self.density * -self.shell(-5) # depest mines are 4km deep, some wiggle room
+		production = {
+			'Fe': 2.28e12,  # 2015: 2,280 million tons
+			'Ni': 2.3e9,    # More than 2.3 million tonnes (t) of nickel per year are mined worldwide,
+			'Au': 3.15e6,   # 3,150 t/yr
+			'Ag': 3.8223e7, # 38,223 t/yr
+			'Pt': 1.61e5,   # 2014: 161 t/yr
+			'Cu': 1.97e10,  # 2017: 19.7 million t/yr
+			'U':  6.0496e7, # worldwide production of uranium in 2015 amounted to 60,496 tonnes
+		}
+		ms, assume = self.metals
+		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production}
+		ms = {sym: (mass, round(mass.value / production[sym])) for sym, mass in ms.items()}
+		if assume:
+			print('(Assuming Earthlike composition)')
+		print('Base Metals\n\tFe: {} ({} yr)\n\tNi: {} ({} yr)'.format(*(ms['Fe']+ms['Ni'])))
+		print('Precious\n\tAu: {} ({} yr)\n\tAg: {} ({} yr)\n\tPt: {} ({} yr)'.format(*(ms['Au']+ms['Ag']+ms['Pt'])))
+		print('Other\n\tCu: {} ({} yr)\n\tU: {} ({} yr)'.format(*(ms['Cu']+ms['U'])))
 
 	@property
 	def mu(self) -> float:
@@ -961,6 +996,12 @@ class Body:
 		"""Roche limit of a body orbiting this one (m)"""
 		m, rho = self.mass, other.density
 		return (9*m/4/pi/rho)**(1/3)
+
+	def shell(self, other: float) -> float:
+		"""Volume of a shell extending xxx meters above the surface (m^3)"""
+		r = self.radius + other
+		v = 4/3 * pi * r**3
+		return v - self.volume
 
 	def umbra_at(self, distance: float) -> float:
 		"""Umbra radius at distance (m)"""
