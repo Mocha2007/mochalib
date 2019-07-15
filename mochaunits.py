@@ -256,9 +256,14 @@ class Multidimension:
 
 	@property
 	def copy(self):
-		"""Copy"""
 		from copy import deepcopy
 		return deepcopy(self)
+
+	@property
+	def inverse(self):
+		new = self.copy
+		new.dimensions = {key: -value for key, value in self.dimensions.items()}
+		return new
 
 	# properties
 	@property
@@ -325,10 +330,5 @@ class Multidimension:
 		if isinstance(other, Dimension):
 			return self / other.multi
 		if isinstance(other, Multidimension):
-			for dimension in other.dimensions:
-				if dimension in dimensions:
-					dimensions[dimension] -= 1
-				else:
-					dimensions[dimension] = -1
-			return Multidimension(other.value / self.value, dimensions, *self.tags)
+			return self * other.inverse
 		return Multidimension(other / self.value, dimensions, *self.tags)
