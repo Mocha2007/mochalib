@@ -1,13 +1,12 @@
 [
 	{
-		"name": "Ceres",
+		"name": "1 Ceres",
 		"class": "dwarf planet",
 		"mass": 9.393e20,
 		"radius": 473000,
 		"albedo": 0.09,
 		"orbit": {
 			"parent": "sun",
-			"sma": "5.2571*au",
 			"sma": "2.7675*au",
 			"e": 0.075823,
 			"i": 0.18488,
@@ -18,6 +17,45 @@
 		"rotation": {
 			"period": "9.074170*hour",
 			"tilt": 0.07
+		}
+	},
+	{
+		"name": "4 Vesta",
+		"class": "asteroid",
+		"mass": 2.59076e20,
+		"radius": 262700,
+		"albedo": 0.423,
+		"orbit": {
+			"parent": "sun",
+			"sma": "2.36179*au",
+			"e": 0.08874,
+			"i": "7.14043*deg",
+			"lan": "103.85136*deg",
+			"aop": "151.19853*deg",
+			"man": "20.86384*deg"
+		},
+		"rotation": {
+			"period": "5.342*hour",
+			"tilt": "42*deg"
+		}
+	},
+	{
+		"name": "162173 Ryugu",
+		"class": "asteroid",
+		"mass": 4.5e11,
+		"radius": 500,
+		"albedo": 0.05,
+		"orbit": {
+			"parent": "sun",
+			"sma": "1.1896*au",
+			"e": 0.1902,
+			"i": "5.8837*deg",
+			"lan": "251.62*deg",
+			"aop": "211.43*deg",
+			"man": "3.9832*deg"
+		},
+		"rotation": {
+			"period": "7.627*hour"
 		}
 	}
 ]
