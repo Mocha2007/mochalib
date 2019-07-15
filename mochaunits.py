@@ -229,9 +229,10 @@ class Time(Dimension):
 
 
 quantities = [
-	({Length: 1, Time: -2}, 'Acceleration', 'm/s'),
+	({Length: 1, Time: -2}, 'Acceleration', 'm/s^2'),
 	({Length: 2, Mass: 1, Time: -2}, 'Energy', 'J'),
 	({Length: 1, Mass: 1, Time: -2}, 'Force', 'N'),
+	({Length: 1, Mass: 1, Time: -1}, 'Momentum', 'kg*m/s'),
 	({Time: -1}, 'Frequency', 'Hz'),
 	({Length: 2, Mass: 1, Time: -3}, 'Power', 'W'),
 	({Length: -1, Mass: 1, Time: -2}, 'Pressure', 'Pa'),
@@ -247,10 +248,24 @@ class Multidimension:
 
 	# properties
 	@property
+	def clean(self):
+		"""Delete units with 0"""
+		new = self.copy
+		new.dimensions = {key: value for key, value in self.dimensions.items() if value}
+		return new
+
+	@property
+	def copy(self):
+		"""Copy"""
+		from copy import deepcopy
+		return deepcopy(self)
+
+	# properties
+	@property
 	def quantity(self) -> str:
 		"""Attempt to fetch the name"""
 		for dim, name, unit in quantities:
-			if dim == self.dimensions:
+			if dim == self.clean.dimensions:
 				return name
 		raise KeyError
 
@@ -258,9 +273,9 @@ class Multidimension:
 	def unit(self) -> str:
 		"""Attempt to fetch the unit"""
 		for dim, name, unit in quantities:
-			if dim == self.dimensions:
+			if dim == self.clean.dimensions:
 				return unit
-		raise KeyError
+		raise KeyError(self.dimensions)
 
 	# double underscore methods
 	def __add__(self, other):
