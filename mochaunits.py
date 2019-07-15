@@ -1,7 +1,7 @@
 from math import floor, log10
 
-prefixes2 = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
-prefixes2[0] = '' # set up prefix dict
+prefixes = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
+prefixes[0] = '' # set up prefix dict
 
 def get_si(value: float) -> (float, str):
 	if value == 0:
