@@ -1,5 +1,33 @@
-def is_number(x) -> bool:
-	return type(x) in {int, float, complex}
+from math import floor, log10
+
+prefixes = {
+	-8: 'y',
+	-7: 'z',
+	-6: 'a',
+	-5: 'f',
+	-4: 'p',
+	-3: 'n',
+	-2: 'µ',
+	-1: 'm',
+	0: '',
+	1: 'k',
+	2: 'M',
+	3: 'G',
+	4: 'T',
+	5: 'P',
+	6: 'E',
+	7: 'Z',
+	8: 'Y',
+}
+
+
+def get_si(value: float) -> (float, str):
+	if value == 0:
+		return 0, prefixes[0]
+	index = floor(log10(value)/3)
+	index = max(min(prefixes), min(max(prefixes), index))
+	new_value = value / 10**(3*index)
+	return new_value, prefixes[index]
 
 
 class Dimension:
@@ -122,25 +150,9 @@ class Length(Dimension):
 			return '-' + str(-self)
 		if 'imperial' in self.tags:
 			return self.imperial
-		if x == 0:
-			return '0 m'
-		if x < 1e-6:
-			return str(x*1e9) + ' nm'
-		if x < 1e-3:
-			return str(x*1e6) + ' μm'
-		if x < 1:
-			return str(x*1e3) + ' mm'
-		if x < 1e3:
-			return str(x) + ' m'
-		if x < 1e6:
-			return str(x/1e3) + ' km'
-		if x < 1e9:
-			return str(x/1e6) + ' Mm'
-		if 'astro' in self.tags:
+		if 'astro' in self.tags and 3.84402e8 < x:
 			return self.astro
-		if x < 1e12:
-			return str(x/1e9) + ' Gm'
-		return str(x/1e12) + ' Tm'
+		return '{} {}m'.format(*get_si(x))
 
 
 class Mass(Dimension):
@@ -178,29 +190,7 @@ class Mass(Dimension):
 			return self.imperial
 		if 1e23 < x and 'astro' in self.tags:
 			return self.astro
-		if x == 0:
-			return '0 kg'
-		if x < 1e-6:
-			return str(x*1e9) + ' μg'
-		if x < 1e-3:
-			return str(x*1e6) + ' mg'
-		if x < 1:
-			return str(x*1e3) + ' g'
-		if x < 1e3:
-			return str(x) + ' kg'
-		if x < 1e6:
-			return str(x/1e3) + ' Mg'
-		if x < 1e9:
-			return str(x/1e6) + ' Gg'
-		if x < 1e12:
-			return str(x/1e9) + ' Tg'
-		if x < 1e15:
-			return str(x/1e12) + ' Pg'
-		if x < 1e18:
-			return str(x/1e15) + ' Eg'
-		if x < 1e21:
-			return str(x/1e18) + ' Zg'
-		return str(x/1e21) + ' Yg'
+		return '{} {}g'.format(*get_si(x*1000))
 
 
 class Time(Dimension):
@@ -214,8 +204,6 @@ class Time(Dimension):
 		wk = 7*d
 		yr = 365.2425*d
 		mo = yr / 12
-		if self.value < minute:
-			return str(x) + ' s'
 		if self.value < h:
 			return str(x/minute) + ' min'
 		if self.value < d:
@@ -226,13 +214,7 @@ class Time(Dimension):
 			return str(x/wk) + ' wk'
 		if self.value < yr:
 			return str(x/mo) + ' mo'
-		if self.value < 1e3*yr:
-			return str(x/yr) + ' yr'
-		if self.value < 1e6*yr:
-			return str(x/1e3/yr) + ' kyr'
-		if self.value < 1e9*yr:
-			return str(x/1e6/yr) + ' Myr'
-		return str(x/1e9/yr) + ' Gyr'
+		return '{} {}yr'.format(*get_si(x/yr))
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -241,31 +223,9 @@ class Time(Dimension):
 			return '-' + str(-self)
 		if x == 0:
 			return '0 s'
-		if 'imperial' in self.tags:
+		if 'imperial' in self.tags and 60 <= x:
 			return self.imperial
-		if x < 1e-6:
-			return str(x*1e9) + ' ns'
-		if x < 1e-3:
-			return str(x*1e6) + ' μg'
-		if x < 1:
-			return str(x*1e3) + ' ms'
-		if x < 1e3:
-			return str(x) + ' s'
-		if x < 1e6:
-			return str(x/1e3) + ' ks'
-		if x < 1e9:
-			return str(x/1e6) + ' Ms'
-		if x < 1e12:
-			return str(x/1e9) + ' Gs'
-		if x < 1e15:
-			return str(x/1e12) + ' Ts'
-		if x < 1e18:
-			return str(x/1e15) + ' Ps'
-		if x < 1e21:
-			return str(x/1e18) + ' Es'
-		if x < 1e24:
-			return str(x/1e21) + ' Zs'
-		return str(x/1e24) + ' Ys'
+		return '{} {}s'.format(*get_si(x))
 
 
 class Multidimension:
