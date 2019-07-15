@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Length, Mass
+from mochaunits import Length, Mass, Time
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -818,12 +818,12 @@ class Body:
 		}
 		ms, assume = self.metals
 		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production}
-		ms = {sym: (mass, round(mass.value / production[sym])) for sym, mass in ms.items()}
+		ms = {sym: (mass, Time(year * mass.value / production[sym], 'imperial')) for sym, mass in ms.items()}
 		if assume:
 			print('(Assuming Earthlike composition)')
 		print('(Times assume earthlike extraction rates)')
 		for sym, (mass, time) in sorted(list(ms.items()), key=lambda x: x[1][0], reverse=True):
-			print('\t{}: {} ({} yr)'.format(sym, mass, time))
+			print('\t{}: {} ({})'.format(sym, mass, time))
 
 	@property
 	def mu(self) -> float:

@@ -203,6 +203,71 @@ class Mass(Dimension):
 		return str(x/1e21) + ' Yg'
 
 
+class Time(Dimension):
+	# properties
+	@property
+	def imperial(self) -> str:
+		x = self.value
+		minute = 60
+		h = 60*minute
+		d = 24*h
+		wk = 7*d
+		yr = 365.2425*d
+		mo = yr / 12
+		if self.value < minute:
+			return str(x) + ' s'
+		if self.value < h:
+			return str(x/minute) + ' min'
+		if self.value < d:
+			return str(x/h) + ' h'
+		if self.value < wk:
+			return str(x/d) + ' d'
+		if self.value < mo:
+			return str(x/wk) + ' wk'
+		if self.value < yr:
+			return str(x/mo) + ' mo'
+		if self.value < 1e3*yr:
+			return str(x/yr) + ' yr'
+		if self.value < 1e6*yr:
+			return str(x/1e3/yr) + ' kyr'
+		if self.value < 1e9*yr:
+			return str(x/1e6/yr) + ' Myr'
+		return str(x/1e9/yr) + ' Gyr'
+
+	# double underscore methods
+	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
+		if x == 0:
+			return '0 s'
+		if 'imperial' in self.tags:
+			return self.imperial
+		if x < 1e-6:
+			return str(x*1e9) + ' ns'
+		if x < 1e-3:
+			return str(x*1e6) + ' μg'
+		if x < 1:
+			return str(x*1e3) + ' ms'
+		if x < 1e3:
+			return str(x) + ' s'
+		if x < 1e6:
+			return str(x/1e3) + ' ks'
+		if x < 1e9:
+			return str(x/1e6) + ' Ms'
+		if x < 1e12:
+			return str(x/1e9) + ' Gs'
+		if x < 1e15:
+			return str(x/1e12) + ' Ts'
+		if x < 1e18:
+			return str(x/1e15) + ' Ps'
+		if x < 1e21:
+			return str(x/1e18) + ' Es'
+		if x < 1e24:
+			return str(x/1e21) + ' Zs'
+		return str(x/1e24) + ' Ys'
+
+
 class Multidimension:
 	def __init__(self, value: float, dimensions: dict, *tags):
 		self.value = value
