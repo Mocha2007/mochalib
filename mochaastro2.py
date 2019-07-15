@@ -820,6 +820,7 @@ class Body:
 		ms = {sym: (mass, round(mass.value / production[sym])) for sym, mass in ms.items()}
 		if assume:
 			print('(Assuming Earthlike composition)')
+		print('(Times assume earthlike extraction rates)')
 		print('Base Metals\n\tFe: {} ({} yr)\n\tNi: {} ({} yr)'.format(*(ms['Fe']+ms['Ni'])))
 		print('Precious\n\tAu: {} ({} yr)\n\tAg: {} ({} yr)\n\tPt: {} ({} yr)'.format(*(ms['Au']+ms['Ag']+ms['Pt'])))
 		print('Other\n\tCu: {} ({} yr)\n\tU: {} ({} yr)'.format(*(ms['Cu']+ms['U'])))
