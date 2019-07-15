@@ -67,7 +67,7 @@ class Dimension:
 		if isinstance(other, Dimension):
 			return self.multi * other.multi
 		if isinstance(other, Multidimension):
-			return other * self
+			return self.multi * other
 		return type(self)(self.value*other, *self.tags)
 
 	def __neg__(self):
@@ -80,7 +80,7 @@ class Dimension:
 		return self.multi ** other
 
 	def __repr__(self) -> str:
-		return '{0}({1}, *{2})'.format(type(self).__name__, self.value, self.tags)
+		return '{}({}, *{})'.format(type(self).__name__, self.value, self.tags)
 
 	def __rmul__(self, other):
 		return self * other
