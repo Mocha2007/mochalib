@@ -13,7 +13,7 @@ epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Ep
 g = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
 c = 299792458 # m/s; exact; speed of light
 L_0 = 3.0128e28 # W; exact; zero point luminosity
-G_SC = 1360.8 # W/m^2; appx; solar constant
+L_sun = 3.828e26 # W; exact; nominal solar luminosity
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute
@@ -29,6 +29,8 @@ ly = c * jyear # m; exact; light-year
 au = 149597870700 # m; exact; astronomical unit
 pc = 648000/pi * au # m; exact; parsec
 mi = 1609.344 # m; exact; mile
+
+G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant; * - technically not b/c this is based on visual luminosity rather than bolometric
 
 
 # functions
