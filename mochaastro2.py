@@ -776,10 +776,12 @@ class Body:
 	def metal_report(self):
 		"""Information regarding important metals"""
 		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		print('COMPOSITION REPORT')
 		try:
-			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass((self if sym in self.composition else earth).composition[sym]*self.mass, 'astro') for sym in symbols]
+			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass((self.composition[sym] if sym in self.composition else 0)*self.mass, 'astro') for sym in symbols]
 		except KeyError:
 			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass(earth.composition[sym]*self.mass, 'astro') for sym in symbols]
+			print('(Assuming Earthlike composition')
 		if any([Fe, Ni]):
 			print('Base Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni))
 		if any([Pt, Au, Ag]):
