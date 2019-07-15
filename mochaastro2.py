@@ -775,10 +775,10 @@ class Body:
 	@property
 	def metal_report(self):
 		"""Information regarding important metals"""
-		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		symbols = 'Fe Ni Cu Pt Au Ag U Co Al'.split(' ')
 		ms, assume = self.metals
 		print('COMPOSITION REPORT')
-		Fe, Ni, Cu, Pt, Au, Ag, U = [Mass(ms[sym]*self.mass, 'astro') for sym in symbols]
+		Fe, Ni, Cu, Pt, Au, Ag, U, Co, Al = [Mass(ms[sym]*self.mass, 'astro') for sym in symbols]
 		if assume:
 			print('(Assuming Earthlike composition)')
 		if any([Fe, Ni]):
@@ -786,12 +786,12 @@ class Body:
 		if any([Pt, Au, Ag]):
 			print('Precious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt))
 		if any([Cu, U]):
-			print('Other\n\tCu: {}\n\tU: {}'.format(Cu, U))
+			print('Other\n\tAl: {}\n\tCo: {}\n\tCu: {}\n\tU: {}'.format(Al, Co, Cu, U))
 
 	@property
 	def metals(self):
 		"""Metal data for metal/mining reports"""
-		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
+		symbols = 'Fe Ni Cu Pt Au Ag U Co Al'.split(' ')
 		assume = False
 		try:
 			ms = {sym: (self.composition[sym] if sym in self.composition else None) for sym in symbols}
@@ -803,7 +803,6 @@ class Body:
 	@property
 	def mining_report(self):
 		"""Information regarding mining"""
-		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
 		print('MINING REPORT\nMinable metal mass (<5km deep):')
 		mass = self.density * -self.shell(-5) # depest mines are 4km deep, some wiggle room
 		production = {
@@ -814,6 +813,8 @@ class Body:
 			'Pt': 1.61e5,   # 2014: 161 t/yr
 			'Cu': 1.97e10,  # 2017: 19.7 million t/yr
 			'U':  6.0496e7, # worldwide production of uranium in 2015 amounted to 60,496 tonnes
+			'Co': 1.1e8,    # 2017: 110,000 t/yr
+			'Al': 5.88e10,  # 2016: 58.8 million t/yr
 		}
 		ms, assume = self.metals
 		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production}
@@ -821,9 +822,8 @@ class Body:
 		if assume:
 			print('(Assuming Earthlike composition)')
 		print('(Times assume earthlike extraction rates)')
-		print('Base Metals\n\tFe: {} ({} yr)\n\tNi: {} ({} yr)'.format(*(ms['Fe']+ms['Ni'])))
-		print('Precious\n\tAu: {} ({} yr)\n\tAg: {} ({} yr)\n\tPt: {} ({} yr)'.format(*(ms['Au']+ms['Ag']+ms['Pt'])))
-		print('Other\n\tCu: {} ({} yr)\n\tU: {} ({} yr)'.format(*(ms['Cu']+ms['U'])))
+		for sym, (mass, time) in sorted(list(ms.items()), key=lambda x: x[1][0], reverse=True):
+			print('\t{}: {} ({} yr)'.format(sym, mass, time))
 
 	@property
 	def mu(self) -> float:
