@@ -228,11 +228,39 @@ class Time(Dimension):
 		return '{} {}s'.format(*get_si(x))
 
 
+quantities = [
+	({Length: 1, Time: -2}, 'Acceleration', 'm/s'),
+	({Length: 2, Mass: 1, Time: -2}, 'Energy', 'J'),
+	({Length: 1, Mass: 1, Time: -2}, 'Force', 'N'),
+	({Time: -1}, 'Frequency', 'Hz'),
+	({Length: 2, Mass: 1, Time: -3}, 'Power', 'W'),
+	({Length: -1, Mass: 1, Time: -2}, 'Pressure', 'Pa'),
+	({Length: 1, Time: -1}, 'Speed', 'm/s'),
+]
+
+
 class Multidimension:
 	def __init__(self, value: float, dimensions: dict, *tags):
 		self.value = value
 		self.dimensions = dimensions # type dict Class -> int
 		self.tags = set(tags)
+
+	# properties
+	@property
+	def quantity(self) -> str:
+		"""Attempt to fetch the name"""
+		for dim, name, unit in quantities:
+			if dim == self.dimensions:
+				return name
+		raise KeyError
+
+	@property
+	def unit(self) -> str:
+		"""Attempt to fetch the unit"""
+		for dim, name, unit in quantities:
+			if dim == self.dimensions:
+				return unit
+		raise KeyError
 
 	# double underscore methods
 	def __add__(self, other):
@@ -267,6 +295,12 @@ class Multidimension:
 
 	def __rtruediv__(self, other):
 		return Multidimension(other, {}, *self.tags) / self
+
+	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
+		return '{} {}{}'.format(*(get_si(x) + (self.unit,)))
 
 	def __sub__(self, other):
 		return self + -other
