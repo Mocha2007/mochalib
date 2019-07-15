@@ -1488,6 +1488,24 @@ def plot_grav_acc_vector(body1: Body, body2: Body):
 	plt.show()
 
 
+def search(name: str) -> Body:
+	# try exact match
+	if name in universe:
+		return universe[name]
+	# try case insensitive
+	for key, val in universe.items():
+		if name.lower() == key.lower():
+			return val
+	# try substring
+	hits = set()
+	for key, val in universe.items():
+		if name.lower() in key.lower():
+			hits.add(val)
+	if len(hits) == 1:
+		return list(hits)[0]
+	raise KeyError(hits)
+
+
 def stargen(m: float) -> Star:
 	"""Generate star from mass"""
 	m /= sun.mass
