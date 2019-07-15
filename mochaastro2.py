@@ -804,7 +804,7 @@ class Body:
 	def mining_report(self):
 		"""Information regarding mining"""
 		print('MINING REPORT\nMinable metal mass (<5km deep):')
-		mass = self.density * -self.shell(-5) # depest mines are 4km deep, some wiggle room
+		mass = self.density * -self.shell(-5000) # depest mines are 4km deep, some wiggle room
 		production = {
 			'Fe': 2.28e12,  # 2015: 2,280 million tons
 			'Ni': 2.3e9,    # More than 2.3 million tonnes (t) of nickel per year are mined worldwide,
@@ -1000,7 +1000,7 @@ class Body:
 
 	def shell(self, other: float) -> float:
 		"""Volume of a shell extending xxx meters above the surface (m^3)"""
-		r = self.radius + other
+		r = max(0, self.radius + other)
 		v = 4/3 * pi * r**3
 		return v - self.volume
 
