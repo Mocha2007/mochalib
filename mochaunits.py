@@ -143,6 +143,67 @@ class Length(Dimension):
 		return str(x/1e12) + ' Tm'
 
 
+class Mass(Dimension):
+	# properties
+	@property
+	def astro(self) -> str:
+		from mochaastro2 import earth, jupiter, moon, sun
+		x = self.value
+		m_m = moon.mass
+		m_e = earth.mass
+		m_j = jupiter.mass
+		m_s = sun.mass
+		if self.value < m_e:
+			return str(x/m_m) + ' Lunar Masses'
+		if self.value < m_j:
+			return str(x/m_e) + ' Earth Masses'
+		if self.value < m_s:
+			return str(x/m_j) + ' Jupiter Masses'
+		return str(x/m_s) + ' Solar Masses'
+
+	@property
+	def imperial(self) -> str:
+		x = self.value
+		lb = .45359237
+		oz = lb / 12
+		if self.value < lb:
+			return str(x/oz) + ' oz'
+		return str(x/lb) + ' lb'
+
+	# double underscore methods
+	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
+		if 'imperial' in self.tags:
+			return self.imperial
+		if x == 0:
+			return '0 kg'
+		if x < 1e-6:
+			return str(x*1e9) + ' μg'
+		if x < 1e-3:
+			return str(x*1e6) + ' mg'
+		if x < 1:
+			return str(x*1e3) + ' g'
+		if x < 1e3:
+			return str(x) + ' kg'
+		if x < 1e6:
+			return str(x/1e3) + ' Mg'
+		if x < 1e9:
+			return str(x/1e6) + ' Gg'
+		if x < 1e12:
+			return str(x/1e9) + ' Tg'
+		if x < 1e15:
+			return str(x/1e12) + ' Pg'
+		if x < 1e18:
+			return str(x/1e15) + ' Eg'
+		if x < 1e21:
+			return str(x/1e18) + ' Zg'
+		if 'astro' in self.tags:
+			return self.astro
+		return str(x/1e21) + ' Yg'
+
+
 class Multidimension:
 	def __init__(self, value: float, dimensions: dict, *tags):
 		self.value = value

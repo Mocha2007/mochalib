@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Length
+from mochaunits import Length, Mass
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -777,15 +777,15 @@ class Body:
 		"""Information regarding important metals"""
 		symbols = 'Fe Ni Cu Pt Au Ag U'.split(' ')
 		try:
-			Fe, Ni, Cu, Pt, Au, Ag, U = [(self if sym in self.composition else earth).composition[sym]*self.mass for sym in symbols]
+			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass((self if sym in self.composition else earth).composition[sym]*self.mass, 'astro') for sym in symbols]
 		except KeyError:
-			Fe, Ni, Cu, Pt, Au, Ag, U = [earth.composition[sym]*self.mass for sym in symbols]
+			Fe, Ni, Cu, Pt, Au, Ag, U = [Mass(earth.composition[sym]*self.mass, 'astro') for sym in symbols]
 		if any([Fe, Ni]):
-			print('Base Metals\n\tFe: {} kg\n\tNi: {} kg'.format(Fe, Ni))
+			print('Base Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni))
 		if any([Pt, Au, Ag]):
-			print('Precious\n\tAu: {} kg\n\tAg: {} kg\n\tPt: {} kg'.format(Au, Ag, Pt))
+			print('Precious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt))
 		if any([Cu, U]):
-			print('Other\n\tCu: {} kg\n\tU: {} kg'.format(Cu, U))
+			print('Other\n\tCu: {}\n\tU: {}'.format(Cu, U))
 
 	@property
 	def mu(self) -> float:
