@@ -9,6 +9,7 @@ temperatures = {
 	'fahrenheit': ('F', 9/5, -459.67),
 	'kelvin': ('K', 1, 0),
 	'newton': ('N', 1/3, -91.05),
+	'planck': ('T_P', 7.058119e-33, 0),
 	'rankine': ('R', 9/5, 0),
 	'reaumur': ('Ré', 4/5, -218.52),
 	'romer': ('Rø', 21/40, -135.90375),
