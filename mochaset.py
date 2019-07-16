@@ -17,15 +17,6 @@ def p_generator(quantity: int) -> int:
 		n += 1
 
 
-def n_generator(n: int) -> int:
-	"""Natural numbers
-	https://oeis.org/A000027"""
-	i = 1
-	while i <= n:
-		yield i
-		i += 1
-
-
 def q_generator(quantity: int) -> int:
 	"""Rationals (spiral method)"""
 	from fractions import Fraction
@@ -50,22 +41,6 @@ def q_generator(quantity: int) -> int:
 				x, y = y+1, 1
 			if gcd(x, y) == 1:
 				break
-
-
-def z_generator(n: int) -> int:
-	"""Integers
-	https://oeis.org/A001057"""
-	i = 0
-	count = 0
-	while count <= n:
-		count += 1
-		yield i
-		if 0 < i:
-			i = -i
-		elif i < 0:
-			i = 1-i
-		else:
-			i = 1
 
 
 def lucas_like(a0: int, a1: int) -> function:
@@ -330,14 +305,14 @@ P = Sequence(**{
 	'sup': inf,
 })
 N = Sequence(**{
-	'generator': n_generator,
+	'generator': lambda n: [(yield i+1) for i in range(n)],
 	'range_has': lambda x: 0 < x and x % 1 == 0,
 	'limit_points': Empty,
 	'monotone': True,
 	'sup': inf,
 })
 Z = Sequence(**{
-	'generator': z_generator,
+	'generator': lambda n: [(yield (1-(-1)**i*(2*i+1))//4) for i in range(n)],
 	'range_has': lambda x: x % 1 == 0,
 	'limit_points': Empty,
 	'inf': -inf,
