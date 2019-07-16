@@ -3,6 +3,17 @@ from math import floor, log10
 
 prefixes = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
 prefixes[0] = '' # set up prefix dict
+temperatures = {
+	'celsius': ('C', 1, -273.15),
+	'delisle': ('D', -3/2, 559.725),
+	'fahrenheit': ('F', 9/5, -459.67),
+	'kelvin': ('K', 1, 0),
+	'newton': ('N', 1/3, -91.05),
+	'rankine': ('R', 9/5, 0),
+	'reaumur': ('Ré', 4/5, -218.52),
+	'romer': ('Rø', 21/40, -135.90375),
+	'urist': ('U', 9/5, 9508.33),
+}
 
 
 def get_si(value: float) -> (float, str):
@@ -209,29 +220,17 @@ class Time(Dimension):
 		x = self.value
 		if x < 0:
 			return '-' + str(-self)
-		if x == 0:
-			return '0 s'
 		if 'imperial' in self.tags and 60 <= x:
 			return self.imperial
 		return '{} {}s'.format(*get_si(x))
 
 
 class Temperature(Dimension):
-	# properties
-	@property
-	def celsius(self) -> str:
-		return '{} °C'.format(self.value - 273.15)
-
-	@property
-	def imperial(self) -> str:
-		return '{} °F'.format(9/5 * self.value - 459.67)
-
 	# double underscore methods
 	def __str__(self) -> str:
-		if 'imperial' in self.tags:
-			return self.imperial
-		if 'celsius' in self.tags:
-			return self.celsius
+		for name, (sym, scalar, offset) in temperatures.items():
+			if name in self.tags:
+				return '{} {}{}'.format(scalar * self.value + offset, '°' if offset else '', sym)
 		return '{} K'.format(self.value)
 
 
