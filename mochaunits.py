@@ -267,7 +267,7 @@ class Angle(Dimension):
 			return '-' + str(-self)
 		if 'deg' in self.tags:
 			return self.degrees
-		return '{} rad'.format(x)
+		return '{} {}rad'.format(*get_si(x))
 
 
 quantities = [
