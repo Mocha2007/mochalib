@@ -1,5 +1,5 @@
 from copy import deepcopy
-from math import floor, log10
+from math import floor, log10, pi
 
 prefixes = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
 prefixes[0] = '' # set up prefix dict
@@ -242,6 +242,32 @@ class Current(Dimension):
 		if x < 0:
 			return '-' + str(-self)
 		return '{} {}A'.format(*get_si(x))
+
+
+class Angle(Dimension):
+	# properties
+	@property
+	def degrees(self) -> str:
+		x = self.value
+		deg = pi/180
+		arcmin = deg / 60
+		arcsec = arcmin / 60
+		if deg < self.value:
+			return str(x/deg) + '°'
+		if arcmin < self.value:
+			return str(x/arcmin) + '′'
+		if arcsec < self.value:
+			return str(x/arcsec) + '″'
+		return '{} {}as'.format(*get_si(x/arcsec))
+
+	# double underscore methods
+	def __str__(self) -> str:
+		x = self.value
+		if x < 0:
+			return '-' + str(-self)
+		if 'deg' in self.tags:
+			return self.degrees
+		return '{} rad'.format(x)
 
 
 quantities = [
