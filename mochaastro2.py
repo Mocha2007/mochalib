@@ -1550,6 +1550,19 @@ def test_functions():
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
+def warnings():
+	"""Attempt to find missing data"""
+	for name, body in universe.items():
+		# print('Checking {}...'.format(name))
+		# check for missing albedo data
+		if 'albedo' not in body.properties:
+			if 6e19 < body.mass < 1.5e29 and body.orbit.a < 600*au:
+				print('Albedo data missing from {}, should be easy to find'.format(name))
+		# check for missing atm data
+		elif 'atmosphere' not in body.properties and body.atm_retention < .131 and body.orbit.a < 67*au:
+			print('Atmosphere data missing from {}, atmosphere predicted'.format(name))
+
+
 # bodies - this file only contains the sun, moon, and planets. json files provide the rest.
 sun = Star(**{
 	'orbit': Orbit(**{
@@ -1746,6 +1759,7 @@ moon = Body(**{
 	}),
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
+	'albedo': .136,
 })
 
 mars = Body(**{
