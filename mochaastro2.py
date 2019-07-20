@@ -660,6 +660,12 @@ class Body:
 
 	# atmospheric properties
 	@property
+	def atm_retention(self) -> float:
+		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
+		# https://upload.wikimedia.org/wikipedia/commons/4/4a/Solar_system_escape_velocity_vs_surface_temperature.svg
+		return 11 * (self.temp / self.v_e)**2
+
+	@property
 	def atmosphere(self) -> Atmosphere:
 		return self.properties['atmosphere']
 
@@ -959,6 +965,10 @@ class Body:
 		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.orbit.a, self.orbit.parent.abs_mag
 		v_planet = -2.5*log10(a_p * r_p**2 / (4*d_s**2)) - v_sun + correction
 		return v_planet + 5*log10(dist / (10*pc))
+
+	def atm_supports(self, molmass: float) -> bool:
+		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
+		return molmass > self.atm_retention
 
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
