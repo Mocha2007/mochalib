@@ -24,6 +24,7 @@ jyear = 31536000 # s; exact; julian year
 deg = pi/180 # rad; exact; degree
 arcmin = deg/60 # rad; exact; arcminute
 arcsec = arcmin/60 # rad; exact; arcsecond
+atm = 101325 # Pa; exact; atmosphere
 
 ly = c * jyear # m; exact; light-year
 au = 149597870700 # m; exact; astronomical unit
@@ -1409,16 +1410,23 @@ def distance_audio(body1: Body, body2: Body):
 		file.write(frames.tobytes())
 
 
+def value_parse(value) -> float:
+	try:
+		return eval(value) if isinstance(value, str) else value
+	except (NameError, SyntaxError):
+		return value
+
+
 def convert_atmosphere(data: dict) -> Atmosphere:
-	return Atmosphere(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+	return Atmosphere(**{key: value_parse(value) for key, value in data.items()})
 
 
 def convert_orbit(data: dict, current_universe: dict) -> Orbit:
-	return Orbit(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+	return Orbit(**{key: value_parse(value) for key, value in data.items()})
 
 
 def convert_rotation(data: dict) -> Rotation:
-	return Rotation(**{key: (eval(value) if isinstance(value, str) else value) for key, value in data.items()})
+	return Rotation(**{key: value_parse(value) for key, value in data.items()})
 
 
 def convert_body(data: dict, current_universe: dict, datatype = Body) -> Body:
@@ -1431,7 +1439,7 @@ def convert_body(data: dict, current_universe: dict, datatype = Body) -> Body:
 		elif key == 'rotation':
 			body_data[key] = convert_rotation(value)
 		else:
-			body_data[key] = value
+			body_data[key] = value_parse(value)
 	return datatype(**body_data)
 
 

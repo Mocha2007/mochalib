@@ -1,0 +1,26 @@
+[
+	{
+		"name": "SotE",
+		"class": "planet",
+		"mass": 7e23,
+		"radius": "1592750000/511",
+		"albedo": 0.35,
+		"composition": "earth.composition",
+		"orbit": {
+			"parent": "sun",
+			"sma": "au",
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "day"
+		},
+		"atmosphere": {
+			"surface_pressure": "atm",
+			"composition": "earth.atmosphere.composition"
+		}
+	}
+]
