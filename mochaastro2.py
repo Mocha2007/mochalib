@@ -806,8 +806,8 @@ class Body:
 	@property
 	def mining_report(self):
 		"""Information regarding mining"""
-		print('MINING REPORT\nMinable metal mass (<5km deep):')
-		mass = self.density * -self.shell(-5000) # depest mines are 4km deep, some wiggle room
+		print('MINING REPORT\nMinable metal mass (<4km deep):')
+		mass = self.density * -self.shell(-4000) # depest mines are 4km deep, some wiggle room
 		production = {
 			'Fe': 2.28e12,  # 2015: 2,280 million tons
 			'Ni': 2.3e9,    # More than 2.3 million tonnes (t) of nickel per year are mined worldwide,
