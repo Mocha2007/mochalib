@@ -397,7 +397,17 @@ A000012 = Sequence(**{
 	'max': 1,
 })
 
-# A000020, ..., 
+A000027 = N
+
+# Initial digit of n. 
+A000030 = Sequence(**{
+	'generator': lambda n: [(yield int(str(i)[0])) for i in range(n)],
+	'range_has': lambda n: 0 <= n <= 9 and n % 1 == 0,
+	'limit_points': Empty,
+	'monotone': False,
+	'min': 0,
+	'max': 9,
+})
 
 # Lucas numbers beginning at 2: L(n) = L(n-1) + L(n-2), L(0) = 2, L(1) = 1. 
 A000032 = Sequence(**{
@@ -407,6 +417,28 @@ A000032 = Sequence(**{
 	'monotone': False,
 	'sup': inf,
 })
+
+# Period 2: repeat [1, 2]; a(n) = 1 + (n mod 2). 
+A000034 = Sequence(**{
+	'generator': lambda n: [(yield 1 + (i % 2)) for i in range(n)],
+	'range_has': lambda n: n in (1, 2),
+	'limit_points': Empty,
+	'monotone': False,
+	'min': 1,
+	'max': 2,
+})
+
+# Period 2: repeat [0, 1]; a(n) = n mod 2; parity of n. 
+A000035 = Sequence(**{
+	'generator': lambda n: [(yield i % 2) for i in range(n)],
+	'range_has': lambda n: n in (0, 1),
+	'limit_points': Empty,
+	'monotone': False,
+	'min': 0,
+	'max': 1,
+})
+
+# A000037, ..., 
 
 # Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1. 
 A000045 = Sequence(**{
