@@ -344,7 +344,7 @@ unit_interval = Interval(**{
 unit_interval.kwargs['limit_points'] = unit_interval
 
 # less-useful sequences from OEIS
-from math import factorial
+from math import e, factorial
 from mochamath import divisors, totient
 
 # all zeroes
@@ -445,6 +445,15 @@ A000142 = Sequence(**{
 	'sup': inf,
 })
 
+# a(n) = floor(e^n). 
+A000149 = Sequence(**{
+	'generator': lambda n: [(yield int(e**i)) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+
 # Triangular numbers: a(n) = binomial(n+1,2) = n(n+1)/2 = 0 + 1 + 2 + ... + n. 
 A000217 = Sequence(**{
 	'generator': lambda n: [(yield i * (i+1) // 2) for i in range(n)],
@@ -462,6 +471,16 @@ A000225 = Sequence(**{
 	'min': 0,
 	'sup': inf,
 })
+
+# Powers of 3. 
+A000244 = Sequence(**{
+	'generator': lambda n: [(yield 3**i) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+A000244.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 3 == 0 and n//3 in A000244)
 
 # The squares: a(n) = n^2. 
 A000290 = Sequence(**{
@@ -528,7 +547,7 @@ A001146 = Sequence(**{
 	'min': 1,
 	'sup': inf,
 })
-A001146.kwargs['range_has'] = lambda n: n == 2 or (1 < n and n**.5 % 1 == 0 and int(n**.5) in A000079)
+A001146.kwargs['range_has'] = lambda n: n == 2 or (1 < n and n**.5 % 1 == 0 and int(n**.5) in A001146)
 
 def abundant_generator(quantity: int) -> int:
 	n = 12
