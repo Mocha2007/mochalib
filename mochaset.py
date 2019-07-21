@@ -487,6 +487,16 @@ A000396 = Sequence(**{
 	'sup': inf,
 })
 
+# a(n) = 2^(2^n). 
+A001146 = Sequence(**{
+	'generator': lambda n: [(yield 2**2**i) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 1,
+	'sup': inf,
+})
+A001146.kwargs['range_has'] = lambda n: n == 2 or (1 < n and n**.5 % 1 == 0 and int(n**.5) in A000079)
+
 def abundant_generator(quantity: int) -> int:
 	n = 12
 	i = 0
