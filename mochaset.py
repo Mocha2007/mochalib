@@ -467,6 +467,24 @@ A000290 = Sequence(**{
 	'sup': inf,
 })
 
+# Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6. 
+A000292 = Sequence(**{
+	'generator': lambda n: [(yield (i*(i+1)*(i+2))//6) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
+# Square pyramidal numbers: a(n) = 0^2 + 1^2 + 2^2 + ... + n^2 = n*(n+1)*(2*n+1)/6. 
+A000330 = Sequence(**{
+	'generator': lambda n: [(yield (i*(i+1)*(2*i+1))//6) for i in range(n)],
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
 def perfect_generator(quantity: int) -> int:
 	if quantity:
 		yield 6
