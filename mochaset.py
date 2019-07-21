@@ -510,6 +510,16 @@ A000396 = Sequence(**{
 	'sup': inf,
 })
 
+# The cubes: a(n) = n^3. 
+A000578 = Sequence(**{
+	'generator': lambda n: [(yield i**3) for i in range(n)],
+	'range_has': lambda n: n**(1/3) % 1 == 0,
+	'limit_points': Empty,
+	'monotone': True,
+	'min': 0,
+	'sup': inf,
+})
+
 # a(n) = 2^(2^n). 
 A001146 = Sequence(**{
 	'generator': lambda n: [(yield 2**2**i) for i in range(n)],
