@@ -283,11 +283,16 @@ class Sequence(Function):
 	# methods
 	def index(self, other) -> int:
 		"""Returns the index of the first instance"""
-		assert other in self # idiot-proofing
+		if other not in self: # idiot-proofing
+			raise ValueError('{} is not in sequence'.format(other))
 		i = 0
 		while self[i] != other:
 			i += 1
 		return i
+
+	def list(self, n: int) -> tuple:
+		"""First n items in sequence"""
+		return tuple(self.generator(n))
 
 
 Empty = Set(**{
