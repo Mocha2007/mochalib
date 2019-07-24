@@ -1572,6 +1572,7 @@ def universe_sim(parent: Body):
 	dot_radius = 2
 	black, blue, tan, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
 	timerate = 1
+	paused = False
 	target = parent # until user selects a new one
 	t = 0
 	mouse_sensitivity = 10 # pixels
@@ -1678,6 +1679,8 @@ def universe_sim(parent: Body):
 					timerate *= 2
 				elif event.key == pygame.K_COMMA: # timerate down
 					timerate /= 2
+				elif event.key == pygame.K_p: # pause
+					timerate, paused = paused, timerate
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 4: # zoom in
 					max_a /= 2
