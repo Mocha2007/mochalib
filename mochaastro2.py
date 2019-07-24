@@ -1670,9 +1670,13 @@ def universe_sim(parent: Body):
 				pygame.display.quit()
 				pygame.quit()
 			elif event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_KP_PLUS: # timerate up
+				if event.key == pygame.K_KP_PLUS: # zoom in
+					max_a /= 2
+				elif event.key == pygame.K_KP_MINUS: # zoom out
+					max_a *= 2
+				elif event.key == pygame.K_PERIOD: # timerate up
 					timerate *= 2
-				elif event.key == pygame.K_KP_MINUS: # timerate down
+				elif event.key == pygame.K_COMMA: # timerate down
 					timerate /= 2
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 4: # zoom in
