@@ -1844,7 +1844,7 @@ saturn = Body(**{
 	'mass': 5.6834e26,
 	'radius': 5.8232e7,
 	'albedo': .499,
-})\
+})
 
 uranus = Body(**{
 	'orbit': Orbit(**{
