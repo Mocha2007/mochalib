@@ -1,0 +1,145 @@
+[
+	{
+		"name": "LyrSun",
+		"class": "star",
+		"mass": ".3*sun.mass",
+		"radius": 2.2e8,
+		"luminosity": 4.2e24,
+		"temperature": 3013
+	},
+	{
+		"name": "Zeus",
+		"class": "planet",
+		"mass": "600*earth.mass",
+		"radius": 1e8,
+		"albedo": 0.5,
+		"orbit": {
+			"parent": "LyrSun",
+			"sma": ".55*au",
+			"e": "3/11",
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"notes": "albedo is a SWAG; only a & e of orbit known"
+	},
+	{
+		"name": "Pegasia",
+		"class": "moon",
+		"mass": ".5*earth.mass",
+		"radius": 5.75e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Zeus",
+			"sma": 5.7e8,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "2*day",
+			"tilt": "3*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": "1.6*earth.atmosphere.surface_pressure",
+			"composition": {
+				"N":   0.68,
+				"O":   0.22,
+				"Ar":  0.08,
+				"Ne":  0.02,
+				"CO2": 4e-4
+			}
+		},
+		"notes": "only a of orbit known"
+	},
+	{
+		"name": "Tharn",
+		"class": "moon",
+		"mass": ".25*earth.mass",
+		"radius": 4.15e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Zeus",
+			"sma": 1.18e9,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "2*day",
+			"tilt": "16*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": ".24*earth.atmosphere.surface_pressure",
+			"composition": {
+				"N":   0.65,
+				"O":   0.21,
+				"Ar":  0.09,
+				"Ne":  0.044,
+				"CO2": 6e-3
+			}
+		},
+		"notes": "only a of orbit known"
+	},
+	{
+		"name": "Lyr",
+		"class": "planet",
+		"mass": "7*earth.mass",
+		"radius": 1.44e7,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "LyrSun",
+			"sma": "1.225*au",
+			"e": 0.1,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "12*hour",
+			"tilt": "36*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": "6*earth.atmosphere.surface_pressure",
+			"composition": {
+				"N":   0.66,
+				"Ne":  0.14,
+				"O":   0.12,
+				"Ar":  0.06,
+				"He":  0.02,
+				"CO2": 1.5e-4
+			}
+		},
+		"notes": "albedo not precisely stated; only a & e of orbit known"
+	},
+	{
+		"name": "Oisin",
+		"class": "moon",
+		"mass": ".04*earth.mass",
+		"radius": 2.5e6,
+		"albedo": 0.8,
+		"orbit": {
+			"parent": "Lyr",
+			"sma": 5e8,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "5.3*day",
+			"tilt": "2*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": 2500
+		},
+		"notes": "only a & i of orbit known"
+	}
+]

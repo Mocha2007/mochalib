@@ -1432,7 +1432,14 @@ def convert_atmosphere(data: dict) -> Atmosphere:
 
 
 def convert_orbit(data: dict, current_universe: dict) -> Orbit:
-	return Orbit(**{key: value_parse(value) for key, value in data.items()})
+	out = Orbit(**{key: value_parse(value) for key, value in data.items()})
+	# string -> bod
+	if isinstance(out.parent, str):
+		out.properties['parent'] = value_parse(out.parent)
+		# still string -> parent doesn't exist as a var maybe
+		if isinstance(out.parent, str):
+			out.properties['parent'] = current_universe[out.parent]
+	return out
 
 
 def convert_rotation(data: dict) -> Rotation:
