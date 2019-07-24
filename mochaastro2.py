@@ -1572,13 +1572,13 @@ def universe_sim(parent: Body):
 	dot_radius = 2
 	black, blue, tan, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
 	timerate = 1
-	max_a = 10*parent.radius
 	target = parent # until user selects a new one
 	t = 0
 	mouse_sensitivity = 10 # pixels
 
-	size = 800, 800
+	size = 1024, 640
 	width, height = size
+	max_a = 20*parent.radius
 
 	pygame.init()
 	screen = pygame.display.set_mode(size)
@@ -1606,6 +1606,7 @@ def universe_sim(parent: Body):
 	# main loop
 	# frame
 	while 1:
+		max_b = size[1]/size[0] * max_a
 		mouse_pos = pygame.mouse.get_pos()
 		# print('t =', t)
 		t += timerate
@@ -1620,7 +1621,7 @@ def universe_sim(parent: Body):
 			pass
 		# show planets
 		xmap = linear_map((-max_a, max_a), (0, width))
-		ymap = linear_map((-max_a, max_a), (height, 0))
+		ymap = linear_map((-max_b, max_b), (height, 0))
 		# start_time = time()
 		for name, body in orbits: # ~500 μs/body @ orbit_res = 64
 			try:
