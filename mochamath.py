@@ -57,8 +57,8 @@ def dpoly(coefficients: list, n: int) -> list:
 	if coefficients == [0]:
 		return [0]
 	newcfs = []
-	for i in range(len(coefficients)):
-		newcfs += [coefficients[i]*(len(coefficients)-i-1)]
+	for i, coeff in enumerate(coefficients):
+		newcfs += [coeff*(len(coefficients)-i-1)]
 	del newcfs[len(newcfs)-1]
 	if not newcfs:
 		return [0]
@@ -374,7 +374,7 @@ def ismandelbrot(c):
 		z=z**2+c
 		if abs(z)>2:return False
 	return True
-	
+
 #for really big numbers
 
 def tetration(x,y):

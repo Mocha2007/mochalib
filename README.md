@@ -221,7 +221,7 @@ Arctan(x).derivative(x, 3) # calculates third derivative of arctan(x)
 
 ## Wavefunction Library Documentation
 All functions require three components - *x* (Time in s), *freq* (Frequency in hz), and *amp* (Amplitude). They all return a y-value.
-### Functions
+### Wave Functions
 * f2n - turns a frequency into a musical note
 * n2f - turns a musical note into a frequency
 * sawtooth - Sawtooth wave function. Uses modulo.

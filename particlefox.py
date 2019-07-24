@@ -304,7 +304,7 @@ class Isotope:
 		# https://en.wikipedia.org/wiki/Ionization_energy#Electrostatic_explanation
 		z = self.z
 		return 13.6*eV*z**2/n**2
-	
+
 	def plot_spectrum(self):
 		import matplotlib.pyplot as plt
 		lambdas = self.spectrum
