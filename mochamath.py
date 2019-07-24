@@ -1,12 +1,12 @@
 # mocha's math library
 from math import acos, atan, ceil, cos, e, erf, factorial, gcd, pi, log, sin
 from random import choice, randint, random
-from typing import Iterable, Union
+from typing import Iterable, List, Set, Union
 
 Real = Union[int, float]
 
 
-def area(*points) -> float:
+def area(points: List[(float, float)]) -> float:
 	points.append(points[0])
 	return sum((points[i][0]*points[i+1][1] - points[i][1]*points[i+1][0]) for i in range(len(points)-1))/2
 
@@ -51,7 +51,7 @@ def continuedfraction(*series):
 	return s
 
 
-def dpoly(coefficients: list, n: int) -> list:
+def dpoly(coefficients: List[float], n: int) -> List[float]:
 	"""derivative of a polynomial: input is a LIST or TUPLE and the nth derivative you want"""
 	if coefficients == [0]:
 		return [0]
@@ -72,7 +72,7 @@ def dist(a: Iterable[Real], b: Iterable[Real]) -> float:
 	return sum((i-j)**2 for i, j in zip(a, b))**.5
 
 
-def divisors(n: int) -> set:
+def divisors(n: int) -> Set[int]:
 	if n in (0, 1):
 		return {n}
 	allproducts = []
@@ -97,35 +97,42 @@ def doublefactorial(n: int) -> int:
 		return n
 	return n*doublefactorial(n-2)
 
-def fitts(a,b,d,w):
-	return a+b*log(2*d/w,2)
-	
-def greedyegyptian(real):
-	series=[]
+
+def fitts(a: float, b: float, d: float, w: float) -> float:
+	return a+b*log(2*d/w, 2)
+
+
+def greedyegyptian(r: float) -> List[int]:
+	series = []
 	try:
 		while 1:
-			series+=[ceil(1/real)]
-			real-=1/ceil(1/real)
+			series.append(int(ceil(1/r)))
+			r -= 1/ceil(1/r)
 	except ZeroDivisionError:
 		return series
-	
-def harmonic(n,m):
-	s=0
-	for k in range(1,n+1):
-		s+=1/k**m
-	return s
-	
-def heron(a,b,c):
-	s=(a+b+c)/2
-	return (s*(s-a)*(s-b)*(s-c))**.5
-#interior angle of a regular n-gon in degrees
-def interiorangle(x):
-	return (x-2)*180/x
-#interior angle sum of a regular n-gon in degrees
-def interioranglesum(x):
-	return (x-2)*180
 
-def ipoly(coefficients: list, n: int) -> list:
+
+def harmonic(n: int, m: float) -> float:
+	"""Returns the n-th harmonic number (^m)"""
+	return sum(k**-m for k in range(1, n+1))
+
+
+def heron(a: float, b: float, c: float) -> float:
+	s = (a+b+c)/2
+	return (s*(s-a)*(s-b)*(s-c))**.5
+
+
+def interiorangle(n: int) -> float:
+	"""interior angle of a regular n-gon in degrees"""
+	return (n-2)*180/n
+
+
+def interioranglesum(n: int) -> float:
+	"""interior angle sum of a regular n-gon in degrees"""
+	return (n-2)*180
+
+
+def ipoly(coefficients: List[float], n: int) -> List[float]:
 	newcfs = []
 	for i, coeff in enumerate(coefficients):
 		if coeff != "c":
@@ -137,15 +144,17 @@ def ipoly(coefficients: list, n: int) -> list:
 		return newcfs
 	return ipoly(newcfs, n-1)
 
-def lcm(a,b):
-	return int(a*b/gcd(a,b))
-	
+
+def lcm(a: int, b: int) -> int:
+	return int(a*b/gcd(a, b))
+
 def logistic(x,x0,L,k):
 	return L/(1+e**(-k*(x-x0)))
-	
-def npr(a,b):
-	return factorial(a)/factorial(a-b)
-	
+
+
+def npr(a: int, b: int) -> int:
+	return factorial(a)//factorial(a-b)
+
 def bernoulli(m,n):
 	bigsum=0
 	for k in range(m+1):
@@ -155,11 +164,14 @@ def bernoulli(m,n):
 		bigsum+=littlesum
 	return bigsum
 
-def birthday(n):
-	return npr(365,n)/365**n
-	
-def ncr(a,b):
-	return npr(a,b)/factorial(b)
+
+def birthday(n: int) -> float:
+	return npr(365, n)/365**n
+
+
+def ncr(a: int, b: int) -> int:
+	return npr(a, b)//factorial(b)
+
 
 def mult_ord(a: int, n: int) -> int: # multiplicative order
 	if gcd(a, n) != 1:
@@ -169,61 +181,80 @@ def mult_ord(a: int, n: int) -> int: # multiplicative order
 		k += 1
 	return k
 
-def pascal(n):
-	line=[1]
+
+def pascal(n: int) -> List[int]:
+	line = [1]
 	for k in range(n):
-		line+=[line[k]*(n-k)//(k+1)]
+		line += [line[k]*(n-k)//(k+1)]
 	return line
-	
+
 def quadratic(a,b,c):
 	return (-b+(b**2-4*a*c)**.5)/2/a,(-b-(b**2-4*a*c)**.5)/2/a
-	
-def sgn(x):
-	if x==0:return 0
-	return x//abs(x)
-	
+
+
+def sgn(x: float) -> int:
+	if x == 0:
+		return 0
+	if 0 < x:
+		return 1
+	return -1
+
 def snormal(x):
 	return e**(-x**2/2)/(2*pi)**.5
 
 def normal(x,mu,sigma):
 	return snormal((x-mu)/sigma)/sigma
 
-def randomspherepoint():
+
+def randomspherepoint() -> (float, float):
 	return 2*pi*random(), acos(2*random()-1)
-	
-def standardlogistic(x):
+
+
+def standardlogistic(x: float) -> float:
 	return 1/(1+e**-x)
-	
-def sumofdivisors(n):
+
+
+def sumofdivisors(n: int) -> int:
 	return sum(divisors(n))
 
-def abundancy(n):
+
+def abundancy(n: int) -> float:
 	return sumofdivisors(n)/2/n
 
-def totient(n):
-	s=0
+
+def totient(n: int) -> int:
+	s = 0
 	for i in range(n):
-		if gcd(n,i)==1:s+=1
+		if gcd(n, i) == 1:
+			s += 1
 	return s
-	
+
+
 def triangular(n: int) -> int:
 	return (n**2+n)//2
 
-def volumecone(r,h):
+
+def volumecone(r: float, h: float) -> float:
 	return 1/3*pi*r**2*h
 
-def volumecylinder(r,h):
+
+def volumecylinder(r: float, h: float) -> float:
 	return pi*r**2*h
 
-def volumensphere(r,n):
-	if n==1:return 2*r
-	if n==2:return pi*r**2
-	return 2*pi/n*volumensphere(r,n-2)
 
-def volumesphere(r):
+def volumensphere(r: float, n: int) -> float:
+	if n == 1:
+		return 2*r
+	if n == 2:
+		return pi*r**2
+	return 2*pi/n*volumensphere(r, n-2)
+
+
+def volumesphere(r: float) -> float:
 	return 4/3*pi*r**3
 
-def volumetetrahedron(l):
+
+def volumetetrahedron(l: float) -> float:
 	return l/6/2**.5
 
 
@@ -247,30 +278,37 @@ def weierstrass(x: float, a: float, b: int) -> float:
 
 def woodall(n):
 	return n*2**n-1
-	
-def zeta(s):
-	#one
-	if s==1:raise ValueError("Zeta is undefined at s=1")
-	#non-positive integers
-	if s%1==0 and s<1:
-		#negative even integers and zero
-		if s%2==0:return 0
-		#negative odd integers
-		return (-1)**-s*bernoulli(1-s,0)/(1-s)#i think bernoulli is 0 by default if no number is specified, but unsure.
-	#non-integer reals under one
-	if s<1:raise ValueError("Sorry, this algorithm can't compute non-integer zeta numbers below 1")
-	#reals above one - even positive integers can be calculated using bernoulli numbers, however, i am unsure of the efficacy of that method
-	summation=0
-	i=1
-	old=-1
-	while old!=summation:
-		old=summation
-		summation+=i**-s
-		i+=1
+
+
+def zeta(s: float) -> float:
+	# one
+	if s == 1:
+		raise ValueError("Zeta is undefined at s=1")
+	# non-positive integers
+	if s % 1 == 0 and s < 1:
+		# negative even integers and zero
+		if s % 2 == 0:
+			return 0
+		# negative odd integers
+		# i think bernoulli is 0 by default if no number is specified, but unsure.
+		return (-1)**-s*bernoulli(1-s, 0)/(1-s)
+	# non-integer reals under one
+	if s < 1:
+		raise ValueError("Sorry, this algorithm can't compute non-integer zeta numbers below 1")
+	# reals above one - even positive integers can be calculated using bernoulli numbers,
+	# however, i am unsure of the efficacy of that method
+	summation = 0
+	i = 1
+	old = -1
+	while old != summation:
+		old = summation
+		summation += i**-s
+		i += 1
 	return summation
-	
-def zipf(k,s,n):
-	return 1/(k**s*harmonic(n,s))
+
+
+def zipf(k: int, s: float, n: int) -> float:
+	return 1/(k**s*harmonic(n, s))
 
 
 # random tools
@@ -279,7 +317,7 @@ def averagetimestooccur(chance: float) -> float:
 	return -log(2)/log(1-chance)
 
 
-def chanceofoccuring(chance: float,times: int) -> float:
+def chanceofoccuring(chance: float, times: int) -> float:
 	# eg an event with a 6% chance of occurring has had the opportunity to happen 15 times
 	return 1-(1-chance)**times
 
@@ -368,60 +406,77 @@ def isburningship(c: complex) -> bool:
 			return False
 	return True
 
-def ismandelbrot(c):
-	z=0
+
+def ismandelbrot(c: complex) -> bool:
+	z = 0
 	for _ in range(1000):
-		z=z**2+c
-		if abs(z)>2:return False
+		z = z**2+c
+		if abs(z) > 2:
+			return False
 	return True
 
-#for really big numbers
 
-def tetration(x,y):
-	o=1
-	for _ in range(y):o=x**o
+# for really big numbers
+def tetration(x: int, y: int) -> int:
+	o = 1
+	for _ in range(y):
+		o = x**o
 	return o
 
-def pentation(x,y):
-	o=1
-	for _ in range(y):o=tetration(x,o)
+
+def pentation(x: int, y: int):
+	o = 1
+	for _ in range(y):
+		o = tetration(x, o)
 	return o
 
-def arrow(a,b,power):
-	if power==1:return a**b
-	if b==1: return a
-	return arrow(a,arrow(a,b-1,power),power-1)
 
-def graham(n):
-	gn=arrow(3,3,4)
-	for n in range(1,n):
-		gn=arrow(3,3,gn)
+def arrow(a: int, b: int, power: int) -> int:
+	if power == 1:
+		return a**b
+	if b == 1:
+		return a
+	return arrow(a, arrow(a, b-1, power), power-1)
+
+
+def graham(n: int) -> int:
+	gn = arrow(3, 3, 4)
+	for n in range(1, n):
+		gn = arrow(3, 3, gn)
 	return gn
-	#graham's number is n=64
+	# graham's number is n=64
 
-#DONT CHANGE TO *chain
-def chained(chain):#chain is a LIST, function returns an INTEGER
-	#http://googology.wikia.com/wiki/Chained_arrow_notation
-	#rules
-	#checking for any 1s
+
+# DONT CHANGE TO *chain
+def chained(chain: List[int]) -> int:
+	# http://googology.wikia.com/wiki/Chained_arrow_notation
+	# rules
+	# checking for any 1s
 	for i in range(len(chain)-1):
-		if chain[i]==1:
-			for j in range(i,len(chain)-1):
+		if chain[i] == 1:
+			for j in range(i, len(chain)-1):
 				del chain[j]
-	if chain==[]:return 1#best thing i can come up with
-	if len(chain)==1:return chain[0]
-	if len(chain)==2:return chain[0]**chain[1]
-	if len(chain)==3:return arrow(chain[0],chain[1],chain[2])
-	#end rules
-	newchain1=chain
-	newchain1[len(chain)-2]-=1
-	newchain1=chained(newchain1)
-	newchain2=chain
-	newchain2[len(chain)-1]-=1
-	newchain2[len(chain)-2]=newchain1
+	if not chain:
+		return 1 # best thing i can come up with
+	if len(chain) == 1:
+		return chain[0]
+	if len(chain) == 2:
+		return chain[0]**chain[1]
+	if len(chain) == 3:
+		return arrow(chain[0], chain[1], chain[2])
+	# end rules
+	newchain1 = chain
+	newchain1[len(chain)-2] -= 1
+	newchain1 = chained(newchain1)
+	newchain2 = chain
+	newchain2[len(chain)-1] -= 1
+	newchain2[len(chain)-2] = newchain1
 	return chained(newchain2)
 
-def arrayed(array: list) -> int: # has to be a list, sadly, not *array. BROKEN. Don't know why. Fuck this shit. I spent hours trying to make this work and it only breaks. Nice.
+
+# has to be a list, sadly, not *array. BROKEN. Don't know why. Fuck this shit.
+# I spent hours trying to make this work and it only breaks. Nice.
+def arrayed(array: List[int]) -> int:
 	if len(array) == 1:
 		return array[0]
 	if len(array) == 2:
@@ -437,50 +492,59 @@ def arrayed(array: list) -> int: # has to be a list, sadly, not *array. BROKEN. 
 				newarray = array
 				newarray[1] -= 1
 				array[i] = arrayed(newarray)
-				#decrement the next value in the array
+				# decrement the next value in the array
 				array[i+1] -= 1
-				return arrayed(array)#maybe break instead of return? i forgot how this code even works
-			i = array[0]
-	#rule five
+				return arrayed(array)# maybe break instead of return? i forgot how this code even works
+	# rule five
 	newarray = array
 	newarray[1] -= 1
 	array[1] = arrayed(newarray)
 	array[2] -= 1
 	return arrayed(array)
 
-def beaf(array):
-	#rule 0
-	if len(array)==0:return 1
-	if len(array)==1:return array[0]
-	#rule 1
-	if array[1]==1:return array[0]
-	#rule 2
-	if len(array)==2:return array[0]**array[1]
-	#rule 3.1
-	for i in range(2,len(array)):
-		if array[i]!=1:
-			array[i]-=1
-			#rule 3.2
-			if i!=2:
-				newarray=array
-				newarray[0]-=1
-				array[i-1]=beaf(newarray)
-			#rule 3.3
-			for j in range(i+1,len(array)):
-				array[j]=array[0]
+
+def beaf(array: List[int]) -> int:
+	# rule 0
+	if len(array) == 0:
+		return 1
+	if len(array) == 1:
+		return array[0]
+	# rule 1
+	if array[1] == 1:
+		return array[0]
+	# rule 2
+	if len(array) == 2:
+		return array[0]**array[1]
+	# rule 3.1
+	for i in range(2, len(array)):
+		if array[i] != 1:
+			array[i] -= 1
+			# rule 3.2
+			if i != 2:
+				newarray = array
+				newarray[0] -= 1
+				array[i-1] = beaf(newarray)
+			# rule 3.3
+			for j in range(i+1, len(array)):
+				array[j] = array[0]
 	return beaf(array)
 
-def ack(m,n):
-	if m==0:return n+1
-	if m>0 and n==0: return ack(m-1,1)
-	return ack(m-1,ack(m,n-1))
+
+def ack(m: int, n: int) -> int:
+	if m == 0:
+		return n+1
+	if m > 0 and n == 0:
+		return ack(m-1, 1)
+	return ack(m-1, ack(m, n-1))
 
 # NEW FUNCTIONS
+
 
 def cubicstats(a: float, b: float, c: float, d: float):
 	print("Zeroes", "*shrug*")
 	print("Extrema", quadratic(3*a, 2*b, c))
 	print("Inflection Point", -b/3/a)
+	print("Y-intercept", d)
 
 
 # sqrt(n+sqrt(n+sqrt(n+...
@@ -519,7 +583,7 @@ def sphere2rect(rho: float, theta: float, phi: float) -> (float, float, float):
 def prime_factors(n: int) -> set:
 	for i in range(2, int(n**.5)+1):
 		if n % i == 0:
-			return factors(n//i).add(i)
+			return prime_factors(n//i).union({i})
 	return {n}
 
 
@@ -544,7 +608,7 @@ def product(*n) -> float:
 
 
 def is_prime(n: int) -> bool:
-	if n.imag or n % 1 or n < 2:
+	if (not isinstance(n, int)) or n < 2:
 		return False
 	if n == 2:
 		return True
