@@ -31,7 +31,8 @@ au = 149597870700 # m; exact; astronomical unit
 pc = 648000/pi * au # m; exact; parsec
 mi = 1609.344 # m; exact; mile
 
-G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant; * - technically not b/c this is based on visual luminosity rather than bolometric
+G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
+# * - technically not b/c this is based on visual luminosity rather than bolometric
 
 
 # functions
@@ -981,7 +982,7 @@ class Body:
 		dv3 = (2*mu/o-mu/a2)**.5-(mu/o)**.5
 		return dv1 + dv2 + dv3
 
-	def force_between(self, other, t: float=0) -> float:
+	def force_between(self, other, t: float = 0) -> float:
 		"""Force between two bodies at time t (N)"""
 		m1, m2 = self.mass, other.mass
 		r = self.orbit.distance_to(other.orbit, t)
@@ -1013,7 +1014,7 @@ class Body:
 
 	def shell(self, other: float) -> float:
 		"""Volume of a shell extending xxx meters above the surface (m^3)"""
-		r = max(0, self.radius + other)
+		r = max(self.radius + other, 0)
 		v = 4/3 * pi * r**3
 		return v - self.volume
 
@@ -1084,7 +1085,7 @@ class Star(Body):
 		wattage = self.luminosity / sun.luminosity
 		return wattage * G_SC / (c*dist**2)
 
-	def radiation_force_at(self, obj: Body, t: float=0) -> float:
+	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
 		"""Stellar radiation force on a planet at a time"""
 		wattage = self.luminosity / sun.luminosity
 		dist = sum(i**2 for i in obj.orbit.cartesian(t)[:3])**.5 / au
@@ -1446,7 +1447,7 @@ def convert_rotation(data: dict) -> Rotation:
 	return Rotation(**{key: value_parse(value) for key, value in data.items()})
 
 
-def convert_body(data: dict, current_universe: dict, datatype = Body) -> Body:
+def convert_body(data: dict, current_universe: dict, datatype=Body) -> Body:
 	body_data = {}
 	for key, value in data.items():
 		if key == 'atmosphere':
@@ -1571,11 +1572,11 @@ def universe_sim(parent: Body):
 
 	orbit_res = 64
 	dot_radius = 2
-	black, blue, tan, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
+	black, blue, brown, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
 	fps = 30
 	timerate = 1/fps
 	paused = False
-	target = parent # until user selects a new one
+	# target = parent # until user selects a new one
 	t = 0
 	mouse_sensitivity = 10 # pixels
 
@@ -1640,7 +1641,7 @@ def universe_sim(parent: Body):
 				x, y = end_pos
 				end_coords = int(round(xmap(x))), int(round(ymap(y)))
 				try:
-					color = tan if 'class' in body.properties and body.properties['class'] != 'planet' else blue
+					color = brown if 'class' in body.properties and body.properties['class'] != 'planet' else blue
 					pygame.draw.line(screen, color, start_coords, end_coords)
 				except TypeError:
 					pass

@@ -1,10 +1,9 @@
 # mocha's math library
 from math import acos, atan, ceil, cos, e, erf, factorial, gcd, pi, log, sin
 from random import choice, randint, random
-# math.factorial()
-# shoelace formula
-# area((0,0),(1,0),(1,1),(0,1))
-# area((3,4),(5,6),(9,5),(12,8),(5,11))
+from typing import Iterable, Union
+
+Real = Union[int, float]
 
 
 def area(*points) -> float:
@@ -67,8 +66,9 @@ def dpoly(coefficients: list, n: int) -> list:
 	return dpoly(newcfs, n-1)
 
 
-def dist(a: list, b: list) -> float:
-	"""works in any dimension! a and b are lists"""
+def dist(a: Iterable[Real], b: Iterable[Real]) -> float:
+	"""Distance between two points in n-space.
+	Note: the numbers can also be complex, but that will result in a complex output."""
 	return sum((i-j)**2 for i, j in zip(a, b))**.5
 
 
