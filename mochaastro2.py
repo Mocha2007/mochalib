@@ -67,38 +67,6 @@ class Orbit:
 		return self.properties['sma']
 
 	@property
-	def animate(self):
-		"""Animate orbit with pyplot"""
-		# fixme - doesn't work anymore
-		n = 1000
-		ts = [i*self.p/n for i in range(n)]
-		cs = [self.cartesian(t) for t in ts]
-		xs, ys, zs, vxs, vys, vzs = zip(*cs)
-
-		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
-
-		def update(i: int):
-			i *= 5
-			i %= n
-			plt.cla()
-			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years...
-			# yeah, guess that'll never happen...
-			# https://github.com/matplotlib/matplotlib/issues/1077/
-			# https://stackoverflow.com/a/19248731/2579798
-			ax.set_title('Orbit')
-			ax.set_xlabel('x (m)')
-			ax.set_ylabel('y (m)')
-			ax.set_zlabel('z (m)')
-			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
-			axisEqual3D(ax)
-
-		FuncAnimation(fig, update, interval=50) # 20 fps
-		plt.show()
-
-	@property
 	def aop(self) -> float:
 		"""Argument of periapsis (radians)"""
 		return self.properties['aop']
@@ -164,28 +132,6 @@ class Orbit:
 		return (1-self.e)*self.a
 
 	@property
-	def plot(self):
-		"""Plot orbit with pyplot"""
-		n = 1000
-		ts = [i*self.p/n for i in range(n)]
-		cs = [self.cartesian(t) for t in ts]
-		xs, ys, zs, vxs, vys, vzs = zip(*cs)
-
-		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
-		plt.cla()
-		ax.set_title('Orbit')
-		ax.set_xlabel('x (m)')
-		ax.set_ylabel('y (m)')
-		ax.set_zlabel('z (m)')
-		ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-		ax.scatter(xs[0], ys[0], zs[0], marker='o', color='b', s=15, zorder=3)
-		axisEqual3D(ax)
-
-		plt.show()
-
-	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
 		return (self.a/self.parent.mu)**-.5
@@ -227,6 +173,37 @@ class Orbit:
 		return '\n\t'.join(bits).format(**self.properties)+'\n>'
 
 	# methods
+	def animate(self):
+		"""Animate orbit with pyplot"""
+		# fixme - doesn't work anymore
+		n = 1000
+		ts = [i*self.p/n for i in range(n)]
+		cs = [self.cartesian(t) for t in ts]
+		xs, ys, zs, vxs, vys, vzs = zip(*cs)
+
+		fig = plt.figure(figsize=(7, 7))
+		ax = Axes3D(fig)
+
+		def update(i: int):
+			i *= 5
+			i %= n
+			plt.cla()
+			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years...
+			# yeah, guess that'll never happen...
+			# https://github.com/matplotlib/matplotlib/issues/1077/
+			# https://stackoverflow.com/a/19248731/2579798
+			ax.set_title('Orbit')
+			ax.set_xlabel('x (m)')
+			ax.set_ylabel('y (m)')
+			ax.set_zlabel('z (m)')
+			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
+			axisEqual3D(ax)
+
+		FuncAnimation(fig, update, interval=50) # 20 fps
+		plt.show()
+
 	def at_time(self, t: float):
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		new = self.copy
@@ -252,13 +229,13 @@ class Orbit:
 		# transform o, o_ into inertial frame
 		i = self.i
 		omega, Omega = self.aop, self.lan
-		c, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
+		co, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
 
 		def R(x: (float, float, float)) -> (float, float, float):
 			return (
-				x[0]*(c*C - s*cos(i)*S) - x[1]*(s*C + c*cos(i)*S),
-				x[0]*(c*S + s*cos(i)*C) + x[1]*(c*cos(i)*C - s*S),
-				x[0]*(s*sin(i)) + x[1]*(c*sin(i))
+				x[0]*(co*C - s*cos(i)*S) - x[1]*(s*C + co*cos(i)*S),
+				x[0]*(co*S + s*cos(i)*C) + x[1]*(co*cos(i)*C - s*S),
+				x[0]*(s*sin(i)) + x[1]*(co*sin(i))
 			)
 		r, r_ = R(o), R(o_)
 		# print([i/au for i in o], [i/au for i in r])
@@ -344,6 +321,27 @@ class Orbit:
 		d, h = other.a, self.a
 		return pi/((d/h)**1.5)
 
+	def plot(self):
+		"""Plot orbit with pyplot"""
+		n = 1000
+		ts = [i*self.p/n for i in range(n)]
+		cs = [self.cartesian(t) for t in ts]
+		xs, ys, zs, vxs, vys, vzs = zip(*cs)
+
+		fig = plt.figure(figsize=(7, 7))
+		ax = Axes3D(fig)
+		plt.cla()
+		ax.set_title('Orbit')
+		ax.set_xlabel('x (m)')
+		ax.set_ylabel('y (m)')
+		ax.set_zlabel('z (m)')
+		ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
+		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+		ax.scatter(xs[0], ys[0], zs[0], marker='o', color='b', s=15, zorder=3)
+		axisEqual3D(ax)
+
+		plt.show()
+
 	def relative_inclination(self, other) -> float:
 		"""Relative inclination between two orbital planes (rad)"""
 		t, p, T, P = self.i, self.lan, other.i, other.lan
@@ -402,7 +400,7 @@ class Orbit:
 		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
 		# initial guess needs to be "bring my apo up/peri down to the orbit
 		initial_guess = self.stretch_to(other)
-		System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d
+		System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d()
 		time_at_guess = initial_guess.close_approach(other, t, 1, delta_t_tol)
 		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(t), initial_guess.cartesian(t)))[-3:]
 		dv_best = dv_of_guess + (t,) # includes time
@@ -422,7 +420,7 @@ class Orbit:
 			if old_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
 				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (old_close_approach_dist, delta_x_tol))))
-				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot()
 				return dv_best
 			# try to change the time FIRST
 			mul = 2**16
@@ -485,7 +483,7 @@ class Orbit:
 			print('Transfer failed...', Length(old_close_approach_dist, 'astro'))
 		# autopsy
 		try:
-			System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot
+			System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot()
 		except AssertionError:
 			print(initial_guess, burn_orbit)
 		errorstring = '\n'.join((
@@ -739,64 +737,26 @@ class Body:
 		return 3*g*self.mass**2/(5*self.radius)
 
 	@property
-	def lunar_eclipse(self):
-		"""Draw maximum eclipsing radii"""
-		satellite, planet = self, self.orbit.parent
-		a = satellite.orbit.peri
-		r = planet.radius
-		moon_radius = satellite.angular_diameter_at(a-r)
-		umbra_radius = atan2(planet.umbra_at(a), a-r)
-		penumbra_radius = atan2(planet.penumbra_at(a), a-r)
-
-		fig, ax = plt.subplots()
-		ax.axis('scaled')
-		plt.title('Apparent Diameters from Surface')
-		plt.xlabel('x (rad)')
-		plt.ylabel('y (rad)')
-		# umbra
-		umbra_circle = Circle((0, 0), radius=umbra_radius, color='k')
-		umbra_ring = Circle((0, 0), radius=umbra_radius, color='k', linestyle='-', fill=False)
-		# penumbra
-		penumbra_circle = Circle((0, 0), radius=penumbra_radius, color='grey')
-		penumbra_ring = Circle((0, 0), radius=penumbra_radius, color='grey', linestyle='-', fill=False)
-		# moon
-		moon_circle = Circle((0, 0), radius=moon_radius, color='orange')
-
-		ax.add_artist(penumbra_circle)
-		ax.add_artist(umbra_circle)
-		ax.add_artist(moon_circle)
-		ax.add_artist(penumbra_ring)
-		ax.add_artist(umbra_ring)
-
-		# legend
-		plt.legend(handles=[
-			Patch(color='orange', label='Moon'),
-			Patch(color='black', label='Umbra'),
-			Patch(color='grey', label='Penumbra'),
-		])
-
-		plt.show()
-
-	@property
 	def mass(self) -> float:
 		"""Mass (kg)"""
 		return self.properties['mass']
 
 	@property
-	def metal_report(self):
+	def metal_report(self) -> str:
 		"""Information regarding important metals"""
 		symbols = 'Fe Ni Cu Pt Au Ag U Co Al'.split(' ')
 		ms, assume = self.metals
-		print('COMPOSITION REPORT')
+		string = 'COMPOSITION REPORT'
 		Fe, Ni, Cu, Pt, Au, Ag, U, Co, Al = [Mass(ms[sym]*self.mass, 'astro') for sym in symbols]
 		if assume:
-			print('(Assuming Earthlike composition)')
+			string += '\n(Assuming Earthlike composition)'
 		if any([Fe, Ni]):
-			print('Base Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni))
+			string += '\nBase Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni)
 		if any([Pt, Au, Ag]):
-			print('Precious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt))
+			string += '\nPrecious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt)
 		if any([Cu, U]):
-			print('Other\n\tAl: {}\n\tCo: {}\n\tCu: {}\n\tU: {}'.format(Al, Co, Cu, U))
+			string += '\nOther\n\tAl: {}\n\tCo: {}\n\tCu: {}\n\tU: {}'.format(Al, Co, Cu, U)
+		return string
 
 	@property
 	def metals(self):
@@ -811,9 +771,9 @@ class Body:
 		return ms, assume
 
 	@property
-	def mining_report(self):
+	def mining_report(self) -> str:
 		"""Information regarding mining"""
-		print('MINING REPORT\nMinable metal mass (<4km deep):')
+		string = 'MINING REPORT\nMinable metal mass (<4km deep):'
 		mass = self.density * -self.shell(-4000) # depest mines are 4km deep, some wiggle room
 		production = {
 			'Fe': 2.28e12,  # 2015: 2,280 million tons
@@ -830,10 +790,11 @@ class Body:
 		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production}
 		ms = {sym: (mass, Time(year * mass.value / production[sym], 'imperial')) for sym, mass in ms.items()}
 		if assume:
-			print('(Assuming Earthlike composition)')
-		print('(Times assume earthlike extraction rates)')
+			string += '\n(Assuming Earthlike composition)'
+		string += '\n(Times assume earthlike extraction rates)'
 		for sym, (mass, time) in sorted(list(ms.items()), key=lambda x: x[1][0], reverse=True):
-			print('\t{}: {} ({})'.format(sym, mass, time))
+			string += '\n\t{}: {} ({})'.format(sym, mass, time)
+		return string
 
 	@property
 	def mu(self) -> float:
@@ -872,36 +833,6 @@ class Body:
 	def schwarzschild(self) -> float:
 		"""Schwarzschild radius (m)"""
 		return 2*self.mu/c**2
-
-	@property
-	def solar_eclipse(self):
-		"""Draw maximum eclipsing radii"""
-		satellite, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
-		moon_radius = satellite.angular_diameter_at(satellite.orbit.peri - planet.radius)
-		star_radius = star.angular_diameter_at(planet.orbit.apo - planet.radius)
-
-		fig, ax = plt.subplots()
-		ax.axis('scaled')
-		plt.title('Apparent Diameters from Surface')
-		plt.xlabel('x (rad)')
-		plt.ylabel('y (rad)')
-		# star
-		star_circle = Circle((0, 0), radius=star_radius, color='y')
-		star_ring = Circle((0, 0), radius=star_radius, color='y', linestyle='-', fill=False)
-		# moon
-		moon_circle = Circle((0, 0), radius=moon_radius, color='k')
-
-		ax.add_artist(star_circle)
-		ax.add_artist(moon_circle)
-		ax.add_artist(star_ring)
-
-		# legend
-		plt.legend(handles=[
-			Patch(color='y', label='Star'),
-			Patch(color='k', label='Moon'),
-		])
-
-		plt.show()
 
 	@property
 	def v_e(self) -> float:
@@ -996,6 +927,44 @@ class Body:
 		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
 		return dv1 + dv2
 
+	def lunar_eclipse(self):
+		"""Draw maximum eclipsing radii"""
+		satellite, planet = self, self.orbit.parent
+		a = satellite.orbit.peri
+		r = planet.radius
+		moon_radius = satellite.angular_diameter_at(a-r)
+		umbra_radius = atan2(planet.umbra_at(a), a-r)
+		penumbra_radius = atan2(planet.penumbra_at(a), a-r)
+
+		fig, ax = plt.subplots()
+		ax.axis('scaled')
+		plt.title('Apparent Diameters from Surface')
+		plt.xlabel('x (rad)')
+		plt.ylabel('y (rad)')
+		# umbra
+		umbra_circle = Circle((0, 0), radius=umbra_radius, color='k')
+		umbra_ring = Circle((0, 0), radius=umbra_radius, color='k', linestyle='-', fill=False)
+		# penumbra
+		penumbra_circle = Circle((0, 0), radius=penumbra_radius, color='grey')
+		penumbra_ring = Circle((0, 0), radius=penumbra_radius, color='grey', linestyle='-', fill=False)
+		# moon
+		moon_circle = Circle((0, 0), radius=moon_radius, color='orange')
+
+		ax.add_artist(penumbra_circle)
+		ax.add_artist(umbra_circle)
+		ax.add_artist(moon_circle)
+		ax.add_artist(penumbra_ring)
+		ax.add_artist(umbra_ring)
+
+		# legend
+		plt.legend(handles=[
+			Patch(color='orange', label='Moon'),
+			Patch(color='black', label='Umbra'),
+			Patch(color='grey', label='Penumbra'),
+		])
+
+		plt.show()
+
 	def net_grav_acc_vector(self, system, t: float) -> (float, float, float):
 		"""Net gravitational acceleration vector (m/s^2)"""
 		vectors = [self.acc_vector_towards(body, t) for body in system.bodies if body != self]
@@ -1017,6 +986,35 @@ class Body:
 		r = max(self.radius + other, 0)
 		v = 4/3 * pi * r**3
 		return v - self.volume
+
+	def solar_eclipse(self):
+		"""Draw maximum eclipsing radii"""
+		satellite, planet, star = self, self.orbit.parent, self.orbit.parent.orbit.parent
+		moon_radius = satellite.angular_diameter_at(satellite.orbit.peri - planet.radius)
+		star_radius = star.angular_diameter_at(planet.orbit.apo - planet.radius)
+
+		fig, ax = plt.subplots()
+		ax.axis('scaled')
+		plt.title('Apparent Diameters from Surface')
+		plt.xlabel('x (rad)')
+		plt.ylabel('y (rad)')
+		# star
+		star_circle = Circle((0, 0), radius=star_radius, color='y')
+		star_ring = Circle((0, 0), radius=star_radius, color='y', linestyle='-', fill=False)
+		# moon
+		moon_circle = Circle((0, 0), radius=moon_radius, color='k')
+
+		ax.add_artist(star_circle)
+		ax.add_artist(moon_circle)
+		ax.add_artist(star_ring)
+
+		# legend
+		plt.legend(handles=[
+			Patch(color='y', label='Star'),
+			Patch(color='k', label='Moon'),
+		])
+
+		plt.show()
 
 	def umbra_at(self, distance: float) -> float:
 		"""Umbra radius at distance (m)"""
@@ -1100,6 +1098,16 @@ class System:
 		self.bodies = set(bodies)
 
 	@property
+	def any_body(self) -> Body:
+		"""Returns a body (may or may not be the same each time)"""
+		return list(self.bodies)[0]
+
+	@property
+	def sorted_bodies(self) -> list:
+		"""List of bodies sorted by semimajor axis"""
+		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
+
+	# methods
 	def animation(self):
 		"""Plot animated system with pyplot"""
 		# see above plot for notes and sources
@@ -1129,12 +1137,6 @@ class System:
 		FuncAnimation(fig, update, interval=50) # 20 fps
 		plt.show()
 
-	@property
-	def any_body(self) -> Body:
-		"""Returns a body (may or may not be the same each time)"""
-		return list(self.bodies)[0]
-
-	@property
 	def plot(self):
 		"""Plot system with pyplot"""
 		# see above plot for notes and sources
@@ -1156,7 +1158,6 @@ class System:
 		axisEqual3D(ax)
 		plt.show()
 
-	@property
 	def plot2d(self):
 		"""2D Plot system with pyplot"""
 		# see above plot for notes and sources
@@ -1175,7 +1176,6 @@ class System:
 
 		plt.show()
 
-	@property
 	def mass_pie(self):
 		"""Mass pie chart"""
 		system_masses = [i.mass for i in self.bodies]
@@ -1190,7 +1190,6 @@ class System:
 
 		plt.show()
 
-	@property
 	def sim(self):
 		"""Use pygame to produce a better simulation, albeit in 2D"""
 		import pygame
@@ -1281,11 +1280,6 @@ class System:
 					if event.button == 5: # zoom out
 						max_a *= 2
 			sleep(1/30)
-
-	@property
-	def sorted_bodies(self) -> list:
-		"""List of bodies sorted by semimajor axis"""
-		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
 
 
 # functions
