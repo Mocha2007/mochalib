@@ -1558,6 +1558,10 @@ def test_functions():
 
 
 def universe_sim(parent: Body):
+	# TODO
+	# target switching
+	# moon display
+	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
 	import pygame
 	from time import sleep # , time
