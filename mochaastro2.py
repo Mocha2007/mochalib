@@ -1559,7 +1559,7 @@ def test_functions():
 
 def universe_sim(parent: Body):
 	# TODO
-	# resizable window
+	# resizable window https://stackoverflow.com/questions/31538506/how-do-i-maximize-the-display-screen-in-pygame
 	# selection data
 	# target switching
 	# moon display
