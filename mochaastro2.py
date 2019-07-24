@@ -595,10 +595,10 @@ class Body:
 	def esi(self) -> float:
 		# Radius, Density, Escape Velocity, Temperature
 		"""Earth similarity index (dimensionless)"""
-		r, m, T = self.radius, self.mass, self.temp
-		r_e, m_e = earth.radius, earth.mass
+		r, rho, T = self.radius, self.density, self.temp
+		r_e, rho_e = earth.radius, earth.density
 		esi1 = 1-abs((r-r_e)/(r+r_e))
-		esi2 = 1-abs((self.density-earth.density)/(self.density+earth.density))
+		esi2 = 1-abs((rho-rho_e)/(rho+rho_e))
 		esi3 = 1-abs((self.v_e-earth.v_e)/(self.v_e+earth.v_e))
 		esi4 = 1-abs((T-255)/(T+255))
 		return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
@@ -1084,11 +1084,11 @@ class Star(Body):
 		wattage = self.luminosity / sun.luminosity
 		return wattage * G_SC / (c*dist**2)
 
-	def radiation_force_at(self, object: Body, t: float=0) -> float:
+	def radiation_force_at(self, obj: Body, t: float=0) -> float:
 		"""Stellar radiation force on a planet at a time"""
 		wattage = self.luminosity / sun.luminosity
-		dist = sum(i**2 for i in object.orbit.cartesian(t)[:3])**.5 / au
-		area = object.area / 2
+		dist = sum(i**2 for i in obj.orbit.cartesian(t)[:3])**.5 / au
+		area = obj.area / 2
 		return wattage * G_SC / (c*dist**2) * area
 
 
@@ -1173,7 +1173,7 @@ class System:
 			plt.scatter(xs[0], ys[0], marker='o', s=15, zorder=3)
 
 		plt.show()
-	
+
 	@property
 	def mass_pie(self):
 		"""Mass pie chart"""
@@ -1193,7 +1193,7 @@ class System:
 	def sim(self):
 		"""Use pygame to produce a better simulation, albeit in 2D"""
 		import pygame
-		from time import sleep, time
+		from time import sleep # , time
 
 		orbit_res = 64
 		dot_radius = 2
@@ -1308,11 +1308,11 @@ def keplerian(parent: Body, cartesian: (float, float, float, float, float, float
 		nu = temp
 	else:
 		nu = 2*pi - temp
-	# 2 Calculate the orbit inclination i by using the orbital momentum vector h, 
+	# 2 Calculate the orbit inclination i by using the orbital momentum vector h,
 	# where h z is the third component of h:
 	h_z = h[2]
 	i = acos(h_z / np.linalg.norm(h))
-	# 3 Determine the orbit eccentricity e [1], 
+	# 3 Determine the orbit eccentricity e [1],
 	# which is simply the magnitude of the eccentricity vector e, and the eccentric anomaly E [1]:
 	eccentricity = np.linalg.norm(e)
 	E = 2 * atan(tan(nu/2) / ((1+eccentricity)/(1-eccentricity))**.5)
@@ -1332,7 +1332,7 @@ def keplerian(parent: Body, cartesian: (float, float, float, float, float, float
 			omega = 2*pi - temp
 	else:
 		Omega, omega = 0, 0
-	# 5 Compute the mean anomaly M with help of Kepler’s Equation from the eccentric anomaly E 
+	# 5 Compute the mean anomaly M with help of Kepler’s Equation from the eccentric anomaly E
 	# and the eccentricity e:
 	M = E - eccentricity * sin(E)
 	# print(E, eccentricity, '-> M =', M)
@@ -1469,8 +1469,8 @@ def load_data(seed: dict) -> dict:
 	for file in [f for f in os.listdir(loc) if f.endswith('.json')]:
 		print('Loading', file, '...')
 		json_data = load(open(loc + '\\' + file, 'r'))
-		for object in json_data:
-			universe_data[object['name']] = convert_body(object, universe_data, (Star if object['class'] == 'star' else Body))
+		for obj in json_data:
+			universe_data[obj['name']] = convert_body(obj, universe_data, (Star if obj['class'] == 'star' else Body))
 
 	return universe_data
 
