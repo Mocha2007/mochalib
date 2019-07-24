@@ -238,11 +238,11 @@ All functions require three components - *x* (Time in s), *freq* (Frequency in h
 VERY UNSTABLE PLS DONT ACTUALLY USE THIS YET
 
 ## Matrix Library Documentation
-### Variables
+### Matrix Variables
 * lm - a dictionary of 5x5 matrices containing the alphabet
 * long - a large sample markov matrix
 
-### Functions
+### Matrix Functions
 * adj - finds the adjugate of the matrix
 * augmatrixsolve - solves the augmented matrix
 * companion - finds the companion matrix of the given polynomial coefficients

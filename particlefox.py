@@ -326,25 +326,25 @@ class Element:
 	def __init__(self, isotopic_abundances: dict, **properties):
 		self.isotopic_abundances = isotopic_abundances
 		self.properties = properties
-	
+
 	@property
 	def any_isotope(self) -> float:
 		"""For when any isotope can be used for a calculation"""
 		return list(self.isotopic_abundances)[0]
-	
+
 	@property
 	def mass(self) -> float:
 		s = sum(abundance for abundance in self.isotopic_abundances.values())
 		return sum(None for isotope, abundance in self.isotopic_abundances.items())/s
-	
+
 	@property
 	def period(self) -> str:
 		return self.any_isotope.period
-	
+
 	@property
 	def spectrum(self) -> str:
 		return self.any_isotope.spectrum
-	
+
 	@property
 	def symbol(self) -> str:
 		return self.any_isotope.symbol

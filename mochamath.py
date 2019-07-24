@@ -125,14 +125,17 @@ def interiorangle(x):
 def interioranglesum(x):
 	return (x-2)*180
 
-def ipoly(coefficients,n):
-	newcfs=[]
-	for i in range(len(coefficients)):
-		if coefficients[i]!="c":newcfs+=[coefficients[i]/(len(coefficients)-i)]
-		else:newcfs+=["c"]
-	newcfs+=["c"]
-	if n==1:return newcfs
-	return ipoly(newcfs,n-1)
+def ipoly(coefficients: list, n: int) -> list:
+	newcfs = []
+	for i, coeff in enumerate(coefficients):
+		if coeff != "c":
+			newcfs += [coeff/(len(coefficients)-i)]
+		else:
+			newcfs += ["c"]
+	newcfs += ["c"]
+	if n == 1:
+		return newcfs
+	return ipoly(newcfs, n-1)
 
 def lcm(a,b):
 	return int(a*b/gcd(a,b))
@@ -158,11 +161,12 @@ def birthday(n):
 def ncr(a,b):
 	return npr(a,b)/factorial(b)
 
-def ord(a,n):#multiplicative order
-	if gcd(a,n)!=1:raise ValueError("Cannot find the multiplicative order of two integers whose greatest common denominator is not 1!")
-	k=1
-	while n**k%a!=1:
-		k+=1
+def mult_ord(a: int, n: int) -> int: # multiplicative order
+	if gcd(a, n) != 1:
+		raise ValueError("Cannot find the multiplicative order of two integers whose greatest common denominator is not 1!")
+	k = 1
+	while n**k % a != 1:
+		k += 1
 	return k
 
 def pascal(n):
@@ -356,11 +360,12 @@ def pascalrow(n: int) -> list:
 
 
 # is in set?
-def isburningship(c):
-	z=0
-	for i in range(1000):
-		z=(abs(z.real)+1j*abs(z.imag))**2+c
-		if abs(z)>2:return False
+def isburningship(c: complex) -> bool:
+	z = 0
+	for _ in range(1000):
+		z = (abs(z.real)+1j*abs(z.imag))**2+c
+		if abs(z) > 2:
+			return False
 	return True
 
 def ismandelbrot(c):
@@ -415,31 +420,34 @@ def chained(chain):#chain is a LIST, function returns an INTEGER
 	newchain2[len(chain)-1]-=1
 	newchain2[len(chain)-2]=newchain1
 	return chained(newchain2)
-	
-def arrayed(array):#has to be a list, sadly, not *array. BROKEN. Don't know why. Fuck this shit. I spent hours trying to make this work and it only breaks. Nice.
-	if len(array)==1:return array[0]
-	if len(array)==2:return array[0]**array[1]
-	if array[len(array)-1]==1:
+
+def arrayed(array: list) -> int: # has to be a list, sadly, not *array. BROKEN. Don't know why. Fuck this shit. I spent hours trying to make this work and it only breaks. Nice.
+	if len(array) == 1:
+		return array[0]
+	if len(array) == 2:
+		return array[0]**array[1]
+	if array[len(array)-1] == 1:
 		del array[len(array)-1]
 		return arrayed(array)
-	if array[1]==1:return array[0]
-	if array[2]==1:
-		for i in range(len(array)):
-			if array[i]==1:
-				newarray=array
-				newarray[1]-=1
-				array[i]=arrayed(newarray)
+	if array[1] == 1:
+		return array[0]
+	if array[2] == 1:
+		for i, val in enumerate(array):
+			if val == 1:
+				newarray = array
+				newarray[1] -= 1
+				array[i] = arrayed(newarray)
 				#decrement the next value in the array
-				array[i+1]-=1
+				array[i+1] -= 1
 				return arrayed(array)#maybe break instead of return? i forgot how this code even works
-			i=array[0]
+			i = array[0]
 	#rule five
-	newarray=array
-	newarray[1]-=1
-	array[1]=arrayed(newarray)
-	array[2]-=1
+	newarray = array
+	newarray[1] -= 1
+	array[1] = arrayed(newarray)
+	array[2] -= 1
 	return arrayed(array)
-	
+
 def beaf(array):
 	#rule 0
 	if len(array)==0:return 1
@@ -461,14 +469,13 @@ def beaf(array):
 			for j in range(i+1,len(array)):
 				array[j]=array[0]
 	return beaf(array)
-	
+
 def ack(m,n):
 	if m==0:return n+1
 	if m>0 and n==0: return ack(m-1,1)
 	return ack(m-1,ack(m,n-1))
-	
-# NEW FUNCTIONS
 
+# NEW FUNCTIONS
 
 def cubicstats(a: float, b: float, c: float, d: float):
 	print("Zeroes", "*shrug*")
