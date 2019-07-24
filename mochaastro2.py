@@ -1570,6 +1570,7 @@ def universe_sim(parent: Body):
 	max_a = 10*parent.radius
 	target = parent # until user selects a new one
 	t = 0
+	mouse_sensitivity = 10 # pixels
 
 	size = 800, 800
 	width, height = size
@@ -1591,6 +1592,9 @@ def universe_sim(parent: Body):
 	# only get first tier, dc about lower tiers
 	for name, body in universe.items():
 		if 'orbit' not in body.properties or 'parent' not in body.orbit.properties:
+			continue
+		# disable comets; sharp angles
+		if 'class' in body.properties and body.properties['class'] == 'comet':
 			continue
 		if body.orbit.parent == parent:
 			orbits[(name, body)] = precompute_orbit(body)
@@ -1641,7 +1645,7 @@ def universe_sim(parent: Body):
 			except OverflowError:
 				pass
 			# check if mouse nearby
-			if dist(mouse_pos, coords) < 5:
+			if dist(mouse_pos, coords) < mouse_sensitivity:
 				# show name
 				textsurface = font.render(name, True, white)
 				screen.blit(textsurface, mouse_pos)
