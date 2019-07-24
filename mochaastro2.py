@@ -1571,7 +1571,8 @@ def universe_sim(parent: Body):
 	orbit_res = 64
 	dot_radius = 2
 	black, blue, tan, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
-	timerate = 1
+	fps = 30
+	timerate = 1/fps
 	paused = False
 	target = parent # until user selects a new one
 	t = 0
@@ -1659,7 +1660,7 @@ def universe_sim(parent: Body):
 				
 		# print((time() - start_time)/len(orbits))
 		# print date
-		textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(timerate)), True, white)
+		textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(fps*timerate)), True, white)
 		screen.blit(textsurface, (0, 0))
 		# print scale
 		textsurface = font.render(str(Length(max_a, 'astro')), True, white)
@@ -1688,7 +1689,7 @@ def universe_sim(parent: Body):
 					max_a /= 2
 				if event.button == 5: # zoom out
 					max_a *= 2
-		sleep(1/30)
+		sleep(1/fps)
 
 
 def warnings():
