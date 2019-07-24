@@ -206,7 +206,7 @@ class Interval(Set):
 
 class Sequence(Function):
 	"""Function N -> X"""
-	# properties	
+	# properties
 	@property
 	def generator(self) -> function:
 		return self.kwargs['generator']
@@ -357,7 +357,7 @@ A000004 = Sequence(**{
 	'max': 0,
 })
 
-# d(n) (also called tau(n) or sigma_0(n)), the number of divisors of n. 
+# d(n) (also called tau(n) or sigma_0(n)), the number of divisors of n.
 A000005 = Sequence(**{
 	'generator': lambda n: [(yield len(divisors(i))) for i in range(1, n+1)],
 	'range_has': lambda n: n in N,
@@ -367,7 +367,7 @@ A000005 = Sequence(**{
 	'sup': inf,
 })
 
-# Integer part of square root of n-th prime. 
+# Integer part of square root of n-th prime.
 A000006 = Sequence(**{
 	'generator': lambda n: [(yield int(P[i]**.5)) for i in range(n)],
 	'range_has': lambda n: n in N,
@@ -377,7 +377,7 @@ A000006 = Sequence(**{
 	'sup': inf,
 })
 
-# Euler totient function phi(n): count numbers <= n and prime to n. 
+# Euler totient function phi(n): count numbers <= n and prime to n.
 A000010 = Sequence(**{
 	'generator': lambda n: [(yield totient(i)) for i in range(1, n+1)],
 	'range_has': lambda n: 0 < n and (n == 1 or n % 2 == 0),
@@ -387,7 +387,7 @@ A000010 = Sequence(**{
 	'sup': inf,
 })
 
-# The simplest sequence of positive numbers: the all 1's sequence. 
+# The simplest sequence of positive numbers: the all 1's sequence.
 A000012 = Sequence(**{
 	'generator': lambda n: [(yield 1) for _ in range(n)],
 	'range_has': lambda n: n == 1,
@@ -399,7 +399,7 @@ A000012 = Sequence(**{
 
 A000027 = N
 
-# Initial digit of n. 
+# Initial digit of n.
 A000030 = Sequence(**{
 	'generator': lambda n: [(yield int(str(i)[0])) for i in range(n)],
 	'range_has': lambda n: 0 <= n <= 9 and n % 1 == 0,
@@ -409,7 +409,7 @@ A000030 = Sequence(**{
 	'max': 9,
 })
 
-# Lucas numbers beginning at 2: L(n) = L(n-1) + L(n-2), L(0) = 2, L(1) = 1. 
+# Lucas numbers beginning at 2: L(n) = L(n-1) + L(n-2), L(0) = 2, L(1) = 1.
 A000032 = Sequence(**{
 	'generator': lucas_like(2, 1),
 	'range_has': lucas_like_inclusion(2, 1),
@@ -418,7 +418,7 @@ A000032 = Sequence(**{
 	'sup': inf,
 })
 
-# Period 2: repeat [1, 2]; a(n) = 1 + (n mod 2). 
+# Period 2: repeat [1, 2]; a(n) = 1 + (n mod 2).
 A000034 = Sequence(**{
 	'generator': lambda n: [(yield 1 + (i % 2)) for i in range(n)],
 	'range_has': lambda n: n in (1, 2),
@@ -428,7 +428,7 @@ A000034 = Sequence(**{
 	'max': 2,
 })
 
-# Period 2: repeat [0, 1]; a(n) = n mod 2; parity of n. 
+# Period 2: repeat [0, 1]; a(n) = n mod 2; parity of n.
 A000035 = Sequence(**{
 	'generator': lambda n: [(yield i % 2) for i in range(n)],
 	'range_has': lambda n: n in (0, 1),
@@ -440,7 +440,7 @@ A000035 = Sequence(**{
 
 # A000037, ..., 
 
-# Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1. 
+# Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.
 A000045 = Sequence(**{
 	'generator': lucas_like(0, 1),
 	'range_has': lucas_like_inclusion(0, 1),
@@ -449,7 +449,7 @@ A000045 = Sequence(**{
 	'sup': inf,
 })
 
-# Powers of 2: a(n) = 2^n. 
+# Powers of 2: a(n) = 2^n.
 A000079 = Sequence(**{
 	'generator': lambda n: [(yield 2**i) for i in range(n)],
 	'limit_points': Empty,
@@ -459,7 +459,7 @@ A000079 = Sequence(**{
 })
 A000079.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 2 == 0 and n//2 in A000079)
 
-# Catalan numbers: C(n) = binomial(2n,n)/(n+1) = (2n)!/(n!(n+1)!). Also called Segner numbers. 
+# Catalan numbers: C(n) = binomial(2n,n)/(n+1) = (2n)!/(n!(n+1)!). Also called Segner numbers.
 A000108 = Sequence(**{
 	'generator': lambda n: [(yield factorial(2*i) // (factorial(i) * factorial(i+1))) for i in range(n)],
 	'limit_points': Empty,
@@ -468,7 +468,7 @@ A000108 = Sequence(**{
 	'sup': inf,
 })
 
-# Factorial numbers: n! = 1*2*3*4*...*n (order of symmetric group S_n, number of permutations of n letters). 
+# Factorial numbers: n! = 1*2*3*4*...*n (order of symmetric group S_n, number of permutations of n letters).
 A000142 = Sequence(**{
 	'generator': lambda n: [(yield factorial(i)) for i in range(n)],
 	'limit_points': Empty,
@@ -477,7 +477,7 @@ A000142 = Sequence(**{
 	'sup': inf,
 })
 
-# a(n) = floor(e^n). 
+# a(n) = floor(e^n).
 A000149 = Sequence(**{
 	'generator': lambda n: [(yield int(e**i)) for i in range(n)],
 	'limit_points': Empty,
@@ -486,7 +486,7 @@ A000149 = Sequence(**{
 	'sup': inf,
 })
 
-# Triangular numbers: a(n) = binomial(n+1,2) = n(n+1)/2 = 0 + 1 + 2 + ... + n. 
+# Triangular numbers: a(n) = binomial(n+1,2) = n(n+1)/2 = 0 + 1 + 2 + ... + n.
 A000217 = Sequence(**{
 	'generator': lambda n: [(yield i * (i+1) // 2) for i in range(n)],
 	'limit_points': Empty,
@@ -495,7 +495,7 @@ A000217 = Sequence(**{
 	'sup': inf,
 })
 
-# a(n) = 2^n - 1. (Sometimes called Mersenne numbers, although that name is usually reserved for A001348.) 
+# a(n) = 2^n - 1. (Sometimes called Mersenne numbers, although that name is usually reserved for A001348.)
 A000225 = Sequence(**{
 	'generator': lambda n: [(yield 2**i - 1) for i in range(n)],
 	'limit_points': Empty,
@@ -504,7 +504,7 @@ A000225 = Sequence(**{
 	'sup': inf,
 })
 
-# Powers of 3. 
+# Powers of 3.
 A000244 = Sequence(**{
 	'generator': lambda n: [(yield 3**i) for i in range(n)],
 	'limit_points': Empty,
@@ -514,7 +514,7 @@ A000244 = Sequence(**{
 })
 A000244.kwargs['range_has'] = lambda n: n == 1 or (1 < n and n % 3 == 0 and n//3 in A000244)
 
-# The squares: a(n) = n^2. 
+# The squares: a(n) = n^2.
 A000290 = Sequence(**{
 	'generator': lambda n: [(yield i**2) for i in range(n)],
 	'range_has': lambda x: x**.5 % 1 == 0,
@@ -523,7 +523,7 @@ A000290 = Sequence(**{
 	'sup': inf,
 })
 
-# Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6. 
+# Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6.
 A000292 = Sequence(**{
 	'generator': lambda n: [(yield (i*(i+1)*(i+2))//6) for i in range(n)],
 	'limit_points': Empty,
@@ -532,7 +532,7 @@ A000292 = Sequence(**{
 	'sup': inf,
 })
 
-# Square pyramidal numbers: a(n) = 0^2 + 1^2 + 2^2 + ... + n^2 = n*(n+1)*(2*n+1)/6. 
+# Square pyramidal numbers: a(n) = 0^2 + 1^2 + 2^2 + ... + n^2 = n*(n+1)*(2*n+1)/6.
 A000330 = Sequence(**{
 	'generator': lambda n: [(yield (i*(i+1)*(2*i+1))//6) for i in range(n)],
 	'limit_points': Empty,
@@ -552,7 +552,7 @@ def perfect_generator(quantity: int) -> int:
 			yield n
 		n += 18 # perfect numbers mod 18 == 10 for all > 6
 
-# Perfect numbers n: n is equal to the sum of the proper divisors of n. 
+# Perfect numbers n: n is equal to the sum of the proper divisors of n.
 A000396 = Sequence(**{
 	'generator': perfect_generator,
 	'limit_points': Empty,
@@ -561,7 +561,7 @@ A000396 = Sequence(**{
 	'sup': inf,
 })
 
-# The cubes: a(n) = n^3. 
+# The cubes: a(n) = n^3.
 A000578 = Sequence(**{
 	'generator': lambda n: [(yield i**3) for i in range(n)],
 	'range_has': lambda n: n**(1/3) % 1 == 0,
@@ -571,7 +571,7 @@ A000578 = Sequence(**{
 	'sup': inf,
 })
 
-# a(n) = 2^(2^n). 
+# a(n) = 2^(2^n).
 A001146 = Sequence(**{
 	'generator': lambda n: [(yield 2**2**i) for i in range(n)],
 	'limit_points': Empty,
@@ -590,7 +590,7 @@ def abundant_generator(quantity: int) -> int:
 			yield n
 		n += 1
 
-# Abundant numbers (sum of divisors of n exceeds 2n). 
+# Abundant numbers (sum of divisors of n exceeds 2n).
 A005101 = Sequence(**{
 	'generator': abundant_generator,
 	'limit_points': Empty,
@@ -599,7 +599,7 @@ A005101 = Sequence(**{
 	'sup': inf,
 })
 
-# The nonnegative even numbers: a(n) = 2n. 
+# The nonnegative even numbers: a(n) = 2n.
 A005408 = Sequence(**{
 	'generator': lambda n: [(yield 2*i+1) for i in range(n)],
 	'range_has': lambda n: 0 < n and n % 2 == 1,
@@ -609,7 +609,7 @@ A005408 = Sequence(**{
 	'sup': inf,
 })
 
-# The nonnegative even numbers: a(n) = 2n. 
+# The nonnegative even numbers: a(n) = 2n.
 A005843 = Sequence(**{
 	'generator': lambda n: [(yield 2*i) for i in range(n)],
 	'range_has': lambda n: 0 <= n and n % 2 == 0,
@@ -619,7 +619,7 @@ A005843 = Sequence(**{
 	'sup': inf,
 })
 
-# Fermat primes: primes of the form 2^(2^k) + 1, for some k >= 0.
+# Fermat primes: primes of the form 2^(2^k) + 1, for some k >= 0
 A019434 = Sequence(**{
 	'generator': lambda n: [(yield 2**(2**i) + 1) for i in range(n)],
 	'limit_points': Empty,
@@ -628,7 +628,7 @@ A019434 = Sequence(**{
 	'sup': inf,
 })
 
-# Powers of 2: a(n) = 2^n. 
+# Powers of 2: a(n) = 2^n.
 A033999 = Sequence(**{
 	'generator': lambda n: [(yield (-1)**i) for i in range(n)],
 	'range_has': lambda n: n in {-1, 1},
