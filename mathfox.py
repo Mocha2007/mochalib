@@ -15,7 +15,7 @@ def can_apply_function(x) -> bool:
 			i = i.evaluate()
 			if type(i) in evaluable:
 				return False
-		elif type(i) == Variable:
+		elif isinstance(i, Variable):
 			return False
 	return True
 
@@ -69,7 +69,7 @@ def function(**kwargs): # needs repr and f
 			if type(self) in (Sum, Difference):
 				a, b = self.variables
 				return type(self)(get_integral(a, with_respect_to), get_integral(b, with_respect_to))
-			if type(self) == Product:
+			if isinstance(self, Product):
 				a, b = self.variables
 				if {type(a), type(b)} == {Csc, Cot} and a.variables == b.variables:
 					s = a.variables[0]
@@ -90,32 +90,32 @@ def function(**kwargs): # needs repr and f
 						s = b.variables
 						c = get_linear(s, with_respect_to)[0]
 						return Quotient(Product(a, Log(Abs(b))), c)
-					elif type(b) == Sum: # a/(...+...)
+					elif isinstance(b, Sum): # a/(...+...)
 						d1, d2 = b.variables
-						if type(d1) == Power and not contains_variable(d2, with_respect_to): # a/(...^+u^2)
+						if isinstance(d1, Power) and not contains_variable(d2, with_respect_to): # a/(...^+u^2)
 							if tuple(d1.variables) == (with_respect_to, 2):
 								u = Power(d2, Quotient(1, 2))
 								return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
-						if type(d2) == Power and not contains_variable(d1, with_respect_to): # a/(u^2+...^...)
+						if isinstance(d2, Power) and not contains_variable(d1, with_respect_to): # a/(u^2+...^...)
 							if tuple(d2.variables) == (with_respect_to, 2):
 								u = Power(d1, Quotient(1, 2))
 								return Product(Quotient(a, u), Arctan(Quotient(with_respect_to, u)))
-					elif type(b) == Power and b.variables[1] == Quotient(1, 2): # a/sqrt(...)
+					elif isinstance(b, Power) and b.variables[1] == Quotient(1, 2): # a/sqrt(...)
 						d1 = b.variables[0]
-						if type(d1) == Difference and d1.variables[1] == Power(with_respect_to, 2): # a/sqrt(...-x^2)
+						if isinstance(d1, Difference) and d1.variables[1] == Power(with_respect_to, 2): # a/sqrt(...-x^2)
 							if not contains_variable(d1.variables[0], with_respect_to): # a/sqrt(u^2-x^2)
 								u = Power(d1.variables[0], Quotient(1, 2))
 								return Product(a, Arcsin(Quotient(with_respect_to, u)))
-			elif type(self) == Power:
+			elif isinstance(self, Power):
 				a, b = self.variables
 				if a == with_respect_to and not contains_variable(b, a):
 					return Quotient(Power(a, Sum(b, 1)), Sum(b, 1))
 				a, b = self.variables
-				if type(a) == Csc and b == 2:
+				if isinstance(a, Csc) and b == 2:
 					s = a.variables[0]
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(Difference(0, Cot(s)), c)
-				if type(a) == Sec and b == 2:
+				if isinstance(a, Sec) and b == 2:
 					s = a.variables[0]
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(Tan(s), c)
@@ -128,28 +128,28 @@ def function(**kwargs): # needs repr and f
 					c = get_linear(s, with_respect_to)[0]
 					return Quotient(self, Product(c, Log(a)))
 			# log
-			elif type(self) == Log:
+			elif isinstance(self, Log):
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Difference(Product(s, self), s), a)
 			# trig functions
-			elif type(self) == Sin:
+			elif isinstance(self, Sin):
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Difference(0, Cos(s)), a)
-			elif type(self) == Cos:
+			elif isinstance(self, Cos):
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Sin(s), a)
-			elif type(self) == Tan:
+			elif isinstance(self, Tan):
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
 					return Quotient(Log(Abs(Sec(s))), a)
-			elif type(self) == Sec:
+			elif isinstance(self, Sec):
 				s = self.variables[0]
 				if is_linear(s, with_respect_to):
 					a = get_linear(s, with_respect_to)[0]
@@ -173,12 +173,12 @@ def function(**kwargs): # needs repr and f
 			a = a.simplify() if is_function(a) else a
 			# unary identities
 			# log identity
-			if type(self) == Log: # ln(1) -> 0
+			if isinstance(self, Log): # ln(1) -> 0
 				if a == 1:
 					return 0
 				return self # otherwise, stay the same
 			elif type(self) == Abs: # ln(1) -> 0
-				if type(a) == int:
+				if isinstance(a, int):
 					return abs(a)
 				return self # otherwise, stay the same
 			elif type(self) in trig_functions:
@@ -205,7 +205,7 @@ def function(**kwargs): # needs repr and f
 						return Quotient(1, Power(Difference(Power(inner, 2), 1), Quotient(1, 2))).simplify()
 					if t == (Tan, Arcsec):
 						return Power(Difference(Power(inner, 2), 1), Quotient(1, 2)).simplify()
-				elif type(a) == Quotient and a.variables[0] == 1:
+				elif isinstance(a, Quotient) and a.variables[0] == 1:
 					inner = a.variables[1]
 					ta = type(self)
 					if ta == Arcsin:
@@ -221,14 +221,14 @@ def function(**kwargs): # needs repr and f
 			b = self.variables[1]
 			b = b.simplify() if is_function(b) else b
 			# additive identity
-			if type(self) == Sum:
+			if isinstance(self, Sum):
 				if a == 0: # 0+b -> b
 					return b
 				if b == 0: # a+0 -> a
 					return a
-				if type(a) == Difference and a.variables[1] == b: # (m-b)+b
+				if isinstance(a, Difference) and a.variables[1] == b: # (m-b)+b
 					return a.variables[0]
-				if type(b) == Difference and b.variables[1] == a: # a+(m-a)
+				if isinstance(b, Difference) and b.variables[1] == a: # a+(m-a)
 					return b.variables[0]
 				if {type(a), type(b)} <= {float, int}:
 					return a+b
@@ -242,16 +242,16 @@ def function(**kwargs): # needs repr and f
 						if a_interior == b_interior:
 							return 1
 			# subtractive identity
-			elif type(self) == Difference:
+			elif isinstance(self, Difference):
 				if b == 0: # a-0 -> a
 					return a
-				if type(b) == Difference: # a-(m-n) -> a+(n-m)
+				if isinstance(b, Difference): # a-(m-n) -> a+(n-m)
 					m, n = b.variables
 					return Sum(a, Difference(n, m)).simplify()
 				if type(a) == int == type(b):
 					return a-b
 			# multiplicative identity
-			elif type(self) == Product:
+			elif isinstance(self, Product):
 				if a == 0 or b == 0: # 0x -> 0
 					return 0
 				if a == 1: # 1b -> b
@@ -262,10 +262,10 @@ def function(**kwargs): # needs repr and f
 					m, n = a.variables
 					o, p = b.variables
 					return Quotient(Product(m, o), Product(n, p)).simplify()
-				if type(a) == Quotient: # (m/n)*b
+				if isinstance(a, Quotient): # (m/n)*b
 					m, n = a.variables
 					return Quotient(Product(b, m), n).simplify()
-				if type(b) == Quotient: # a*(m/n)
+				if isinstance(b, Quotient): # a*(m/n)
 					m, n = b.variables
 					return Quotient(Product(a, m), n).simplify()
 				if type(a) == int == type(b):
@@ -295,7 +295,7 @@ def function(**kwargs): # needs repr and f
 						new = Csc(inner)
 					return new.simplify()
 			# division identity
-			elif type(self) == Quotient:
+			elif isinstance(self, Quotient):
 				if a == 0: # 0/b -> 0
 					if b == 0:
 						return self # don't simplify
@@ -304,18 +304,18 @@ def function(**kwargs): # needs repr and f
 					return a
 				if a == b: # a/a -> 1
 					return 1
-				if type(a) == Product and a.variables[0] == b: # (m*n)/m
+				if isinstance(a, Product) and a.variables[0] == b: # (m*n)/m
 					return a.variables[1]
-				if type(a) == Product and a.variables[1] == b: # (m*n)/n
+				if isinstance(a, Product) and a.variables[1] == b: # (m*n)/n
 					return a.variables[0]
 				if type(a) == Quotient == type(b): # (m/n)/(o/p)
 					m, n = a.variables
 					o, p = b.variables
 					return Quotient(Product(m, p), Product(n, o)).simplify()
-				if type(a) == Quotient: # (m/n)/b
+				if isinstance(a, Quotient): # (m/n)/b
 					m, n = a.variables
 					return Quotient(m, Product(b, n)).simplify()
-				if type(b) == Quotient: # a/(m/n)
+				if isinstance(b, Quotient): # a/(m/n)
 					m, n = b.variables
 					return Quotient(Product(a, n), m).simplify()
 				if type(a) == int == type(b) and 1 < gcd(a, b):
@@ -338,7 +338,7 @@ def function(**kwargs): # needs repr and f
 					if tb == Csc:
 						return Product(a, Sin(inner))
 			# power identity
-			elif type(self) == Power:
+			elif isinstance(self, Power):
 				if a == 0:
 					return 0 if b else self # don't simplify
 				if a == 1:
@@ -349,10 +349,10 @@ def function(**kwargs): # needs repr and f
 					return a
 				if type(a) == int == type(b):
 					return a**b
-				if type(a) == Power: # (m^n)^b
+				if isinstance(a, Power): # (m^n)^b
 					m, n = a.variables
 					return Power(m, Product(n, b)).simplify()
-			elif type(self) == Equality:
+			elif isinstance(self, Equality):
 				if type(a) == type(b) and is_function(a):
 					# both are the same function, let's see if they share the same arguments
 					if a.variables[0] == b.variables[0]:
@@ -361,16 +361,16 @@ def function(**kwargs): # needs repr and f
 					if a.variables[1] == b.variables[1]:
 						# second arguments are identical
 						return Equality(a.variables[0], b.variables[0]).simplify()
-					if type(a) == Difference:
+					if isinstance(a, Difference):
 						a1, a2 = a.variables
 						return Equality(a1, Sum(a2, b)).simplify()
-					if type(b) == Difference:
+					if isinstance(b, Difference):
 						b1, b2 = b.variables
 						return Equality(Sum(a, b2), b1).simplify()
-					if type(a) == Quotient:
+					if isinstance(a, Quotient):
 						a1, a2 = a.variables
 						return Equality(a1, Product(a2, b)).simplify()
-					if type(b) == Quotient:
+					if isinstance(b, Quotient):
 						b1, b2 = b.variables
 						return Equality(Product(a, b2), b1).simplify()
 			# otherwise, stay the same
@@ -408,7 +408,7 @@ def function(**kwargs): # needs repr and f
 			# not accounted for: TT (Variable on both sides)
 			assert not (b_contains and a_contains) # todo
 			# general forms
-			if type(a) == Sum:
+			if isinstance(a, Sum):
 				m, n = a.variables
 				if contains_variable(m, x):
 					a = m
@@ -416,7 +416,7 @@ def function(**kwargs): # needs repr and f
 				else:
 					a = n
 					b = Difference(b, m)
-			elif type(a) == Difference:
+			elif isinstance(a, Difference):
 				m, n = a.variables
 				if contains_variable(m, x):
 					a = m
@@ -424,7 +424,7 @@ def function(**kwargs): # needs repr and f
 				else:
 					a = n
 					b = Difference(m, b)
-			elif type(a) == Product:
+			elif isinstance(a, Product):
 				m, n = a.variables
 				if contains_variable(m, x):
 					a = m
@@ -432,7 +432,7 @@ def function(**kwargs): # needs repr and f
 				else:
 					a = n
 					b = Quotient(b, m)
-			elif type(a) == Quotient:
+			elif isinstance(a, Quotient):
 				m, n = a.variables
 				if contains_variable(m, x):
 					a = m
@@ -440,7 +440,7 @@ def function(**kwargs): # needs repr and f
 				else:
 					a = n
 					b = Quotient(m, b)
-			elif type(a) == Power:
+			elif isinstance(a, Power):
 				m, n = a.variables
 				if contains_variable(m, x):
 					a = m
@@ -448,7 +448,7 @@ def function(**kwargs): # needs repr and f
 				else:
 					a = n
 					b = Quotient(Log(b), Log(m))
-			elif type(a) == Log:
+			elif isinstance(a, Log):
 				a = a.variables[0]
 				b = Power(Euler, b)
 			# print(self)
@@ -473,7 +473,7 @@ def function(**kwargs): # needs repr and f
 			# guess not
 
 			# try to l'Hopital it
-			if type(self) == Quotient:
+			if isinstance(self, Quotient):
 				f, g = self.variables
 				# get limit of f
 				if type(f) not in evaluable:
@@ -487,7 +487,7 @@ def function(**kwargs): # needs repr and f
 					gl = g.limit(with_respect_to, at)
 				if fl == gl and {fl, gl} < {0, inf, -inf}: # f(x)=g(x)=0 or inf or -inf
 					g_ = g.derivative(with_respect_to)
-					if type(g_) == int:
+					if isinstance(g_, int):
 						if g_:
 							return Quotient(f.derivative(with_respect_to), g_).let(**{with_respect_to.name: at})
 					elif g_.let(**{with_respect_to.name: at}): # g'(x) != 0
@@ -653,16 +653,16 @@ def get_linear(expression, variable: Variable) -> tuple:
 		gla, glb = get_linear(a, variable), get_linear(b, variable)
 		return type(expression)(gla[0], glb[0]), type(expression)(gla[1], glb[1])
 	# product
-	if type(expression) == Product:
+	if isinstance(expression, Product):
 		a, b = expression.variables
 		gla, glb = get_linear(a, variable), get_linear(b, variable)
 		if contains_variable(a, variable):
 			return Product(gla[0], glb[1]), Product(gla[1], glb[1])
 		return Product(glb[0], gla[1]), Product(glb[1], gla[1])
 	# quotient
-	if type(expression) == Quotient:
+	if isinstance(expression, Quotient):
 		a, b = expression.variables
-		assert type(b) == int # todo, complicated shit unimplemented
+		assert isinstance(b, int) # todo, complicated shit unimplemented
 		gla, glb = get_linear(a, variable), get_linear(b, variable)
 		return Quotient(gla[0], glb[1]), Quotient(gla[1], glb[1])
 	# constant
@@ -680,7 +680,7 @@ def get_quadratic(expression, variable: Variable) -> tuple:
 		gla, glb = get_quadratic(a, variable), get_quadratic(b, variable)
 		return tuple(type(expression)(gla[i], glb[i]) for i in range(len(gla)))
 	# product
-	if type(expression) == Product:
+	if isinstance(expression, Product):
 		a, b = expression.variables
 		a_has, b_has = contains_variable(a, variable), contains_variable(b, variable)
 		if a_has and b_has: # (ax+b)(cx+d)
@@ -694,14 +694,14 @@ def get_quadratic(expression, variable: Variable) -> tuple:
 		aa, bb, cc = get_quadratic(b, variable)
 		return Product(aa, a), Product(bb, a), Product(cc, a)
 	# quotient
-	if type(expression) == Quotient:
+	if isinstance(expression, Quotient):
 		a, b = expression.variables
-		assert type(b) == int # todo, complicated shit unimplemented
+		assert isinstance(b, int) # todo, complicated shit unimplemented
 		# (ax^2+bx+c)/(d)
 		aa, bb, cc = get_quadratic(a, variable)
 		return Quotient(aa, b), Quotient(bb, b), Quotient(cc, b)
 	# power
-	if type(expression) == Power: # MUST be EXACTLY x^2 by this point
+	if isinstance(expression, Power): # MUST be EXACTLY x^2 by this point
 		return 1, 0, 0
 	# the constant x
 	return 0, 1, 0

@@ -1,4 +1,4 @@
-from math import ceil, pi
+from math import ceil
 
 # numeric
 # alpha = 137.035999084 # dimensionless
@@ -24,12 +24,12 @@ m_e = 9.10938356e-31 # kg
 
 # data
 nobles = [2, 10, 18, 36, 54, 86, 172]
-symbols = ['H', 'He', 
-	'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 
-	'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar', 
-	'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr', 
-	'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe', 
-	'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 
+symbols = ['H', 'He',
+	'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne',
+	'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar',
+	'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
+	'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe',
+	'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn',
 	'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'
 ]
 # https://en.wikipedia.org/wiki/Electron_affinity_(data_page)
@@ -86,8 +86,8 @@ def wavelength_to_rgb(wavelength: float) -> (float, float, float):
 	return .0, .0, .0
 
 
-def wiki(object) -> str:
-	return 'https://en.wikipedia.org/wiki/' + object.name
+def wiki(obj) -> str:
+	return 'https://en.wikipedia.org/wiki/' + obj.name
 
 
 class Particle:
@@ -286,7 +286,7 @@ class Isotope:
 			ratio = (.61 * n + 5)/z
 		if ratio < 1:
 			return 'b+', self.beta_plus_decay
-		return 'b-', self.beta_minus_decay	
+		return 'b-', self.beta_minus_decay
 
 	# double underscore methods
 	
@@ -309,8 +309,6 @@ class Isotope:
 		import matplotlib.pyplot as plt
 		lambdas = self.spectrum
 		plt.subplot(1, 1, 1)
-		ilist = []
-		zlist = []
 		# todo plot roots
 		for l in lambdas:
 			x = round(l*10**9)
@@ -357,7 +355,7 @@ class Element:
 		return '<Element {0}>'.format(self.symbol)
 
 	# methods
-	
+
 	def plot_spectrum(self):
 		self.any_isotope.plot_spectrum()
 
