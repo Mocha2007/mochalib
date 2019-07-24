@@ -1,7 +1,6 @@
 from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
@@ -36,7 +35,7 @@ G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 
 
 # functions
-def axisEqual3D(ax):
+def axisEqual3D(ax: Axes3D):
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
@@ -171,38 +170,6 @@ class Orbit:
 			'M:      {man}',
 		]
 		return '\n\t'.join(bits).format(**self.properties)+'\n>'
-
-	# methods
-	def animate(self):
-		"""Animate orbit with pyplot"""
-		# fixme - doesn't work anymore
-		n = 1000
-		ts = [i*self.p/n for i in range(n)]
-		cs = [self.cartesian(t) for t in ts]
-		xs, ys, zs, vxs, vys, vzs = zip(*cs)
-
-		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
-
-		def update(i: int):
-			i *= 5
-			i %= n
-			plt.cla()
-			# ax.axis('scaled') this feature has apparently been "in progress" for 7+ years...
-			# yeah, guess that'll never happen...
-			# https://github.com/matplotlib/matplotlib/issues/1077/
-			# https://stackoverflow.com/a/19248731/2579798
-			ax.set_title('Orbit')
-			ax.set_xlabel('x (m)')
-			ax.set_ylabel('y (m)')
-			ax.set_zlabel('z (m)')
-			ax.plot(xs+(xs[0],), ys+(ys[0],), zs+(zs[0],), color='k', zorder=1)
-			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-			ax.scatter(xs[i], ys[i], zs[i], marker='o', color='b', s=15, zorder=3)
-			axisEqual3D(ax)
-
-		FuncAnimation(fig, update, interval=50) # 20 fps
-		plt.show()
 
 	def at_time(self, t: float):
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
@@ -1106,36 +1073,6 @@ class System:
 	def sorted_bodies(self) -> list:
 		"""List of bodies sorted by semimajor axis"""
 		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
-
-	# methods
-	def animation(self):
-		"""Plot animated system with pyplot"""
-		# see above plot for notes and sources
-		n = 1000
-		outerp = self.sorted_bodies[-1].orbit.p
-		limit = sorted(list(self.bodies), key=lambda x: x.orbit.apo)[-1].orbit.apo
-
-		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
-
-		def update(i: int):
-			plt.cla()
-			ax.set_title('Orbit')
-			ax.set_xlabel('x (m)')
-			ax.set_ylabel('y (m)')
-			ax.set_zlabel('z (m)')
-			ax.set_xlim(-limit, limit)
-			ax.set_ylim(-limit, limit)
-			ax.set_zlim(-limit, limit)
-			ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-			for body in self.bodies:
-				cs = [body.orbit.cartesian((t+i)*outerp/n) for t in range(1)] # change to range(n) if orbits on
-				xs, ys, zs, vxs, vys, vzs = zip(*cs)
-				# ax.plot(xs, ys, zs, color='k', zorder=1)
-				ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3) # , color='b'
-
-		FuncAnimation(fig, update, interval=50) # 20 fps
-		plt.show()
 
 	def plot(self):
 		"""Plot system with pyplot"""
@@ -2044,6 +1981,6 @@ universe = load_data({
 })
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # planet_nine.orbit.plot
-# distance_audio(earth, mars)
-# solar_system.sim
+# distance_audio(earth.orbit, mars.orbit)
+# solar_system.sim()
 # burn = earth.orbit.transfer(mars.orbit)
