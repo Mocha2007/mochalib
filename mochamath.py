@@ -148,20 +148,22 @@ def ipoly(coefficients: List[float], n: int) -> List[float]:
 def lcm(a: int, b: int) -> int:
 	return int(a*b/gcd(a, b))
 
-def logistic(x,x0,L,k):
-	return L/(1+e**(-k*(x-x0)))
+
+def logistic(x: float, x0: float, l: float, k: float) -> float:
+	return l/(1+e**(-k*(x-x0)))
 
 
 def npr(a: int, b: int) -> int:
 	return factorial(a)//factorial(a-b)
 
-def bernoulli(m,n):
-	bigsum=0
+
+def bernoulli(m: int, n: int) -> int: # fixme no idea what this function does - type sig is a SWAG
+	bigsum = 0
 	for k in range(m+1):
-		littlesum=0
+		littlesum = 0
 		for v in range(k+1):
-			littlesum+=(-1)**v*ncr(k,v)*(n+v)**m/(k+1)
-		bigsum+=littlesum
+			littlesum += (-1)**v * ncr(k, v) * (n+v)**m / (k+1)
+		bigsum += littlesum
 	return bigsum
 
 
@@ -188,8 +190,9 @@ def pascal(n: int) -> List[int]:
 		line += [line[k]*(n-k)//(k+1)]
 	return line
 
-def quadratic(a,b,c):
-	return (-b+(b**2-4*a*c)**.5)/2/a,(-b-(b**2-4*a*c)**.5)/2/a
+
+def quadratic(a: int, b: int, c: int) -> (complex, complex):
+	return (-b+(b**2-4*a*c)**.5)/2/a, (-b-(b**2-4*a*c)**.5)/2/a
 
 
 def sgn(x: float) -> int:
@@ -199,10 +202,12 @@ def sgn(x: float) -> int:
 		return 1
 	return -1
 
-def snormal(x):
+
+def snormal(x: float) -> float:
 	return e**(-x**2/2)/(2*pi)**.5
 
-def normal(x,mu,sigma):
+
+def normal(x: float, mu: float, sigma: float) -> float:
 	return snormal((x-mu)/sigma)/sigma
 
 
@@ -286,6 +291,7 @@ def zeta(s: float) -> float:
 		raise ValueError("Zeta is undefined at s=1")
 	# non-positive integers
 	if s % 1 == 0 and s < 1:
+		s = int(s) # to appease bernoulli
 		# negative even integers and zero
 		if s % 2 == 0:
 			return 0
@@ -540,7 +546,7 @@ def ack(m: int, n: int) -> int:
 # NEW FUNCTIONS
 
 
-def cubicstats(a: float, b: float, c: float, d: float):
+def cubicstats(a: int, b: int, c: int, d: int):
 	print("Zeroes", "*shrug*")
 	print("Extrema", quadratic(3*a, 2*b, c))
 	print("Inflection Point", -b/3/a)
