@@ -83,7 +83,7 @@ def function(**kwargs): # needs repr and f
 					return Product(a, b.integral(with_respect_to))
 				if not contains_variable(a, with_respect_to): # (...)b
 					return Product(b, a.integral(with_respect_to))
-			elif type(self) == Quotient:
+			elif isinstance(self, Quotient):
 				a, b = self.variables
 				if not contains_variable(a, with_respect_to): # a/...
 					if is_linear(b, with_respect_to):  # c/(ax+b)
@@ -163,7 +163,7 @@ def function(**kwargs): # needs repr and f
 			for i, variable in enumerate(new_self.variables):
 				if type(variable) in evaluable:
 					new_self.variables[i] = variable.let(**variables)
-				elif type(variable) == Variable and variable.name in variables:
+				elif isinstance(variable, Variable) and variable.name in variables:
 					new_self.variables[i] = variables[variable.name]
 			return new_self.simplify()
 		
@@ -177,7 +177,7 @@ def function(**kwargs): # needs repr and f
 				if a == 1:
 					return 0
 				return self # otherwise, stay the same
-			elif type(self) == Abs: # ln(1) -> 0
+			elif isinstance(self, Abs): # ln(1) -> 0
 				if isinstance(a, int):
 					return abs(a)
 				return self # otherwise, stay the same
@@ -378,7 +378,7 @@ def function(**kwargs): # needs repr and f
 			return type(self)(a, b)
 		
 		def solve_for(self, x: Variable) -> set:
-			if type(self) != Equality:
+			if not isinstance(self, Equality):
 				raise AttributeError
 			s = self.simplify()
 			# check which side contains it

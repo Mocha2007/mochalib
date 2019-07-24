@@ -350,7 +350,7 @@ class Element:
 		return self.any_isotope.symbol
 
 	# double underscore methods
-	
+
 	def __str__(self) -> str:
 		return '<Element {0}>'.format(self.symbol)
 
