@@ -1559,6 +1559,7 @@ def test_functions():
 
 def universe_sim(parent: Body):
 	# TODO
+	# selection data
 	# target switching
 	# moon display
 	# comet tails
