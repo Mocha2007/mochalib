@@ -1344,12 +1344,12 @@ def keplerian(parent: Body, cartesian: (float, float, float, float, float, float
 	})
 
 
-def plot_delta_between(body1: Body, body2: Body):
+def plot_delta_between(orbit1: Orbit, orbit2: Orbit):
 	"""Plot system with pyplot"""
 	resolution = 100
 	orbits = 8
-	limit = max([body1, body2], key=lambda x: x.orbit.apo).orbit.apo*2
-	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+	limit = max([orbit1, orbit2], key=lambda x: x.apo).apo*2
+	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
 
 	fig = plt.figure(figsize=(7, 7))
 	ax = Axes3D(fig)
@@ -1361,8 +1361,8 @@ def plot_delta_between(body1: Body, body2: Body):
 	ax.set_ylim(-limit, limit)
 	ax.set_zlim(-limit, limit)
 	ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-	b1s = [body1.orbit.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
-	b2s = [body2.orbit.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
+	b1s = [orbit1.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
+	b2s = [orbit2.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
 	cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
 	xs, ys, zs, vxs, vys, vzs = zip(*cs)
 	ax.plot(xs, ys, zs, color='k', zorder=1)
@@ -1370,24 +1370,24 @@ def plot_delta_between(body1: Body, body2: Body):
 	plt.show()
 
 
-def plot_distance(body1: Body, body2: Body):
+def plot_distance(orbit1: Orbit, orbit2: Orbit):
 	"""Plot distance between two bodies over several orbits"""
 	resolution = 1000
 	orbits = 8
-	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
 
 	plt.figure(figsize=(7, 7))
 	plt.title('Body Delta')
 	plt.xlabel('time since epoch (s)')
 	plt.ylabel('distance (m)')
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
-	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
+	xs = [orbit1.distance_to(orbit2, t) for t in ts]
 	plt.plot(ts, xs, color='k')
 
 	plt.show()
 
 
-def distance_audio(body1: Body, body2: Body):
+def distance_audio(orbit1: Orbit, orbit2: Orbit):
 	"""Play wave of plot_distance
 	Encoding   | Signed 32-bit PCM
 	Byte order | little endian
@@ -1399,9 +1399,9 @@ def distance_audio(body1: Body, body2: Body):
 	# if the product of these is 44100 it will last 1s
 	resolution = 441
 	orbits = 100 # this will be close to the output frequency
-	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
+	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
 	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
-	xs = [body1.orbit.distance_to(body2.orbit, t) for t in ts]
+	xs = [orbit1.distance_to(orbit2, t) for t in ts]
 	# normalize xs to [-1, 1]
 	xs_m, xs_M = np.amin(xs), np.amax(xs)
 	xs = np.array([2 * (i-xs_m)/(xs_M-xs_m) - 1 for i in xs])
@@ -2026,7 +2026,7 @@ neptune = Body(**{
 })
 
 # inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
-solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
+# solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune) # known planets
 # jupiter_system = System(io, europa, ganymede, callisto)
 # kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
@@ -2043,7 +2043,6 @@ universe = load_data({
 	'neptune': neptune,
 })
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
-# todo body1 body2 to orbit1 orbit2
 # planet_nine.orbit.plot
 # distance_audio(earth, mars)
 # solar_system.sim
