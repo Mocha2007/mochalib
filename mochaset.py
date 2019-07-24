@@ -438,7 +438,7 @@ A000035 = Sequence(**{
 	'max': 1,
 })
 
-# A000037, ..., 
+# A000037, ...,
 
 # Fibonacci numbers: F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.
 A000045 = Sequence(**{

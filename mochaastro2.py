@@ -1048,7 +1048,7 @@ class Star(Body):
 	def luminosity(self) -> float:
 		"""Luminosity (W)"""
 		return self.properties['luminosity']
-	
+
 	@property
 	def peakwavelength(self) -> float:
 		"""Peak emission wavelength (m)"""
