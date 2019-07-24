@@ -1661,7 +1661,11 @@ def universe_sim(parent: Body):
 				
 		# print((time() - start_time)/len(orbits))
 		# print date
-		textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(fps*timerate)), True, white)
+		try:
+			current_date = str(epoch+timedelta(seconds=t))
+		except OverflowError:
+			current_date = '>10000'
+		textsurface = font.render(current_date+' (x{0})'.format(int(fps*timerate)), True, white)
 		screen.blit(textsurface, (0, 0))
 		# print scale
 		textsurface = font.render(str(Length(max_a, 'astro')), True, white)
