@@ -45,7 +45,7 @@ class Dimension:
 		return type(self)(abs(self.value), *self.tags)
 
 	def __add__(self, other):
-		assert type(self) == type(other)
+		assert isinstance(self, type(other))
 		return type(self)(self.value+other.value, *self.tags)
 
 	def __bool__(self) -> bool:
@@ -55,7 +55,7 @@ class Dimension:
 		return complex(self.value)
 
 	def __eq__(self, other) -> bool:
-		assert type(self) == type(other)
+		assert isinstance(self, type(other))
 		return self.value == other.value
 
 	def __float__(self) -> float:
@@ -68,11 +68,11 @@ class Dimension:
 		return int(self.value)
 
 	def __le__(self, other) -> bool:
-		assert type(self) == type(other)
+		assert isinstance(self, type(other))
 		return self.value <= other.value
 
 	def __lt__(self, other) -> bool:
-		assert type(self) == type(other)
+		assert isinstance(self, type(other))
 		return self.value < other.value
 
 	def __mul__(self, other): # returns either type(self) or Multidimension
@@ -326,7 +326,7 @@ class Multidimension:
 	@property
 	def quantity(self) -> str:
 		"""Attempt to fetch the name"""
-		for dim, name, unit in quantities:
+		for dim, name, _ in quantities:
 			if dim == self.clean.dimensions:
 				return name
 		raise KeyError
