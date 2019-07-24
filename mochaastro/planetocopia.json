@@ -1,6 +1,6 @@
 [
 	{
-		"name": "LyrSun",
+		"name": "Lyr Primary",
 		"class": "star",
 		"mass": ".3*sun.mass",
 		"radius": 2.2e8,
@@ -14,7 +14,7 @@
 		"radius": 1e8,
 		"albedo": 0.5,
 		"orbit": {
-			"parent": "LyrSun",
+			"parent": "Lyr Primary",
 			"sma": ".55*au",
 			"e": "3/11",
 			"i": 0,
@@ -93,7 +93,7 @@
 		"radius": 1.44e7,
 		"albedo": 0.3,
 		"orbit": {
-			"parent": "LyrSun",
+			"parent": "Lyr Primary",
 			"sma": "1.225*au",
 			"e": 0.1,
 			"i": 0,

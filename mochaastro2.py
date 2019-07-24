@@ -1557,6 +1557,121 @@ def test_functions():
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
+def universe_sim(parent: Body):
+	"""Use pygame to show the system of [parent] and all subsystems"""
+	import pygame
+	from time import sleep # , time
+	from mochamath import dist
+
+	orbit_res = 64
+	dot_radius = 2
+	black, blue, tan, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
+	timerate = 1
+	max_a = 10*parent.radius
+	target = parent # until user selects a new one
+	t = 0
+
+	size = 800, 800
+	width, height = size
+
+	pygame.init()
+	screen = pygame.display.set_mode(size)
+	refresh = pygame.display.flip
+	title = str(parent)
+	pygame.display.set_caption(title)
+	fontsize = 20
+	font = pygame.font.SysFont('Courier New', fontsize)
+
+	# precompute orbits ((at_time, at_next_time), ...)
+	def precompute_orbit(obj: Body) -> tuple:
+		return tuple((obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2], 
+				obj.orbit.cartesian(t+(i+1)*obj.orbit.p/orbit_res)[:2]) for i in range(orbit_res))
+	# first off, the parent is zeroed
+	orbits = {('seed', parent): tuple()}
+	# only get first tier, dc about lower tiers
+	for name, body in universe.items():
+		if 'orbit' not in body.properties or 'parent' not in body.orbit.properties:
+			continue
+		if body.orbit.parent == parent:
+			orbits[(name, body)] = precompute_orbit(body)
+	# main loop
+	# frame
+	while 1:
+		mouse_pos = pygame.mouse.get_pos()
+		# print('t =', t)
+		t += timerate
+		screen.fill(black)
+		# show bodies
+		# show star
+		star_radius = round(parent.radius/max_a * width)
+		try:
+			pygame.draw.circle(screen, white, (width//2, height//2),
+				star_radius if dot_radius < star_radius else dot_radius)
+		except OverflowError:
+			pass
+		# show planets
+		xmap = linear_map((-max_a, max_a), (0, width))
+		ymap = linear_map((-max_a, max_a), (height, 0))
+		# start_time = time()
+		for name, body in orbits: # ~500 μs/body @ orbit_res = 64
+			try:
+				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
+			except KeyError:
+				del orbits[(name, body)]
+				break
+			coords = int(round(xmap(x))), int(round(ymap(y)))
+			# redraw orbit
+			for start_pos, end_pos in orbits[(name, body)]:
+				x, y = start_pos
+				start_coords = int(round(xmap(x))), int(round(ymap(y)))
+				x, y = end_pos
+				end_coords = int(round(xmap(x))), int(round(ymap(y)))
+				try:
+					color = tan if 'class' in body.properties and body.properties['class'] != 'planet' else blue
+					pygame.draw.line(screen, color, start_coords, end_coords)
+				except TypeError:
+					pass
+			try:
+				body_radius = round(body.radius/max_a * width)
+			except KeyError:
+				body_radius = 0
+			try:
+				pygame.draw.circle(screen, white, coords,
+					body_radius if dot_radius < body_radius else dot_radius)
+			except OverflowError:
+				pass
+			# check if mouse nearby
+			if dist(mouse_pos, coords) < 5:
+				# show name
+				textsurface = font.render(name, True, white)
+				screen.blit(textsurface, mouse_pos)
+				
+		# print((time() - start_time)/len(orbits))
+		# print date
+		textsurface = font.render(str(epoch+timedelta(seconds=t))+' (x{0})'.format(int(timerate)), True, white)
+		screen.blit(textsurface, (0, 0))
+		# print scale
+		textsurface = font.render(str(Length(max_a, 'astro')), True, white)
+		screen.blit(textsurface, (0, fontsize))
+		refresh()
+		# event handling
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.display.quit()
+				pygame.quit()
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_KP_PLUS: # timerate up
+					timerate *= 2
+				elif event.key == pygame.K_KP_MINUS: # timerate down
+					timerate /= 2
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				if event.button == 4: # zoom in
+					max_a /= 2
+				if event.button == 5: # zoom out
+					max_a *= 2
+		sleep(1/30)
+
+
 def warnings():
 	"""Attempt to find missing data"""
 	for name, body in universe.items():
