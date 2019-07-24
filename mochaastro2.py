@@ -1559,6 +1559,7 @@ def test_functions():
 
 def universe_sim(parent: Body):
 	# TODO
+	# resizable window
 	# selection data
 	# target switching
 	# moon display
@@ -1583,7 +1584,7 @@ def universe_sim(parent: Body):
 	max_a = 20*parent.radius
 
 	pygame.init()
-	screen = pygame.display.set_mode(size)
+	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
 	refresh = pygame.display.flip
 	title = str(parent)
 	pygame.display.set_caption(title)
