@@ -101,12 +101,12 @@ class Dimension:
 		return other / self.multi
 
 	def __sub__(self, other):
-		assert type(self) == type(other)
+		assert isinstance(self, type(other))
 		return type(self)(self.value-other.value, *self.tags)
 
 	def __truediv__(self, other): # returns either type(self) or Multidimension
 		if isinstance(other, Dimension):
-			if type(self) == type(other):
+			if isinstance(self, type(other)):
 				return self.value / other.value
 			return self.multi / other.multi
 		if isinstance(other, Multidimension): # call rtruediv of Multidimension
@@ -313,7 +313,6 @@ class Multidimension:
 
 	@property
 	def copy(self):
-		from copy import deepcopy
 		return deepcopy(self)
 
 	@property
@@ -335,7 +334,7 @@ class Multidimension:
 	@property
 	def unit(self) -> str:
 		"""Attempt to fetch the unit"""
-		for dim, name, unit in quantities:
+		for dim, _, unit in quantities:
 			if dim == self.clean.dimensions:
 				return unit
 		raise KeyError(self.dimensions)
