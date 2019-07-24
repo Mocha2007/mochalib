@@ -1681,6 +1681,8 @@ def universe_sim(parent: Body):
 					timerate /= 2
 				elif event.key == pygame.K_p: # pause
 					timerate, paused = paused, timerate
+				elif event.key == pygame.K_r: # reverse
+					timerate = -timerate
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 4: # zoom in
 					max_a /= 2
