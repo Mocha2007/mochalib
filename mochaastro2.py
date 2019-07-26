@@ -1528,8 +1528,7 @@ def universe_sim(parent: Body):
 	pygame.init()
 	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
 	refresh = pygame.display.flip
-	title = str(parent)
-	pygame.display.set_caption(title)
+	parent_name = {j: i for i, j in universe.items()}[parent].title()
 	fontsize = 20
 	font = pygame.font.SysFont('Courier New', fontsize)
 
@@ -1636,6 +1635,9 @@ def universe_sim(parent: Body):
 					max_a /= 2
 				if event.button == 5: # zoom out
 					max_a *= 2
+		# refresh title
+		title = '{} System - {}'.format(parent_name, current_date)
+		pygame.display.set_caption(title)
 		sleep(1/fps)
 
 
