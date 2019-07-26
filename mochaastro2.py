@@ -1509,7 +1509,7 @@ def universe_sim(parent: Body):
 	"""Use pygame to show the system of [parent] and all subsystems"""
 	import pygame
 	from pygame import gfxdraw
-	from time import sleep # , time
+	from time import sleep, time
 	from mochamath import dist
 	from mochaunits import round_time
 
@@ -1577,6 +1577,7 @@ def universe_sim(parent: Body):
 	# main loop
 	# frame
 	while 1:
+		start_time = time()
 		max_b = size[1]/size[0] * max_a
 		t += timerate
 		screen.fill(black)
@@ -1586,7 +1587,6 @@ def universe_sim(parent: Body):
 		# show planets
 		xmap = linear_map((-max_a, max_a), (0, width))
 		ymap = linear_map((-max_b, max_b), (height, 0))
-		# start_time = time()
 		for name, body in orbits: # ~1.346 ms/body @ orbit_res = 64
 			try:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
@@ -1614,7 +1614,6 @@ def universe_sim(parent: Body):
 			point(coords, body_radius)
 			# show name
 			text(name, coords, font_normal, grey)
-		# print((time() - start_time)/len(orbits))
 		# print date
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
@@ -1650,7 +1649,10 @@ def universe_sim(parent: Body):
 		# refresh title
 		title = '{} System - {}'.format(parent_name, current_date)
 		pygame.display.set_caption(title)
-		sleep(1/fps)
+		# sleep
+		wait_time = 1/fps - (time() - start_time)
+		if 0 < wait_time:
+			sleep(wait_time)
 
 
 def warnings():
