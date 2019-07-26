@@ -1514,7 +1514,8 @@ def universe_sim(parent: Body):
 
 	orbit_res = 64
 	dot_radius = 2
-	black, blue, brown, white = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3
+	black, blue, brown, white, grey = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3, (128,)*3
+	red = blue[::-1]
 	fps = 30
 	timerate = 1/fps
 	paused = False
@@ -1532,6 +1533,7 @@ def universe_sim(parent: Body):
 	parent_name = {j: i for i, j in universe.items()}[parent].title()
 	fontsize = 20
 	font = pygame.font.SysFont('Courier New', fontsize)
+	font_small = pygame.font.SysFont('Courier New', int(fontsize * 2/3))
 
 	# precompute orbits ((at_time, at_next_time), ...)
 	def precompute_orbit(obj: Body) -> tuple:
@@ -1590,16 +1592,18 @@ def universe_sim(parent: Body):
 				body_radius = round(body.radius/max_a * width)
 			except KeyError:
 				body_radius = 0
+			draw_radius = body_radius if dot_radius < body_radius else dot_radius
 			try:
-				pygame.draw.circle(screen, white, coords,
-					body_radius if dot_radius < body_radius else dot_radius)
+				pygame.draw.circle(screen, white, coords, draw_radius)
 			except OverflowError:
 				pass
 			# check if mouse nearby
 			if dist(mouse_pos, coords) < mouse_sensitivity:
-				# show name
-				textsurface = font.render(name, True, white)
-				screen.blit(textsurface, mouse_pos)
+				# highlight circle
+				pygame.draw.circle(screen, red, coords, 3*draw_radius, 1)
+			# show name
+			textsurface = font_small.render(name, True, grey)
+			screen.blit(textsurface, coords)
 				
 		# print((time() - start_time)/len(orbits))
 		# print date
