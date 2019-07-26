@@ -1607,7 +1607,7 @@ def universe_sim(parent: Body):
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
 		except OverflowError:
 			current_date = '>10000'
-		textsurface = font.render(current_date+' (x{0})'.format(int(fps*timerate)), True, white)
+		textsurface = font.render(current_date+' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else ''), True, white)
 		screen.blit(textsurface, (0, 0))
 		# print scale
 		textsurface = font.render(str(Length(max_a, 'astro')), True, white)
