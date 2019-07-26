@@ -1,0 +1,30 @@
+[
+	{
+		"name": "Titan",
+		"class": "moon",
+		"mass": 1.3452e23,
+		"radius": 2.57473e6,
+		"albedo": 0.22,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 1.22187e9,
+			"e": 0.0288,
+			"i": ".34854*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "15.945*day"
+		},
+		"atmosphere": {
+			"surface_pressure": 1.467e5,
+			"composition": {
+				"N2": 0.95,
+				"CH4": 0.049,
+				"H2": 0.002
+			},
+			"notes": "lower troposphere"
+		}
+	}
+]

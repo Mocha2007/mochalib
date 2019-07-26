@@ -515,18 +515,22 @@ class Atmosphere:
 	@property
 	def greenhouse(self) -> float:
 		"""Estimate greenhouse factor (dimensionless)"""
-		# based on trial and error
-		# desired results:
-		# venus.atmosphere.greenhouse -> 3.01
-		# earth.atmosphere.greenhouse -> 1.16
-		# mars.atmosphere.greenhouse  -> .975
-		pp_ratio = self.partial_pressure('CO2') / earth.atmosphere.partial_pressure('CO2')
-		constant = 288/earth.temp # ratio for earth
-		# return constant * pp_ratio ** .08
-		x, y = 0.05466933153152969, 0.06302583949080053
-		s_ratio = self.surface_pressure / earth.atmosphere.surface_pressure
-		# print(constant, pp_ratio, 'x', s_ratio, 'y')
-		return constant * pp_ratio ** x * s_ratio ** y
+		# initially based on trial and error
+		# eventually I gave up and 90% of this is copied from a4x
+		gh_p = self.greenhouse_pressure / atm
+		atm_pressure = self.surface_pressure / earth.atmosphere.surface_pressure
+		correction_factor = 1.319714531668124
+		ghe_max = 3.2141846382913877
+		return min(ghe_max, 1 + ((atm_pressure/10) + gh_p) * correction_factor)
+
+	@property
+	def greenhouse_pressure(self) -> float:
+		"""Surface pressure (Pa)"""
+		ghg = {
+			'CH4',
+			'CO2',
+		}
+		return sum(self.partial_pressure(i) for i in ghg if i in self.composition)
 
 	@property
 	def scale_height(self) -> float:
@@ -593,9 +597,15 @@ class Body:
 		return self.orbit.a if isinstance(p, Star) else p.star_dist
 
 	@property
+	def star_radius(self): # -> Star
+		"""Get the radius of the nearest star in the hierarchy"""
+		p = self.orbit.parent
+		return p.radius if isinstance(p, Star) else p.star_radius
+
+	@property
 	def temp(self) -> float:
 		"""Planetary equilibrium temperature (K)"""
-		a, R, sma, T = self.albedo, self.orbit.parent.radius, self.star_dist, self.star.temperature
+		a, R, sma, T = self.albedo, self.star_radius, self.star_dist, self.star.temperature
 		return T*(1-a)**.25*(R/2/sma)**.5
 
 	@property
@@ -1643,6 +1653,7 @@ def warnings():
 
 
 # bodies - this file only contains the sun, moon, and planets. json files provide the rest.
+# USE BOND ALBEDO PLEASE
 sun = Star(**{
 	'orbit': Orbit(**{
 		'sma': 2.7e20,
@@ -1701,7 +1712,7 @@ mercury = Body(**{
 	}),
 	'mass': 3.3011e23,
 	'radius': 2.4397e6,
-	'albedo': .142,
+	'albedo': .088,
 })
 
 venus = Body(**{
@@ -1736,7 +1747,7 @@ venus = Body(**{
 	}),
 	'mass': 4.8675e24,
 	'radius': 6.0518e6,
-	'albedo': .689,
+	'albedo': .76,
 })
 
 earth = Body(**{
@@ -1815,7 +1826,7 @@ earth = Body(**{
 	},
 	'mass': 5.97237e24,
 	'radius': 6.371e6,
-	'albedo': .367,
+	'albedo': .306,
 })
 
 moon = Body(**{
@@ -1869,7 +1880,7 @@ mars = Body(**{
 	}),
 	'mass': 6.4171e23,
 	'radius': 3.3895e6,
-	'albedo': .17,
+	'albedo': .25,
 })
 
 jupiter = Body(**{
@@ -1892,7 +1903,7 @@ jupiter = Body(**{
 	}),
 	'mass': 1.8982e27,
 	'radius': 6.9911e7,
-	'albedo': .538,
+	'albedo': .503,
 })
 
 saturn = Body(**{
@@ -1915,7 +1926,7 @@ saturn = Body(**{
 	}),
 	'mass': 5.6834e26,
 	'radius': 5.8232e7,
-	'albedo': .499,
+	'albedo': .342,
 })
 
 uranus = Body(**{
@@ -1937,7 +1948,7 @@ uranus = Body(**{
 	}),
 	'mass': 8.681e25,
 	'radius': 2.5362e7,
-	'albedo': .488,
+	'albedo': .3,
 })
 
 neptune = Body(**{
@@ -1959,7 +1970,7 @@ neptune = Body(**{
 	}),
 	'mass': 1.02413e26,
 	'radius': 2.4622e7,
-	'albedo': .442,
+	'albedo': .29,
 })
 
 # inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
