@@ -1606,9 +1606,13 @@ def universe_sim(parent: Body):
 				start_coords = int(round(xmap(x))), int(round(ymap(y)))
 				x, y = end_pos
 				end_coords = int(round(xmap(x))), int(round(ymap(y)))
-				if not (is_onscreen(start_coords) or is_onscreen(end_coords)):
-					# offscreen
+				# ignore duplication caused by far-out zoom
+				if start_coords == end_coords:
 					continue
+				# ignore offscreen
+				if not (is_onscreen(start_coords) or is_onscreen(end_coords)):
+					continue
+				# now, draw it!
 				try:
 					color = brown if 'class' in body.properties and body.properties['class'] != 'planet' else blue
 					pygame.draw.line(screen, color, start_coords, end_coords)
