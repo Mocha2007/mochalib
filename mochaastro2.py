@@ -1503,7 +1503,6 @@ def universe_sim(parent: Body):
 	# TODO
 	# resizable window https://stackoverflow.com/questions/31538506/how-do-i-maximize-the-display-screen-in-pygame
 	# selection data
-	# target switching
 	# moon display
 	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
@@ -1526,13 +1525,16 @@ def universe_sim(parent: Body):
 
 	size = 1024, 640
 	width, height = size
+	center = width//2, height//2
 	max_a = 20*parent.radius
 	current_a = max_a
+	selection = parent
+	selection_coords = center
 
 	pygame.init()
 	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
 	refresh = pygame.display.flip
-	parent_name = {j: i for i, j in universe.items()}[parent].title()
+	inverse_universe = {j: i for i, j in universe.items()}
 	font_large = 20
 	font_normal = 16
 
@@ -1540,6 +1542,9 @@ def universe_sim(parent: Body):
 	def is_onscreen(coords: (int, int), buffer: int=0) -> bool:
 		x, y = coords
 		return -buffer <= x <= width+buffer and -buffer <= y <= height+buffer
+
+	def center_on_selection(coords: (int, int)) -> (int, int):
+		return tuple(i-j+k for i, j, k in zip(coords, selection_coords, center))
 
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
@@ -1589,7 +1594,7 @@ def universe_sim(parent: Body):
 		screen.fill(black)
 		# show bodies
 		# show star
-		point((width//2, height//2), parent.radius)
+		point(center_on_selection(center), parent.radius)
 		# show planets
 		xmap = linear_map((-current_a, current_a), (0, width))
 		ymap = linear_map((-max_b, max_b), (height, 0))
@@ -1601,12 +1606,17 @@ def universe_sim(parent: Body):
 				del orbits[(name, body)]
 				break
 			coords = int(round(xmap(x))), int(round(ymap(y)))
+			if body == selection:
+				selection_coords = coords
+			coords = center_on_selection(coords)
 			# redraw orbit
 			for start_pos, end_pos in orbits[(name, body)]:
 				x, y = start_pos
 				start_coords = int(round(xmap(x))), int(round(ymap(y)))
+				start_coords = center_on_selection(start_coords)
 				x, y = end_pos
 				end_coords = int(round(xmap(x))), int(round(ymap(y)))
+				end_coords = center_on_selection(end_coords)
 				# ignore duplication caused by far-out zoom
 				if start_coords == end_coords:
 					continue
@@ -1630,6 +1640,10 @@ def universe_sim(parent: Body):
 				point(coords, body_radius)
 				# show name
 				text(name, coords, font_normal, grey)
+			# change selection?
+			if pygame.mouse.get_pressed()[0]:
+				if dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity:
+					selection = body
 		# print date
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
@@ -1658,6 +1672,10 @@ def universe_sim(parent: Body):
 				elif event.key == pygame.K_r: # reverse
 					timerate = -timerate
 			elif event.type == pygame.MOUSEBUTTONDOWN:
+				if event.button == 1: # check for recenter on parent
+					if dist(center_on_selection(center), pygame.mouse.get_pos()) < mouse_sensitivity:
+						selection = parent
+						selection_coords = center
 				if event.button == 4: # zoom in
 					max_a /= 2
 				if event.button == 5: # zoom out
@@ -1665,7 +1683,7 @@ def universe_sim(parent: Body):
 		# smooth zoom
 		current_a = (max_a + current_a)/2
 		# refresh title
-		title = '{} System - {}'.format(parent_name, current_date)
+		title = '{}, {} System - {}'.format(inverse_universe[selection], inverse_universe[parent], current_date)
 		pygame.display.set_caption(title)
 		# sleep
 		wait_time = 1/fps - (time() - start_time)
@@ -2029,3 +2047,4 @@ universe = load_data({
 # distance_audio(earth.orbit, mars.orbit)
 # solar_system.sim()
 # burn = earth.orbit.transfer(mars.orbit)
+universe_sim(sun)
