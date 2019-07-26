@@ -18,7 +18,7 @@
 			"period": 152853.5047
 		},
 		"atmosphere": {
-			"surface_pressure": 7e5,
+			"surface_pressure": 2e-4,
 			"composition": {
 				"SO2": 0.9
 			}
@@ -44,7 +44,10 @@
 			"tilt": ".1*deg"
 		},
 		"atmosphere": {
-			"surface_pressure": 1e-7
+			"surface_pressure": 1e-7,
+			"composition": {
+				"O2": 1
+			}
 		}
 	},
 	{
@@ -67,7 +70,10 @@
 			"tilt": ".2*deg"
 		},
 		"atmosphere": {
-			"surface_pressure": 7e-7
+			"surface_pressure": 7e-7,
+			"composition": {
+				"O2": 1
+			}
 		}
 	},
 	{
