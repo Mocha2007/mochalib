@@ -1,5 +1,32 @@
 [
 	{
+		"name": "Enceladus",
+		"class": "moon",
+		"mass": 1.08022e20,
+		"radius": 2.521e5,
+		"albedo": 0.81,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 2.37948e8,
+			"e": 0.0047,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "1.370218*day"
+		},
+		"atmosphere": {
+			"composition": {
+				"H2O": 0.91,
+				"N2":  0.04,
+				"CO2": 0.032,
+				"CH4": 0.017
+			}
+		}
+	},
+	{
 		"name": "Titan",
 		"class": "moon",
 		"mass": 1.3452e23,
@@ -20,9 +47,9 @@
 		"atmosphere": {
 			"surface_pressure": 1.467e5,
 			"composition": {
-				"N2": 0.95,
+				"N2":  0.95,
 				"CH4": 0.049,
-				"H2": 0.002
+				"H2":  0.002
 			},
 			"notes": "lower troposphere"
 		}
