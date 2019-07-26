@@ -871,7 +871,7 @@ class Body:
 		"""Apparent magnitude at distance (dimensionless)"""
 		# https://astronomy.stackexchange.com/a/5983
 		correction = 8 # solution given in SE gives high results
-		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.orbit.a, self.orbit.parent.abs_mag
+		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.star_dist, self.star.abs_mag
 		v_planet = -2.5*log10(a_p * r_p**2 / (4*d_s**2)) - v_sun + correction
 		return v_planet + 5*log10(dist / (10*pc))
 

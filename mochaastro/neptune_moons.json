@@ -1,0 +1,28 @@
+[
+	{
+		"name": "Triton",
+		"class": "moon",
+		"mass": 2.14e22,
+		"radius": 1.3534e6,
+		"albedo": 0.76,
+		"orbit": {
+			"parent": "neptune",
+			"sma": 3.54759e8,
+			"e": 0.000016,
+			"i": "156.885*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "5.876854*day",
+			"tilt": 0
+		},
+		"atmosphere": {
+			"surface_pressure": 1.7,
+			"composition": {
+				"N2": 1
+			}
+		}
+	}
+]
