@@ -1560,7 +1560,7 @@ def universe_sim(parent: Body):
 		screen.fill(black)
 		# show bodies
 		# show star
-		star_radius = round(parent.radius/max_a * width)
+		star_radius = round(parent.radius/(2*max_a) * width)
 		try:
 			pygame.draw.circle(screen, white, (width//2, height//2),
 				star_radius if dot_radius < star_radius else dot_radius)
@@ -1588,8 +1588,9 @@ def universe_sim(parent: Body):
 					pygame.draw.line(screen, color, start_coords, end_coords)
 				except TypeError:
 					pass
+			# get body radius
 			try:
-				body_radius = round(body.radius/max_a * width)
+				body_radius = round(body.radius/(2*max_a) * width)
 			except KeyError:
 				body_radius = 0
 			draw_radius = body_radius if dot_radius < body_radius else dot_radius
@@ -1614,7 +1615,7 @@ def universe_sim(parent: Body):
 		textsurface = font.render(current_date+' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else ''), True, white)
 		screen.blit(textsurface, (0, 0))
 		# print scale
-		textsurface = font.render(str(Length(max_a, 'astro')), True, white)
+		textsurface = font.render('Width: '+str(Length(2*max_a, 'astro')), True, white)
 		screen.blit(textsurface, (0, fontsize))
 		refresh()
 		# event handling

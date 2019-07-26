@@ -1,0 +1,41 @@
+[
+	{
+		"name": "Phobos",
+		"class": "moon",
+		"mass": 1.0659e16,
+		"radius": 1.12667e4,
+		"albedo": 0.071,
+		"orbit": {
+			"parent": "mars",
+			"sma": 9.376e6,
+			"e": 0.0151,
+			"i": "1.093*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "0.31891023*day",
+			"tilt": 0
+		}
+	},
+	{
+		"name": "Deimos",
+		"class": "moon",
+		"mass": 1.4762e15,
+		"radius": 6.2e3,
+		"albedo": 0.068,
+		"orbit": {
+			"parent": "mars",
+			"sma": 2.34632e7,
+			"e": 0.00033,
+			"i": "0.93*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "1.263*day"
+		}
+	}
+]
