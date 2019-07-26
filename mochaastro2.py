@@ -1527,6 +1527,7 @@ def universe_sim(parent: Body):
 	size = 1024, 640
 	width, height = size
 	max_a = 20*parent.radius
+	current_a = max_a
 
 	pygame.init()
 	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
@@ -1543,7 +1544,7 @@ def universe_sim(parent: Body):
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
 		"""radius is in meters, NOT pixels!!!"""
-		star_radius = round(radius/(2*max_a) * width)
+		star_radius = round(radius/(2*current_a) * width)
 		r = star_radius if dot_radius < star_radius else dot_radius
 		x, y = at
 		try:
@@ -1583,14 +1584,14 @@ def universe_sim(parent: Body):
 	# frame
 	while 1:
 		start_time = time()
-		max_b = size[1]/size[0] * max_a
+		max_b = size[1]/size[0] * current_a
 		t += timerate
 		screen.fill(black)
 		# show bodies
 		# show star
 		point((width//2, height//2), parent.radius)
 		# show planets
-		xmap = linear_map((-max_a, max_a), (0, width))
+		xmap = linear_map((-current_a, current_a), (0, width))
 		ymap = linear_map((-max_b, max_b), (height, 0))
 		for name, body in orbits: # ~1.346 ms/body @ orbit_res = 64
 			try:
@@ -1622,7 +1623,7 @@ def universe_sim(parent: Body):
 			if is_onscreen(coords):
 				# get body radius
 				if 'radius' in body.properties:
-					body_radius = round(body.radius/(2*max_a) * width)
+					body_radius = round(body.radius/(2*current_a) * width)
 				else:
 					body_radius = 0
 				# the dot itself
@@ -1635,7 +1636,7 @@ def universe_sim(parent: Body):
 		except OverflowError:
 			current_date = '>10000'
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
-					'Width: '+str(Length(2*max_a, 'astro'))
+					'Width: '+str(Length(2*current_a, 'astro'))
 		text(information, (0, 0), font_large)
 		refresh()
 		# event handling
@@ -1661,6 +1662,8 @@ def universe_sim(parent: Body):
 					max_a /= 2
 				if event.button == 5: # zoom out
 					max_a *= 2
+		# smooth zoom
+		current_a = (max_a + current_a)/2
 		# refresh title
 		title = '{} System - {}'.format(parent_name, current_date)
 		pygame.display.set_caption(title)
