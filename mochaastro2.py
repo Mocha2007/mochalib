@@ -1508,6 +1508,7 @@ def universe_sim(parent: Body):
 	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
 	import pygame
+	from pygame import gfxdraw
 	from time import sleep # , time
 	from mochamath import dist
 	from mochaunits import round_time
@@ -1535,10 +1536,24 @@ def universe_sim(parent: Body):
 	font = pygame.font.SysFont('Courier New', fontsize)
 	font_small = pygame.font.SysFont('Courier New', int(fontsize * 2/3))
 
+	# display body
+	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
+		"""radius is in meters, NOT pixels!!!"""
+		star_radius = round(radius/(2*max_a) * width)
+		r = star_radius if dot_radius < star_radius else dot_radius
+		x, y = at
+		try:
+			pygame.gfxdraw.aacircle(screen, x, y, r, color)
+			if fill:
+				pygame.gfxdraw.filled_circle(screen, x, y, r, color)
+		except OverflowError:
+			pass
+
 	# precompute orbits ((at_time, at_next_time), ...)
 	def precompute_orbit(obj: Body) -> tuple:
 		return tuple((obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2], 
 				obj.orbit.cartesian(t+(i+1)*obj.orbit.p/orbit_res)[:2]) for i in range(orbit_res))
+
 	# first off, the parent is zeroed
 	orbits = {('seed', parent): tuple()}
 	# only get first tier, dc about lower tiers
@@ -1554,18 +1569,11 @@ def universe_sim(parent: Body):
 	# frame
 	while 1:
 		max_b = size[1]/size[0] * max_a
-		mouse_pos = pygame.mouse.get_pos()
-		# print('t =', t)
 		t += timerate
 		screen.fill(black)
 		# show bodies
 		# show star
-		star_radius = round(parent.radius/(2*max_a) * width)
-		try:
-			pygame.draw.circle(screen, white, (width//2, height//2),
-				star_radius if dot_radius < star_radius else dot_radius)
-		except OverflowError:
-			pass
+		point((width//2, height//2), parent.radius)
 		# show planets
 		xmap = linear_map((-max_a, max_a), (0, width))
 		ymap = linear_map((-max_b, max_b), (height, 0))
@@ -1574,6 +1582,7 @@ def universe_sim(parent: Body):
 			try:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
 			except KeyError:
+				# no orbit data
 				del orbits[(name, body)]
 				break
 			coords = int(round(xmap(x))), int(round(ymap(y)))
@@ -1589,19 +1598,11 @@ def universe_sim(parent: Body):
 				except TypeError:
 					pass
 			# get body radius
-			try:
+			if 'radius' in body.properties:
 				body_radius = round(body.radius/(2*max_a) * width)
-			except KeyError:
+			else:
 				body_radius = 0
-			draw_radius = body_radius if dot_radius < body_radius else dot_radius
-			try:
-				pygame.draw.circle(screen, white, coords, draw_radius)
-			except OverflowError:
-				pass
-			# check if mouse nearby
-			if dist(mouse_pos, coords) < mouse_sensitivity:
-				# highlight circle
-				pygame.draw.circle(screen, red, coords, 3*draw_radius, 1)
+			point(coords, body_radius)
 			# show name
 			textsurface = font_small.render(name.title(), True, grey)
 			screen.blit(textsurface, coords)
