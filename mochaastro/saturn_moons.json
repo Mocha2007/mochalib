@@ -1,5 +1,25 @@
 [
 	{
+		"name": "Mimas",
+		"class": "moon",
+		"mass": 3.7493e19,
+		"radius": 1.982e5,
+		"albedo": 0.962,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 1.85539e8,
+			"e": 0.0196,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": ".942*day",
+			"tilt": 0
+		}
+	},
+	{
 		"name": "Enceladus",
 		"class": "moon",
 		"mass": 1.08022e20,
@@ -15,7 +35,8 @@
 			"man": 0
 		},
 		"rotation": {
-			"period": "1.370218*day"
+			"period": "1.370218*day",
+			"tilt": 0
 		},
 		"atmosphere": {
 			"composition": {
@@ -24,6 +45,80 @@
 				"CO2": 0.032,
 				"CH4": 0.017
 			}
+		}
+	},
+	{
+		"name": "Tethys",
+		"class": "moon",
+		"mass": 6.17449e20,
+		"radius": 5.311e5,
+		"albedo": 0.8,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 2.94619e8,
+			"e": 0.0001,
+			"i": "1.12*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "1.887802*day",
+			"tilt": 0
+		}
+	},
+	{
+		"name": "Dione",
+		"class": "moon",
+		"mass": 1.095452e21,
+		"radius": 5.614e5,
+		"albedo": 0.998,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 3.77396e8,
+			"e": 0.0022,
+			"i": "0.019*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "2.736915*day",
+			"tilt": 0
+		},
+		"atmosphere": {
+			"surface_pressure": 1e-17,
+			"composition": {
+				"O2": 1
+			},
+			"notes": "10,000 to 90,000 oxygen molecules per cubic meter = 1e-22 kg / m^3 = 1e-17 Pa"
+		}
+	},
+	{
+		"name": "Rhea",
+		"class": "moon",
+		"mass": 2.306518e21,
+		"radius": 7.638e5,
+		"albedo": 0.949,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 5.27108e8,
+			"e": 0.0012583,
+			"i": "0.345*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "4.518212*day",
+			"tilt": 0
+		},
+		"atmosphere": {
+			"surface_pressure": 3e-15,
+			"composition": {
+				"O2": 1
+			},
+			"notes": "10^6 to 10^6 molecules / cm^3 = 3e-20 kg / m^3 = 3e-15 Pa"
 		}
 	},
 	{
@@ -52,6 +147,26 @@
 				"H2":  0.002
 			},
 			"notes": "lower troposphere"
+		}
+	},
+	{
+		"name": "Iapetus",
+		"class": "moon",
+		"mass": 1.805635e21,
+		"radius": 7.345e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 3.56082e9,
+			"e": 0.0276812,
+			"i": "15.47*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "79.3215*day",
+			"tilt": 0
 		}
 	}
 ]
