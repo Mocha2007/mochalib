@@ -1535,6 +1535,11 @@ def universe_sim(parent: Body):
 	font_large = 20
 	font_normal = 16
 
+	# verify onscreen
+	def is_onscreen(coords: (int, int)) -> bool:
+		x, y = coords
+		return 0 <= x <= width and 0 <= y <= height
+
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
 		"""radius is in meters, NOT pixels!!!"""
@@ -1601,6 +1606,9 @@ def universe_sim(parent: Body):
 				start_coords = int(round(xmap(x))), int(round(ymap(y)))
 				x, y = end_pos
 				end_coords = int(round(xmap(x))), int(round(ymap(y)))
+				if not (is_onscreen(start_coords) or is_onscreen(end_coords)):
+					# offscreen
+					continue
 				try:
 					color = brown if 'class' in body.properties and body.properties['class'] != 'planet' else blue
 					pygame.draw.line(screen, color, start_coords, end_coords)
