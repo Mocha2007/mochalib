@@ -1501,7 +1501,6 @@ def test_functions():
 
 def universe_sim(parent: Body):
 	# TODO
-	# resizable window https://stackoverflow.com/questions/31538506/how-do-i-maximize-the-display-screen-in-pygame
 	# selection data
 	# moon display
 	# comet tails
@@ -1532,7 +1531,7 @@ def universe_sim(parent: Body):
 	selection_coords = center
 
 	pygame.init()
-	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
+	screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 	refresh = pygame.display.flip
 	inverse_universe = {j: i for i, j in universe.items()}
 	font_large = 20
@@ -1545,6 +1544,13 @@ def universe_sim(parent: Body):
 
 	def center_on_selection(coords: (int, int)) -> (int, int):
 		return tuple(i-j+k for i, j, k in zip(coords, selection_coords, center))
+
+	def coord_remap(coords: (float, float)) -> (int, int):
+		max_b = height/width * current_a
+		xmap = linear_map((-current_a, current_a), (0, width))
+		ymap = linear_map((-max_b, max_b), (height, 0))
+		x, y = coords
+		return int(round(xmap(x))), int(round(ymap(y)))
 
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
@@ -1589,15 +1595,12 @@ def universe_sim(parent: Body):
 	# frame
 	while 1:
 		start_time = time()
-		max_b = size[1]/size[0] * current_a
 		t += timerate
 		screen.fill(black)
 		# show bodies
 		# show star
 		point(center_on_selection(center), parent.radius)
 		# show planets
-		xmap = linear_map((-current_a, current_a), (0, width))
-		ymap = linear_map((-max_b, max_b), (height, 0))
 		for name, body in orbits: # ~1.346 ms/body @ orbit_res = 64
 			try:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
@@ -1605,18 +1608,14 @@ def universe_sim(parent: Body):
 				# no orbit data
 				del orbits[(name, body)]
 				break
-			coords = int(round(xmap(x))), int(round(ymap(y)))
+			coords = coord_remap((x, y))
 			if body == selection:
 				selection_coords = coords
 			coords = center_on_selection(coords)
 			# redraw orbit
 			for start_pos, end_pos in orbits[(name, body)]:
-				x, y = start_pos
-				start_coords = int(round(xmap(x))), int(round(ymap(y)))
-				start_coords = center_on_selection(start_coords)
-				x, y = end_pos
-				end_coords = int(round(xmap(x))), int(round(ymap(y)))
-				end_coords = center_on_selection(end_coords)
+				start_coords = center_on_selection(coord_remap(start_pos))
+				end_coords = center_on_selection(coord_remap(end_pos))
 				# ignore duplication caused by far-out zoom
 				if start_coords == end_coords:
 					continue
@@ -1680,6 +1679,12 @@ def universe_sim(parent: Body):
 					max_a /= 2
 				if event.button == 5: # zoom out
 					max_a *= 2
+			elif event.type == pygame.VIDEORESIZE:
+				width, height = event.size
+				center = width//2, height//2
+				selection_coords = center
+				pygame.display.set_mode(event.size, pygame.RESIZABLE)
+				# print(event.size) # debug
 		# smooth zoom
 		current_a = (max_a + current_a)/2
 		# refresh title
