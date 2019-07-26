@@ -1536,9 +1536,9 @@ def universe_sim(parent: Body):
 	font_normal = 16
 
 	# verify onscreen
-	def is_onscreen(coords: (int, int)) -> bool:
+	def is_onscreen(coords: (int, int), buffer: int=0) -> bool:
 		x, y = coords
-		return 0 <= x <= width and 0 <= y <= height
+		return -buffer <= x <= width+buffer and -buffer <= y <= height+buffer
 
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
@@ -1614,14 +1614,17 @@ def universe_sim(parent: Body):
 					pygame.draw.line(screen, color, start_coords, end_coords)
 				except TypeError:
 					pass
-			# get body radius
-			if 'radius' in body.properties:
-				body_radius = round(body.radius/(2*max_a) * width)
-			else:
-				body_radius = 0
-			point(coords, body_radius)
-			# show name
-			text(name, coords, font_normal, grey)
+			# planet dot
+			if is_onscreen(coords):
+				# get body radius
+				if 'radius' in body.properties:
+					body_radius = round(body.radius/(2*max_a) * width)
+				else:
+					body_radius = 0
+				# the dot itself
+				point(coords, body_radius)
+				# show name
+				text(name, coords, font_normal, grey)
 		# print date
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
