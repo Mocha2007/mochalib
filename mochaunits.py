@@ -26,6 +26,21 @@ def get_si(value: float) -> (float, str):
 	return new_value, prefixes[index]
 
 
+# https://stackoverflow.com/a/10854034/2579798
+def round_time(dt = None, round_to: int = 1):
+	"""Round a datetime object to any time lapse in seconds
+	dt : datetime.datetime object, default now.
+	round_to : Closest number of seconds to round to, default 1 second.
+	Author: Thierry Husson 2012 - Use it as you want but don't blame me.
+	"""
+	import datetime
+	if dt == None:
+		dt = datetime.datetime.now()
+	seconds = (dt.replace(tzinfo=None) - dt.min).seconds
+	rounding = (seconds+round_to/2) // round_to * round_to
+	return dt + datetime.timedelta(0, rounding-seconds, -dt.microsecond)
+
+
 class Dimension:
 	def __init__(self, value, *tags):
 		self.value = value

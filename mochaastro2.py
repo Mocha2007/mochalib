@@ -1510,6 +1510,7 @@ def universe_sim(parent: Body):
 	import pygame
 	from time import sleep # , time
 	from mochamath import dist
+	from mochaunits import round_time
 
 	orbit_res = 64
 	dot_radius = 2
@@ -1603,7 +1604,7 @@ def universe_sim(parent: Body):
 		# print((time() - start_time)/len(orbits))
 		# print date
 		try:
-			current_date = str(epoch+timedelta(seconds=t))
+			current_date = str(round_time(epoch+timedelta(seconds=t)))
 		except OverflowError:
 			current_date = '>10000'
 		textsurface = font.render(current_date+' (x{0})'.format(int(fps*timerate)), True, white)
