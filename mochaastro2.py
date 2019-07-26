@@ -1532,9 +1532,8 @@ def universe_sim(parent: Body):
 	screen = pygame.display.set_mode(size) # pygame.RESIZABLE
 	refresh = pygame.display.flip
 	parent_name = {j: i for i, j in universe.items()}[parent].title()
-	fontsize = 20
-	font = pygame.font.SysFont('Courier New', fontsize)
-	font_small = pygame.font.SysFont('Courier New', int(fontsize * 2/3))
+	font_large = 20
+	font_normal = 16
 
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
@@ -1548,6 +1547,16 @@ def universe_sim(parent: Body):
 				pygame.gfxdraw.filled_circle(screen, x, y, r, color)
 		except OverflowError:
 			pass
+
+	# display text
+	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
+		this_font = pygame.font.SysFont('Courier New', size)
+		string = string.replace('\t', ' '*4)
+		for i, line in enumerate(string.split('\n')):
+			textsurface = this_font.render(line, True, color)
+			x, y = at
+			y += i*size
+			screen.blit(textsurface, (x, y))
 
 	# precompute orbits ((at_time, at_next_time), ...)
 	def precompute_orbit(obj: Body) -> tuple:
@@ -1578,7 +1587,7 @@ def universe_sim(parent: Body):
 		xmap = linear_map((-max_a, max_a), (0, width))
 		ymap = linear_map((-max_b, max_b), (height, 0))
 		# start_time = time()
-		for name, body in orbits: # ~500 μs/body @ orbit_res = 64
+		for name, body in orbits: # ~1.346 ms/body @ orbit_res = 64
 			try:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
 			except KeyError:
@@ -1604,20 +1613,16 @@ def universe_sim(parent: Body):
 				body_radius = 0
 			point(coords, body_radius)
 			# show name
-			textsurface = font_small.render(name.title(), True, grey)
-			screen.blit(textsurface, coords)
-				
+			text(name, coords, font_normal, grey)
 		# print((time() - start_time)/len(orbits))
 		# print date
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
 		except OverflowError:
 			current_date = '>10000'
-		textsurface = font.render(current_date+' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else ''), True, white)
-		screen.blit(textsurface, (0, 0))
-		# print scale
-		textsurface = font.render('Width: '+str(Length(2*max_a, 'astro')), True, white)
-		screen.blit(textsurface, (0, fontsize))
+		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
+					'Width: '+str(Length(2*max_a, 'astro'))
+		text(information, (0, 0), font_large)
 		refresh()
 		# event handling
 		for event in pygame.event.get():
