@@ -150,6 +150,25 @@
 		}
 	},
 	{
+		"name": "Hyperion",
+		"class": "moon",
+		"mass": 5.6199e18,
+		"radius": 1.35e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "saturn",
+			"sma": 1.481009e9,
+			"e": 0.1230061,
+			"i": "0.43*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "13*day"
+		}
+	},
+	{
 		"name": "Iapetus",
 		"class": "moon",
 		"mass": 1.805635e21,

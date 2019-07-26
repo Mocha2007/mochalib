@@ -1602,7 +1602,7 @@ def universe_sim(parent: Body):
 				# highlight circle
 				pygame.draw.circle(screen, red, coords, 3*draw_radius, 1)
 			# show name
-			textsurface = font_small.render(name, True, grey)
+			textsurface = font_small.render(name.title(), True, grey)
 			screen.blit(textsurface, coords)
 				
 		# print((time() - start_time)/len(orbits))
@@ -1986,16 +1986,16 @@ neptune = Body(**{
 # kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
 universe = load_data({
-	'sun': sun,
-	'mercury': mercury,
-	'venus': venus,
-	'earth': earth,
-	'moon': moon,
-	'mars': mars,
-	'jupiter': jupiter,
-	'saturn': saturn,
-	'uranus': uranus,
-	'neptune': neptune,
+	'Sun': sun,
+	'Mercury': mercury,
+	'Venus': venus,
+	'Earth': earth,
+	'Moon': moon,
+	'Mars': mars,
+	'Jupiter': jupiter,
+	'Saturn': saturn,
+	'Uranus': uranus,
+	'Neptune': neptune,
 })
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # planet_nine.orbit.plot
