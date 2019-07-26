@@ -19,8 +19,40 @@
 			"tilt": 2.1386
 		},
 		"atmosphere": {
-			"scale_height": 6e4,
-			"surface_pressure": 1
+			"scale_height": 5e4,
+			"surface_pressure": 1,
+			"composition": {
+				"N2":    1,
+				"CH4":   2.5e-3,
+				"CO":    6e-4,
+				"C2H2":  3e-6,
+				"C2H4":  1e-6
+			}
+		}
+	},
+	{
+		"name": "Makemake",
+		"class": "dwarf planet",
+		"mass": 4.4e21,
+		"radius": 7.15e5,
+		"albedo": 0.81,
+		"orbit": {
+			"parent": "sun",
+			"sma": "52.761*au",
+			"e": 0.15804,
+			"i": "28.9803*deg",
+			"lan": "79.6459*deg",
+			"aop": "295.0896*deg",
+			"man": "163.9435*deg"
+		},
+		"rotation": {
+			"period": "22.8266*hour"
+		},
+		"atmosphere": {
+			"surface_pressure": 8e-9,
+			"composition": {
+				"N2": 1
+			}
 		}
 	},
 	{
