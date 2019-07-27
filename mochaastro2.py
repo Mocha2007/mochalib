@@ -1613,6 +1613,10 @@ def universe_sim(parent: Body):
 		x, y = coords
 		return int(round(xmap(x))), int(round(ymap(y)))
 
+	def is_hovering(body: Body, coords: (int, int)) -> bool:
+		apparent_radius = body.radius * width/(2*current_a)
+		return dist(coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, apparent_radius)
+
 	# display body
 	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True, highlight: bool=False):
 		"""radius is in meters, NOT pixels!!!"""
@@ -1631,10 +1635,10 @@ def universe_sim(parent: Body):
 	# display body
 	def show_body(body: Body, coords: (int, int), name: str=''):
 		"""Coords are the actual screen coords"""
-		apparent_radius = body.radius * width/(2*current_a)
-		hovering = dist(coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, apparent_radius)
+		hovering = is_hovering(body, coords)
 		point(coords, body.radius, white, True, hovering)
 		# show name
+		apparent_radius = body.radius * width/(2*current_a)
 		name_coords = tuple(int(i+apparent_radius) for i in coords)
 		text(name, name_coords, font_normal, grey)
 
@@ -1696,9 +1700,8 @@ def universe_sim(parent: Body):
 			if not is_onscreen(coords):
 				continue
 			show_body(body, coords, name)
-			hovering = dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity
 			# change selection?
-			if hovering and pygame.mouse.get_pressed()[0]:
+			if is_hovering(body, coords) and pygame.mouse.get_pressed()[0]:
 				selection = body
 		# print((time()-for_start)/len(orbits))
 		# print date
@@ -1736,7 +1739,7 @@ def universe_sim(parent: Body):
 					timerate = -timerate
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: # check for recenter on parent
-					if dist(center_on_selection(center), pygame.mouse.get_pos()) < mouse_sensitivity:
+					if is_hovering(parent, center_on_selection(center)):
 						selection = parent
 						selection_coords = center
 				if event.button == 4: # zoom in
