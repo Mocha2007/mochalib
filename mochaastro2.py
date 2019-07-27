@@ -1617,7 +1617,7 @@ def universe_sim(parent: Body):
 			if fill:
 				pygame.gfxdraw.filled_circle(screen, x, y, r, color)
 		except OverflowError:
-			pass
+			screen.fill(color)
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
