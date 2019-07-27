@@ -1576,7 +1576,6 @@ def universe_sim(parent: Body):
 	# target = parent # until user selects a new one
 	t = 0
 	mouse_sensitivity = 10 # pixels
-	v_exaggeration = 1e6
 
 	size = 1024, 640
 	width, height = size
@@ -1586,6 +1585,7 @@ def universe_sim(parent: Body):
 	selection = parent
 	selection_coords = center
 	current_coords = selection_coords
+	v_exaggeration = max_a/1.4e4
 
 	pygame.init()
 	screen = pygame.display.set_mode(size, pygame.RESIZABLE)
