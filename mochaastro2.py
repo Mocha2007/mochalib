@@ -1705,6 +1705,8 @@ def universe_sim(parent: Body):
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
 					'Width: '+str(Length(2*current_a, 'astro'))
 		text(information, (0, height-font_large*2), font_large)
+		# print FPS
+		text(str(round(1/(time()-start_time)))+' FPS', (width-font_normal*4, 0), font_normal, red)
 		# print selection data
 		text(selection.data, (0, 0), font_small, (200, 255, 200))
 		# refresh
