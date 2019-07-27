@@ -1699,6 +1699,9 @@ def universe_sim(parent: Body):
 		# show planets
 		# for_start = time()
 		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
+			# hide small orbits
+			if not any(10 < abs(i-j//2) for i, j in zip(center_on_selection(coord_remap((body.orbit.a ,)*2)), (width, height))):
+				continue
 			# redraw orbit
 			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
 			points = tuple(map(center_on_selection, map(coord_remap, orbit)))
