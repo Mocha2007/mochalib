@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Angle, Length, Mass, Time
+from mochaunits import Angle, Length, Mass, Time, pretty_dim
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -705,18 +705,18 @@ class Body:
 		lines = (
 			"'{} {}'.format(self.category.title(), self.properties['name'])",
 			"'Class           {}'.format(self.setype)",
-			"'Radius          {} ({} Earths)'.format(Length(self.radius), round(self.radius/earth.radius, 4))",
+			"'Radius          {} ({} Earths)'.format(pretty_dim(Length(self.radius)), round(self.radius/earth.radius, 3))",
 			"'Mass            {}'.format(str(Mass(self.mass, 'astro')))",
 			"'ESI             {}'.format(round(self.esi, 3))",
 			"'Absolute Mag.   {}'.format(round(self.app_mag_at(10*pc), 2))",
-			"'Semimajor Axis  {}'.format(Length(self.orbit.a, 'astro'))",
-			"'Orbital Period  {}'.format(Time(self.orbit.p, 'imperial'))",
-			"'Rotation Period {}'.format(Time(self.rotation.p, 'imperial'))",
-			"'Solar Day       {}'.format(Time(self.solar_day, 'imperial'))",
+			"'Semimajor Axis  {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
+			"'Orbital Period  {}'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",
+			"'Rotation Period {}'.format(pretty_dim(Time(self.rotation.p, 'imperial')))",
+			"'Solar Day       {}'.format(pretty_dim(Time(self.solar_day, 'imperial')))",
 			"'Axial Tilt      {}'.format(Angle(self.rotation.tilt, 'deg'))",
-			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 5))",
+			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 3))",
 			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
-			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 5)",
+			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 3)",
 			"'Temperature     {} K'.format(round(self.atmosphere.greenhouse*self.temp, 2))",
 			"'Greenhouse Eff. {} K'.format(round((self.atmosphere.greenhouse-1)*self.temp, 2))",
 		)
@@ -1563,7 +1563,7 @@ def universe_sim(parent: Body):
 	from time import sleep, time
 	from math import hypot
 	from mochamath import dist
-	from mochaunits import pretty_dim, round_time
+	from mochaunits import round_time
 
 	orbit_res = 64
 	dot_radius = 2

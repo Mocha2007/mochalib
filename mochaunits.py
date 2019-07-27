@@ -45,7 +45,7 @@ def pretty_dim(multidim, rounding: int=3) -> str:
 	"""Prettify dim"""
 	val, unit = str(multidim).split(' ')
 	val = round(float(val), rounding)
-	if rounding <= 0:
+	if val % 1 == 0:
 		val = int(val)
 	return '{} {}'.format(val, unit)
 
