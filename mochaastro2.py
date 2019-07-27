@@ -1607,10 +1607,11 @@ def universe_sim(parent: Body):
 	def center_on_selection(coords: (int, int)) -> (int, int):
 		return tuple(i-j+k for i, j, k in zip(coords, current_coords, center))
 
-	def coord_remap(coords: (float, float)) -> (int, int):
-		max_b = height/width * current_a
-		xmap = linear_map((-current_a, current_a), (0, width))
-		ymap = linear_map((-max_b, max_b), (height, 0))
+	def coord_remap(coords: (float, float)) -> (int, int): # , smooth: bool=True
+		a = current_a # if smooth else max_a
+		b = height/width * a
+		xmap = linear_map((-a, a), (0, width))
+		ymap = linear_map((-b, b), (height, 0))
 		x, y = coords
 		return int(round(xmap(x))), int(round(ymap(y)))
 
@@ -1657,6 +1658,15 @@ def universe_sim(parent: Body):
 	def precompute_orbit(obj: Body) -> tuple:
 		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
 
+	def zoom(r: float=0):
+		nonlocal max_a
+		nonlocal selection_coords
+		max_a *= 2**r
+		try:
+			selection_coords = coord_remap(selection.orbit.cartesian(t)[:2])
+		except KeyError:
+			pass
+
 	# only get first tier, dc about lower tiers
 	orbits = []
 	for name, body in universe.items():
@@ -1681,10 +1691,7 @@ def universe_sim(parent: Body):
 		t += timerate
 		screen.fill(black)
 		# recenter based on new selection
-		try:
-			selection_coords = coord_remap(selection.orbit.cartesian(t)[:2])
-		except KeyError:
-			pass
+		zoom()
 		# show bodies
 		# show star
 		show_body(parent, center_on_selection(center), inverse_universe[parent])
@@ -1727,9 +1734,9 @@ def universe_sim(parent: Body):
 				pygame.quit()
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_KP_PLUS: # zoom in
-					max_a /= 2
+					zoom(-1)
 				elif event.key == pygame.K_KP_MINUS: # zoom out
-					max_a *= 2
+					zoom(1)
 				elif event.key == pygame.K_PERIOD: # timerate up
 					timerate *= 2
 				elif event.key == pygame.K_COMMA: # timerate down
@@ -1744,9 +1751,9 @@ def universe_sim(parent: Body):
 						selection = parent
 						selection_coords = center
 				if event.button == 4: # zoom in
-					max_a /= 2
+					zoom(-1)
 				if event.button == 5: # zoom out
-					max_a *= 2
+					zoom(1)
 			elif event.type == pygame.VIDEORESIZE:
 				width, height = event.size
 				center = width//2, height//2
