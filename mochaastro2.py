@@ -1566,7 +1566,7 @@ def universe_sim(parent: Body):
 
 	orbit_res = 64
 	dot_radius = 2
-	black, blue, brown, white, grey = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3, (128,)*3
+	black, blue, beige, white, grey = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3, (128,)*3
 	red = blue[::-1]
 	fps = 30
 	timerate = 1/fps
@@ -1629,10 +1629,9 @@ def universe_sim(parent: Body):
 			y += i*size
 			screen.blit(textsurface, (x, y))
 
-	# precompute orbits ((at_time, at_next_time), ...)
+	# precompute orbits (time0, time1, ..., timeN)
 	def precompute_orbit(obj: Body) -> tuple:
-		return tuple((obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2], 
-				obj.orbit.cartesian(t+(i+1)*obj.orbit.p/orbit_res)[:2]) for i in range(orbit_res))
+		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
 
 	# first off, the parent is zeroed
 	orbits = {('seed', parent): tuple()}
@@ -1655,7 +1654,8 @@ def universe_sim(parent: Body):
 		# show star
 		point(center_on_selection(center), parent.radius)
 		# show planets
-		for name, body in orbits: # ~1.346 ms/body @ orbit_res = 64
+		# for_start = time()
+		for name, body in orbits: # ~1.1 ms/body @ orbit_res = 64
 			try:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
 			except KeyError:
@@ -1667,21 +1667,9 @@ def universe_sim(parent: Body):
 				selection_coords = coords
 			coords = center_on_selection(coords)
 			# redraw orbit
-			for start_pos, end_pos in orbits[(name, body)]:
-				start_coords = center_on_selection(coord_remap(start_pos))
-				end_coords = center_on_selection(coord_remap(end_pos))
-				# ignore duplication caused by far-out zoom
-				if start_coords == end_coords:
-					continue
-				# ignore offscreen
-				if not (is_onscreen(start_coords) or is_onscreen(end_coords)):
-					continue
-				# now, draw it!
-				try:
-					color = brown if 'class' in body.properties and body.properties['class'] != 'planet' else blue
-					pygame.draw.line(screen, color, start_coords, end_coords)
-				except TypeError:
-					pass
+			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
+			points = tuple(map(coord_remap, orbits[(name, body)]))
+			pygame.draw.lines(screen, color, True, points)
 			# planet dot
 			if is_onscreen(coords):
 				# get body radius
@@ -1697,6 +1685,7 @@ def universe_sim(parent: Body):
 			if pygame.mouse.get_pressed()[0]:
 				if dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity:
 					selection = body
+		# print((time()-for_start)/len(orbits))
 		# print date
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
