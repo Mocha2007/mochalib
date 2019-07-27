@@ -141,7 +141,7 @@ class Length(Dimension):
 			return str(x/LD) + ' LD'
 		if self.value < ly:
 			return str(x/au) + ' au'
-		return str(x/ly) + ' ly'
+		return '{} {}ly'.format(*get_si(x/ly))
 
 	@property
 	def imperial(self) -> str:

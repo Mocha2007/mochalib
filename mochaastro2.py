@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Length, Mass, Time
+from mochaunits import Angle, Length, Mass, Time
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -699,6 +699,36 @@ class Body:
 		return self.properties['composition']
 
 	@property
+	def data(self) -> str:
+		"""Data Table a la Space Engine"""
+		# sadly the only alternative would be like, 5000 lines of try/except
+		lines = (
+			"'{} {}'.format(self.category.title(), self.properties['name'])",
+			"'Class {}'.format(self.setype)",
+			"'Radius {} ({} Earths)'.format(Length(self.radius), round(self.radius/earth.radius, 4))",
+			"'Mass {}'.format(str(Mass(self.mass, 'astro')))",
+			"'ESI {}'.format(round(self.esi, 3))",
+			"'Absolute Magnitude {}'.format(round(self.app_mag_at(10*pc), 2))",
+			"'Semimajor Axis {}'.format(Length(self.orbit.a, 'astro'))",
+			"'Orbital Period {}'.format(Time(self.orbit.p, 'imperial'))",
+			"'Rotation Period {} ({resonant})'.format(Time(self.rotation.p, 'imperial'))",
+			"'Solar Day {}'.format(Time(self.solar_day, 'imperial'))",
+			"'Axial Tilt {}'.format(Angle(self.rotation.tilt, 'deg'))",
+			"'Gravity {} g'.format(round(self.surface_gravity/earth.surface_gravity, 5))",
+			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
+			"'Atmosphere Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 5)",
+			"'Temperature {} K'.format(round(self.atmosphere.greenhouse*self.temp, 2))",
+			"'Greenhouse Effect {} K'.format(round((self.atmosphere.greenhouse-1)*self.temp, 2))",
+		)
+		string = []
+		for line in lines:
+			try:
+				string.append(eval(line))
+			except KeyError:
+				pass
+		return '\n'.join(string)
+
+	@property
 	def density(self) -> float:
 		"""Density (kg/m^3)"""
 		return self.mass/self.volume
@@ -810,6 +840,30 @@ class Body:
 	def schwarzschild(self) -> float:
 		"""Schwarzschild radius (m)"""
 		return 2*self.mu/c**2
+
+	@property
+	def setype(self) -> float:
+		"""Space Engine-like classifier"""
+		temperature = self.temp
+		try:
+			temperature *= self.atmosphere.greenhouse
+		except KeyError:
+			pass
+		if 800 < temperature:
+			heat = 'Scorched'
+		elif 400 < temperature:
+			heat = 'Hot'
+		elif 300 < temperature:
+			heat = 'Warm'
+		elif 250 < temperature:
+			heat = 'Temperate'
+		elif 200 < temperature:
+			heat = 'Cool'
+		elif 100 < temperature:
+			heat = 'Cold'
+		else:
+			heat = 'Frozen'
+		return heat + ' ' + self.category.title()
 
 	@property
 	def v_e(self) -> float:
@@ -1501,7 +1555,6 @@ def test_functions():
 
 def universe_sim(parent: Body):
 	# TODO
-	# selection data
 	# moon display
 	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
@@ -1536,6 +1589,7 @@ def universe_sim(parent: Body):
 	inverse_universe = {j: i for i, j in universe.items()}
 	font_large = 20
 	font_normal = 16
+	font_small = 12
 
 	# verify onscreen
 	def is_onscreen(coords: (int, int), buffer: int=0) -> bool:
@@ -1650,8 +1704,12 @@ def universe_sim(parent: Body):
 			current_date = '>10000'
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
 					'Width: '+str(Length(2*current_a, 'astro'))
-		text(information, (0, 0), font_large)
+		text(information, (0, height-font_large*2), font_large)
+		# print selection data
+		text(selection.data, (0, 0), font_small, (200, 255, 200))
+		# refresh
 		refresh()
+		# post-render operations
 		# event handling
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
