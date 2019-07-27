@@ -1628,6 +1628,16 @@ def universe_sim(parent: Body):
 		except OverflowError:
 			pass # can't screen.fill(color) b/c other objects might be visible
 
+	# display body
+	def show_body(body: Body, coords: (int, int), name: str=''):
+		"""Coords are the actual screen coords"""
+		apparent_radius = body.radius * width/(2*current_a)
+		hovering = dist(coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, apparent_radius)
+		point(coords, body.radius, white, True, hovering)
+		# show name
+		name_coords = tuple(int(i+apparent_radius) for i in coords)
+		text(name, name_coords, font_normal, grey)
+
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
 		this_font = pygame.font.SysFont('Courier New', size)
@@ -1672,9 +1682,7 @@ def universe_sim(parent: Body):
 			pass
 		# show bodies
 		# show star
-		star_coords = center_on_selection(center)
-		hovering = dist(star_coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, parent.radius * width/(2*current_a))
-		point(star_coords, parent.radius, white, True, hovering)
+		show_body(parent, center_on_selection(center), inverse_universe[parent])
 		# show planets
 		# for_start = time()
 		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
@@ -1687,16 +1695,8 @@ def universe_sim(parent: Body):
 			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
 			if not is_onscreen(coords):
 				continue
-			# get body radius
-			if 'radius' in body.properties:
-				body_radius = round(body.radius/(2*current_a) * width)
-			else:
-				body_radius = 0
+			show_body(body, coords, name)
 			hovering = dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity
-			# the dot itself
-			point(coords, body_radius, white, True, hovering)
-			# show name
-			text(name, coords, font_normal, grey)
 			# change selection?
 			if hovering and pygame.mouse.get_pressed()[0]:
 				selection = body
