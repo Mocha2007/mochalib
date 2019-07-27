@@ -1614,15 +1614,17 @@ def universe_sim(parent: Body):
 		return int(round(xmap(x))), int(round(ymap(y)))
 
 	# display body
-	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True):
+	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True, highlight: bool=False):
 		"""radius is in meters, NOT pixels!!!"""
-		star_radius = round(radius/(2*current_a) * width)
+		star_radius = round(radius * width/(2*current_a))
 		r = star_radius if dot_radius < star_radius else dot_radius
 		x, y = at
 		try:
 			pygame.gfxdraw.aacircle(screen, x, y, r, color)
 			if fill:
 				pygame.gfxdraw.filled_circle(screen, x, y, r, color)
+			if highlight:
+				pygame.gfxdraw.aacircle(screen, x, y, 2*r, red)
 		except OverflowError:
 			pass # can't screen.fill(color) b/c other objects might be visible
 
@@ -1670,7 +1672,9 @@ def universe_sim(parent: Body):
 			pass
 		# show bodies
 		# show star
-		point(center_on_selection(center), parent.radius)
+		star_coords = center_on_selection(center)
+		hovering = dist(star_coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, parent.radius * width/(2*current_a))
+		point(star_coords, parent.radius, white, True, hovering)
 		# show planets
 		# for_start = time()
 		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
@@ -1688,14 +1692,14 @@ def universe_sim(parent: Body):
 				body_radius = round(body.radius/(2*current_a) * width)
 			else:
 				body_radius = 0
+			hovering = dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity
 			# the dot itself
-			point(coords, body_radius)
+			point(coords, body_radius, white, True, hovering)
 			# show name
 			text(name, coords, font_normal, grey)
 			# change selection?
-			if pygame.mouse.get_pressed()[0]:
-				if dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity:
-					selection = body
+			if hovering and pygame.mouse.get_pressed()[0]:
+				selection = body
 		# print((time()-for_start)/len(orbits))
 		# print date
 		try:
