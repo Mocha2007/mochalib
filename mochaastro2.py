@@ -1674,13 +1674,13 @@ def universe_sim(parent: Body):
 		# show planets
 		# for_start = time()
 		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
-			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
 			# redraw orbit
 			points = tuple(map(center_on_selection, map(coord_remap, orbit)))
 			if not are_onscreen(points):
 				continue
 			pygame.draw.lines(screen, color, True, points)
 			# planet dot
+			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
 			if not is_onscreen(coords):
 				continue
 			# get body radius
