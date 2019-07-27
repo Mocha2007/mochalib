@@ -1668,11 +1668,14 @@ def universe_sim(parent: Body):
 			coords = center_on_selection(coords)
 			# redraw orbit
 			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
-			points = tuple(map(coord_remap, orbits[(name, body)]))
-			try:
-				pygame.draw.lines(screen, color, True, points)
-			except TypeError:
-				pass
+			if is_onscreen(coord_remap((body.orbit.peri*min(width/height, height/width),)*2)):
+				points = tuple(map(coord_remap, orbits[(name, body)]))
+				try:
+					pygame.draw.lines(screen, color, True, points)
+				except TypeError:
+					pass
+			else:
+				continue
 			# planet dot
 			if is_onscreen(coords):
 				# get body radius
