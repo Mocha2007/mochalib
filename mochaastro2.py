@@ -1571,9 +1571,11 @@ def universe_sim(parent: Body):
 	fps = 30
 	timerate = 1/fps
 	paused = False
+	vectors = False
 	# target = parent # until user selects a new one
 	t = 0
 	mouse_sensitivity = 10 # pixels
+	v_exaggeration = 1e6
 
 	size = 1024, 640
 	width, height = size
@@ -1644,6 +1646,12 @@ def universe_sim(parent: Body):
 		name_coords = tuple(int(i+apparent_radius) for i in coords)
 		text(name, name_coords, font_normal, grey)
 
+	# display arrow
+	def arrow(a: (int, int), b: (int, int), color: (int, int, int)=red):
+		"""Coords are the actual screen coords"""
+		# todo: the arrow "tip"
+		pygame.draw.aalines(screen, color, False, (a, b))
+
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
 		this_font = pygame.font.SysFont('Courier New', size)
@@ -1711,6 +1719,12 @@ def universe_sim(parent: Body):
 			# planet dot
 			if not is_onscreen(coords):
 				continue
+			# tip of the arrow
+			if vectors:
+				vcoords = center_on_selection(coord_remap(tuple(
+						v_exaggeration*i+j for i, j in
+						zip(body.orbit.cartesian(t)[3:5], body.orbit.cartesian(t)[:2]))))
+				arrow(coords, vcoords)
 			show_body(body, coords, name)
 			# change selection?
 			if is_hovering(body, coords) and pygame.mouse.get_pressed()[0]:
@@ -1750,6 +1764,8 @@ def universe_sim(parent: Body):
 					timerate, paused = paused, timerate
 				elif event.key == pygame.K_r: # reverse
 					timerate = -timerate
+				elif event.key == pygame.K_v: # vectors
+					vectors = not vectors
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if event.button == 1: # check for recenter on parent
 					if is_hovering(parent, center_on_selection(center)):
