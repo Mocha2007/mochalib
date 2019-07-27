@@ -1650,11 +1650,12 @@ def universe_sim(parent: Body):
 	# display arrow
 	def arrow(a: (int, int), b: (int, int), color: (int, int, int)=red):
 		"""Coords are the actual screen coords"""
-		tip_scale = 6
+		tip_scale = 10
 		# todo: the arrow "tip"
 		displacement = tuple(j-i for i, j in zip(a, b))
 		# -> point between the - and the >
-		tip_base = tuple((tip_scale-2)/tip_scale * i for i in displacement)
+		tip_base = tuple((tip_scale-3)/tip_scale * i for i in displacement)
+		real_tip_base = tuple(i+j for i, j in zip(a, tip_base))
 		# perpendicular vector 1/4 size
 		perpendicular = tuple((-1)**j * i/tip_scale for j, i in enumerate(displacement[::-1]))
 		# left tip
@@ -1662,7 +1663,8 @@ def universe_sim(parent: Body):
 		# right tip
 		right_tip = tuple(i+j-k for i, j, k in zip(a, tip_base, perpendicular))
 		# render
-		pygame.draw.aalines(screen, color, False, (a, b, left_tip, right_tip, b))
+		pygame.draw.aaline(screen, color, a, real_tip_base)
+		pygame.draw.aalines(screen, color, True, (left_tip, right_tip, b))
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
