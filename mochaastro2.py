@@ -1596,6 +1596,13 @@ def universe_sim(parent: Body):
 		x, y = coords
 		return -buffer <= x <= width+buffer and -buffer <= y <= height+buffer
 
+	def are_onscreen(points: tuple, buffer: int=0) -> bool:
+		"""return true if any onscreen"""
+		for point in points:
+			if is_onscreen(point):
+				return True
+		return False
+
 	def center_on_selection(coords: (int, int)) -> (int, int):
 		return tuple(i-j+k for i, j, k in zip(coords, selection_coords, center))
 
@@ -1617,7 +1624,7 @@ def universe_sim(parent: Body):
 			if fill:
 				pygame.gfxdraw.filled_circle(screen, x, y, r, color)
 		except OverflowError:
-			screen.fill(color)
+			pass # can't screen.fill(color) b/c other objects might be visible
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
@@ -1668,6 +1675,8 @@ def universe_sim(parent: Body):
 			# redraw orbit
 			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
 			points = tuple(map(center_on_selection, map(coord_remap, orbits[(name, body)])))
+			if not are_onscreen(points):
+				continue
 			try:
 				pygame.draw.lines(screen, color, True, points)
 			except TypeError:
