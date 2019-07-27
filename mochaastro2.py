@@ -1607,8 +1607,8 @@ def universe_sim(parent: Body):
 	def center_on_selection(coords: (int, int)) -> (int, int):
 		return tuple(i-j+k for i, j, k in zip(coords, current_coords, center))
 
-	def coord_remap(coords: (float, float)) -> (int, int): # , smooth: bool=True
-		a = current_a # if smooth else max_a
+	def coord_remap(coords: (float, float), smooth: bool=True) -> (int, int):
+		a = current_a if smooth else max_a
 		b = height/width * a
 		xmap = linear_map((-a, a), (0, width))
 		ymap = linear_map((-b, b), (height, 0))
@@ -1690,11 +1690,10 @@ def universe_sim(parent: Body):
 		start_time = time()
 		t += timerate
 		screen.fill(black)
-		# recenter based on new selection
-		zoom()
 		# show bodies
 		# show star
-		show_body(parent, center_on_selection(center), inverse_universe[parent])
+		if is_onscreen((0, 0)):
+			show_body(parent, center_on_selection(center), inverse_universe[parent])
 		# show planets
 		# for_start = time()
 		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
@@ -1711,6 +1710,7 @@ def universe_sim(parent: Body):
 			# change selection?
 			if is_hovering(body, coords) and pygame.mouse.get_pressed()[0]:
 				selection = body
+				zoom()
 		# print((time()-for_start)/len(orbits))
 		# print date
 		try:
@@ -1758,6 +1758,7 @@ def universe_sim(parent: Body):
 				width, height = event.size
 				center = width//2, height//2
 				selection_coords = center
+				zoom()
 				pygame.display.set_mode(event.size, pygame.RESIZABLE)
 				# print(event.size) # debug
 		# smooth zoom
