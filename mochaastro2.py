@@ -1662,6 +1662,11 @@ def universe_sim(parent: Body):
 		start_time = time()
 		t += timerate
 		screen.fill(black)
+		# recenter based on new selection
+		try:
+			selection_coords = coord_remap(selection.orbit.cartesian(t)[:2])
+		except KeyError:
+			pass
 		# show bodies
 		# show star
 		point(center_on_selection(center), parent.radius)
@@ -1669,8 +1674,6 @@ def universe_sim(parent: Body):
 		# for_start = time()
 		for name, body in orbits: # ~1.1 ms/body @ orbit_res = 64
 			coords = coord_remap(body.orbit.cartesian(t)[:2])
-			if body == selection:
-				selection_coords = coords
 			coords = center_on_selection(coords)
 			# redraw orbit
 			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
