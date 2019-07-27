@@ -1677,21 +1677,19 @@ def universe_sim(parent: Body):
 			points = tuple(map(center_on_selection, map(coord_remap, orbits[(name, body)])))
 			if not are_onscreen(points):
 				continue
-			try:
-				pygame.draw.lines(screen, color, True, points)
-			except TypeError:
-				pass
+			pygame.draw.lines(screen, color, True, points)
 			# planet dot
-			if is_onscreen(coords):
-				# get body radius
-				if 'radius' in body.properties:
-					body_radius = round(body.radius/(2*current_a) * width)
-				else:
-					body_radius = 0
-				# the dot itself
-				point(coords, body_radius)
-				# show name
-				text(name, coords, font_normal, grey)
+			if not is_onscreen(coords):
+				continue
+			# get body radius
+			if 'radius' in body.properties:
+				body_radius = round(body.radius/(2*current_a) * width)
+			else:
+				body_radius = 0
+			# the dot itself
+			point(coords, body_radius)
+			# show name
+			text(name, coords, font_normal, grey)
 			# change selection?
 			if pygame.mouse.get_pressed()[0]:
 				if dist(coords, pygame.mouse.get_pos()) < mouse_sensitivity:
