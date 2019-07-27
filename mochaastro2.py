@@ -1641,7 +1641,7 @@ def universe_sim(parent: Body):
 		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
 
 	# only get first tier, dc about lower tiers
-	orbits = {}
+	orbits = []
 	for name, body in universe.items():
 		if 'orbit' not in body.properties or 'parent' not in body.orbit.properties:
 			continue
@@ -1655,7 +1655,8 @@ def universe_sim(parent: Body):
 			continue
 		# good orbit then!
 		if body.orbit.parent == parent:
-			orbits[(name, body)] = precompute_orbit(body)
+			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
+			orbits.append((name, body, precompute_orbit(body), color))
 	# main loop
 	# frame
 	while 1:
@@ -1672,12 +1673,10 @@ def universe_sim(parent: Body):
 		point(center_on_selection(center), parent.radius)
 		# show planets
 		# for_start = time()
-		for name, body in orbits: # ~1.1 ms/body @ orbit_res = 64
-			coords = coord_remap(body.orbit.cartesian(t)[:2])
-			coords = center_on_selection(coords)
+		for name, body, orbit, color in orbits: # ~1.1 ms/body @ orbit_res = 64
+			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
 			# redraw orbit
-			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
-			points = tuple(map(center_on_selection, map(coord_remap, orbits[(name, body)])))
+			points = tuple(map(center_on_selection, map(coord_remap, orbit)))
 			if not are_onscreen(points):
 				continue
 			pygame.draw.lines(screen, color, True, points)
