@@ -1684,10 +1684,11 @@ def universe_sim(parent: Body):
 		nonlocal max_a
 		nonlocal selection_coords
 		max_a *= 2**r
-		try:
-			selection_coords = coord_remap(selection.orbit.cartesian(t)[:2])
-		except KeyError:
-			pass
+		if selection != parent:
+			try:
+				selection_coords = coord_remap(selection.orbit.cartesian(t)[:2])
+			except KeyError:
+				pass
 
 	# only get first tier, dc about lower tiers
 	orbits = []
