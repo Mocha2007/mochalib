@@ -1690,6 +1690,8 @@ def universe_sim(parent: Body):
 		start_time = time()
 		t += timerate
 		screen.fill(black)
+		# recenter
+		zoom()
 		# show bodies
 		# show star
 		if is_onscreen((0, 0)):
