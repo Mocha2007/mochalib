@@ -711,7 +711,7 @@ class Body:
 			"'Absolute Magnitude {}'.format(round(self.app_mag_at(10*pc), 2))",
 			"'Semimajor Axis {}'.format(Length(self.orbit.a, 'astro'))",
 			"'Orbital Period {}'.format(Time(self.orbit.p, 'imperial'))",
-			"'Rotation Period {} ({resonant})'.format(Time(self.rotation.p, 'imperial'))",
+			"'Rotation Period {}'.format(Time(self.rotation.p, 'imperial'))",
 			"'Solar Day {}'.format(Time(self.solar_day, 'imperial'))",
 			"'Axial Tilt {}'.format(Angle(self.rotation.tilt, 'deg'))",
 			"'Gravity {} g'.format(round(self.surface_gravity/earth.surface_gravity, 5))",
