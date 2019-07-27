@@ -1,0 +1,99 @@
+[
+	{
+		"name": "Miranda",
+		"class": "moon",
+		"mass": 6.59e19,
+		"radius": 2.358e5,
+		"albedo": 0.32,
+		"orbit": {
+			"parent": "uranus",
+			"sma": 1.2939e8,
+			"e": 0.0013,
+			"i": "4.232*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "1.413479*day",
+			"tilt": 0
+		}
+	},
+	{
+		"name": "Ariel",
+		"class": "moon",
+		"mass": 1.353e21,
+		"radius": 5.789e5,
+		"albedo": 0.23,
+		"orbit": {
+			"parent": "uranus",
+			"sma": 1.9102e8,
+			"e": 0.0012,
+			"i": ".26*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "2.52*day"
+		}
+	},
+	{
+		"name": "Umbriel",
+		"class": "moon",
+		"mass": 1.172e21,
+		"radius": 5.847e5,
+		"albedo": 0.1,
+		"orbit": {
+			"parent": "uranus",
+			"sma": 2.66e8,
+			"e": 0.0039,
+			"i": ".128*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "4.144*day",
+			"tilt": 0
+		}
+	},
+	{
+		"name": "Titania",
+		"class": "moon",
+		"mass": 3.527e21,
+		"radius": 7.884e5,
+		"albedo": 0.17,
+		"orbit": {
+			"parent": "uranus",
+			"sma": 4.3591e8,
+			"e": 0.0011,
+			"i": ".34*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "8.706234*day"
+		}
+	},
+	{
+		"name": "Oberon",
+		"class": "moon",
+		"mass": 3.014e21,
+		"radius": 7.614e5,
+		"albedo": 0.14,
+		"orbit": {
+			"parent": "uranus",
+			"sma": 5.8352e8,
+			"e": 0.0014,
+			"i": ".058*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "13.463234*day"
+		}
+	}
+]
