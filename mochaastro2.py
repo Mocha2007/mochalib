@@ -1582,6 +1582,7 @@ def universe_sim(parent: Body):
 	current_a = max_a
 	selection = parent
 	selection_coords = center
+	current_coords = selection_coords
 
 	pygame.init()
 	screen = pygame.display.set_mode(size, pygame.RESIZABLE)
@@ -1604,7 +1605,7 @@ def universe_sim(parent: Body):
 		return False
 
 	def center_on_selection(coords: (int, int)) -> (int, int):
-		return tuple(i-j+k for i, j, k in zip(coords, selection_coords, center))
+		return tuple(i-j+k for i, j, k in zip(coords, current_coords, center))
 
 	def coord_remap(coords: (float, float)) -> (int, int):
 		max_b = height/width * current_a
@@ -1754,6 +1755,7 @@ def universe_sim(parent: Body):
 				# print(event.size) # debug
 		# smooth zoom
 		current_a = (max_a + current_a)/2
+		current_coords = tuple((i + j)//2 for i, j in zip(selection_coords, current_coords))
 		# refresh title
 		title = '{}, {} System - {}'.format(inverse_universe[selection], inverse_universe[parent], current_date)
 		pygame.display.set_caption(title)
