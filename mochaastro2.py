@@ -1633,15 +1633,20 @@ def universe_sim(parent: Body):
 	def precompute_orbit(obj: Body) -> tuple:
 		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
 
-	# first off, the parent is zeroed
-	orbits = {('seed', parent): tuple()}
 	# only get first tier, dc about lower tiers
+	orbits = {}
 	for name, body in universe.items():
 		if 'orbit' not in body.properties or 'parent' not in body.orbit.properties:
 			continue
 		# disable comets; sharp angles
 		if 'class' in body.properties and body.properties['class'] == 'comet':
 			continue
+		# clean orbits of undrawable orbits
+		try:
+			body.orbit.cartesian()
+		except KeyError:
+			continue
+		# good orbit then!
 		if body.orbit.parent == parent:
 			orbits[(name, body)] = precompute_orbit(body)
 	# main loop
@@ -1656,20 +1661,14 @@ def universe_sim(parent: Body):
 		# show planets
 		# for_start = time()
 		for name, body in orbits: # ~1.1 ms/body @ orbit_res = 64
-			try:
-				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
-			except KeyError:
-				# no orbit data
-				del orbits[(name, body)]
-				break
-			coords = coord_remap((x, y))
+			coords = coord_remap(body.orbit.cartesian(t)[:2])
 			if body == selection:
 				selection_coords = coords
 			coords = center_on_selection(coords)
 			# redraw orbit
 			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
 			if is_onscreen(coord_remap((body.orbit.peri*min(width/height, height/width),)*2)):
-				points = tuple(map(coord_remap, orbits[(name, body)]))
+				points = tuple(map(center_on_selection, map(coord_remap, orbits[(name, body)])))
 				try:
 					pygame.draw.lines(screen, color, True, points)
 				except TypeError:
