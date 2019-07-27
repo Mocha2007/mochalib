@@ -41,6 +41,15 @@ def round_time(dt = None, round_to: int = 1):
 	return dt + datetime.timedelta(0, rounding-seconds, -dt.microsecond)
 
 
+def pretty_dim(multidim, rounding: int=3) -> str:
+	"""Prettify dim"""
+	val, unit = str(multidim).split(' ')
+	val = round(float(val), rounding)
+	if rounding <= 0:
+		val = int(val)
+	return '{} {}'.format(val, unit)
+
+
 class Dimension:
 	def __init__(self, value, *tags):
 		self.value = value

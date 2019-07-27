@@ -1563,7 +1563,7 @@ def universe_sim(parent: Body):
 	from time import sleep, time
 	from math import hypot
 	from mochamath import dist
-	from mochaunits import round_time
+	from mochaunits import pretty_dim, round_time
 
 	orbit_res = 64
 	dot_radius = 2
@@ -1648,7 +1648,7 @@ def universe_sim(parent: Body):
 		text(name, name_coords, font_normal, grey)
 
 	# display arrow
-	def arrow(a: (int, int), b: (int, int), mag: float=0, color: (int, int, int)=red):
+	def arrow(a: (int, int), b: (int, int), color: (int, int, int)=red):
 		"""Coords are the actual screen coords"""
 		tip_scale = 6
 		# todo: the arrow "tip"
@@ -1663,10 +1663,6 @@ def universe_sim(parent: Body):
 		right_tip = tuple(i+j-k for i, j, k in zip(a, tip_base, perpendicular))
 		# render
 		pygame.draw.aalines(screen, color, False, (a, b, left_tip, right_tip, b))
-		# mag
-		val, unit = str(Length(mag)/Time(1)).split(' ')
-		val = round(float(val), 3)
-		text('{} {}'.format(val, unit), b, font_normal, color)
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
@@ -1737,11 +1733,16 @@ def universe_sim(parent: Body):
 				continue
 			# tip of the arrow
 			if vectors:
+				# velocity
 				mag = hypot(*body.orbit.cartesian(t)[3:5])
 				vcoords = center_on_selection(coord_remap(tuple(
 						v_exaggeration*i+j for i, j in
 						zip(body.orbit.cartesian(t)[3:5], body.orbit.cartesian(t)[:2]))))
-				arrow(coords, vcoords, mag)
+				arrow(coords, vcoords)
+				# kinetic energy
+				ke = 1/2 * Mass(body.mass) * (Length(mag)/Time(1))**2
+				# mag
+				text('{}\nKE = {}'.format(pretty_dim(Length(mag)/Time(1)), pretty_dim(ke, 0)), vcoords, font_normal, red)
 			show_body(body, coords, name)
 			# change selection?
 			if is_hovering(body, coords) and pygame.mouse.get_pressed()[0]:
