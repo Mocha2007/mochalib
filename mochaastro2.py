@@ -669,32 +669,33 @@ class Body:
 		if 'Star' not in self.orbit.parent.categories:
 			return {'Moon'}
 		# substellar
-		if 13*jupiter.mass < self.mass:
+		mass = 'mass' in self.properties and self.mass
+		if 13*jupiter.mass < mass:
 			return {'Brown Dwarf'}
-		if 1 <= self.planetary_discriminant:
+		if mass and 1 <= self.planetary_discriminant:
 			categories.add('Planet')
 			# earth-relative
-			if earth.mass < self.mass < 3e26:
+			if earth.mass < mass < 3e26:
 				categories.add('Super-earth')
-			elif self.mass < earth.mass:
+			elif mass < earth.mass:
 				categories.add('Sub-earth')
 			# absolute
-			if self.mass < 10*earth.mass:
+			if mass < 10*earth.mass:
 				categories.add('Terrestrial Planet')
-			elif self.mass < 3e26:
+			elif mass < 3e26:
 				categories.add('Ice Giant')
 			else:
 				categories.add('Gas Giant')
 			return categories
 		# subplanetary
-		if 9e20 < self.mass:
+		if 9e20 < mass:
 			categories.add('Dwarf Planet')
-		rounded = 3.7e18 < self.mass
+		rounded = 3.7e18 < mass
 		# NEO
 		if self.orbit.peri < 1.3*au:
 			categories.add('NEO')
 			if self.orbit.peri < earth.orbit.apo:
-				if 140 < self.diameter:
+				if ('radius' in self.properties and 140 < self.diameter) or 1e9 < mass:
 					categories.add('PHO')
 				if earth.orbit.a < self.orbit.a:
 					categories.add('Apollo Asteroid')
@@ -705,6 +706,9 @@ class Body:
 					categories.add('Aten Asteroid')
 				else:
 					categories.add('Atira Asteroid')
+		# jupiter trojan
+		if self.orbit.get_resonance(jupiter.orbit, 2) == (1, 1): # even the worst matches are just over 2 sigma certainty
+			categories.add('Jupiter Trojan')
 		# orbit distance
 		if self.orbit.a < jupiter.orbit.a:
 			if 2.06*au < self.orbit.a < 3.28*au:
@@ -715,10 +719,10 @@ class Body:
 					categories.add('Middle Main Belt')
 				else:
 					categories.add('Outer Main Belt')
-			resonance = self.orbit.get_resonance(jupiter.orbit)
-			if resonance == (1, 1):
-				categories.add('Jupiter Trojan')
-			elif resonance == (2, 3):
+			elif 1.78*au < self.orbit.a < 2*au and self.orbit.e < .18 and 16*deg < self.orbit.i < 34*deg:
+				categories.add('Hungaria Group')
+
+			if self.orbit.get_resonance(jupiter.orbit) == (2, 3):
 				categories.add('Hilda')
 		elif self.orbit.a < neptune.orbit.a:
 			# https://en.wikipedia.org/wiki/Centaur_(small_Solar_System_body)#Discrepant_criteria
@@ -737,6 +741,8 @@ class Body:
 					categories.add('Twotino')
 				elif resonance == (1, 1):
 					categories.add('Neptune Trojan')
+				else:
+					categories.add(str(resonance)[1:-1].replace(', ', ':') + ' res')
 			# KBO versus SDO
 			if self.orbit.a < 50*au:
 				categories.add('KBO')
