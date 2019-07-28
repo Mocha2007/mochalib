@@ -729,14 +729,24 @@ class Body:
 					# https://en.wikipedia.org/wiki/Classical_Kuiper_belt_object#DES_classification
 					# slightly modified to allow Makemake to get in
 					categories.add('Cubewano')
+					if self.orbit.i < 5*deg and self.orbit.e < .1:
+						categories.add('Cold Population Cubewano')
+					else:
+						categories.add('Hot Population Cubewano')
 				# haumea family
-				if 41.6*au < self.orbit.a < 44.2*au and .07 < self.orbit.e < .2 and .422 < self.orbit.i < .508:
+				if 41.6*au < self.orbit.a < 44.2*au and .07 < self.orbit.e < .2 and 24.2*deg < self.orbit.i < 29.1*deg:
 					categories.add('Haumea Family')
 			else:
 				categories.add('SDO')
 				if 40*au < self.orbit.peri:
 					categories.add('Detached Object')
-					if 50*au < self.orbit.peri and 150*au < self.orbit.a:
+				if 150*au < self.orbit.a:
+					categories.add('ETNO')
+					if 38*au < self.orbit.peri < 45*au and .85 < self.orbit.e:
+						categories.add('ESDO')
+					if 40*au < self.orbit.peri < 60*au:
+						categories.add('EDDO')
+					if 50*au < self.orbit.peri:
 						categories.add('Sednoid')
 		return categories
 	
