@@ -103,7 +103,7 @@
 	{
 		"name": "10 Hygiea",
 		"class": "asteroid",
-		"mass": 8.6e19,
+		"mass": 8.55e19,
 		"radius": 2.16e5,
 		"albedo": 0.0717,
 		"orbit": {
