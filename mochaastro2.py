@@ -1760,7 +1760,7 @@ def universe_sim(parent: Body):
 		try:
 			current_date = str(round_time(epoch+timedelta(seconds=t)))
 		except OverflowError:
-			current_date = '>10000'
+			current_date = '>10000' if 0 < t else '<0'
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
 					'Width: '+pretty_dim(Length(2*current_a, 'astro'))
 		text(information, (0, height-font_large*2), font_large)
