@@ -1554,7 +1554,7 @@ def test_functions():
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
-def universe_sim(parent: Body, t: float=0, selection: Body=None):
+def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selection: Body=None):
 	# TODO
 	# moon display
 	# comet tails
@@ -1577,7 +1577,6 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 	# target = parent # until user selects a new one
 	mouse_sensitivity = 10 # pixels
 
-	size = 1024, 640
 	width, height = size
 	center = width//2, height//2
 	max_a = 20*parent.radius
@@ -1768,7 +1767,7 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 					selection = body
 					zoom()
 				elif pygame.mouse.get_pressed()[2]:
-					universe_sim(body, t)
+					universe_sim(body, t, (width, height))
 		# print((time()-for_start)/len(orbits))
 		# print date
 		try:
@@ -1813,7 +1812,7 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 				elif event.button == 3: # check for "go back!"
 					if 'orbit' in parent.properties and 'parent' in parent.orbit.properties and \
 						not any(is_hovering(body, center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))) for _, body, _, _ in orbits):
-						universe_sim(parent.orbit.parent, t, selection)
+						universe_sim(parent.orbit.parent, t, (width, height), selection)
 				elif event.button == 4: # zoom in
 					zoom(-1)
 				elif event.button == 5: # zoom out
