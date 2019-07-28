@@ -1,5 +1,24 @@
 [
 	{
+		"name": "944 Hidalgo",
+		"class": "centaur",
+		"radius": 2.623e4,
+		"albedo": 0.04,
+		"orbit": {
+			"parent": "sun",
+			"sma": "5.741*au",
+			"e": 0.6608,
+			"i": "42.521*deg",
+			"lan": "21.42*deg",
+			"aop": "56.651*deg",
+			"man": "227.536*deg",
+			"epoch": "J2000 (computed)"
+		},
+		"rotation": {
+			"period": "10.063hour"
+		}
+	},
+	{
 		"name": "10199 Chariklo",
 		"class": "centaur",
 		"radius": 1.3e5,
