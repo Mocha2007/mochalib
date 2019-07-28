@@ -81,6 +81,26 @@
 		}
 	},
 	{
+		"name": "5 Astraea",
+		"class": "asteroid",
+		"mass": 2.9e18,
+		"radius": 5.95e4,
+		"albedo": 0.227,
+		"orbit": {
+			"parent": "sun",
+			"sma": "2.5735*au",
+			"e": 0.1914,
+			"i": "5.3677*deg",
+			"lan": "141.58*deg",
+			"aop": "358.75*deg",
+			"man": "186.83*deg",
+			"epoch": "23 March 2018"
+		},
+		"rotation": {
+			"period": "7.21*hour"
+		}
+	},
+	{
 		"name": "10 Hygiea",
 		"class": "asteroid",
 		"mass": 1.076e21,
@@ -117,6 +137,21 @@
 		},
 		"rotation": {
 			"period": "7.627*hour"
+		}
+	},
+	{
+		"name": "2007 EB26",
+		"class": "asteroid",
+		"radius": 4e2,
+		"orbit": {
+			"parent": "sun",
+			"sma": ".54760*au",
+			"e": 0.78867,
+			"i": "8.4867*deg",
+			"lan": "63.22*deg",
+			"aop": "236.71*deg",
+			"man": "237.91*deg",
+			"epoch": "11 March 2007"
 		}
 	}
 ]
