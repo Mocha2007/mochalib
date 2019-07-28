@@ -70,6 +70,26 @@
 		}
 	},
 	{
+		"name": "50000 Quaoar",
+		"class": "TNO",
+		"mass": 1.4e21,
+		"radius": 5.55e5,
+		"albedo": 0.109,
+		"orbit": {
+			"parent": "sun",
+			"sma": "43.6916*au",
+			"e": 0.0396,
+			"i": "7.9881*deg",
+			"lan": "188.8372*deg",
+			"aop": "146.4064*deg",
+			"man": "300.7086*deg",
+			"epoch": "27 April 2019"
+		},
+		"rotation": {
+			"period": "17.6788*hour"
+		}
+	},
+	{
 		"name": "Makemake",
 		"class": "dwarf planet",
 		"mass": 4.4e21,
