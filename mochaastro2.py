@@ -688,9 +688,9 @@ class Body:
 				categories.add('Gas Giant')
 			return categories
 		# subplanetary
-		if 9e20 < mass:
+		if 9e20 < mass: # smallest dwarf planet is Ceres
 			categories.add('Dwarf Planet')
-		rounded = 3.7e18 < mass
+		rounded = 6.5e19 < mass # Miranda is the smallest solar system body which might be in HSE
 		# NEO
 		if self.orbit.peri < 1.3*au:
 			categories.add('NEO')
