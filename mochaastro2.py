@@ -1635,7 +1635,8 @@ def universe_sim(parent: Body):
 			if highlight:
 				pygame.gfxdraw.aacircle(screen, x, y, 2*r, red)
 		except OverflowError:
-			pass # can't screen.fill(color) b/c other objects might be visible
+			if is_onscreen(at):
+				screen.fill(color)
 
 	# display body
 	def show_body(body: Body, coords: (int, int), name: str=''):
@@ -1669,6 +1670,8 @@ def universe_sim(parent: Body):
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
+		if not is_onscreen(at):
+			return None
 		this_font = pygame.font.SysFont('Courier New', size)
 		string = string.replace('\t', ' '*4)
 		for i, line in enumerate(string.split('\n')):
