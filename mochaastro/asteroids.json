@@ -121,6 +121,46 @@
 		}
 	},
 	{
+		"name": "132 Aethra",
+		"class": "asteroid",
+		"mass": 4.1e17,
+		"radius": 2.144e4,
+		"albedo": 0.199,
+		"orbit": {
+			"parent": "sun",
+			"sma": "2.6073*au",
+			"e": 0.39036,
+			"i": "24.997*deg",
+			"lan": "258.408*deg",
+			"aop": "255.216*deg",
+			"man": "38.271*deg",
+			"epoch": "31 July 2016"
+		},
+		"rotation": {
+			"period": "5.1684*hour"
+		}
+	},
+	{
+		"name": "433 Eros",
+		"class": "asteroid",
+		"mass": 6.687e15,
+		"radius": 8.42e3,
+		"albedo": 0.25,
+		"orbit": {
+			"parent": "sun",
+			"sma": "1.4579*au",
+			"e": 0.2226,
+			"i": "10.828*deg",
+			"lan": "304.32*deg",
+			"aop": "178.82*deg",
+			"man": "71.28*deg",
+			"epoch": "4 September 2017"
+		},
+		"rotation": {
+			"period": "5.27*hour"
+		}
+	},
+	{
 		"name": "162173 Ryugu",
 		"class": "asteroid",
 		"mass": 4.5e11,
