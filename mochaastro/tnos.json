@@ -50,6 +50,22 @@
 		}
 	},
 	{
+		"name": "2002 MS4",
+		"class": "TNO",
+		"radius": 3.63e5,
+		"albedo": 0.051,
+		"orbit": {
+			"parent": "sun",
+			"sma": "41.717*au",
+			"e": 0.14439,
+			"i": "17.677*deg",
+			"lan": "215.963*deg",
+			"aop": "215.534*deg",
+			"man": "216.187*deg",
+			"epoch": "13 January 2016"
+		}
+	},
+	{
 		"name": "Haumea",
 		"class": "dwarf planet",
 		"mass": 4.006e21,
