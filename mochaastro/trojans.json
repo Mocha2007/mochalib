@@ -20,6 +20,26 @@
 		}
 	},
 	{
+		"name": "617 Patroclus",
+		"class": "trojan",
+		"mass": 1.36e18,
+		"radius": 7e4,
+		"albedo": 0.047,
+		"orbit": {
+			"parent": "sun",
+			"sma": "5.2167*au",
+			"e": 0.1382,
+			"i": "22.047*deg",
+			"lan": "44.354*deg",
+			"aop": "308.15*deg",
+			"man": "339.78*deg",
+			"epoch": "J2000 (computed)"
+		},
+		"rotation": {
+			"period": "103*hour"
+		}
+	},
+	{
 		"name": "624 Hektor",
 		"class": "trojan",
 		"mass": 9.95e18,
