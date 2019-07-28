@@ -1737,10 +1737,11 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 				continue
 			# redraw orbit
 			coords = center_on_selection(coord_remap(body.orbit.cartesian(t)[:2]))
+			hovering = is_hovering(body, coords)
 			points = tuple(map(center_on_selection, map(coord_remap, orbit)))
 			if not (are_onscreen(points) or is_onscreen(coords)):
 				continue
-			pygame.draw.lines(screen, color, True, points)
+			pygame.draw.lines(screen, red if hovering else color, True, points)
 			# planet dot
 			if not is_onscreen(coords):
 				continue
@@ -1761,7 +1762,7 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 				text('{}{}'.format(pretty_dim(Length(mag)/Time(1)), ke_str), vcoords, font_normal, red)
 			show_body(body, coords, name)
 			# change selection?
-			if is_hovering(body, coords):
+			if hovering:
 				if pygame.mouse.get_pressed()[0]:
 					selection = body
 					zoom()
