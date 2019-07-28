@@ -1,5 +1,24 @@
 [
 	{
+		"name": "588 Achilles",
+		"class": "trojan",
+		"radius": 6.505e4,
+		"albedo": 0.0328,
+		"orbit": {
+			"parent": "sun",
+			"sma": "5.2091*au",
+			"e": 0.1463,
+			"i": "10.318*deg",
+			"lan": "316.54*deg",
+			"aop": "133.5*deg",
+			"man": "205.11*deg",
+			"epoch": "datetime(2018, 3, 23)"
+		},
+		"rotation": {
+			"period": "7.306*hour"
+		}
+	},
+	{
 		"name": "624 Hektor",
 		"class": "trojan",
 		"mass": 9.95e18,
