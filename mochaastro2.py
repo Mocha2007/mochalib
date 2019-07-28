@@ -666,12 +666,19 @@ class Body:
 		categories = set()
 		if isinstance(self, Star):
 			return {'Star'}
-		if 'Star' not in self.orbit.parent.categories:
-			return {'Moon'}
-		# substellar
 		mass = 'mass' in self.properties and self.mass
+		rounded = 6.5e19 < mass # Miranda is the smallest solar system body which might be in HSE
+		if 'Star' not in self.orbit.parent.categories:
+			categories.add('Moon')
+			if rounded:
+				categories.add('Major Moon')
+			else:
+				categories.add('Minor Moon')
+			return categories
+		# substellar
 		if 13*jupiter.mass < mass:
 			return {'Brown Dwarf'}
+		radius = 'radius' in self.properties and self.radius
 		if mass and 1 <= self.planetary_discriminant:
 			categories.add('Planet')
 			# earth-relative
@@ -679,6 +686,8 @@ class Body:
 				categories.add('Super-earth')
 			elif mass < earth.mass:
 				categories.add('Sub-earth')
+				if search('Ceres').radius < radius < mercury.radius:
+					categories.add('Mesoplanet')
 			# absolute
 			if mass < 10*earth.mass:
 				categories.add('Terrestrial Planet')
@@ -690,12 +699,11 @@ class Body:
 		# subplanetary
 		if 9e20 < mass: # smallest dwarf planet is Ceres
 			categories.add('Dwarf Planet')
-		rounded = 6.5e19 < mass # Miranda is the smallest solar system body which might be in HSE
 		# NEO
 		if self.orbit.peri < 1.3*au:
 			categories.add('NEO')
 			if self.orbit.peri < earth.orbit.apo:
-				if ('radius' in self.properties and 140 < self.diameter) or 1e9 < mass:
+				if 70 < radius or 1e9 < mass:
 					categories.add('PHO')
 				if earth.orbit.a < self.orbit.a:
 					categories.add('Apollo Asteroid')
@@ -779,7 +787,7 @@ class Body:
 
 	@property
 	def category(self) -> str:
-		"""Attempt to categorize the body"""
+		"""Attempt to categorize the body [DEPRECATED, USE CATEGORIES INSTEAD]"""
 		if isinstance(self, Star):
 			return 'star'
 		isround = 2e5 < self.radius
