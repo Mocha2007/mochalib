@@ -41,6 +41,26 @@
 		}
 	},
 	{
+		"name": "3 Juno",
+		"class": "asteroid",
+		"mass": 2.67e19,
+		"radius": 1.357e5,
+		"albedo": 0.238,
+		"orbit": {
+			"parent": "sun",
+			"sma": "2.6707*au",
+			"e": 0.25545,
+			"i": "12.9817*deg",
+			"lan": "169.8712*deg",
+			"aop": "248.41*deg",
+			"man": "33.077*deg",
+			"epoch": "9 December 2014"
+		},
+		"rotation": {
+			"period": "7.21*hour"
+		}
+	},
+	{
 		"name": "4 Vesta",
 		"class": "asteroid",
 		"mass": 2.59076e20,
