@@ -3,7 +3,7 @@
 		"name": "1 Ceres",
 		"class": "dwarf planet",
 		"mass": 9.393e20,
-		"radius": 473000,
+		"radius": 4.73e5,
 		"albedo": 0.09,
 		"orbit": {
 			"parent": "sun",
@@ -20,10 +20,31 @@
 		}
 	},
 	{
+		"name": "2 Pallas",
+		"class": "asteroid",
+		"mass": 2.11e20,
+		"radius": 2.56e5,
+		"albedo": 0.159,
+		"orbit": {
+			"parent": "sun",
+			"sma": "2.7728*au",
+			"e": 0.2305,
+			"i": "34.837*deg",
+			"lan": "173.08*deg",
+			"aop": "310.01*deg",
+			"man": "334.32*deg",
+			"epoch": "23 March 2018"
+		},
+		"rotation": {
+			"period": "7.8132*hour",
+			"tilt": "84*deg"
+		}
+	},
+	{
 		"name": "4 Vesta",
 		"class": "asteroid",
 		"mass": 2.59076e20,
-		"radius": 262700,
+		"radius": 2.627e5,
 		"albedo": 0.423,
 		"orbit": {
 			"parent": "sun",
@@ -37,6 +58,26 @@
 		"rotation": {
 			"period": "5.342*hour",
 			"tilt": "42*deg"
+		}
+	},
+	{
+		"name": "10 Hygiea",
+		"class": "asteroid",
+		"mass": 1.076e21,
+		"radius": 2.16e5,
+		"albedo": 0.0717,
+		"orbit": {
+			"parent": "sun",
+			"sma": "3.1416*au",
+			"e": 0.1125,
+			"i": "3.8316*deg",
+			"lan": "283.2*deg",
+			"aop": "312.32*deg",
+			"man": "152.18*deg",
+			"epoch": "27 April 2019"
+		},
+		"rotation": {
+			"period": "27.623*hour"
 		}
 	},
 	{
