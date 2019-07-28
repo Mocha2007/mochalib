@@ -690,6 +690,21 @@ class Body:
 		if 9e20 < self.mass:
 			categories.add('Dwarf Planet')
 		rounded = 3.7e18 < self.mass
+		# NEO
+		if self.orbit.peri < 1.3*au:
+			categories.add('NEO')
+			if self.orbit.peri < earth.orbit.apo:
+				if 140 < self.diameter:
+					categories.add('PHO')
+				if earth.orbit.a < self.orbit.a:
+					categories.add('Apollo Asteroid')
+			else:
+				categories.add('Amor Asteroid')
+			if self.orbit.a < earth.orbit.a:
+				if earth.orbit.peri < self.orbit.apo:
+					categories.add('Aten Asteroid')
+				else:
+					categories.add('Atira Asteroid')
 		# orbit distance
 		if self.orbit.a < jupiter.orbit.a:
 			if 2.06*au < self.orbit.a < 3.28*au:
