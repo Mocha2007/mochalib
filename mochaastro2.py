@@ -661,6 +661,86 @@ class Body:
 		return 4*pi*self.radius**2
 	
 	@property
+	def categories(self) -> set:
+		"""List all possible categories for body"""
+		categories = set()
+		if isinstance(self, Star):
+			return {'Star'}
+		if 'Star' not in self.orbit.parent.categories:
+			return {'Moon'}
+		# substellar
+		if 13*jupiter.mass < self.mass:
+			return {'Brown Dwarf'}
+		if 1 <= self.planetary_discriminant:
+			categories.add('Planet')
+			# earth-relative
+			if earth.mass < self.mass < 3e26:
+				categories.add('Super-earth')
+			elif self.mass < earth.mass:
+				categories.add('Sub-earth')
+			# absolute
+			if self.mass < 10*earth.mass:
+				categories.add('Terrestrial Planet')
+			elif self.mass < 3e26:
+				categories.add('Ice Giant')
+			else:
+				categories.add('Gas Giant')
+			return categories
+		# subplanetary
+		if 9e20 < self.mass:
+			categories.add('Dwarf Planet')
+		rounded = 3.7e18 < self.mass
+		# orbit distance
+		if self.orbit.a < jupiter.orbit.a:
+			if 2.06*au < self.orbit.a < 3.28*au:
+				categories.add('Asteroid Belt')
+				if self.orbit.a < 2.5*au:
+					categories.add('Inner Main Belt')
+				elif self.orbit.a < 2.82*au:
+					categories.add('Middle Main Belt')
+				else:
+					categories.add('Outer Main Belt')
+			resonance = self.orbit.get_resonance(jupiter.orbit)
+			if resonance == (1, 1):
+				categories.add('Jupiter Trojan')
+			elif resonance == (2, 3):
+				categories.add('Hilda')
+		elif self.orbit.a < neptune.orbit.a:
+			# https://en.wikipedia.org/wiki/Centaur_(small_Solar_System_body)#Discrepant_criteria
+			categories.add('Centaur')
+		else:
+			categories.add('TNO')
+			if rounded:
+				categories.add('Plutoid')
+			# resonance
+			resonance = self.orbit.get_resonance(neptune.orbit)
+			if max(resonance) <= 11:
+				categories.add('Resonant KBO')
+				if resonance == (2, 3):
+					categories.add('Plutino')
+				elif resonance == (1, 2):
+					categories.add('Twotino')
+				elif resonance == (1, 1):
+					categories.add('Neptune Trojan')
+			# KBO versus SDO
+			if self.orbit.a < 50*au:
+				categories.add('KBO')
+				if self.orbit.e < .2 and 11 < max(resonance):
+					# https://en.wikipedia.org/wiki/Classical_Kuiper_belt_object#DES_classification
+					# slightly modified to allow Makemake to get in
+					categories.add('Cubewano')
+				# haumea family
+				if 41.6*au < self.orbit.a < 44.2*au and .07 < self.orbit.e < .2 and .422 < self.orbit.i < .508:
+					categories.add('Haumea Family')
+			else:
+				categories.add('SDO')
+				if 40*au < self.orbit.peri:
+					categories.add('Detached Object')
+					if 50*au < self.orbit.peri and 150*au < self.orbit.a:
+						categories.add('Sednoid')
+		return categories
+	
+	@property
 	def category(self) -> str:
 		"""Attempt to categorize the body"""
 		if isinstance(self, Star):
