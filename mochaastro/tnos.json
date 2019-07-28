@@ -76,6 +76,26 @@
 		}
 	},
 	{
+		"name": "2007 OR10",
+		"class": "TNO",
+		"mass": 1.75e21,
+		"radius": 6.15e5,
+		"albedo": 0.14,
+		"orbit": {
+			"parent": "sun",
+			"sma": "67.376*au",
+			"e": 0.503,
+			"i": "30.739*deg",
+			"lan": "336.844*deg",
+			"aop": "207.546*deg",
+			"man": "105.265*deg",
+			"epoch": "27 April 2019"
+		},
+		"rotation": {
+			"period": "22.4*hour"
+		}
+	},
+	{
 		"name": "Eris",
 		"class": "dwarf planet",
 		"mass": 1.66e22,
