@@ -31,6 +31,25 @@
 		}
 	},
 	{
+		"name": "Charon",
+		"class": "moon",
+		"mass": 1.586e21,
+		"radius": 6.06e5,
+		"albedo": 0.4,
+		"orbit": {
+			"parent": "Pluto",
+			"sma": 1.9591e7,
+			"e": 0.0002,
+			"i": ".08*deg",
+			"lan": "223.046*deg",
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "6.3872304*day"
+		}
+	},
+	{
 		"name": "Haumea",
 		"class": "dwarf planet",
 		"mass": 4.006e21,
