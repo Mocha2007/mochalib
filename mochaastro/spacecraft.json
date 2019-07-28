@@ -15,6 +15,53 @@
 		}
 	},
 	{
+		"name": "Vanguard 1",
+		"class": "spacecraft",
+		"mass": 1.47,
+		"radius": 8e-2,
+		"orbit": {
+			"parent": "earth",
+			"sma": 8.619e6,
+			"e": 0.1846373,
+			"i": "34.3*deg",
+			"lan": "124.3*deg",
+			"aop": "229*deg",
+			"man": "113.6*deg",
+			"epoch": "August 23, 2018"
+		}
+	},
+	{
+		"name": "Molniya",
+		"class": "spacecraft",
+		"mass": 1.6e3,
+		"radius": 2.2,
+		"orbit": {
+			"parent": "earth",
+			"sma": 2.66e7,
+			"e": 0.74,
+			"i": "63.4*deg",
+			"lan": 0,
+			"aop": "270*deg",
+			"man": 0,
+			"notes": "variable LAN and MAN"
+		}
+	},
+	{
+		"name": "Geostationary Satellite",
+		"class": "spacecraft",
+		"mass": 1e3,
+		"radius": 2,
+		"orbit": {
+			"parent": "earth",
+			"sma": 4.2164e7,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		}
+	},
+	{
 		"name": "6Q0B44E",
 		"class": "spacecraft",
 		"mass": 1e4,

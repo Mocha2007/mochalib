@@ -1619,7 +1619,7 @@ def universe_sim(parent: Body):
 		return int(round(xmap(x))), int(round(ymap(y)))
 
 	def is_hovering(body: Body, coords: (int, int)) -> bool:
-		apparent_radius = body.radius * width/(2*current_a)
+		apparent_radius = body.radius * width/(2*current_a) if 'radius' in body.properties else dot_radius
 		return dist(coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, apparent_radius)
 
 	# display body
@@ -1641,9 +1641,10 @@ def universe_sim(parent: Body):
 	def show_body(body: Body, coords: (int, int), name: str=''):
 		"""Coords are the actual screen coords"""
 		hovering = is_hovering(body, coords)
-		point(coords, body.radius, white, True, hovering)
+		r = body.radius if 'radius' in body.properties else 1
+		point(coords, r, white, True, hovering)
 		# show name
-		apparent_radius = body.radius * width/(2*current_a)
+		apparent_radius = r * width/(2*current_a)
 		name_coords = tuple(int(i+apparent_radius) for i in coords)
 		text(name, name_coords, font_normal, grey)
 
@@ -1743,9 +1744,12 @@ def universe_sim(parent: Body):
 						zip(body.orbit.cartesian(t)[3:5], body.orbit.cartesian(t)[:2]))))
 				arrow(coords, vcoords)
 				# kinetic energy
-				ke = 1/2 * Mass(body.mass) * (Length(mag)/Time(1))**2
+				ke_str = ''
+				if 'mass' in body.properties:
+					ke = 1/2 * Mass(body.mass) * (Length(mag)/Time(1))**2
+					ke_str = '\nKE = {}'.format(pretty_dim(ke, 0))
 				# mag
-				text('{}\nKE = {}'.format(pretty_dim(Length(mag)/Time(1)), pretty_dim(ke, 0)), vcoords, font_normal, red)
+				text('{}{}'.format(pretty_dim(Length(mag)/Time(1)), ke_str), vcoords, font_normal, red)
 			show_body(body, coords, name)
 			# change selection?
 			if is_hovering(body, coords) and pygame.mouse.get_pressed()[0]:
