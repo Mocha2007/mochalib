@@ -690,12 +690,30 @@ class Body:
 				if search('Ceres').radius < radius < mercury.radius:
 					categories.add('Mesoplanet')
 			# absolute
-			if mass < 10*earth.mass:
+			if self.mass < 10*earth.mass or (mars.density <= self.density and self.mass < jupiter.mass): # to prevent high-mass superjupiters
 				categories.add('Terrestrial Planet')
+				if 'composition' in self.properties and set('CO') <= set(self.composition) and self.composition['O'] < self.composition['C']:
+					categories.add('Carbon Planet')
+				if 10*earth.mass < self.mass:
+					categories.add('Mega-Earth')
+				temperature = (self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1) * self.temp
+				if earth.atmosphere.greenhouse * earth.temp < temperature < 300: # death valley avg. 298K
+					# https://en.wikipedia.org/wiki/Desert_planet
+					categories.add('Desert Planet')
+				elif temperature < 260 and .9 < self.albedo:
+					# https://en.wikipedia.org/wiki/Ice_planet
+					categories.add('Ice Planet')
+				elif 1000 < temperature:
+					# https://en.wikipedia.org/wiki/Lava_planet
+					categories.add('Lava Planet')
 			elif mass < ice_giant_cutoff:
 				categories.add('Ice Giant')
 			else:
 				categories.add('Gas Giant')
+				if jupiter.mass < self.mass:
+					categories.add('Super-Jupiter')
+				if self.density < saturn.density:
+					categories.add('Puffy Planet')
 			return categories
 		# subplanetary
 		if 9e20 < mass: # smallest dwarf planet is Ceres
