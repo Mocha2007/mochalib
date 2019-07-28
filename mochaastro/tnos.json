@@ -82,6 +82,26 @@
 		}
 	},
 	{
+		"name": "120347 Salacia",
+		"class": "TNO",
+		"mass": 4.38e20,
+		"radius": 4.27e5,
+		"albedo": 0.044,
+		"orbit": {
+			"parent": "sun",
+			"sma": "41.947*au",
+			"e": 0.1097,
+			"i": "23.925*deg",
+			"lan": "279.96*deg",
+			"aop": "309.61*deg",
+			"man": "122.93*deg",
+			"epoch": "23 March 2018"
+		},
+		"rotation": {
+			"period": "6.09*hour"
+		}
+	},
+	{
 		"name": "Haumea",
 		"class": "dwarf planet",
 		"mass": 4.006e21,
