@@ -707,6 +707,7 @@ class Body:
 			"'Class           {}'.format(self.setype)",
 			"'Radius          {} ({} Earths)'.format(pretty_dim(Length(self.radius)), round(self.radius/earth.radius, 3))",
 			"'Mass            {}'.format(str(Mass(self.mass, 'astro')))",
+			"'Density         {} kg/m³'.format(round(self.density))",
 			"'ESI             {}'.format(round(self.esi, 3))",
 			"'Absolute Mag.   {}'.format(round(self.app_mag_at(10*pc), 2))",
 			"'Semimajor Axis  {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
@@ -717,7 +718,7 @@ class Body:
 			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 3))",
 			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
 			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 3)",
-			"'Temperature     {} K'.format(round(self.atmosphere.greenhouse*self.temp, 2))",
+			"'Temperature     {} K'.format(round((self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1)*self.temp, 2))",
 			"'Greenhouse Eff. {} K'.format(round((self.atmosphere.greenhouse-1)*self.temp, 2))",
 		)
 		string = []
