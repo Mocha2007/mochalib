@@ -709,6 +709,8 @@ class Body:
 		# jupiter trojan
 		if self.orbit.get_resonance(jupiter.orbit, 2) == (1, 1): # even the worst matches are just over 2 sigma certainty
 			categories.add('Jupiter Trojan')
+		elif self.orbit.get_resonance(neptune.orbit, 2) == (1, 1):
+			categories.add('Neptune Trojan')
 		# orbit distance
 		if self.orbit.a < jupiter.orbit.a:
 			if 2.06*au < self.orbit.a < 3.28*au:
@@ -769,8 +771,12 @@ class Body:
 						categories.add('EDDO')
 					if 50*au < self.orbit.peri:
 						categories.add('Sednoid')
+		# Damocloid
+		if self.orbit.peri < jupiter.orbit.a and 8*au < self.orbit.a and .75 < self.orbit.e:
+			# https://en.wikipedia.org/wiki/Damocloid
+			categories.add('Damocloid')
 		return categories
-	
+
 	@property
 	def category(self) -> str:
 		"""Attempt to categorize the body"""
