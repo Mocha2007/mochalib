@@ -663,11 +663,12 @@ class Body:
 	@property
 	def categories(self) -> set:
 		"""List all possible categories for body"""
+		ice_giant_cutoff = 3e26 # SWAG
 		categories = set()
 		if isinstance(self, Star):
 			return {'Star'}
 		mass = 'mass' in self.properties and self.mass
-		rounded = 6.5e19 < mass # Miranda is the smallest solar system body which might be in HSE
+		rounded = search('Miranda').mass <= mass # Miranda is the smallest solar system body which might be in HSE
 		if 'Star' not in self.orbit.parent.categories:
 			categories.add('Moon')
 			if rounded:
@@ -682,7 +683,7 @@ class Body:
 		if mass and 1 <= self.planetary_discriminant:
 			categories.add('Planet')
 			# earth-relative
-			if earth.mass < mass < 3e26:
+			if earth.mass < mass < ice_giant_cutoff:
 				categories.add('Super-earth')
 			elif mass < earth.mass:
 				categories.add('Sub-earth')
@@ -691,7 +692,7 @@ class Body:
 			# absolute
 			if mass < 10*earth.mass:
 				categories.add('Terrestrial Planet')
-			elif mass < 3e26:
+			elif mass < ice_giant_cutoff:
 				categories.add('Ice Giant')
 			else:
 				categories.add('Gas Giant')
