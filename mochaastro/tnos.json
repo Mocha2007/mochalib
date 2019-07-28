@@ -1,5 +1,21 @@
 [
 	{
+		"name": "90482 Orcus",
+		"class": "TNO",
+		"mass": 6.41e20,
+		"radius": 4.55e5,
+		"albedo": 0.231,
+		"orbit": {
+			"parent": "sun",
+			"sma": "39.398*au",
+			"e": 0.2201,
+			"i": "20.582*deg",
+			"lan": "268.72*deg",
+			"aop": "72.393*deg",
+			"man": "177.73*deg"
+		}
+	},
+	{
 		"name": "Pluto",
 		"class": "dwarf planet",
 		"mass": 1.303e22,
