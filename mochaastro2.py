@@ -1669,11 +1669,15 @@ def universe_sim(parent: Body):
 		pygame.draw.aalines(screen, color, True, (left_tip, right_tip, b))
 
 	# display text
-	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white):
+	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white, shadow: bool=False):
 		if not is_onscreen(at):
 			return None
 		this_font = pygame.font.SysFont('Courier New', size)
 		string = string.replace('\t', ' '*4)
+		# first, shadow
+		if shadow:
+			text(string, (at[0]+1, at[1]+1), size, black)
+		# then, real text
 		for i, line in enumerate(string.split('\n')):
 			textsurface = this_font.render(line, True, color)
 			x, y = at
@@ -1766,11 +1770,11 @@ def universe_sim(parent: Body):
 			current_date = '>10000' if 0 < t else '<0'
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
 					'Width: '+pretty_dim(Length(2*current_a, 'astro'))
-		text(information, (0, height-font_large*2), font_large)
+		text(information, (0, height-font_large*2), font_large, white, True)
 		# print FPS
 		text(str(round(1/(time()-start_time)))+' FPS', (width-font_normal*4, 0), font_normal, red)
 		# print selection data
-		text(selection.data, (0, 0), font_small, (200, 255, 200))
+		text(selection.data, (0, 0), font_small, (200, 255, 200), True)
 		# refresh
 		refresh()
 		# post-render operations
