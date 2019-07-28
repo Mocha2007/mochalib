@@ -1,0 +1,21 @@
+[
+	{
+		"name": "10199 Chariklo",
+		"class": "centaur",
+		"radius": 1.3e5,
+		"albedo": 0.05,
+		"orbit": {
+			"parent": "sun",
+			"sma": "15.822*au",
+			"e": 0.1721,
+			"i": "23.382*deg",
+			"lan": "300.42*deg",
+			"aop": "242.9*deg",
+			"man": "336.625*deg",
+			"epoch": "J2000 (computed)"
+		},
+		"rotation": {
+			"period": "7.004*hour"
+		}
+	}
+]
