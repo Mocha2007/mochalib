@@ -1666,7 +1666,9 @@ def universe_sim(parent: Body, t: float=0, selection: Body=None):
 		right_tip = tuple(i+j-k for i, j, k in zip(a, tip_base, perpendicular))
 		# render
 		pygame.draw.aaline(screen, color, a, real_tip_base)
-		pygame.draw.aalines(screen, color, True, (left_tip, right_tip, b))
+		arrow_tip = left_tip, right_tip, b
+		if any(is_onscreen(i) for i in arrow_tip):
+			pygame.draw.aalines(screen, color, True, arrow_tip)
 
 	# display text
 	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white, shadow: bool=False):
