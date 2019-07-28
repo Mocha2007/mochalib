@@ -261,6 +261,10 @@ class Orbit:
 				return E
 			E = E_
 
+	def mean_anomaly_delta(self, t: float = 0) -> float:
+		"""Change in mean anomaly over a period of time"""
+		return ((t / self.p) % 1) * 2*pi
+
 	def get_resonance(self, other, sigma: int = 3) -> (int, int):
 		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
 		# ~102μs avg.

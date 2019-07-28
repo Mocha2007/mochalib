@@ -11,8 +11,9 @@
 			"i": "10.318*deg",
 			"lan": "316.54*deg",
 			"aop": "133.5*deg",
-			"man": "205.11*deg",
-			"epoch": "datetime(2018, 3, 23)"
+			"man": "13.29*deg",
+			"epoch": "J2000 (computed)",
+			"notes": "search('achilles').orbit.mean_anomaly_delta(18*year + 2*30*day + 22*day)"
 		},
 		"rotation": {
 			"period": "7.306*hour"
@@ -28,11 +29,11 @@
 			"parent": "sun",
 			"sma": "5.2571*au",
 			"e": 0.0238,
-			"i": 0.31706,
-			"lan": 1.4020,
-			"aop": 5.9828,
-			"man": 2.3752,
-			"epoch": "datetime(2018, 3, 23)"
+			"i": "18.166*deg",
+			"lan": "342.79*deg",
+			"aop": "185.22*deg",
+			"man": "311.81*deg",
+			"epoch": "J2000 (computed)"
 		},
 		"rotation": {
 			"period": "6.9205*hour"
