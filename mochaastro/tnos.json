@@ -31,6 +31,26 @@
 		}
 	},
 	{
+		"name": "Haumea",
+		"class": "dwarf planet",
+		"mass": 4.006e21,
+		"radius": 8e5,
+		"albedo": 0.51,
+		"orbit": {
+			"parent": "sun",
+			"sma": "43.218*au",
+			"e": 0.19126,
+			"i": "28.19*deg",
+			"lan": "121.79*deg",
+			"aop": "240.2*deg",
+			"man": "209.07*deg",
+			"epoch": "Epoch 2014-12-09"
+		},
+		"rotation": {
+			"period": "3.9155*hour"
+		}
+	},
+	{
 		"name": "Makemake",
 		"class": "dwarf planet",
 		"mass": 4.4e21,
