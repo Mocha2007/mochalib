@@ -699,16 +699,19 @@ class Body:
 					categories.add('Carbon Planet')
 				if 10*earth.mass < self.mass:
 					categories.add('Mega-Earth')
-				temperature = (self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1) * self.temp
-				if earth.atmosphere.greenhouse * earth.temp < temperature < 300: # death valley avg. 298K
-					# https://en.wikipedia.org/wiki/Desert_planet
-					categories.add('Desert Planet')
-				elif temperature < 260 and .9 < self.albedo:
-					# https://en.wikipedia.org/wiki/Ice_planet
-					categories.add('Ice Planet')
-				elif 1000 < temperature:
-					# https://en.wikipedia.org/wiki/Lava_planet
-					categories.add('Lava Planet')
+				try:
+					temperature = (self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1) * self.temp
+					if earth.atmosphere.greenhouse * earth.temp < temperature < 300: # death valley avg. 298K
+						# https://en.wikipedia.org/wiki/Desert_planet
+						categories.add('Desert Planet')
+					elif temperature < 260 and .9 < self.albedo:
+						# https://en.wikipedia.org/wiki/Ice_planet
+						categories.add('Ice Planet')
+					elif 1000 < temperature:
+						# https://en.wikipedia.org/wiki/Lava_planet
+						categories.add('Lava Planet')
+				except KeyError:
+					pass
 			else:
 				categories.add('Giant Planet')
 				if .1 < self.orbit.e:
@@ -733,8 +736,18 @@ class Body:
 						categories.add('Hot Jupiter')
 			return categories
 		# subplanetary
+		categories.add('Minor Planet')
 		if 9e20 < mass: # smallest dwarf planet is Ceres
 			categories.add('Dwarf Planet')
+		# crossers
+		# [print(n, b.categories) for n, b in universe.items() if any('Crosser' in c for c in b.categories)]
+		for planet_name, body in solar_system.items():
+			if planet_name in {'Moon', 'Sun'}:
+				continue
+			if self.orbit.peri < body.orbit.apo and body.orbit.peri < self.orbit.apo:
+				categories.add('{} Crosser'.format(planet_name))
+			if self.orbit.get_resonance(body.orbit, 2) == (1, 1): # even the worst matches for jupiter trojans are just over 2 sigma certainty
+				categories.add('{} Trojan'.format(planet_name))
 		# NEO
 		if self.orbit.peri < 1.3*au:
 			categories.add('NEO')
@@ -750,26 +763,53 @@ class Body:
 					categories.add('Aten Asteroid')
 				else:
 					categories.add('Atira Asteroid')
-		# jupiter trojan
-		if self.orbit.get_resonance(jupiter.orbit, 2) == (1, 1): # even the worst matches are just over 2 sigma certainty
-			categories.add('Jupiter Trojan')
-		elif self.orbit.get_resonance(neptune.orbit, 2) == (1, 1):
-			categories.add('Neptune Trojan')
 		# orbit distance
-		if self.orbit.a < jupiter.orbit.a:
+		if self.orbit.a < jupiter.orbit.a: # asteroids which aren't necessarily NEOs
 			if 2.06*au < self.orbit.a < 3.28*au:
+				# [print(n, b.categories) for n, b in universe.items() if 'Asteroid Belt' in b.categories]
 				categories.add('Asteroid Belt')
 				if self.orbit.a < 2.5*au:
 					categories.add('Inner Main Belt')
+					if 2.26*au < self.orbit.a < 2.48*au and .035 < self.orbit.e < .162 and 5*deg < self.orbit.i < 8.3*deg:
+						categories.add('Vesta Family')
+					if 2.3*au < self.orbit.a and self.orbit.i < 18*deg:
+						categories.add('Main Belt I Asteroid')
 				elif self.orbit.a < 2.82*au:
 					categories.add('Middle Main Belt')
+					if self.orbit.i < 33*deg:
+						if self.orbit.a < 2.76*au:
+							categories.add('Main Belt IIa Asteroid')
+						else:
+							categories.add('Main Belt IIb Asteroid')
 				else:
 					categories.add('Outer Main Belt')
+					if self.orbit.e < .35 and self.orbit.i < 30*deg:
+						if self.orbit.a < 3.03*au:
+							categories.add('Main Belt IIIa Asteroid')
+						else:
+							categories.add('Main Belt IIIb Asteroid')
+				# Alinda
+				if 2.45*au < self.orbit.a < 2.56*au:
+					categories.add('Alinda Asteroid')
+			# non-main group asteroids
+			elif self.orbit.a < mercury.orbit.a:
+				categories.add('Vulcanoid')
+			elif .96*au < self.orbit.a < 1.04*au and self.orbit.i < 4.4*deg and self.orbit.e < .084:
+				categories.add('Arjuna Asteroid')
 			elif 1.78*au < self.orbit.a < 2*au and self.orbit.e < .18 and 16*deg < self.orbit.i < 34*deg:
 				categories.add('Hungaria Group')
-
-			if self.orbit.get_resonance(jupiter.orbit) == (2, 3):
-				categories.add('Hilda')
+			# Jupiter resonance groups
+			res_groups = {
+				(1, 3): 'Alinda',
+				(1, 2): 'Hecuba Gap',
+				(4, 7): 'Cybele',
+				(2, 3): 'Hilda',
+				(3, 4): 'Thule',
+			}
+			resonance = self.orbit.get_resonance(jupiter.orbit)
+			if resonance in res_groups:
+				categories.add('Resonant Asteroid')
+				categories.add('{} Asteroid'.format(res_groups[resonance]))
 		elif self.orbit.a < neptune.orbit.a:
 			# https://en.wikipedia.org/wiki/Centaur_(small_Solar_System_body)#Discrepant_criteria
 			categories.add('Centaur')
@@ -2340,7 +2380,7 @@ neptune = Body(**{
 # jupiter_system = System(io, europa, ganymede, callisto)
 # kuiper = System(neptune, pons_gambart, pluto, ikeya_zhang, eris, sedna, planet_nine) # a >= neptune
 # comets = System(earth, halley, pons_gambart, ikeya_zhang) # earth and comets
-universe = load_data({
+solar_system = {
 	'Sun': sun,
 	'Mercury': mercury,
 	'Venus': venus,
@@ -2351,7 +2391,8 @@ universe = load_data({
 	'Saturn': saturn,
 	'Uranus': uranus,
 	'Neptune': neptune,
-})
+}
+universe = load_data(solar_system.copy())
 # todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
