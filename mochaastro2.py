@@ -574,7 +574,7 @@ class Body:
 		esi1 = 1-abs((r-r_e)/(r+r_e))
 		esi2 = 1-abs((rho-rho_e)/(rho+rho_e))
 		esi3 = 1-abs((self.v_e-earth.v_e)/(self.v_e+earth.v_e))
-		esi4 = 1-abs((T-255)/(T+255))
+		esi4 = 1-abs((T-earth.temp)/(T+earth.temp))
 		return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
 
 	@property
