@@ -229,6 +229,7 @@
 		"class": "planet",
 		"mass": 3e25,
 		"radius": 1.2e7,
+		"albedo": 0.5,
 		"orbit": {
 			"parent": "sun",
 			"sma": "600*au",
@@ -237,6 +238,7 @@
 			"lan": 1.6,
 			"aop": 2.6,
 			"man": 0
-		}
+		},
+		"notes": "Albedo estimated from KBOs; radius from analogy with inner planets"
 	}
 ]
