@@ -1994,6 +1994,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 			if event.type == pygame.QUIT:
 				pygame.display.quit()
 				pygame.quit()
+				return print('Thank you for using mochaastro2.py!~')
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_KP_PLUS: # zoom in
 					zoom(-1)
