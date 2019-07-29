@@ -663,7 +663,7 @@ class Body:
 	@property
 	def categories(self) -> set:
 		"""List all possible categories for body"""
-		ice_giant_cutoff = 3e26 # SWAG
+		ice_giant_cutoff = 80*earth.mass # https://en.wikipedia.org/wiki/Super-Neptune
 		categories = set()
 		if isinstance(self, Star):
 			return {'Star'}
@@ -689,6 +689,9 @@ class Body:
 				categories.add('Sub-earth')
 				if search('Ceres').radius < radius < mercury.radius:
 					categories.add('Mesoplanet')
+			# USP
+			if self.orbit.p < day:
+				categories.add('Ultra-short period planet')
 			# absolute
 			if self.mass < 10*earth.mass or (mars.density <= self.density and self.mass < jupiter.mass): # to prevent high-mass superjupiters
 				categories.add('Terrestrial Planet')
@@ -706,14 +709,28 @@ class Body:
 				elif 1000 < temperature:
 					# https://en.wikipedia.org/wiki/Lava_planet
 					categories.add('Lava Planet')
-			elif mass < ice_giant_cutoff:
-				categories.add('Ice Giant')
 			else:
-				categories.add('Gas Giant')
-				if jupiter.mass < self.mass:
-					categories.add('Super-Jupiter')
-				if self.density < saturn.density:
-					categories.add('Puffy Planet')
+				categories.add('Giant Planet')
+				if .1 < self.orbit.e:
+					categories.add('Eccentric Jupiter')
+				if 'atmosphere' in self.properties and 'composition' in self.atmosphere.properties and 'He' in self.atmosphere.composition and .5 < self.atmosphere.composition['He']:
+					categories.add('Helium Planet')
+				if mass < ice_giant_cutoff:
+					categories.add('Ice Giant')
+					if neptune.mass < self.mass:
+						categories.add('Super-Neptune')
+					if 1.7*earth.radius < self.radius < 3.9*earth.radius:
+						categories.add('Gas Dwarf')
+					if self.orbit.a < au:
+						categories.add('Hot Neptune')
+				else:
+					categories.add('Gas Giant')
+					if jupiter.mass < self.mass:
+						categories.add('Super-Jupiter')
+					if self.density < saturn.density:
+						categories.add('Puffy Planet')
+					if self.orbit.p < 10*day:
+						categories.add('Hot Jupiter')
 			return categories
 		# subplanetary
 		if 9e20 < mass: # smallest dwarf planet is Ceres
