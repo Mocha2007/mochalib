@@ -7,8 +7,11 @@ def clean_text(filename: str) -> str:
 	return sub("[^'a-z\.]+", ' ', text.lower().replace('.', ' . '))
 
 
-def corpus_from(text: str) -> set:
-	return set(text)
+def corpus_from(text: str, minimum_attestation: int=0) -> set:
+	if minimum_attestation == 0:
+		return set(text.split())
+	print(len(text))
+	return {word for word, count in freq(text).items() if 3 <= count}
 
 
 def freq(text: str) -> dict:
@@ -50,7 +53,8 @@ def markov_from(filename: str) -> dict:
 def pretty_freq(text: str):
 	text = text.replace('. ', '')
 	length = len(text.split())
-	header = 'TOTAL\t{} = {} min reading\n'.format(length, int(.22*length/60))
+	lemmata = len(corpus_from(text, 3))
+	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times\n'.format(length, int(.22*length/60), lemmata)
 	top_ten_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
 	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_ten_words)
 
