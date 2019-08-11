@@ -46,6 +46,12 @@ def markov_from(filename: str) -> dict:
 	return make_markov(clean_text(open(filename, 'r').read()))
 
 
+def pretty_freq(text: str):
+	length = len(text.split())
+	top_ten_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
+	return '\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_ten_words)
+
+
 def random_word(freq: dict) -> str:
 	wordlist = []
 	for word, count in freq.items():
@@ -68,4 +74,6 @@ def test():
 	kjb = markov_from('kjb.txt')
 	# print(kjb['sin'])
 	print(speak(kjb))
+	kjb_text = clean_text(open('kjb.txt', 'r').read())
+	print(pretty_freq(kjb_text))
 	# print(time() - start_time)
