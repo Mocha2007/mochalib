@@ -30,7 +30,7 @@ def export_citations(text: str, minimum_attestation: int=3):
 			occurences.append(index)
 		args = [word]
 		for index in occurences:
-			args.append(text[index-20:index+len(word)+20].replace(word_, ' <b>{}</b> '.format(word)))
+			args.append('...{}...'.format(text[index-20:index+len(word)+20].replace(word_, ' <b>{}</b> '.format(word))))
 		document.append(template.format(*args))
 	with open('books/{}.html'.format(abs(hash(text))), 'w+') as file:
 		file.write('\n'.join(document))
