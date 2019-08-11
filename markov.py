@@ -14,6 +14,28 @@ def corpus_from(text: str, minimum_attestation: int=0) -> set:
 	return {word for word, count in freq(text).items() if 3 <= count}
 
 
+def export_citations(text: str, minimum_attestation: int=3):
+	text = text.replace('. ', '')
+	template = '<dt>{}</dt><dd><ul>'+'<li>{}</li>'*minimum_attestation+'</ul></dd>'
+	corpus = sorted(list(corpus_from(text, minimum_attestation)))
+	document = ['<dl>']
+	for word in corpus:
+		word_ = ' {} '.format(word)
+		occurences = []
+		for i in range(minimum_attestation):
+			if i == 0:
+				index = text.find(word_)
+			else:
+				index = text.find(word_, occurences[-1]+1)
+			occurences.append(index)
+		args = [word]
+		for index in occurences:
+			args.append(text[index-20:index+len(word)+20].replace(word_, ' <b>{}</b> '.format(word)))
+		document.append(template.format(*args))
+	with open('books/{}.html'.format(abs(hash(text))), 'w+') as file:
+		file.write('\n'.join(document))
+
+
 def freq(text: str) -> dict:
 	"""Fastest of three methods tested:
 	king james bible - 683 ms
@@ -80,7 +102,7 @@ def word_lengths(text: str) -> set:
 	return {len(word) for word in corpus_from(text)}
 
 
-def test(filename: str='kjb'):
+def test(filename: str='star wars'):
 	filename = 'books/' + filename + '.txt'
 	# from time import time
 	# start_time = time()
@@ -89,4 +111,5 @@ def test(filename: str='kjb'):
 	print(speak(kjb))
 	kjb_text = clean_text(filename)
 	print(pretty_freq(kjb_text))
+	export_citations(kjb_text)
 	# print(time() - start_time)
