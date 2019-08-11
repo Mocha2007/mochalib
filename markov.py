@@ -50,7 +50,7 @@ def markov_from(filename: str) -> dict:
 def pretty_freq(text: str):
 	text = text.replace('. ', '')
 	length = len(text.split())
-	header = 'TOTAL\t{}\t100%\n\t{} min reading\n'.format(length, int(.22*length/60))
+	header = 'TOTAL\t{} = {} min reading\n'.format(length, int(.22*length/60))
 	top_ten_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
 	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_ten_words)
 
