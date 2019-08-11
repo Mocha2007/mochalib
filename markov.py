@@ -80,7 +80,8 @@ def word_lengths(text: str) -> set:
 	return {len(word) for word in corpus_from(text)}
 
 
-def test(filename: str='kjb.txt'):
+def test(filename: str='kjb'):
+	filename = 'books/' + filename + '.txt'
 	# from time import time
 	# start_time = time()
 	kjb = markov_from(filename)
