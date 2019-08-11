@@ -54,7 +54,8 @@ def pretty_freq(text: str):
 	text = text.replace('. ', '')
 	length = len(text.split())
 	lemmata = len(corpus_from(text, 3))
-	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times\n'.format(length, int(.22*length/60), lemmata)
+	lengths = word_lengths(text)
+	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times, of length {}-{}\n'.format(length, int(.22*length/60), lemmata, min(lengths), max(lengths))
 	top_ten_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
 	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_ten_words)
 
@@ -73,6 +74,10 @@ def speak(markov_chain: dict, max_len: int=50) -> str:
 		if words[-1] == '.':
 			break
 	return ' '.join(words).replace(' .', '')
+
+
+def word_lengths(text: str) -> set:
+	return {len(word) for word in corpus_from(text)}
 
 
 def test(filename: str='kjb.txt'):
