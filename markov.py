@@ -2,7 +2,8 @@ from re import sub
 from random import choice
 
 
-def clean_text(text: str) -> str:
+def clean_text(filename: str) -> str:
+	text = open(filename, 'r', encoding='utf8').read()
 	return sub("[^'a-z\.]+", ' ', text.lower().replace('.', ' . '))
 
 
@@ -43,7 +44,7 @@ def make_markov(text: str) -> dict:
 
 
 def markov_from(filename: str) -> dict:
-	return make_markov(clean_text(open(filename, 'r').read()))
+	return make_markov(clean_text(filename))
 
 
 def pretty_freq(text: str):
@@ -68,12 +69,12 @@ def speak(markov_chain: dict, max_len: int=50) -> str:
 	return ' '.join(words).replace(' .', '')
 
 
-def test():
+def test(filename: str='kjb.txt'):
 	# from time import time
 	# start_time = time()
-	kjb = markov_from('kjb.txt')
+	kjb = markov_from(filename)
 	# print(kjb['sin'])
 	print(speak(kjb))
-	kjb_text = clean_text(open('kjb.txt', 'r').read())
+	kjb_text = clean_text(filename)
 	print(pretty_freq(kjb_text))
 	# print(time() - start_time)
