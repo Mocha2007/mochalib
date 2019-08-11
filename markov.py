@@ -3,7 +3,7 @@ from random import choice
 
 
 def clean_text(text: str) -> str:
-	return sub("[^'a-z]+", ' ', text.lower())
+	return sub("[^'a-z\.]+", ' ', text.lower().replace('.', ' . '))
 
 
 def corpus_from(text: str) -> set:
@@ -53,11 +53,13 @@ def random_word(freq: dict) -> str:
 	return choice(wordlist)
 
 
-def speak(markov_chain: dict, length: int=16) -> str:
-	words = [choice(list(markov_chain))]
-	for _ in range(length):
+def speak(markov_chain: dict, max_len: int=50) -> str:
+	words = [choice(list(markov_chain['.']))]
+	for _ in range(max_len):
 		words.append(random_word(markov_chain[words[-1]]))
-	return ' '.join(words)
+		if words[-1] == '.':
+			break
+	return ' '.join(words).replace(' .', '')
 
 
 def test():
