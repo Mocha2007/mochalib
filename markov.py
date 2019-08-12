@@ -94,7 +94,7 @@ def pretty_letter_count(text: str) -> str:
 	total = sum(i[1] for i in count)
 	maximum = max(i[1] for i in count)
 	for char, freq in count:
-		string.append('{}\t{}%\t{}'.format(char, round(100*freq/total, 3), '='*round(20*freq/maximum)))
+		string.append('{}\t{}%\t{}'.format(char, round(100*freq/total, 3), '='*round(64*freq/maximum)))
 	return '\n'.join(string)
 
 
