@@ -111,11 +111,12 @@ def screen_update():
 root = tk.Tk()
 root.title("MoCalc")
 root.resizable(False, False)
-# tk.Font(family="Consolas", size=12)
-history_screen = tk.Label(root, anchor='e', width=35, height=1)
+history_screen = tk.Label(root, anchor='e', width=30, height=1)
 history_screen.grid(row=0, columnspan=len(keys[0])+1)
-screen = tk.Label(root, anchor='e', width=35, height=5)
+history_screen.configure(font=("Consolas", 12))
+screen = tk.Label(root, anchor='e', width=30, height=5)
 screen.grid(row=1, columnspan=len(keys[0])+1)
+screen.configure(font=("Consolas", 12))
 for i, row in enumerate(keys):
 	for j, k in enumerate(row):
 		buttons[i][j] = tk.Button(root, text=k, height=2, width=6, command=(lambda k: lambda: numpad(k))(k))
