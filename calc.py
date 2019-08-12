@@ -4,6 +4,7 @@ import tkinter as tk
 
 digits = '0123456789'
 keys = [
+	['~', 'R', 'S', '^', 'L'],
 	['7', '8', '9', '/'],
 	['4', '5', '6', '*'],
 	['1', '2', '3', '-'],
@@ -23,12 +24,11 @@ history = []
 # functions
 
 def error(name: str='Error'):
-	n = 5
-	for i in range(n):
-		screen.config(text=name, bg='red' if i % 2 else 'white')
-		sleep(1/n)
-	stack = [0]
-	screen_update()
+	print(name)
+	screen.config(text=name, bg='red')
+	root.update()
+	sleep(1)
+	numpad('clear')
 
 
 def numpad(n: str):
@@ -73,6 +73,19 @@ def numpad(n: str):
 	elif n == '\\': # 92
 		if 1 < len(stack):
 			stack.append(stack.pop(-2))
+	elif n == '^': # 94
+		if 1 < len(stack):
+			if stack[-2:] == [0, 0]:
+				error('ZeroDivisionError')
+			else:
+				stack.append(stack.pop(-2) ** stack.pop())
+		else:
+			if stack[-1]:
+				stack[-1] = 0
+			else:
+				error('ZeroDivisionError')
+	elif n == '~': # 126
+		stack[-1] *= -1
 	screen_update()
 
 def screen_update():
@@ -83,6 +96,7 @@ def screen_update():
  
 root = tk.Tk()
 root.title("MoCalc")
+root.resizable(False, False)
 # tk.Font(family="Consolas", size=12)
 history_screen = tk.Label(root, anchor='e', width=35, height=1)
 history_screen.grid(row=0, columnspan=len(keys[0])+1)
@@ -93,7 +107,7 @@ for i, row in enumerate(keys):
 		buttons[i][j] = tk.Button(root, text=k, height=2, width=6, command=(lambda k: lambda: numpad(k))(k))
 		buttons[i][j].grid(row=i+2, column=j)
 del i, row, j, k
-tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=2, column=4, rowspan=2)
-tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('↵')).grid(row=4, column=4, rowspan=2)
+tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=3, column=4, rowspan=2)
+tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('↵')).grid(row=5, column=4, rowspan=2)
 screen_update()
 root.mainloop()
