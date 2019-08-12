@@ -31,13 +31,18 @@ def error(name: str='Error'):
 
 
 def numpad(n: str):
-	print(1, type(n), n)
+	global stack
+	print(n)
 	if n in digits: # 48-57
-		print(2)
 		n = int(n)
 		stack[-1] *= 10
 		stack[-1] += n if 0 <= n else -n
-	# other than numbers
+	# speshul
+	elif n == 'clear': # 42
+		stack = [0]
+	elif n == 'enter': # 42
+		stack.append(0)
+	# other than special
 	elif n == '*': # 42
 		if 1 < len(stack):
 			stack.append(stack.pop() * stack.pop())
@@ -62,23 +67,24 @@ def numpad(n: str):
 	elif n == '\\': # 92
 		if 1 < len(stack):
 			stack.append(stack.pop(-2))
-	
 	screen_update()
 
 def screen_update():
-	label.config(text=str(stack[-1]), bg='white')
+	label.config(text='\n'.join(str(i) for i in stack), bg='white')
 
 # make the gui 
  
 root = tk.Tk()
 root.title("MoCalc")
 # tk.Font(family="Consolas", size=12)
-label = tk.Label(root, anchor='e', width=30)
-label.grid(row=0, columnspan=len(keys[0]))
+label = tk.Label(root, anchor='e', width=35, height=5)
+label.grid(row=0, columnspan=len(keys[0])+1)
 for i, row in enumerate(keys):
 	for j, k in enumerate(row):
 		buttons[i][j] = tk.Button(root, text=k, height=2, width=6, command=(lambda k: lambda: numpad(k))(k))
 		buttons[i][j].grid(row=i+1, column=j)
 del i, row, j, k
+tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=1, column=4, rowspan=2)
+tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('enter')).grid(row=3, column=4, rowspan=2)
 screen_update()
 root.mainloop()
