@@ -2,9 +2,16 @@ from re import sub
 from random import choice
 
 
-def clean_text(filename: str) -> str:
-	text = open(filename, 'r', encoding='utf8').read()
-	return sub("[^'a-z\.]+", ' ', text.lower().replace('.', ' . '))
+alphabet = ''.join(chr(i) for i in range(97, 123))
+numerals = ''.join(str(i) for i in range(10))
+
+
+def char_count(text: str) -> dict:
+	return {char: text.count(char) for char in set(text)}
+
+
+def clean_text(text_name: str) -> str:
+	return sub("[^'a-z\.]+", ' ', load(text_name).lower().replace('.', ' . '))
 
 
 def corpus_from(text: str, minimum_attestation: int=0) -> set:
@@ -49,6 +56,15 @@ def freq(text: str) -> dict:
 	return output
 
 
+def letter_count(text: str) -> dict:
+	text = text.lower()
+	return {char: text.count(char) for char in set(text) if char in alphabet}
+
+
+def load(text_name: str) -> str:
+	return open('books/{}.txt'.format(text_name), 'r', encoding='utf8').read()
+
+
 def make_markov(text: str) -> dict:
 	"""
 	king james bible - 1053 ms
@@ -72,7 +88,17 @@ def markov_from(filename: str) -> dict:
 	return make_markov(clean_text(filename))
 
 
-def pretty_freq(text: str):
+def pretty_letter_count(text: str) -> str:
+	count = sorted(letter_count(text).items(), key=lambda x: x[1], reverse=True)
+	string = ['\t%']
+	total = sum(i[1] for i in count)
+	maximum = max(i[1] for i in count)
+	for char, freq in count:
+		string.append('{}\t{}%\t{}'.format(char, round(100*freq/total, 3), '='*round(20*freq/maximum)))
+	return '\n'.join(string)
+
+
+def pretty_freq(text: str) -> str:
 	text = text.replace('. ', '')
 	length = len(text.split())
 	lemmata = len(corpus_from(text, 3))
@@ -103,7 +129,6 @@ def word_lengths(text: str) -> set:
 
 
 def test(filename: str='star wars'):
-	filename = 'books/' + filename + '.txt'
 	# from time import time
 	# start_time = time()
 	kjb = markov_from(filename)
