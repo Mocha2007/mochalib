@@ -38,11 +38,13 @@ def numpad(n: str):
 		stack[-1] *= 10
 		stack[-1] += n if 0 <= n else -n
 	# speshul
-	elif n == 'clear': # 42
+	elif n == 'clear':
 		stack = [0]
-	elif n == 'enter': # 42
+	elif n == 'enter':
 		stack.append(0)
 	# other than special
+	elif n == '%': # 37
+		stack[-1] /= 100
 	elif n == '*': # 42
 		if 1 < len(stack):
 			stack.append(stack.pop() * stack.pop())
