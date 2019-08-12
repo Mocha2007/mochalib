@@ -1,10 +1,12 @@
+from math import log
+from cmath import log as clog
 from time import sleep
 import tkinter as tk
 # ty https://www.python-course.eu/tkinter_buttons.php <3
 
 digits = '0123456789'
 keys = [
-	['~', 'R', 'S', '^', 'L'],
+	['~', 'sqrt', 'square', '^', 'ln'],
 	['7', '8', '9', '/'],
 	['4', '5', '6', '*'],
 	['1', '2', '3', '-'],
@@ -86,6 +88,18 @@ def numpad(n: str):
 				error('ZeroDivisionError')
 	elif n == '~': # 126
 		stack[-1] *= -1
+	# words
+	elif n == 'ln':
+		if stack[-1].imag or stack[-1] < 0:
+			stack[-1] = clog(stack[-1])
+		elif stack[-1]:
+			stack[-1] = log(stack[-1])
+		else:
+			error('DomainError')
+	elif n == 'sqrt':
+		stack[-1] **= .5
+	elif n == 'square':
+		stack[-1] **= 2
 	screen_update()
 
 def screen_update():
