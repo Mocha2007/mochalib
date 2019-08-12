@@ -120,8 +120,13 @@ for i, row in enumerate(keys):
 	for j, k in enumerate(row):
 		buttons[i][j] = tk.Button(root, text=k, height=2, width=6, command=(lambda k: lambda: numpad(k))(k))
 		buttons[i][j].grid(row=i+2, column=j)
+		root.bind(k, (lambda k: lambda *_: numpad(k))(k))
 del i, row, j, k
 tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=3, column=4, rowspan=2)
 tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('↵')).grid(row=5, column=4, rowspan=2)
+# extra binds
+root.bind('<Return>', lambda *_: numpad('↵'))
+root.bind('<BackSpace>', lambda *_: numpad('clear'))
+# done!
 screen_update()
 root.mainloop()
