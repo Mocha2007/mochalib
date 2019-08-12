@@ -66,7 +66,7 @@ def numpad(n: str):
 			stack[-1] *= -1
 	elif n == '/': # 47
 		if 1 < len(stack):
-			stack.append(stack.pop() / stack.pop())
+			stack.append(stack.pop(-2) / stack.pop())
 		else:
 			if stack[-1]:
 				stack[-1] = 0
