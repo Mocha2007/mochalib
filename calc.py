@@ -1,4 +1,4 @@
-from copy import copy
+from time import sleep
 import tkinter as tk
 # ty https://www.python-course.eu/tkinter_buttons.php <3
 
@@ -21,17 +21,52 @@ stack = [0]
 
 # functions
 
+def error(name: str='Error'):
+	n = 5
+	for i in range(n):
+		label.config(text=name, bg='red' if i % 2 else 'white')
+		sleep(1/n)
+	stack = [0]
+	screen_update()
+
+
 def numpad(n: str):
 	print(1, type(n), n)
-	if n in digits:
+	if n in digits: # 48-57
 		print(2)
 		n = int(n)
 		stack[-1] *= 10
 		stack[-1] += n if 0 <= n else -n
+	# other than numbers
+	elif n == '*': # 42
+		if 1 < len(stack):
+			stack.append(stack.pop() * stack.pop())
+		else:
+			stack[-1] = 0
+	elif n == '+': # 43
+		if 1 < len(stack):
+			stack.append(stack.pop() + stack.pop())
+	elif n == '-': # 45
+		if 1 < len(stack):
+			stack.append(stack.pop(-2) - stack.pop())
+		else:
+			stack[-1] *= -1
+	elif n == '/': # 47
+		if 1 < len(stack):
+			stack.append(stack.pop() / stack.pop())
+		else:
+			if stack[-1]:
+				stack[-1] = 0
+			else:
+				error('ZeroDivisionError')
+	elif n == '\\': # 92
+		if 1 < len(stack):
+			stack.append(stack.pop(-2))
+	
 	screen_update()
 
 def screen_update():
-	label.config(text=str(stack[-1]))
+	label.config(text=str(stack[-1]), bg='white')
 
 # make the gui 
  
