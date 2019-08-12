@@ -18,21 +18,24 @@ for i, row in enumerate(keys):
 # set up vars
 
 stack = [0]
+history = []
 
 # functions
 
 def error(name: str='Error'):
 	n = 5
 	for i in range(n):
-		label.config(text=name, bg='red' if i % 2 else 'white')
+		screen.config(text=name, bg='red' if i % 2 else 'white')
 		sleep(1/n)
 	stack = [0]
 	screen_update()
 
 
 def numpad(n: str):
+	global history
 	global stack
 	print(n)
+	history.append(n)
 	if n in digits: # 48-57
 		n = int(n)
 		stack[-1] *= 10
@@ -40,7 +43,8 @@ def numpad(n: str):
 	# speshul
 	elif n == 'clear':
 		stack = [0]
-	elif n == 'enter':
+		history = []
+	elif n == '↵':
 		stack.append(0)
 	# other than special
 	elif n == '%': # 37
@@ -72,21 +76,24 @@ def numpad(n: str):
 	screen_update()
 
 def screen_update():
-	label.config(text='\n'.join(str(i) for i in stack), bg='white')
+	screen.config(text='\n'.join(str(i) for i in stack), bg='white')
+	history_screen.config(text=' '.join(history))
 
 # make the gui 
  
 root = tk.Tk()
 root.title("MoCalc")
 # tk.Font(family="Consolas", size=12)
-label = tk.Label(root, anchor='e', width=35, height=5)
-label.grid(row=0, columnspan=len(keys[0])+1)
+history_screen = tk.Label(root, anchor='e', width=35, height=1)
+history_screen.grid(row=0, columnspan=len(keys[0])+1)
+screen = tk.Label(root, anchor='e', width=35, height=5)
+screen.grid(row=1, columnspan=len(keys[0])+1)
 for i, row in enumerate(keys):
 	for j, k in enumerate(row):
 		buttons[i][j] = tk.Button(root, text=k, height=2, width=6, command=(lambda k: lambda: numpad(k))(k))
-		buttons[i][j].grid(row=i+1, column=j)
+		buttons[i][j].grid(row=i+2, column=j)
 del i, row, j, k
-tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=1, column=4, rowspan=2)
-tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('enter')).grid(row=3, column=4, rowspan=2)
+tk.Button(root, text='CLEAR', height=5, width=6, command=lambda: numpad('clear')).grid(row=2, column=4, rowspan=2)
+tk.Button(root, text='ENTER', height=5, width=6, command=lambda: numpad('↵')).grid(row=4, column=4, rowspan=2)
 screen_update()
 root.mainloop()
