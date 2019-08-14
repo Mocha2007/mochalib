@@ -11,17 +11,17 @@ def char_count(text: str) -> dict:
 
 
 def clean_text(text_name: str) -> str:
-	return sub("[^'a-z\.]+", ' ', load(text_name).lower().replace('.', ' . '))
+	return sub("[^'a-z.]+", ' ', load(text_name).lower().replace('.', ' . '))
 
 
-def corpus_from(text: str, minimum_attestation: int=0) -> set:
+def corpus_from(text: str, minimum_attestation: int = 0) -> set:
 	if minimum_attestation == 0:
 		return set(text.split())
 	print(len(text))
 	return {word for word, count in freq(text).items() if 3 <= count}
 
 
-def export_citations(text: str, minimum_attestation: int=3):
+def export_citations(text: str, minimum_attestation: int = 3):
 	text = text.replace('. ', '')
 	template = '<dt>{}</dt><dd><ul>'+'<li>{}</li>'*minimum_attestation+'</ul></dd>'
 	corpus = sorted(list(corpus_from(text, minimum_attestation)))
@@ -93,8 +93,8 @@ def pretty_letter_count(text: str) -> str:
 	string = ['\t%']
 	total = sum(i[1] for i in count)
 	maximum = max(i[1] for i in count)
-	for char, freq in count:
-		string.append('{}\t{}%\t{}'.format(char, round(100*freq/total, 3), '█'*round(64*freq/maximum)))
+	for char, hz in count:
+		string.append('{}\t{}%\t{}'.format(char, round(100*hz/total, 3), '█'*round(64*hz/maximum)))
 	return '\n'.join(string)
 
 
@@ -103,19 +103,20 @@ def pretty_freq(text: str) -> str:
 	length = len(text.split())
 	lemmata = len(corpus_from(text, 3))
 	lengths = word_lengths(text)
-	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times, of length {}-{}\n'.format(length, int(.22*length/60), lemmata, min(lengths), max(lengths))
-	top_ten_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
-	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_ten_words)
+	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times, of length {}-{}\n'.format(
+		length, int(.22*length/60), lemmata, min(lengths), max(lengths))
+	top_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
+	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_words)
 
 
-def random_word(freq: dict) -> str:
+def random_word(frequency: dict) -> str:
 	wordlist = []
-	for word, count in freq.items():
+	for word, count in frequency.items():
 		wordlist += [word]*count
 	return choice(wordlist)
 
 
-def speak(markov_chain: dict, max_len: int=50) -> str:
+def speak(markov_chain: dict, max_len: int = 50) -> str:
 	words = [choice(list(markov_chain['.']))]
 	for _ in range(max_len):
 		words.append(random_word(markov_chain[words[-1]]))
@@ -128,7 +129,7 @@ def word_lengths(text: str) -> set:
 	return {len(word) for word in corpus_from(text)}
 
 
-def test(filename: str='star wars'):
+def test(filename: str = 'star wars'):
 	# from time import time
 	# start_time = time()
 	kjb = markov_from(filename)

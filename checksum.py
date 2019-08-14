@@ -1,6 +1,7 @@
 from textwrap import wrap
 
-def string_checksum(string: str, b: int=2) -> int:
+
+def string_checksum(string: str, b: int = 2) -> int:
 	"""outputs an 8b-bit integer (default: 16-bit)
 	b	sigma
 	1	2.885    8-bit
