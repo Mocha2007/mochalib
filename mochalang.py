@@ -1,4 +1,5 @@
 from re import sub, compile
+from random import choice
 
 romanizations = [
 	('[ΑАԱ]', 'A'),
@@ -119,6 +120,22 @@ morsekey = {
 }
 
 
+def lettersquare(n: int, mode: str) -> str:
+	if mode == 'scrabble':
+		source = 'e'*12+'ai'*9+'o'*8+'nrt'*6+'lsud'*4+'g'*3+'bcmpfhvwy'*2+'kjxqz'
+	elif mode == 'freq':
+		source = 'e'*172+'t'*122+'a'*110+'o'*101+'i'*94+'n'*91+'s'*86+'h'*82+'r'*81+'d'*57+'l'*54+'c'*38+'u'*37+'m'*33+'w'*32+'f'*30+'gy'*27+'p'*26+'b'*20+'v'*13+'k'*10+'jx'*2+'qz'
+	else:
+		source = 'abcdefghijklmnopqrstuvwxyz'
+	o = '```'
+	for row in range(n):
+		r = '\n'
+		for column in range(n):
+			r += choice(source)
+		o += r
+	return o+'\n```'
+
+
 def morse(string):
 	string = list(sub(r'[^\da-z ]', '', string.lower()))
 	string = list(map(lambda x: morsekey[x], string))
@@ -151,17 +168,17 @@ def scrabble(string):
 	return score
 
 
-def unmojibake(string, fro, to):
+def unmojibake(string: str, fro: str, to: str) -> str:
 	return bytes(string, fro).decode(to)
 
 
-def romanize(string):
+def romanize(string: str) -> str:
 	for i in romanizations:
 		string = sub(i[0], i[1], string)
 	return string
 
 
-def soundex(string):
+def soundex(string: str) -> str:
 	# Pre-rules
 	string = string.title()
 	# R1

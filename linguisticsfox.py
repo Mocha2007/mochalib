@@ -1,6 +1,6 @@
-from typing import Dict, Set, Tuple
-from random import choice, random
 from math import e, log, pi
+from random import choice, random
+from typing import Dict, Set, Tuple
 
 
 def log_normal(x: float, sigma: float, mu: float) -> float:
@@ -23,7 +23,7 @@ class Morpheme:
 	def __repr__(self) -> str:
 		return ''.join([str(i) for i in self.phonemes])
 
-	def __getitem__(self, item) -> Phoneme:
+	def __getitem__(self, item: int) -> Phoneme:
 		return self.phonemes[item]
 
 	def __len__(self) -> int:

@@ -16,4 +16,6 @@ def search_all_files(regexp: str):
 		search_file(file, regexp)
 
 while 1:
+	# this is a tool to do a regex search of an entire directory
+	# made this to help with modding, but it can apply to anything
 	search_all_files(input('> '))
