@@ -73,22 +73,25 @@ def histogram(filename: str):
 def plot_bytes(filename: str):
 	import matplotlib.pyplot as plt
 
-	bytestring = get_hex(filename)
+	bytestring = get_hex(filename, 0, 0x100000) # 1 Mb
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
 	ax.set_facecolor('#000000')
 	ax.axis('equal')
-	
-	plt.title('Bytespace')
+
+	plt.title('Byte Transitions')
 	plt.xlabel('i-th byte')
 	plt.ylabel('i+1-th byte')
+	plt.xlim((0, 255))
+	plt.ylim((0, 255))
 
-	for i in range(len(bytestring)-1): # todo implement chunking
-		x = bytestring[i]
-		y = bytestring[i+1]
-		plt.scatter(x, y, marker='o', s=15, zorder=3, c='#00ff00')
+	xs, ys = [], []
+	for i in range(len(bytestring)-1):
+		xs.append(bytestring[i])
+		ys.append(bytestring[i+1])
 
+	plt.hist2d(xs, ys, bins=(256, 256), vmax=64)
 	plt.show()
 
 
