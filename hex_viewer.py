@@ -122,6 +122,12 @@ def show_hex(filename: str):
 					scroll(-1)
 				elif event.key == pygame.K_DOWN: # down
 					scroll(1)
+		# keyhold
+		pressed = pygame.key.get_pressed()
+		if pressed[pygame.K_w]:
+			scroll(-1)
+		elif pressed[pygame.K_s]:
+			scroll(1)
 		# pacing
 		wait_time = start_time + 1/fps - time()
 		if 0 < wait_time:
