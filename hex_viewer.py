@@ -1,5 +1,6 @@
-import pygame
 import os
+import pygame
+import sys
 from random import choice
 from time import sleep, time
 from typing import Set
@@ -121,7 +122,12 @@ def split_every(iterable, n: int) -> list:
 	return [iterable[i:i+n] for i in range(0, len(iterable), n)]
 
 
-current_dir = os.getenv('UserProfile') + '\\Desktop'
-current_filename = random_filename(current_dir, 'txt')
-# current_filename = input('> ')
+# current_dir = os.getenv('UserProfile') + '\\Desktop'
+# current_filename = random_filename(current_dir, 'txt')
+
+if 1 < len(sys.argv):
+	current_filename = sys.argv[1]
+else:
+	current_filename = input('> ')
+
 show_hex(current_filename)
