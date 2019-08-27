@@ -8,11 +8,12 @@ from typing import Set
 black = 0, 0, 0
 blue = 64, 128, 255
 green = 0, 255, 0
+red = 255, 0, 0
 
 font_size = 16
 fps = 30
 origin = 0, 0
-window_size = 570, 560
+window_size = 640, 560
 
 special = {
 	7: ' \\a', # BEL
@@ -105,7 +106,17 @@ def show_hex(filename: str):
 		char_text = pretty_chars(data)
 		screen_text = '\n\n'.join([filename+filesize, hex_text])
 		text(screen_text)
-		text(char_text, (0, 300), blue)
+		text(char_text, (0, 304), blue)
+		# indices
+		# top x
+		text('  ' + '   '.join(hex_representation(i, 1) for i in range(0x10)), (0, 16), red)
+		# bottom x
+		text('  ' + '   '.join(hex_representation(i, 1) for i in range(0x10)), (0, 288), red)
+		# top y (right)
+		text('\n'.join(hex_representation(i) for i in range(start, start+256, 0x10)), (590, 32), red)
+		# bottom y (right)
+		text('\n'.join(hex_representation(i) for i in range(start, start+256, 0x10)), (590, 304), red)
+		# end indices
 		pygame.display.flip()
 		# events
 		for event in pygame.event.get():
