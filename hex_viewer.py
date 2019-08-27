@@ -73,7 +73,8 @@ def histogram(filename: str):
 def plot_bytes(filename: str):
 	import matplotlib.pyplot as plt
 
-	bytestring = get_hex(filename, 0, 0x100000) # 1 Mb
+	bytestring = open(filename, 'rb').read()
+	peak = int(len(bytestring)**(1/3)) + 1
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
@@ -86,12 +87,9 @@ def plot_bytes(filename: str):
 	plt.xlim((0, 255))
 	plt.ylim((0, 255))
 
-	xs, ys = [], []
-	for i in range(len(bytestring)-1):
-		xs.append(bytestring[i])
-		ys.append(bytestring[i+1])
+	xs, ys = list(bytestring)[:-1], list(bytestring)[1:]
 
-	plt.hist2d(xs, ys, bins=(256, 256), vmax=64)
+	plt.hist2d(xs, ys, bins=(256, 256), vmax=peak)
 	plt.show()
 
 
@@ -210,5 +208,5 @@ else:
 		current_dir = os.getenv('UserProfile') + '\\Desktop'
 		current_filename = random_filename(current_dir, 'txt')
 
+plot_bytes(current_filename)
 show_hex(current_filename)
-# plot_bytes(current_filename)
