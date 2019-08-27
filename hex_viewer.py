@@ -207,5 +207,5 @@ else:
 		current_dir = os.getenv('UserProfile') + '\\Desktop'
 		current_filename = random_filename(current_dir, 'txt')
 
-# show_hex(current_filename)
+show_hex(current_filename)
 # plot_bytes(current_filename)
