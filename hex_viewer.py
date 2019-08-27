@@ -80,6 +80,12 @@ def show_hex(filename: str):
 	
 	filesize = '\t({} b)'.format(os.path.getsize(filename))
 
+	def scroll(lines: int):
+		nonlocal start
+		start += 16 * lines
+		if start < 0:
+			start = 0
+
 	def text(string: str, coords: (int, int) = (0, 0), color: (int, int, int) = green):
 		string = string.replace('\t', ' '*4)
 		myfont = pygame.font.SysFont('Consolas', font_size)
@@ -107,12 +113,15 @@ def show_hex(filename: str):
 				pygame.display.quit()
 				pygame.quit()
 			elif event.type == pygame.MOUSEBUTTONDOWN:
-				if event.button == 4:
-					start -= 16
-					if start < 0:
-						start = 0
-				elif event.button == 5:
-					start += 16
+				if event.button == 4: # up
+					scroll(-1)
+				elif event.button == 5: # down
+					scroll(1)
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_UP: # up
+					scroll(-1)
+				elif event.key == pygame.K_DOWN: # down
+					scroll(1)
 		# pacing
 		wait_time = start_time + 1/fps - time()
 		if 0 < wait_time:
