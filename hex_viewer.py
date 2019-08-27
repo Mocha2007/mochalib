@@ -64,6 +64,8 @@ def histogram(filename: str):
 	ax.set_facecolor('#000000')
 	
 	plt.title('Bytes')
+	plt.xlabel('Byte')
+	plt.ylabel('Count')
 	plt.hist([i for i in bytestring], 0x100)
 	plt.show()
 
