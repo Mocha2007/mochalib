@@ -132,12 +132,12 @@ def split_every(iterable, n: int) -> list:
 	return [iterable[i:i+n] for i in range(0, len(iterable), n)]
 
 
-# current_dir = os.getenv('UserProfile') + '\\Desktop'
-# current_filename = random_filename(current_dir, 'txt')
-
 if 1 < len(sys.argv):
 	current_filename = sys.argv[1]
 else:
 	current_filename = input('> ')
+	if not current_filename:
+		current_dir = os.getenv('UserProfile') + '\\Desktop'
+		current_filename = random_filename(current_dir, 'txt')
 
 show_hex(current_filename)
