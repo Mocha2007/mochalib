@@ -59,7 +59,7 @@ def histogram(filename: str):
 
 	bytestring = get_hex(filename)
 
-	fig = plt.figure(figsize=(7, 7))
+	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
 	ax.set_facecolor('#000000')
 	
@@ -75,7 +75,7 @@ def plot_bytes(filename: str, bytes_per_coord: int = 2):
 
 	bytestring = get_hex(filename)
 
-	fig = plt.figure(figsize=(7, 7))
+	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
 	ax.set_facecolor('#000000')
 	ax.axis('equal')
