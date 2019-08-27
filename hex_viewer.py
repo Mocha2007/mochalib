@@ -57,7 +57,8 @@ def hex_representation(integer: int, min_digits: int = 2) -> str:
 def histogram(filename: str):
 	import matplotlib.pyplot as plt
 
-	bytestring = get_hex(filename)
+	bytestring = open(filename, 'rb').read()
+	peak = max(16, len(bytestring) // 256)
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
@@ -66,7 +67,7 @@ def histogram(filename: str):
 	plt.title('Bytes')
 	plt.xlabel('Byte')
 	plt.ylabel('Count')
-	plt.hist([i for i in bytestring], 0x100)
+	plt.hist([i for i in bytestring], peak)
 	plt.show()
 
 
@@ -210,5 +211,5 @@ else:
 		current_dir = os.getenv('UserProfile') + '\\Desktop'
 		current_filename = random_filename(current_dir, 'txt')
 
+plot_bytes(current_filename)
 show_hex(current_filename)
-# plot_bytes(current_filename)
