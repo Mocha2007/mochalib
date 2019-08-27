@@ -3,7 +3,7 @@ import pygame
 import sys
 from random import choice
 from time import sleep, time
-from typing import Set
+from typing import List, Set
 
 black = 0, 0, 0
 blue = 64, 128, 255
@@ -26,6 +26,14 @@ special = {
 }
 
 
+def bytes_to_int(bytes: List[int]) -> int:
+	s = 0
+	for i in bytes[::-1]:
+		s *= 0x100
+		s += i
+	return s
+
+
 def get_filenames_from_dir(location: str, extension: str = None) -> Set[str]:
 	filenames = set()
 	for file in os.listdir(location):
@@ -44,6 +52,27 @@ def hex_representation(integer: int, min_digits: int = 2) -> str:
 	h = hex(integer)[2:]
 	padding = max(0, min_digits - len(h))
 	return '0'*padding + h
+
+
+def plot_bytes(filename: str, bytes_per_coord: int = 2):
+	import matplotlib.pyplot as plt
+
+	bytestring = get_hex(filename)
+
+	plt.figure(figsize=(7, 7))
+	plt.title('Bytespace')
+	plt.xlabel('x ({} b)'.format(bytes_per_coord))
+	plt.ylabel('y ({} b)'.format(bytes_per_coord))
+
+	for i in range(0, len(bytestring), bytes_per_coord*2): # todo implement chunking
+		if len(bytestring) <= i + bytes_per_coord:
+			break
+		x = bytestring[i:i+bytes_per_coord]
+		y = bytestring[i+bytes_per_coord:i+2*bytes_per_coord]
+		x, y = bytes_to_int(x), bytes_to_int(y)
+		plt.scatter(x, y, marker='o', s=15, zorder=3)
+
+	plt.show()
 
 
 def pretty_bytes(bytestring: bytes) -> str:
@@ -162,3 +191,4 @@ else:
 		current_filename = random_filename(current_dir, 'txt')
 
 show_hex(current_filename)
+# plot_bytes(current_filename)
