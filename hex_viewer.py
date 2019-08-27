@@ -75,6 +75,8 @@ def random_filename(directory: str, extension: str = None) -> str:
 def show_hex(filename: str):
 	pygame.init()
 	screen = pygame.display.set_mode(window_size)
+	
+	filesize = '\t({} b)'.format(os.path.getsize(filename))
 
 	def text(string: str, coords: (int, int) = (0, 0), color: (int, int, int) = green):
 		string = string.replace('\t', ' '*4)
@@ -93,7 +95,7 @@ def show_hex(filename: str):
 		data = get_hex(filename, start)
 		hex_text = pretty_bytes(data)
 		char_text = pretty_chars(data)
-		screen_text = '\n\n'.join([filename, hex_text])
+		screen_text = '\n\n'.join([filename+filesize, hex_text])
 		text(screen_text)
 		text(char_text, (0, 300), blue)
 		pygame.display.flip()
