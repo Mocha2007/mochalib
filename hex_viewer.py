@@ -54,6 +54,20 @@ def hex_representation(integer: int, min_digits: int = 2) -> str:
 	return '0'*padding + h
 
 
+def histogram(filename: str):
+	import matplotlib.pyplot as plt
+
+	bytestring = get_hex(filename)
+
+	fig = plt.figure(figsize=(7, 7))
+	ax = fig.add_subplot(1, 1, 1)
+	ax.set_facecolor('#000000')
+	
+	plt.title('Bytes')
+	plt.hist([i for i in bytestring], 0x100)
+	plt.show()
+
+
 def plot_bytes(filename: str, bytes_per_coord: int = 2):
 	import matplotlib.pyplot as plt
 
@@ -195,4 +209,4 @@ else:
 		current_filename = random_filename(current_dir, 'txt')
 
 show_hex(current_filename)
-# plot_bytes(current_filename)
+# histogram(current_filename)
