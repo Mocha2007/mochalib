@@ -51,6 +51,7 @@ def pretty_bytes(bytestring: bytes) -> str:
 		if i % 0x10 == 0:
 			if i:
 				string += '\n'
+			string += ' '
 		else:
 			string += '  '
 		string += hex_representation(byte)
