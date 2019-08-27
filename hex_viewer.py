@@ -59,7 +59,10 @@ def plot_bytes(filename: str, bytes_per_coord: int = 2):
 
 	bytestring = get_hex(filename)
 
-	plt.figure(figsize=(7, 7))
+	fig = plt.figure(figsize=(7, 7))
+	ax = fig.add_subplot(1, 1, 1)
+	ax.set_facecolor('#000000')
+	
 	plt.title('Bytespace')
 	plt.xlabel('x ({} b)'.format(bytes_per_coord))
 	plt.ylabel('y ({} b)'.format(bytes_per_coord))
@@ -70,7 +73,7 @@ def plot_bytes(filename: str, bytes_per_coord: int = 2):
 		x = bytestring[i:i+bytes_per_coord]
 		y = bytestring[i+bytes_per_coord:i+2*bytes_per_coord]
 		x, y = bytes_to_int(x), bytes_to_int(y)
-		plt.scatter(x, y, marker='o', s=15, zorder=3)
+		plt.scatter(x, y, marker='o', s=15, zorder=3, c='#00ff00')
 
 	plt.show()
 
