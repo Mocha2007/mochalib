@@ -642,12 +642,24 @@ class Body:
 	@property
 	def atm_retention(self) -> float:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
+		# initial assessment from :
 		# https://upload.wikimedia.org/wikipedia/commons/4/4a/Solar_system_escape_velocity_vs_surface_temperature.svg
-		return 11 * (self.temp / self.v_e)**2
+		# revised based on formulas derived from:
+		# Reichart, Dan. "Lesson 6 - Earth and the Moon". Astronomy 101: The Solar System, 1st ed.
+		try:
+			t = self.greenhouse_temp
+		except KeyError:
+			t = self.temp
+		return 887.364 * t / (self.v_e)**2
 
 	@property
 	def atmosphere(self) -> Atmosphere:
 		return self.properties['atmosphere']
+
+	@property
+	def greenhouse_temp(self) -> float:
+		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
+		return self.temp * self.atmosphere.greenhouse
 
 	# physical properties
 	@property
