@@ -27,9 +27,9 @@ special = {
 }
 
 
-def bytes_to_int(bytes: List[int]) -> int:
+def bytes_to_int(bytestring: List[int]) -> int:
 	s = 0
-	for i in bytes[::-1]:
+	for i in bytestring[::-1]:
 		s *= 0x100
 		s += i
 	return s
@@ -105,8 +105,37 @@ def plot_bytes2(filename: str):
 		if len(bytestring) <= i + 2:
 			break
 		g, b = bytestring[i+1:i+3]
-		x, y = (i//3) % dim, (i//3) // dim
-		screen.set_at((x, y), (r, g, b))
+		coords = (i//3) % dim, (i//3) // dim
+		screen.set_at(coords, (r, g, b))
+	
+	pygame.display.flip()
+	
+	while 1:
+		# events
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.display.quit()
+				pygame.quit()
+		sleep(1/30)
+
+
+def plot_bytes3(filename: str):
+	bytestring = open(filename, 'rb').read(0x200000) # read at most 2 MB
+
+	dim = ceil(len(bytestring)**.5)
+	pygame.init()
+	screen = pygame.display.set_mode((dim,)*2)
+	# 				operators			symbols				digits
+	# 				symbols				uppercase			symbols
+	# 				lowercase			symbols				DEL
+	bytecolor = [(255, 0, 255)]*0x20 + [(255, 0, 0)]*0x10 + [(255, 255, 0)]*10 + \
+				[(255, 0, 0)]*7 + [(0, 255, 0)]*26 + [(255, 0, 0)]*6 + \
+				[(0, 255, 255)]*26 + [(255, 0, 0)]*4 + [(255, 0, 255)] + [(0, 255, 128)]*0x80
+
+	for i, byte in list(enumerate(bytestring)):
+		color = bytecolor[byte]
+		coords = i % dim, i // dim
+		screen.set_at(coords, color)
 	
 	pygame.display.flip()
 	
@@ -140,7 +169,8 @@ def pretty_chars(bytestring: bytes) -> str:
 				string += '\n'
 		else:
 			string += ' '
-		string += ('  ' + chr(byte)) if 0x20 <= byte <= 0x7E else (special[byte] if byte in special else '   ') # '\\' + hex_representation(byte)
+		string += ('  ' + chr(byte)) if 0x20 <= byte <= 0x7E else (special[byte] if byte in special else '   ')
+		# '\\' + hex_representation(byte)
 	return string
 
 
