@@ -74,7 +74,7 @@ def plot_bytes(filename: str):
 	import matplotlib as mpl
 	import matplotlib.pyplot as plt
 
-	bytestring = open(filename, 'rb').read()
+	bytestring = open(filename, 'rb').read(0x2000000) # read at most 32 MB
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
