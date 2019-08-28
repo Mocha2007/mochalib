@@ -119,7 +119,7 @@ def plot_bytes2(filename: str):
 		sleep(1/30)
 
 
-def plot_bytes3(filename: str, key: str='type'):
+def plot_bytes3(filename: str, key: str='type'): # todo prerender the image first, then just move the image lol
 	def scroll(lines: int):
 		nonlocal start
 		# scroll
