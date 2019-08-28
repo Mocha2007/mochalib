@@ -1,6 +1,7 @@
 import os
 import pygame
 import sys
+from math import ceil
 from random import choice
 from time import sleep, time
 from typing import List, Set
@@ -91,6 +92,31 @@ def plot_bytes(filename: str):
 
 	plt.hist2d(xs, ys, bins=(256, 256), norm=mpl.colors.LogNorm())
 	plt.show()
+
+
+def plot_bytes2(filename: str):
+	bytestring = open(filename, 'rb').read(0x200000) # read at most 2 MB
+
+	dim = ceil((len(bytestring)/3)**.5)
+	pygame.init()
+	screen = pygame.display.set_mode((dim,)*2)
+
+	for i, r in list(enumerate(bytestring))[::3]:
+		if len(bytestring) <= i + 2:
+			break
+		g, b = bytestring[i+1:i+3]
+		x, y = (i//3) % dim, (i//3) // dim
+		screen.set_at((x, y), (r, g, b))
+	
+	pygame.display.flip()
+	
+	while 1:
+		# events
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.display.quit()
+				pygame.quit()
+		sleep(1/30)
 
 
 def pretty_bytes(bytestring: bytes) -> str:
