@@ -123,31 +123,31 @@ def plot_bytes3(filename: str, key: str='type'):
 	def scroll(lines: int):
 		nonlocal start
 		# scroll
-		width = size[0]//2
-		start += width * lines * 4
+		height = size[1]//2
+		start += height * lines * 4
 		if start < 0:
 			start = 0
 		# rerender
 		file = open(filename, 'rb')
 		file.seek(start)
-		bytestring = file.read(0x20000) # read at most 128 kb
+		bytestring = file.read(0x40000) # read at most 256 kb
 		screen.fill(black)
 		for i, byte in list(enumerate(bytestring)):
 			if key == 'type':
 				color = bytecolor[byte]
 			elif key == 'val':
 				color = (byte,)*3
-			# left half (64 kb)
-			coords = i % width, i // width
+			# top half (256 kb)
+			coords = i // height, i % height
 			screen.set_at(coords, color)
-			# right half (1 kb)
-			if coords[1] < 4:
-				rect = width, i, width, 1
+			# bottom half (1 kb)
+			if coords[0] < 4:
+				rect = i, height, 1, height
 				pygame.draw.rect(screen, color, rect)
 		pygame.display.flip()
 
 	start = 0
-	size = 256, 512
+	size = 1024, 512
 	pygame.init()
 	screen = pygame.display.set_mode(size)
 	# 				operators			symbols				digits
@@ -167,9 +167,9 @@ def plot_bytes3(filename: str, key: str='type'):
 				pygame.quit()
 		# keyhold
 		pressed = pygame.key.get_pressed()
-		if pressed[pygame.K_w]:
+		if pressed[pygame.K_a]:
 			scroll(-1)
-		elif pressed[pygame.K_s]:
+		elif pressed[pygame.K_d]:
 			scroll(1)
 		sleep(1/30)
 
