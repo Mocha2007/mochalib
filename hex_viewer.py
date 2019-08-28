@@ -71,10 +71,10 @@ def histogram(filename: str):
 
 
 def plot_bytes(filename: str):
+	import matplotlib as mpl
 	import matplotlib.pyplot as plt
 
 	bytestring = open(filename, 'rb').read()
-	peak = int(len(bytestring)**(1/3)) + 1
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
@@ -89,7 +89,7 @@ def plot_bytes(filename: str):
 
 	xs, ys = list(bytestring)[:-1], list(bytestring)[1:]
 
-	plt.hist2d(xs, ys, bins=(256, 256), vmax=peak)
+	plt.hist2d(xs, ys, bins=(256, 256), norm=mpl.colors.LogNorm())
 	plt.show()
 
 
