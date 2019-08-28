@@ -124,7 +124,7 @@ def plot_bytes3(filename: str, key: str='type'):
 		nonlocal start
 		# scroll
 		width = size[0]//2
-		start += width * lines
+		start += width * lines * 4
 		if start < 0:
 			start = 0
 		# rerender
@@ -137,12 +137,12 @@ def plot_bytes3(filename: str, key: str='type'):
 				color = bytecolor[byte]
 			elif key == 'val':
 				color = (byte,)*3
+			# left half (64 kb)
 			coords = i % width, i // width
 			screen.set_at(coords, color)
-			# right half
-			if not coords[1]:
-				h = size[1]//width
-				rect = width, i*h, width, h
+			# right half (1 kb)
+			if coords[1] < 4:
+				rect = width, i, width, 1
 				pygame.draw.rect(screen, color, rect)
 		pygame.display.flip()
 
