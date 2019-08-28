@@ -75,7 +75,7 @@ def plot_bytes(filename: str):
 	import matplotlib as mpl
 	import matplotlib.pyplot as plt
 
-	bytestring = open(filename, 'rb').read(0x2000000) # read at most 32 MB
+	bytestring = open(filename, 'rb').read(0x2000000) # read at most 32 Mb
 
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
@@ -95,7 +95,7 @@ def plot_bytes(filename: str):
 
 
 def plot_bytes2(filename: str):
-	bytestring = open(filename, 'rb').read(0x200000) # read at most 2 MB
+	bytestring = open(filename, 'rb').read(0x200000) # read at most 2 Mb
 
 	dim = ceil((len(bytestring)/3)**.5)
 	pygame.init()
@@ -120,11 +120,33 @@ def plot_bytes2(filename: str):
 
 
 def plot_bytes3(filename: str):
-	bytestring = open(filename, 'rb').read(0x200000) # read at most 2 MB
+	def scroll(lines: int):
+		nonlocal start
+		# scroll
+		width = size[0]//2
+		start += width * lines
+		if start < 0:
+			start = 0
+		# rerender
+		file = open(filename, 'rb')
+		file.seek(start)
+		bytestring = file.read(0x20000) # read at most 128 kb
+		screen.fill(black)
+		for i, byte in list(enumerate(bytestring)):
+			color = bytecolor[byte]
+			coords = i % width, i // width
+			screen.set_at(coords, color)
+			# right half
+			if not coords[1]:
+				h = size[1]//width
+				rect = width, i*h, width, h
+				pygame.draw.rect(screen, color, rect)
+		pygame.display.flip()
 
-	dim = ceil(len(bytestring)**.5)
+	start = 0
+	size = 256, 512
 	pygame.init()
-	screen = pygame.display.set_mode((dim,)*2)
+	screen = pygame.display.set_mode(size)
 	# 				operators			symbols				digits
 	# 				symbols				uppercase			symbols
 	# 				lowercase			symbols				DEL
@@ -132,19 +154,20 @@ def plot_bytes3(filename: str):
 				[(255, 0, 0)]*7 + [(0, 255, 0)]*26 + [(255, 0, 0)]*6 + \
 				[(0, 255, 255)]*26 + [(255, 0, 0)]*4 + [(255, 0, 255)] + [(0, 255, 128)]*0x80
 
-	for i, byte in list(enumerate(bytestring)):
-		color = bytecolor[byte]
-		coords = i % dim, i // dim
-		screen.set_at(coords, color)
-	
-	pygame.display.flip()
-	
+	scroll(0)
+
 	while 1:
 		# events
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.display.quit()
 				pygame.quit()
+		# keyhold
+		pressed = pygame.key.get_pressed()
+		if pressed[pygame.K_w]:
+			scroll(-1)
+		elif pressed[pygame.K_s]:
+			scroll(1)
 		sleep(1/30)
 
 
