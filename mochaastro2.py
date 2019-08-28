@@ -228,6 +228,10 @@ class Orbit:
 		# print('mid')
 		return self.close_approach(other, t, n/2, delta_t_tolerance, after_only)
 
+	def crosses(self, other) -> bool:
+		"""do two orbits cross?"""
+		return self.peri < other.peri < self.apo or other.peri < self.peri < other.apo
+
 	def distance(self, other) -> (float, float):
 		# other is of type Orbit
 		"""Min and max distances (rad)"""
@@ -354,7 +358,22 @@ class Orbit:
 			return p1*p2/(p2-p1)
 		return inf
 
-	def T_kozai(self, other) -> float:
+	def t_collision(self, other) -> float:
+		"""Collision timescale: other is a body object orbiting the same primary, out in (s)"""
+		# Hamilton and Burns (Science 264, 550-553, 1994)
+		# U_r / U is baaaasically 1, right? :^)
+		assert self.crosses(other.orbit)
+		line1 = pi * (sin(self.i)**2 + sin(other.orbit.i)**2)**.5
+		line2 = (other.orbit.a / other.radius)**2 * self.p
+		timescale = line1*line2
+		v_col = self.e * other.orbit.v
+		if v_col < other.v_e:
+			# from personal correspondence with D. Hamilton
+			correction_factor = 1 + (other.v_e/v_col)**2
+			return timescale / correction_factor
+		return timescale
+
+	def t_kozai(self, other) -> float:
 		"""Kozai oscillation timescale (s)"""
 		# other is type Body
 		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
