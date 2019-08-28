@@ -153,7 +153,7 @@ def plot_bytes3(filename: str, key: str='type'):
 	# 				operators			symbols				digits
 	# 				symbols				uppercase			symbols
 	# 				lowercase			symbols				DEL
-	bytecolor = [(255, 0, 255)]*0x20 + [(255, 0, 0)]*0x10 + [(255, 255, 0)]*10 + \
+	bytecolor = [(255, 0, 255)]*0x21 + [(255, 0, 0)]*15 + [(255, 255, 0)]*10 + \
 				[(255, 0, 0)]*7 + [(0, 255, 0)]*26 + [(255, 0, 0)]*6 + \
 				[(0, 255, 255)]*26 + [(255, 0, 0)]*4 + [(255, 0, 255)] + [(128, 0, 255)]*0x80
 
