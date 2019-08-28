@@ -119,7 +119,7 @@ def plot_bytes2(filename: str):
 		sleep(1/30)
 
 
-def plot_bytes3(filename: str):
+def plot_bytes3(filename: str, key: str='type'):
 	def scroll(lines: int):
 		nonlocal start
 		# scroll
@@ -133,7 +133,10 @@ def plot_bytes3(filename: str):
 		bytestring = file.read(0x20000) # read at most 128 kb
 		screen.fill(black)
 		for i, byte in list(enumerate(bytestring)):
-			color = bytecolor[byte]
+			if key == 'type':
+				color = bytecolor[byte]
+			elif key == 'val':
+				color = (byte,)*3
 			coords = i % width, i // width
 			screen.set_at(coords, color)
 			# right half
