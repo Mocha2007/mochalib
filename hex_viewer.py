@@ -262,6 +262,10 @@ def show_hex(filename: str):
 					scroll(-1)
 				elif event.key == pygame.K_DOWN: # down
 					scroll(1)
+				elif event.key == pygame.K_END: # end
+					start = ceil(len(open(filename, 'rb').read())/16)*16 - 256
+				elif event.key == pygame.K_HOME: # beginning
+					start = 0
 				elif event.key == pygame.K_PAGEUP: # up x 16
 					scroll(-16)
 				elif event.key == pygame.K_PAGEDOWN: # down x 16
@@ -290,5 +294,5 @@ else:
 		current_dir = os.getenv('UserProfile') + '\\Desktop'
 		current_filename = random_filename(current_dir, 'txt')
 
-plot_bytes(current_filename)
+# plot_bytes(current_filename)
 show_hex(current_filename)
