@@ -256,17 +256,21 @@ def show_hex(filename: str):
 		# end indices
 		# display cursor byte address
 		cursor_rel = cursor[0] + 16*cursor[1]
-		cursor_address = start + cursor_rel
-		cursor_2b = bytes_to_int(data[cursor_rel:cursor_rel+2])
-		cursor_4b = bytes_to_int(data[cursor_rel:cursor_rel+4])
-		cursor_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
+		c_addr = hex(start + cursor_rel)[2:]
+		c_short = str(unpack('h', data[cursor_rel:cursor_rel+2]))[1:-2]
+		c_ushort = str(unpack('H', data[cursor_rel:cursor_rel+2]))[1:-2]
+		c_int = str(unpack('i', data[cursor_rel:cursor_rel+4]))[1:-2]
+		c_uint = str(unpack('I', data[cursor_rel:cursor_rel+4]))[1:-2]
+		c_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
 		lines = [
 			'Address\t{}',
-			'2b uint\t{}',
-			'4b uint\t{}',
+			'short  \t{}',
+			'(unsig)\t{}',
+			'int    \t{}',
+			'(unsig)\t{}',
 			'float  \t{}',
 		]
-		cursor_tooltip = '\n'.join(lines).format(hex(cursor_address)[2:], cursor_2b, cursor_4b, cursor_fl)
+		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_fl)
 		text(cursor_tooltip, (640, 0))
 		# highlight
 		if int(time()*2) % 2:
