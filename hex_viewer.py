@@ -276,9 +276,12 @@ def show_hex(filename: str):
 		text(cursor_tooltip, (640, 0))
 		# highlight
 		if int(time()*2) % 2:
-			# draw rect at char
-			rect = (cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 16
+			# draw rect at byte
+			rect = [(cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 16]
 			pygame.draw.rect(screen, green, rect)
+			# draw rect at char
+			rect[1] += 16*17
+			pygame.draw.rect(screen, blue, rect)
 		pygame.display.flip()
 		# events
 		for event in pygame.event.get():
