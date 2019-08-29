@@ -14,7 +14,7 @@ red = 255, 0, 0
 font_size = 16
 fps = 30
 origin = 0, 0
-window_size = 840, 560
+window_size = 900, 560
 
 special = {
 	7: ' \\a', # BEL
@@ -254,8 +254,10 @@ def show_hex(filename: str):
 		text('\n'.join(hex_representation(i) for i in range(start, start+256, 0x10)), (590, 304), red)
 		# end indices
 		# display cursor byte address
-		cursor_address = start + cursor[0] + 16*cursor[1]
-		cursor_tooltip = 'Address\t{}'.format(hex(cursor_address)[2:])
+		cursor_rel = cursor[0] + 16*cursor[1]
+		cursor_address = start + cursor_rel
+		cursor_2b = bytes_to_int(data[cursor_rel:cursor_rel+2])
+		cursor_tooltip = 'Address\t{}\n2 byte unsigned\t{}'.format(hex(cursor_address)[2:], cursor_2b)
 		text(cursor_tooltip, (640, 0))
 		# highlight
 		if int(time()*2) % 2:
