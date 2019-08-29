@@ -216,7 +216,7 @@ def show_hex(filename: str):
 		cursor[0] += dx
 		cursor[1] += dy
 		cursor[0] %= 16
-		cursor[1] %= 16
+		cursor[1] %= 15 # buffer needs as many as 8 bytes
 
 	def scroll(lines: int):
 		nonlocal start
