@@ -263,6 +263,7 @@ def show_hex(filename: str):
 		c_uint = str(unpack('I', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_db = str(unpack('d', data[cursor_rel:cursor_rel+8]))[1:-2]
+		c_rgb = tuple(data[cursor_rel+0] for i in range(3))
 		lines = [
 			'Address\t{}',
 			'short  \t{}',
@@ -271,9 +272,13 @@ def show_hex(filename: str):
 			'(unsig)\t{}',
 			'float  \t{}',
 			'double \t{}',
+			'RGB    \t{}',
 		]
-		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_fl, c_db)
+		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_fl, c_db, c_rgb)
 		text(cursor_tooltip, (640, 0))
+		# swatch
+		rect = 720, 112, 16, 16
+		pygame.draw.rect(screen, c_rgb, rect)
 		# highlight
 		if int(time()*2) % 2:
 			# draw rect at byte
