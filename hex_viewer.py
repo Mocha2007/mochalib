@@ -263,7 +263,7 @@ def show_hex(filename: str):
 		c_uint = str(unpack('I', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_db = str(unpack('d', data[cursor_rel:cursor_rel+8]))[1:-2]
-		c_rgb = tuple(data[cursor_rel+0] for i in range(3))
+		c_rgb = tuple(data[cursor_rel+i] for i in range(3))
 		lines = [
 			'Address\t{}',
 			'short  \t{}',
