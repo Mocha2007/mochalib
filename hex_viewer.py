@@ -14,7 +14,7 @@ red = 255, 0, 0
 font_size = 16
 fps = 30
 origin = 0, 0
-window_size = 640, 560
+window_size = 840, 560
 
 special = {
 	7: ' \\a', # BEL
@@ -207,8 +207,15 @@ def random_filename(directory: str, extension: str = None) -> str:
 def show_hex(filename: str):
 	pygame.init()
 	screen = pygame.display.set_mode(window_size)
-	
+	cursor = [0, 0]
 	filesize = '\t({} b)'.format(os.path.getsize(filename))
+
+	def cmove(dx: int, dy: int = 0):
+		nonlocal cursor
+		cursor[0] += dx
+		cursor[1] += dy
+		cursor[0] %= 16
+		cursor[1] %= 16
 
 	def scroll(lines: int):
 		nonlocal start
@@ -246,6 +253,15 @@ def show_hex(filename: str):
 		# bottom y (right)
 		text('\n'.join(hex_representation(i) for i in range(start, start+256, 0x10)), (590, 304), red)
 		# end indices
+		# display cursor byte address
+		cursor_address = start + cursor[0] + 16*cursor[1]
+		cursor_tooltip = 'Address\t{}'.format(hex(cursor_address)[2:])
+		text(cursor_tooltip, (640, 0))
+		# highlight
+		if int(time()*2) % 2:
+			# draw rect at char
+			rect = (cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 16
+			pygame.draw.rect(screen, green, rect)
 		pygame.display.flip()
 		# events
 		for event in pygame.event.get():
@@ -270,6 +286,22 @@ def show_hex(filename: str):
 					scroll(-16)
 				elif event.key == pygame.K_PAGEDOWN: # down x 16
 					scroll(16)
+				elif event.key == pygame.K_KP1: # cursor
+					cmove(-1, 1)
+				elif event.key == pygame.K_KP2: # cursor
+					cmove(0, 1)
+				elif event.key == pygame.K_KP3: # cursor
+					cmove(1, 1)
+				elif event.key == pygame.K_KP4: # cursor
+					cmove(-1)
+				elif event.key == pygame.K_KP6: # cursor
+					cmove(1)
+				elif event.key == pygame.K_KP7: # cursor
+					cmove(-1, -1)
+				elif event.key == pygame.K_KP8: # cursor
+					cmove(0, -1)
+				elif event.key == pygame.K_KP9: # cursor
+					cmove(1, -1)
 		# keyhold
 		pressed = pygame.key.get_pressed()
 		shifting = pressed[pygame.K_LSHIFT] | pressed[pygame.K_RSHIFT]
