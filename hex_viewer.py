@@ -3,6 +3,7 @@ import pygame
 import sys
 from math import ceil
 from random import choice
+from struct import unpack
 from time import sleep, time
 from typing import List, Set
 
@@ -14,7 +15,7 @@ red = 255, 0, 0
 font_size = 16
 fps = 30
 origin = 0, 0
-window_size = 900, 560
+window_size = 950, 560
 
 special = {
 	7: ' \\a', # BEL
@@ -257,7 +258,15 @@ def show_hex(filename: str):
 		cursor_rel = cursor[0] + 16*cursor[1]
 		cursor_address = start + cursor_rel
 		cursor_2b = bytes_to_int(data[cursor_rel:cursor_rel+2])
-		cursor_tooltip = 'Address\t{}\n2 byte unsigned\t{}'.format(hex(cursor_address)[2:], cursor_2b)
+		cursor_4b = bytes_to_int(data[cursor_rel:cursor_rel+4])
+		cursor_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
+		lines = [
+			'Address\t{}',
+			'2b uint\t{}',
+			'4b uint\t{}',
+			'float  \t{}',
+		]
+		cursor_tooltip = '\n'.join(lines).format(hex(cursor_address)[2:], cursor_2b, cursor_4b, cursor_fl)
 		text(cursor_tooltip, (640, 0))
 		# highlight
 		if int(time()*2) % 2:
