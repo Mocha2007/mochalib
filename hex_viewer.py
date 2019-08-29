@@ -282,7 +282,7 @@ def show_hex(filename: str):
 		# highlight
 		if int(time()*2) % 2:
 			# draw rect at byte
-			rect = [(cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 16]
+			rect = [(cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 14]
 			pygame.draw.rect(screen, green, rect)
 			# draw rect at char
 			rect[1] += 16*17
