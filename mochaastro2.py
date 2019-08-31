@@ -1521,6 +1521,49 @@ class System:
 
 
 # functions
+def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
+	from random import randint, uniform
+	# from time import time
+	# constants
+	# particle_n = 20000 # 500 -> 10 ms; 25000 -> 911 ms
+	sweep_area = 1.35 # venus-earth
+	# begin
+	extra_mass = .0014 * star_mass
+	particle_mass = extra_mass / particle_n
+	a_range = mercury.orbit.a * star_mass/sun.mass, neptune.orbit.a * star_mass/sun.mass
+	# list of [mass, sma]
+	particles = [[particle_mass, uniform(*a_range)] for _ in range(particle_n)]
+	# start = time()
+	for _ in range(10*particle_n):
+		i_c = randint(0, len(particles)-1)
+		chosen_particle = particles[i_c]
+		m_c, a_c = chosen_particle
+		# find target
+		found = False
+		for i, (m_o, a_o) in enumerate(particles):
+			if a_c/sweep_area < a_o < a_c*sweep_area and chosen_particle != (m_o, a_o):
+				found = True
+				break
+		# merge
+		if found:
+			m_new = m_c + m_o
+			a_new = (m_c*a_c + m_o*a_o)/m_new
+			particles[i_c] = m_new, a_new
+			del particles[i]
+		# early end
+		if len(particles) <= 6: # todo
+			break
+	# print(time() - start)
+	# construct system
+	star = Star(**{'mass': star_mass})
+	out = System(*(Body(**{'mass': mass, 'orbit': Orbit(**{
+		'parent': star,
+		'sma': a,
+		'e': uniform(0, .1), 'i': uniform(0, 4*deg), 'lan': uniform(0, 2*pi), 'aop': uniform(0, 2*pi), 'man': uniform(0, 2*pi)
+	})}) for mass, a in particles))
+	return out # .plot2d()
+
+
 def apsides2ecc(apo: float, peri: float) -> (float, float):
 	return (apo+peri)/2, (apo-peri)/(apo+peri)
 
