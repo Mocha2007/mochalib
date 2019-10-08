@@ -1,0 +1,77 @@
+[
+	{
+		"name": "Kerbol",
+		"class": "star",
+		"mass": 1.7565459e28,
+		"radius": 2.616e8,
+		"luminosity": ".008*sun.luminosity",
+		"temperature": 5840
+	},
+	{
+		"name": "Kerbin",
+		"class": "planet",
+		"mass": 5.2915158e22,
+		"radius": 6e5,
+		"albedo": "earth.albedo",
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 1.3599840256e10,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 21549.425,
+			"tilt": 0
+		},
+		"atmosphere": {
+			"scale_height": 5000,
+			"surface_pressure": 101325
+		},
+		"notes": "albedo is a SWAG; scale height is pre-1.0"
+	},
+	{
+		"name": "Mun",
+		"class": "moon",
+		"mass": 9.7599066e20,
+		"radius": 2e6,
+		"albedo": "moon.albedo",
+		"orbit": {
+			"parent": "Kerbin",
+			"sma": 1.2e7,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 1.7
+		},
+		"rotation": {
+			"period": 138984.38,
+			"tilt": 0
+		},
+		"notes": "albedo is a SWAG"
+	},
+	{
+		"name": "Minmus",
+		"class": "moon",
+		"mass": 2.6457580e19,
+		"radius": 6e4,
+		"albedo": "moon.albedo",
+		"orbit": {
+			"parent": "Kerbin",
+			"sma": 4.7e7,
+			"e": 0,
+			"i": 6,
+			"lan": 78,
+			"aop": 38,
+			"man": 0.9
+		},
+		"rotation": {
+			"period": 40400,
+			"tilt": 0
+		},
+		"notes": "albedo is a SWAG"
+	}
+]
