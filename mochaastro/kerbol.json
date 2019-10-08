@@ -5,7 +5,7 @@
 		"mass": 1.7565459e28,
 		"radius": 2.616e8,
 		"luminosity": ".008*sun.luminosity",
-		"temperature": 5840
+		"temperature": 2840
 	},
 	{
 		"name": "Kerbin",
