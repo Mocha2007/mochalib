@@ -1038,7 +1038,14 @@ class Body:
 		try:
 			ms = {sym: (self.composition[sym] if sym in self.composition else None) for sym in symbols}
 		except KeyError:
-			ms = {sym: earth.composition[sym] for sym in symbols}
+			if isinstance(self, Star):
+				target = sun
+			elif 10*earth.mass < self.mass:
+				target = jupiter
+				print('jupiter')
+			else:
+				target = earth
+			ms = {sym: target.composition[sym] if sym in target.composition else 0 for sym in symbols}
 			assume = True
 		return ms, assume
 
