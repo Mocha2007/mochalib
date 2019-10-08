@@ -610,6 +610,19 @@ class Body:
 		return a*(1-e)*(m/3/M)**(1/3)
 
 	@property
+	def max_eclipse_duration(self) -> float:
+		"""Maximum theoretical eclipse duration (s)"""
+		star_r = self.orbit.parent.star.radius
+		planet_a = self.orbit.parent.orbit.apo
+		planet_r = self.orbit.parent.radius
+		moon_a = self.orbit.peri
+		moon_r = self.radius
+		theta = atan2(star_r - planet_r, planet_a)
+		shadow_r = planet_r-moon_a*tan(theta)
+		orbit_fraction = shadow_r / (pi*self.orbit.a)
+		return self.orbit.p * orbit_fraction
+
+	@property
 	def nadir_time(self) -> float:
 		"""One-way speed of light lag between nadir points of moon (self) and planet (s)"""
 		d = self.orbit.a - self.orbit.parent.radius - self.radius
