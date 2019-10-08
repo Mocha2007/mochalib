@@ -32,6 +32,8 @@ mi = 1609.344 # m; exact; mile
 
 G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 # * - technically not b/c this is based on visual luminosity rather than bolometric
+gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
+N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
 # functions
@@ -1195,6 +1197,10 @@ class Body:
 	def atm_supports(self, molmass: float) -> bool:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
 		return molmass > self.atm_retention
+
+	def atmospheric_molecular_density(self, altitude: float) -> float:
+		"""Molecular density at an altitude (m) in (mol/m^3)"""
+		return self.atmosphere.pressure(altitude)/(gas_constant*self.greenhouse_temp)
 
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
