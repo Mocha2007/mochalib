@@ -55,6 +55,11 @@ def resonance_probability(mismatch: float, outer: int) -> float:
 	return 1-(1-abs(mismatch))**outer
 
 
+def synodic(p1: float, p2: float) -> float:
+	"""synodic period of two periods (s)"""
+	return p1*p2/abs(p2-p1) if p2-p1 else inf
+
+
 # classes
 class Orbit:
 	def __init__(self, **properties):
@@ -353,10 +358,7 @@ class Orbit:
 
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
-		p1, p2 = self.p, other.p
-		if p2-p1:
-			return p1*p2/(p2-p1)
-		return inf
+		return synodic(self.p, other.p)
 
 	def t_collision(self, other) -> float:
 		"""Collision timescale: other is a body object orbiting the same primary, out in (s)"""
@@ -583,6 +585,11 @@ class Body:
 	@property
 	def orbit(self) -> Orbit:
 		return self.properties['orbit']
+
+	@property
+	def orbit_rot_synodic(self) -> float:
+		"""Synodic period of moon orbit (self) and planetary rotation (s)"""
+		return synodic(self.orbit.p, self.orbit.parent.rotation.p)
 
 	@property
 	def esi(self) -> float:
