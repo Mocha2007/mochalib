@@ -4,7 +4,7 @@
 		"class": "star",
 		"mass": 1.7565459e28,
 		"radius": 2.616e8,
-		"luminosity": ".008*sun.luminosity",
+		"luminosity": 3.16e24,
 		"temperature": 2840
 	},
 	{
