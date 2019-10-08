@@ -603,6 +603,12 @@ class Body:
 		return a*(1-e)*(m/3/M)**(1/3)
 
 	@property
+	def nadir_time(self) -> float:
+		"""One-way speed of light lag between nadir points of moon (self) and planet (s)"""
+		d = self.orbit.a - self.orbit.parent.radius - self.radius
+		return d/c
+
+	@property
 	def soi(self) -> float:
 		"""Sphere of influence (m)"""
 		return self.orbit.a*(self.mass/self.orbit.parent.mass)**.4
@@ -2473,4 +2479,4 @@ universe = load_data(solar_system.copy())
 # distance_audio(earth.orbit, mars.orbit)
 # solar_system.sim()
 # burn = earth.orbit.transfer(mars.orbit)
-universe_sim(sun)
+# universe_sim(sun)
