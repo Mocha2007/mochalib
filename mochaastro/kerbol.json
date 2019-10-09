@@ -28,7 +28,8 @@
 		},
 		"atmosphere": {
 			"scale_height": 5000,
-			"surface_pressure": 101325
+			"surface_pressure": 101325,
+			"composition": "earth.atmosphere.composition"
 		},
 		"notes": "albedo is a SWAG; scale height is pre-1.0"
 	},
