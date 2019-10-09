@@ -2285,15 +2285,19 @@ earth = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 8500,
 		'surface_pressure': 101325,
-		'composition': {
+		'composition': { # https://en.wikipedia.org/wiki/Atmospheric_chemistry#Atmospheric_composition
 			'N2':  .78084,
 			'O2':  .20946,
+			'H2O':  .01,
 			'Ar':  .00934,
 			'CO2': 4.08e-4,
 			'Ne':  1.818e-5,
 			'He':  5.24e-6,
 			'CH4': 1.87e-6,
 			'Kr':  1.14e-6,
+			'H2':  5.5e-7,
+			'N2O':  9e-8,
+			'NO2':  2e-8,
 		},
 	}),
 	'composition': { # by mass https://en.wikipedia.org/wiki/Abundance_of_the_chemical_elements#Earth
