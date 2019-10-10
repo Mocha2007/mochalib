@@ -569,7 +569,7 @@ class Atmosphere:
 	def mesopause(self) -> float:
 		"""Altitude of Mesopause, approximation, m
 		See notes for Tropopause."""
-		return self.altitude(85000) # avg.
+		return self.altitude(earth.atmosphere.pressure(85000)) # avg.
 
 	@property
 	def scale_height(self) -> float:
@@ -580,7 +580,7 @@ class Atmosphere:
 	def stratopause(self) -> float:
 		"""Altitude of Stratopause, approximation, m
 		See notes for Tropopause."""
-		return self.altitude(52500) # avg.
+		return self.altitude(earth.atmosphere.pressure(52500)) # avg.
 
 	@property
 	def surface_pressure(self) -> float:
@@ -595,7 +595,7 @@ class Atmosphere:
 		Otherwise, treat as a first-order approximation,
 		likely within a factor of 2 from the true value.
 		Might return negative numbers if atmosphere is too thin."""
-		return self.altitude(13000) # avg.
+		return self.altitude(earth.atmosphere.pressure(13000)) # avg.
 
 	# methods
 	def altitude(self, pressure: float) -> float:
