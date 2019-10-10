@@ -1,4 +1,4 @@
-from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log10, pi, sin, tan
+from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Patch
@@ -540,6 +540,12 @@ class Atmosphere:
 		return self.properties['composition']
 
 	@property
+	def density(self) -> float:
+		"""Density of atmosphere at surface, approximation, kg/m^3
+		Does not account for composition or temperature, only pressure."""
+		return 1.225 * self.surface_pressure / earth.atmosphere.surface_pressure
+
+	@property
 	def greenhouse(self) -> float:
 		"""Estimate greenhouse factor (dimensionless)"""
 		# initially based on trial and error
@@ -560,16 +566,42 @@ class Atmosphere:
 		return sum(self.partial_pressure(i) for i in ghg if i in self.composition)
 
 	@property
+	def mesopause(self) -> float:
+		"""Altitude of Mesopause, approximation, m
+		See notes for Tropopause."""
+		return self.altitude(85000) # avg.
+
+	@property
 	def scale_height(self) -> float:
 		"""Scale height (m)"""
 		return self.properties['scale_height']
+
+	@property
+	def stratopause(self) -> float:
+		"""Altitude of Stratopause, approximation, m
+		See notes for Tropopause."""
+		return self.altitude(52500) # avg.
 
 	@property
 	def surface_pressure(self) -> float:
 		"""Surface pressure (Pa)"""
 		return self.properties['surface_pressure']
 
+	@property
+	def tropopause(self) -> float:
+		"""Altitude of Tropopause, approximation, m
+		Uses Earth's atmosphere as a model, so,
+		for Earthlike planets, this is generally accurate.
+		Otherwise, treat as a first-order approximation,
+		likely within a factor of 2 from the true value.
+		Might return negative numbers if atmosphere is too thin."""
+		return self.altitude(13000) # avg.
+
 	# methods
+	def altitude(self, pressure: float) -> float:
+		"""Altitude at which atm has pressure, in Pa"""
+		return -self.scale_height*log(pressure/self.surface_pressure)
+
 	def partial_pressure(self, molecule: str) -> float:
 		"""Partial pressure of a molecule on the surface (Pa)"""
 		return self.surface_pressure * self.composition[molecule]
@@ -577,6 +609,10 @@ class Atmosphere:
 	def pressure(self, altitude: float) -> float:
 		"""Pressure at altitude (Pa)"""
 		return self.surface_pressure * exp(-altitude / self.scale_height)
+
+	def wind_pressure(self, v: float) -> float:
+		"""Pressure of wind going v m/s, in Pa"""
+		return self.density * v**2
 
 
 class Body:
