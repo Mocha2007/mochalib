@@ -1,4 +1,4 @@
-from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log10, pi, sin, tan
+from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Circle, Patch
@@ -32,6 +32,8 @@ mi = 1609.344 # m; exact; mile
 
 G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 # * - technically not b/c this is based on visual luminosity rather than bolometric
+gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
+N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
 # functions
@@ -53,6 +55,11 @@ def linear_map(interval1: (float, float), interval2: (float, float)):
 def resonance_probability(mismatch: float, outer: int) -> float:
 	"""Return probability a particular resonance is by chance rather than gravitational"""
 	return 1-(1-abs(mismatch))**outer
+
+
+def synodic(p1: float, p2: float) -> float:
+	"""synodic period of two periods (s)"""
+	return p1*p2/abs(p2-p1) if p2-p1 else inf
 
 
 # classes
@@ -353,10 +360,7 @@ class Orbit:
 
 	def synodic(self, other) -> float:
 		"""Synodic period of two orbits (s)"""
-		p1, p2 = self.p, other.p
-		if p2-p1:
-			return p1*p2/(p2-p1)
-		return inf
+		return synodic(self.p, other.p)
 
 	def t_collision(self, other) -> float:
 		"""Collision timescale: other is a body object orbiting the same primary, out in (s)"""
@@ -536,6 +540,12 @@ class Atmosphere:
 		return self.properties['composition']
 
 	@property
+	def density(self) -> float:
+		"""Density of atmosphere at surface, approximation, kg/m^3
+		Does not account for composition or temperature, only pressure."""
+		return 1.225 * self.surface_pressure / earth.atmosphere.surface_pressure
+
+	@property
 	def greenhouse(self) -> float:
 		"""Estimate greenhouse factor (dimensionless)"""
 		# initially based on trial and error
@@ -556,16 +566,42 @@ class Atmosphere:
 		return sum(self.partial_pressure(i) for i in ghg if i in self.composition)
 
 	@property
+	def mesopause(self) -> float:
+		"""Altitude of Mesopause, approximation, m
+		See notes for Tropopause."""
+		return self.altitude(earth.atmosphere.pressure(85000)) # avg.
+
+	@property
 	def scale_height(self) -> float:
 		"""Scale height (m)"""
 		return self.properties['scale_height']
+
+	@property
+	def stratopause(self) -> float:
+		"""Altitude of Stratopause, approximation, m
+		See notes for Tropopause."""
+		return self.altitude(earth.atmosphere.pressure(52500)) # avg.
 
 	@property
 	def surface_pressure(self) -> float:
 		"""Surface pressure (Pa)"""
 		return self.properties['surface_pressure']
 
+	@property
+	def tropopause(self) -> float:
+		"""Altitude of Tropopause, approximation, m
+		Uses Earth's atmosphere as a model, so,
+		for Earthlike planets, this is generally accurate.
+		Otherwise, treat as a first-order approximation,
+		likely within a factor of 2 from the true value.
+		Might return negative numbers if atmosphere is too thin."""
+		return self.altitude(earth.atmosphere.pressure(13000)) # avg.
+
 	# methods
+	def altitude(self, pressure: float) -> float:
+		"""Altitude at which atm has pressure, in Pa"""
+		return -self.scale_height*log(pressure/self.surface_pressure)
+
 	def partial_pressure(self, molecule: str) -> float:
 		"""Partial pressure of a molecule on the surface (Pa)"""
 		return self.surface_pressure * self.composition[molecule]
@@ -573,6 +609,10 @@ class Atmosphere:
 	def pressure(self, altitude: float) -> float:
 		"""Pressure at altitude (Pa)"""
 		return self.surface_pressure * exp(-altitude / self.scale_height)
+
+	def wind_pressure(self, v: float) -> float:
+		"""Pressure of wind going v m/s, in Pa"""
+		return self.density * v**2
 
 
 class Body:
@@ -583,6 +623,11 @@ class Body:
 	@property
 	def orbit(self) -> Orbit:
 		return self.properties['orbit']
+
+	@property
+	def orbit_rot_synodic(self) -> float:
+		"""Synodic period of moon orbit (self) and planetary rotation (s)"""
+		return synodic(self.orbit.p, self.orbit.parent.rotation.p)
 
 	@property
 	def esi(self) -> float:
@@ -601,6 +646,25 @@ class Body:
 		"""Hill Sphere (m)"""
 		a, e, m, M = self.orbit.a, self.orbit.e, self.mass, self.orbit.parent.mass
 		return a*(1-e)*(m/3/M)**(1/3)
+
+	@property
+	def max_eclipse_duration(self) -> float:
+		"""Maximum theoretical eclipse duration (s)"""
+		star_r = self.orbit.parent.star.radius
+		planet_a = self.orbit.parent.orbit.apo
+		planet_r = self.orbit.parent.radius
+		moon_a = self.orbit.peri
+		moon_r = self.radius
+		theta = atan2(star_r - planet_r, planet_a)
+		shadow_r = planet_r-moon_a*tan(theta)
+		orbit_fraction = shadow_r / (pi*self.orbit.a)
+		return self.orbit.p * orbit_fraction
+
+	@property
+	def nadir_time(self) -> float:
+		"""One-way speed of light lag between nadir points of moon (self) and planet (s)"""
+		d = self.orbit.a - self.orbit.parent.radius - self.radius
+		return d/c
 
 	@property
 	def soi(self) -> float:
@@ -1010,7 +1074,14 @@ class Body:
 		try:
 			ms = {sym: (self.composition[sym] if sym in self.composition else None) for sym in symbols}
 		except KeyError:
-			ms = {sym: earth.composition[sym] for sym in symbols}
+			if isinstance(self, Star):
+				target = sun
+			elif 10*earth.mass < self.mass:
+				target = jupiter
+				print('jupiter')
+			else:
+				target = earth
+			ms = {sym: target.composition[sym] if sym in target.composition else 0 for sym in symbols}
 			assume = True
 		return ms, assume
 
@@ -1169,6 +1240,10 @@ class Body:
 	def atm_supports(self, molmass: float) -> bool:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
 		return molmass > self.atm_retention
+
+	def atmospheric_molecular_density(self, altitude: float) -> float:
+		"""Molecular density at an altitude (m) in (mol/m^3)"""
+		return self.atmosphere.pressure(altitude)/(gas_constant*self.greenhouse_temp)
 
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
@@ -2246,15 +2321,19 @@ earth = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 8500,
 		'surface_pressure': 101325,
-		'composition': {
+		'composition': { # https://en.wikipedia.org/wiki/Atmospheric_chemistry#Atmospheric_composition
 			'N2':  .78084,
 			'O2':  .20946,
+			'H2O':  .01,
 			'Ar':  .00934,
 			'CO2': 4.08e-4,
 			'Ne':  1.818e-5,
 			'He':  5.24e-6,
 			'CH4': 1.87e-6,
 			'Kr':  1.14e-6,
+			'H2':  5.5e-7,
+			'N2O':  9e-8,
+			'NO2':  2e-8,
 		},
 	}),
 	'composition': { # by mass https://en.wikipedia.org/wiki/Abundance_of_the_chemical_elements#Earth
@@ -2296,10 +2375,46 @@ earth = Body(**{
 		'Ce': 1.13e-6,
 		'Li': 1.1e-6,
 		'Pd': 1e-6,
-		# skip a few... Au Ag U
+		'Os': 9e-7,
+		'Ir': 9e-7,
+		'Nd': 8.4e-7,
+		'Dy': 4.6e-7,
+		'Nb': 4.4e-7,
+		'La': 4.4e-7,
+		'Rb': 4e-7,
+		'Gd': 3.7e-7,
+		'Br': 3e-7,
+		'Te': 3e-7,
+		'Er': 3e-7,
+		'Yb': 3e-7,
+		'Sm': 2.7e-7,
+		'Sn': 2.5e-7,
+		'Rh': 2.4e-7,
+		'Pb': 2.3e-7,
+		'B':  2e-7,
+		'Hf': 1.9e-7,
+		'Pr': 1.7e-7,
+		'W':  1.7e-7,
 		'Au': 1.6e-7,
+		'Eu': 1e-7,
+		'Ho': 1e-7,
+		'Cd': 8e-8,
+		'Re': 8e-8,
+		'Tb': 7e-8,
+		'Th': 6e-8,
+		'Be': 5e-8,
 		'Ag': 5e-8,
+		'Sb': 5e-8,
+		'I':  5e-8,
+		'Tm': 5e-8,
+		'Lu': 5e-8,
+		'Cs': 4e-8,
+		'Ta': 3e-8,
+		'Hg': 2e-8,
 		'U':  2e-8,
+		'In': 1e-8,
+		'Tl': 1e-8,
+		'Bi': 1e-8,
 	},
 	'mass': 5.97237e24,
 	'radius': 6.371e6,
@@ -2473,4 +2588,4 @@ universe = load_data(solar_system.copy())
 # distance_audio(earth.orbit, mars.orbit)
 # solar_system.sim()
 # burn = earth.orbit.transfer(mars.orbit)
-universe_sim(sun)
+# universe_sim(sun)
