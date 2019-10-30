@@ -1,8 +1,8 @@
 from re import sub
 from typing import Dict, Set
 
-corpus_filename = 'books/star wars.txt'
-corpus_file = open(corpus_filename, 'r').read()
+corpus_filename = 'books/elements.txt'
+corpus_file = open(corpus_filename, 'r', encoding='utf-8').read()
 
 
 def clean(text: str) -> str:
@@ -91,4 +91,4 @@ def pretty_associations_wilson(raw_corp: str, target: str, limit: int = 20):
 # output = main(corpus_file)
 # pretty_associations(corpus_file, 'luke')
 # print('\n')
-pretty_associations_wilson(corpus_file, 'luke')
+pretty_associations_wilson(corpus_file, 'triangle')
