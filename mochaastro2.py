@@ -2439,6 +2439,9 @@ moon = Body(**{
 		'scale_height': 41860,
 		'surface_pressure': 1e-7,
 	}),
+    'composition': { # https://www.permanent.com/l-apollo.htm
+        'O': 0.446
+    },
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
 	'albedo': .136,
