@@ -1102,7 +1102,7 @@ class Body:
 			'Al': 5.88e10,  # 2016: 58.8 million t/yr
 		}
 		ms, assume = self.metals
-		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production}
+		ms = {sym: Mass(ms[sym]*mass, 'astro') for sym in production if ms[sym]}
 		ms = {sym: (mass, Time(year * mass.value / production[sym], 'imperial')) for sym, mass in ms.items()}
 		if assume:
 			string += '\n(Assuming Earthlike composition)'
