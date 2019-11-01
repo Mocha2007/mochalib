@@ -696,6 +696,12 @@ class Body:
 		return T*(1-a)**.25*(R/2/sma)**.5
 
 	@property
+	def temp_subsolar(self) -> float:
+		"""Planetary temperature at subsolar point(K)"""
+		# based on formula from Reichart
+		return self.temp * 2**.5
+
+	@property
 	def tidal_locking(self) -> float:
 		"""Tidal locking timeframe (s)"""
 		return 5e28 * self.orbit.a**6 * self.radius / (self.mass * self.orbit.parent.mass**2)
