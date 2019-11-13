@@ -286,11 +286,15 @@ def show_hex(filename: str):
 		# highlight
 		if int(time()*2) % 2:
 			# draw rect at byte
-			rect = [(cursor[0])*18*2+10, (cursor[1]+2)*16, 18, 14]
+			byte_x, byte_y = (cursor[0])*18*2+10, (cursor[1]+2)*16
+			rect = [byte_x, byte_y, 18, 14]
 			pygame.draw.rect(screen, green, rect)
 			# draw rect at char
 			rect[1] += 16*17
 			pygame.draw.rect(screen, blue, rect)
+			# black byte
+			text(hex_representation(data[cursor_rel]), (byte_x, byte_y), black)
+			# todo black char
 		pygame.display.flip()
 		# events
 		for event in pygame.event.get():
