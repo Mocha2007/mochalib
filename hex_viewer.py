@@ -261,6 +261,8 @@ def show_hex(filename: str):
 		c_ushort = str(unpack('H', data[cursor_rel:cursor_rel+2]))[1:-2]
 		c_int = str(unpack('i', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_uint = str(unpack('I', data[cursor_rel:cursor_rel+4]))[1:-2]
+		c_ll = str(unpack('q', data[cursor_rel:cursor_rel+8]))[1:-2]
+		c_ull = str(unpack('Q', data[cursor_rel:cursor_rel+8]))[1:-2]
 		c_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
 		c_db = str(unpack('d', data[cursor_rel:cursor_rel+8]))[1:-2]
 		c_rgb = tuple(data[cursor_rel+i] for i in range(3))
@@ -270,11 +272,13 @@ def show_hex(filename: str):
 			'(unsig)\t{}',
 			'int    \t{}',
 			'(unsig)\t{}',
+			'8B int \t{}',
+			'(unsig)\t{}',
 			'float  \t{}',
 			'double \t{}',
 			'RGB    \t{}',
 		]
-		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_fl, c_db, c_rgb)
+		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_ll, c_ull, c_fl, c_db, c_rgb)
 		text(cursor_tooltip, (640, 0))
 		# swatch
 		rect = 720, 144, 16, 16
