@@ -317,9 +317,9 @@ def show_hex(filename: str):
 					cmove(0, 1)
 				elif event.key == pygame.K_KP3: # cursor
 					cmove(1, 1)
-				elif event.key == pygame.K_KP4: # cursor
+				elif event.key == pygame.K_KP4 or event.key == pygame.K_LEFT: # cursor
 					cmove(-1)
-				elif event.key == pygame.K_KP6: # cursor
+				elif event.key == pygame.K_KP6 or event.key == pygame.K_RIGHT: # cursor
 					cmove(1)
 				elif event.key == pygame.K_KP7: # cursor
 					cmove(-1, -1)
