@@ -257,17 +257,21 @@ def show_hex(filename: str):
 		# display cursor byte address
 		cursor_rel = cursor[0] + 16*cursor[1]
 		c_addr = hex(start + cursor_rel)[2:]
-		c_b = str(unpack('b', data[cursor_rel:cursor_rel+1]))[1:-2]
-		c_ub = str(unpack('B', data[cursor_rel:cursor_rel+1]))[1:-2]
-		c_short = str(unpack('h', data[cursor_rel:cursor_rel+2]))[1:-2]
-		c_ushort = str(unpack('H', data[cursor_rel:cursor_rel+2]))[1:-2]
-		c_int = str(unpack('i', data[cursor_rel:cursor_rel+4]))[1:-2]
-		c_uint = str(unpack('I', data[cursor_rel:cursor_rel+4]))[1:-2]
-		c_ll = str(unpack('q', data[cursor_rel:cursor_rel+8]))[1:-2]
-		c_ull = str(unpack('Q', data[cursor_rel:cursor_rel+8]))[1:-2]
-		c_fl = str(unpack('f', data[cursor_rel:cursor_rel+4]))[1:-2]
-		c_db = str(unpack('d', data[cursor_rel:cursor_rel+8]))[1:-2]
 		c_rgb = tuple(data[cursor_rel+i] for i in range(3))
+		typing = (
+			('b', 1),
+			('B', 1),
+			('h', 2),
+			('H', 2),
+			('i', 4),
+			('I', 4),
+			('q', 8),
+			('Q', 8),
+			('f', 4),
+			('d', 8),
+		)
+		join_data = tuple(str(unpack(t, data[cursor_rel:cursor_rel+size]))[1:-2] for t, size in typing)
+		join_data = (c_addr,) + join_data + (c_rgb,)
 		lines = [
 			'\nAddress\t{}\n',
 			'byte   \t{}',
@@ -282,7 +286,7 @@ def show_hex(filename: str):
 			'double \t{}',
 			'RGB    \t{}',
 		]
-		cursor_tooltip = '\n'.join(lines).format(c_addr, c_b, c_ub, c_short, c_ushort, c_int, c_uint, c_ll, c_ull, c_fl, c_db, c_rgb)
+		cursor_tooltip = '\n'.join(lines).format(*join_data)
 		text(cursor_tooltip, (640, 0))
 		# swatch
 		rect = 720, 208, 16, 16
