@@ -289,7 +289,7 @@ def show_hex(filename: str):
 		cursor_tooltip = '\n'.join(lines).format(*join_data)
 		text(cursor_tooltip, (640, 0))
 		# swatch
-		rect = 720, 208, 16, 16
+		rect = 720, 16*(3+len(typing)), 16, 16
 		pygame.draw.rect(screen, c_rgb, rect)
 		# highlight
 		if int(time()*2) % 2:
