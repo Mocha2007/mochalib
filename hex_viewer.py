@@ -295,6 +295,7 @@ def show_hex(filename: str):
 			# black byte
 			text(hex_representation(data[cursor_rel]), (byte_x, byte_y), black)
 			# todo black char
+			text(pretty_chars(bytes([data[cursor_rel]])), (byte_x-10, byte_y+16*17), black)
 		pygame.display.flip()
 		# events
 		for event in pygame.event.get():
