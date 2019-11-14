@@ -257,6 +257,8 @@ def show_hex(filename: str):
 		# display cursor byte address
 		cursor_rel = cursor[0] + 16*cursor[1]
 		c_addr = hex(start + cursor_rel)[2:]
+		c_b = str(unpack('b', data[cursor_rel:cursor_rel+1]))[1:-2]
+		c_ub = str(unpack('B', data[cursor_rel:cursor_rel+1]))[1:-2]
 		c_short = str(unpack('h', data[cursor_rel:cursor_rel+2]))[1:-2]
 		c_ushort = str(unpack('H', data[cursor_rel:cursor_rel+2]))[1:-2]
 		c_int = str(unpack('i', data[cursor_rel:cursor_rel+4]))[1:-2]
@@ -268,6 +270,8 @@ def show_hex(filename: str):
 		c_rgb = tuple(data[cursor_rel+i] for i in range(3))
 		lines = [
 			'\nAddress\t{}\n',
+			'byte   \t{}',
+			'(unsig)\t{}',
 			'short  \t{}',
 			'(unsig)\t{}',
 			'int    \t{}',
@@ -278,10 +282,10 @@ def show_hex(filename: str):
 			'double \t{}',
 			'RGB    \t{}',
 		]
-		cursor_tooltip = '\n'.join(lines).format(c_addr, c_short, c_ushort, c_int, c_uint, c_ll, c_ull, c_fl, c_db, c_rgb)
+		cursor_tooltip = '\n'.join(lines).format(c_addr, c_b, c_ub, c_short, c_ushort, c_int, c_uint, c_ll, c_ull, c_fl, c_db, c_rgb)
 		text(cursor_tooltip, (640, 0))
 		# swatch
-		rect = 720, 176, 16, 16
+		rect = 720, 208, 16, 16
 		pygame.draw.rect(screen, c_rgb, rect)
 		# highlight
 		if int(time()*2) % 2:
