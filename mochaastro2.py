@@ -138,6 +138,12 @@ class Orbit:
 		return (1-self.e)*self.a
 
 	@property
+	def peri_shift(self) -> float:
+		"""Periapsis shift per revolution (rad)"""
+		# https://en.wikipedia.org/wiki/Tests_of_general_relativity#Perihelion_precession_of_Mercury
+		return 24*pi**3*self.a**2 / (self.p**2 * c**2 * (1-self.e**2))
+
+	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
 		return (self.a/self.parent.mu)**-.5
