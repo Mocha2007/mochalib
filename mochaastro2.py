@@ -729,6 +729,13 @@ class Body:
 		return 2*pi*self.radius/self.rotation.p
 
 	@property
+	def rotational_energy(self) -> float:
+		"""Rotational Energy (J)"""
+		i = 2/5 * self.mass * self.radius**2
+		omega = 2*pi / self.rotation.p
+		return 1/2 * i * omega**2
+
+	@property
 	def atmosphere_mass(self) -> float:
 		"""Mass of the atmosphere (kg)"""
 		return self.atmosphere.surface_pressure * self.area / self.surface_gravity
