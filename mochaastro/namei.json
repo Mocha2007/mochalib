@@ -169,5 +169,26 @@
 			"period": "7.784*hour"
 		},
 		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
+	},
+	{
+		"name": "Don",
+		"class": "planet",
+		"mass": "1.2*earth.mass",
+		"radius": 6.987e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Namei",
+			"sma": "3.2237*au",
+			"e": 0.011,
+			"i": "37.25/60*deg",
+			"lan": "244*deg",
+			"aop": "283*deg",
+			"man": "85*deg"
+		},
+		"rotation": {
+			"period": "42*hour + 52*minute + 52.57",
+			"tilt": "1*deg"
+		},
+		"notes": "6.562yr"
 	}
 ]
