@@ -24,7 +24,8 @@
 			"man": "218.35625555"
 		},
 		"rotation": {
-			"period": "111.12*hour"
+			"period": "111.12*hour",
+			"tilt": "2.5*deg"
 		},
 		"atmosphere": {
 			"surface_pressure": "1.8e3*atm",
@@ -55,7 +56,8 @@
 			"man": "108*deg"
 		},
 		"rotation": {
-			"period": "10.102*day"
+			"period": "10.102*day",
+			"tilt": "1*deg"
 		}
 	},
 	{
@@ -74,7 +76,8 @@
 			"man": "333*deg"
 		},
 		"rotation": {
-			"period": "20.899*day"
+			"period": "20.899*day",
+			"tilt": "5/60*deg"
 		}
 	},
 	{
@@ -93,7 +96,8 @@
 			"man": "311*deg"
 		},
 		"rotation": {
-			"period": "24*day"
+			"period": "24*day",
+			"tilt": 0
 		},
 		"atmosphere": {
 			"surface_pressure": "14.7*atm",
@@ -166,7 +170,8 @@
 			"man": "257*deg"
 		},
 		"rotation": {
-			"period": "7.784*hour"
+			"period": "7.784*hour",
+			"tilt": "(10 + 22/60 + 42.21/60/60)*deg"
 		},
 		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
 	},
@@ -190,5 +195,26 @@
 			"tilt": "1*deg"
 		},
 		"notes": "6.562yr"
+	},
+	{
+		"name": "Neuve",
+		"class": "planet",
+		"mass": "28.526*earth.mass",
+		"radius": 2.401285e7,
+		"albedo": 0.421864,
+		"orbit": {
+			"parent": "Namei",
+			"sma": "6.4639*au",
+			"e": 0.045,
+			"i": "11/60*deg",
+			"lan": "200*deg",
+			"aop": "109*deg",
+			"man": "192*deg"
+		},
+		"rotation": {
+			"period": "8*hour + 54*minute + 58.38",
+			"tilt": "68*deg"
+		},
+		"notes": "18.631yr"
 	}
 ]
