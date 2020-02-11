@@ -237,5 +237,26 @@
 			"tilt": "102*deg"
 		},
 		"notes": "51.905yr"
+	},
+	{
+		"name": "Mannu",
+		"class": "planet",
+		"mass": "0.62132*jupiter.mass",
+		"radius": 6.717895e7,
+		"albedo": 0.457012,
+		"orbit": {
+			"parent": "Namei",
+			"sma": "21.7972*au",
+			"e": 0.011,
+			"i": "40/60*deg",
+			"lan": "30*deg",
+			"aop": "200*deg",
+			"man": "172*deg"
+		},
+		"rotation": {
+			"period": "10*hour + 22*minute + 51.88",
+			"tilt": "150*deg"
+		},
+		"notes": "115.372yr"
 	}
 ]
