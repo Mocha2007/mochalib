@@ -3,101 +3,103 @@
 		"name": "Namei",
 		"class": "star",
 		"mass": "7/9*sun.mass",
-		"radius": "2/3*sun.radius",
-		"luminosity": "1/10*sun.luminosity",
-		"temperature": "4000",
-		"notes": "universe_sim(search('namei')); guesses: everything but mass"
+		"radius": ".75798*sun.radius",
+		"luminosity": ".060435*sun.luminosity",
+		"temperature": "3885",
+		"notes": "universe_sim(search('namei')); guesses: everything but mass; temp ~ 4000K?"
 	},
 	{
 		"name": "Ara",
 		"class": "planet",
-		"mass": "6*earth.mass",
-		"radius": "1.7*earth.radius",
-		"albedo": "venus.albedo",
+		"mass": "6.0367*earth.mass",
+		"radius": 1.169345e7,
+		"albedo": 0.7,
 		"orbit": {
 			"parent": "Namei",
-			"sma": ".05*au",
-			"e": 0,
-			"i": 0,
-			"lan": 0,
-			"aop": 0,
-			"man": 0
+			"sma": ".050002*au",
+			"e": 0.04,
+			"i": "1.5496027777*deg",
+			"lan": "73.71771111*deg",
+			"aop": "292.329575*deg",
+			"man": "218.35625555"
 		},
 		"rotation": {
-			"period": "4.62967*day"
+			"period": "111.12*hour"
 		},
 		"atmosphere": {
-			"surface_pressure": "venus.atmosphere.surface_pressure",
-			"composition": "venus.atmosphere.composition"
-		},
-		"notes": "guesses: radius, orbital elements unknown"
+			"surface_pressure": "1.8e3*atm",
+			"composition":  {
+				"H2O":   0.753,
+				"CO2":   0.245,
+				"N2":  0.00176,
+				"SO2":  0.00119,
+				"Ar":  1.93e-6,
+				"CO":  1.51e-7,
+				"Ne":  1.04e-7
+			}
+		}
 	},
 	{
 		"name": "Falto",
 		"class": "planet",
-		"mass": "100*earth.mass",
-		"radius": "9.5*earth.radius",
-		"albedo": "saturn.albedo",
+		"mass": "31.207*earth.mass",
+		"radius": "4.1307*earth.radius",
+		"albedo": 0.504,
 		"orbit": {
 			"parent": "Namei",
-			"sma": ".086*au",
-			"e": 0,
-			"i": 0,
-			"lan": 0,
-			"aop": 0,
-			"man": 0
+			"sma": ".084115*au",
+			"e": 0.043,
+			"i": "2*deg",
+			"lan": "208*deg",
+			"aop": "341*deg",
+			"man": "108*deg"
 		},
 		"rotation": {
-			"period": "10.4414*day"
-		},
-		"atmosphere": {
-			"surface_pressure": "saturn.atmosphere.surface_pressure"
-		},
-		"notes": "most data are guesstimates"
+			"period": "10.102*day"
+		}
 	},
 	{
 		"name": "Tata",
 		"class": "dwarf planet",
-		"mass": "moon.mass",
-		"radius": "moon.radius",
-		"albedo": "moon.albedo",
+		"mass": 7.1205e22,
+		"radius": 1.52081e6,
+		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
-			"sma": ".137*au",
-			"e": 0,
-			"i": 0,
-			"lan": 0,
-			"aop": 0,
-			"man": 0
+			"sma": ".13657*au",
+			"e": 0.031,
+			"i": "1*deg",
+			"lan": "3*deg",
+			"aop": "262*deg",
+			"man": "333*deg"
 		},
 		"rotation": {
-			"period": "20.9979*day"
-		},
-		"notes": "most data are guesstimates"
+			"period": "20.899*day"
+		}
 	},
 	{
 		"name": "Bau",
 		"class": "planet",
-		"mass": "mercury.mass",
-		"radius": "mercury.radius",
-		"albedo": "venus.albedo",
+		"mass": 3.7381e23,
+		"radius": 2.60554e6,
+		"albedo": 0.381163,
 		"orbit": {
 			"parent": "Namei",
 			"sma": ".196*au",
-			"e": 0,
-			"i": 0,
-			"lan": 0,
-			"aop": 0,
-			"man": 0
+			"e": 0.089,
+			"i": "36.88/60/60*deg",
+			"lan": "311*deg",
+			"aop": "224*deg",
+			"man": "311*deg"
 		},
 		"rotation": {
 			"period": "24*day"
 		},
 		"atmosphere": {
-			"surface_pressure": "venus.atmosphere.surface_pressure",
+			"surface_pressure": "14.7*atm",
 			"composition": "venus.atmosphere.composition"
 		},
-		"notes": "most data are guesstimates"
+		"notes": "guesses: sma, composition"
 	},
 	{
 		"name": "Oneia",
@@ -152,7 +154,7 @@
 		"name": "Eisen",
 		"class": "planet",
 		"mass": "9.0586*jupiter.mass",
-		"radius": 7.6912e7,
+		"radius": 7.691186e7,
 		"albedo": 0.504936,
 		"orbit": {
 			"parent": "Namei",
@@ -166,6 +168,6 @@
 		"rotation": {
 			"period": "7.784*hour"
 		},
-		"notes": "Guesses: mass, radius, orbital elements other than sma; plot_grav_acc(search('oneia'), search('eisen'))"
+		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
 	}
 ]
