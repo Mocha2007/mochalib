@@ -216,5 +216,26 @@
 			"tilt": "68*deg"
 		},
 		"notes": "18.631yr"
+	},
+	{
+		"name": "Dicito",
+		"class": "planet",
+		"mass": 4.358e23,
+		"radius": 3.37187e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Namei",
+			"sma": "12.7328*au",
+			"e": 0.056,
+			"i": "1*deg",
+			"lan": "301*deg",
+			"aop": "182*deg",
+			"man": "158*deg"
+		},
+		"rotation": {
+			"period": "30*hour + 19*minute + 7.31",
+			"tilt": "102*deg"
+		},
+		"notes": "51.905yr"
 	}
 ]
