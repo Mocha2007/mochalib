@@ -3,9 +3,10 @@
 		"name": "Namei",
 		"class": "star",
 		"mass": "7/9*sun.mass",
-		"radius": "stargen(7/9*sun.mass).radius",
-		"luminosity": "stargen(7/9*sun.mass).luminosity",
-		"temperature": "stargen(7/9*sun.mass).temperature"
+		"radius": "2/3*sun.radius",
+		"luminosity": "1/10*sun.luminosity",
+		"temperature": "4200",
+		"notes": "universe_sim(search('namei')); guesses: everything but mass"
 	},
 	{
 		"name": "Oneia",
@@ -31,5 +32,29 @@
 			"composition": "earth.atmosphere.composition"
 		},
 		"notes": "mocha"
+	},
+	{
+		"name": "Nikki",
+		"class": "moon",
+		"mass": "moon.mass",
+		"radius": "moon.radius",
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Oneia",
+			"sma": 5.102e7,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "28.93*hour"
+		},
+		"atmosphere": {
+			"surface_pressure": "earth.atmosphere.surface_pressure",
+			"composition": "earth.atmosphere.composition"
+		},
+		"notes": "Guesses: mass, radius, orbital elements other than sma"
 	}
 ]
