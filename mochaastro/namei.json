@@ -1,0 +1,35 @@
+[
+	{
+		"name": "Namei",
+		"class": "star",
+		"mass": "7/9*sun.mass",
+		"radius": "stargen(7/9*sun.mass).radius",
+		"luminosity": "stargen(7/9*sun.mass).luminosity",
+		"temperature": "stargen(7/9*sun.mass).temperature"
+	},
+	{
+		"name": "Oneia",
+		"class": "planet",
+		"mass": "1.2*earth.mass",
+		"radius": 6.987e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Namei",
+			"sma": ".32*au",
+			"e": 0.02,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "28.93*hour",
+			"tilt": "22*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": "earth.atmosphere.surface_pressure",
+			"composition": "earth.atmosphere.composition"
+		},
+		"notes": "mocha"
+	}
+]
