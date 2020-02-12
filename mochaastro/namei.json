@@ -6,7 +6,7 @@
 		"radius": ".75798*sun.radius",
 		"luminosity": ".060435*sun.luminosity",
 		"temperature": "3885",
-		"notes": "universe_sim(search('namei')); guesses: everything but mass; temp ~ 4000K?"
+		"notes": "universe_sim(search('namei'))"
 	},
 	{
 		"name": "Ara",
@@ -108,7 +108,7 @@
 	{
 		"name": "Oneia",
 		"class": "planet",
-		"mass": "1.2*earth.mass",
+		"mass": "1.28*earth.mass",
 		"radius": 6.987e6,
 		"albedo": 0.3,
 		"orbit": {
@@ -138,7 +138,7 @@
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Oneia",
-			"sma": 5.102e7,
+			"sma": 5.2e7,
 			"e": 0,
 			"i": 0,
 			"lan": 0,
