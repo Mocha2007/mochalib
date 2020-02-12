@@ -176,6 +176,30 @@
 		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
 	},
 	{
+		"name": "Maia",
+		"class": "moon",
+		"mass": 6.2073e24,
+		"radius": 1.236e6,
+		"albedo": 0.2,
+		"orbit": {
+			"parent": "Eisen",
+			"sma": 1.7926e9,
+			"e": 0.044,
+			"i": "1*deg",
+			"lan": "162*deg",
+			"aop": "177*deg",
+			"man": "27*deg"
+		},
+		"rotation": {
+			"period": "5.152*day"
+		},
+		"atmosphere": {
+			"surface_pressure": "titan.atmosphere.surface_pressure",
+			"composition": "titan.atmosphere.composition"
+		},
+		"notes": "5.152d"
+	},
+	{
 		"name": "Don",
 		"class": "planet",
 		"mass": "1.2*earth.mass",
