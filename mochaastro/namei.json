@@ -133,8 +133,8 @@
 	{
 		"name": "Nikki",
 		"class": "moon",
-		"mass": "moon.mass",
-		"radius": "moon.radius",
+		"mass": 2e22,
+		"radius": 1.236e6,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Oneia",
@@ -152,7 +152,7 @@
 			"surface_pressure": "earth.atmosphere.surface_pressure",
 			"composition": "earth.atmosphere.composition"
 		},
-		"notes": "Guesses: mass, radius, orbital elements other than sma"
+		"notes": "Guesses: mass, radius, orbital elements other than sma; search('nikki').solar_eclipse()"
 	},
 	{
 		"name": "Eisen",
