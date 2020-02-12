@@ -213,10 +213,6 @@
 		"rotation": {
 			"period": "5.152*day"
 		},
-		"atmosphere": {
-			"surface_pressure": "titan.atmosphere.surface_pressure",
-			"composition": "titan.atmosphere.composition"
-		},
 		"notes": "plot_grav_acc(search('maia'), search('seter'))"
 	},
 	{
