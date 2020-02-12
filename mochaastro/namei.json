@@ -176,6 +176,26 @@
 		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
 	},
 	{
+		"name": "Seter",
+		"class": "moon",
+		"mass": 4.8711e25,
+		"radius": 1.667568e7,
+		"albedo": 0.507827,
+		"orbit": {
+			"parent": "Eisen",
+			"sma": 1.3098e9,
+			"e": 0.007,
+			"i": "40/60*deg",
+			"lan": "215*deg",
+			"aop": "196*deg",
+			"man": "94*deg"
+		},
+		"rotation": {
+			"period": "3.218*day"
+		},
+		"notes": "search('seter').solar_eclipse()"
+	},
+	{
 		"name": "Maia",
 		"class": "moon",
 		"mass": 6.2073e24,
@@ -196,8 +216,7 @@
 		"atmosphere": {
 			"surface_pressure": "titan.atmosphere.surface_pressure",
 			"composition": "titan.atmosphere.composition"
-		},
-		"notes": "5.152d"
+		}
 	},
 	{
 		"name": "Don",
