@@ -184,7 +184,7 @@
 		"albedo": 0.507827,
 		"orbit": {
 			"parent": "Eisen",
-			"sma": 1.3098e9,
+			"sma": 1.29728e9,
 			"e": 0.007,
 			"i": "40/60*deg",
 			"lan": "215*deg",
@@ -192,7 +192,7 @@
 			"man": "94*deg"
 		},
 		"rotation": {
-			"period": "3.218*day"
+			"period": "76*hour"
 		},
 		"notes": "search('seter').solar_eclipse()"
 	},
@@ -200,11 +200,11 @@
 		"name": "Maia",
 		"class": "moon",
 		"mass": 6.2073e24,
-		"radius": 1.236e6,
+		"radius": 7.12e6,
 		"albedo": 0.2,
 		"orbit": {
 			"parent": "Eisen",
-			"sma": 1.7926e9,
+			"sma": 1.8221e9,
 			"e": 0.044,
 			"i": "1*deg",
 			"lan": "162*deg",
@@ -212,7 +212,7 @@
 			"man": "27*deg"
 		},
 		"rotation": {
-			"period": "5.152*day"
+			"period": "(126 + 2/3)*hour"
 		},
 		"notes": "plot_grav_acc(search('maia'), search('seter'))"
 	},
