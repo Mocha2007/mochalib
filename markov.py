@@ -98,14 +98,14 @@ def pretty_letter_count(text: str) -> str:
 	return '\n'.join(string)
 
 
-def pretty_freq(text: str) -> str:
+def pretty_freq(text: str, n: int = 25) -> str:
 	text = text.replace('. ', '')
 	length = len(text.split())
 	lemmata = len(corpus_from(text, 3))
 	lengths = word_lengths(text)
 	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times, of length {}-{}\n'.format(
 		length, int(.22*length/60), lemmata, min(lengths), max(lengths))
-	top_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:25]
+	top_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:n]
 	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_words)
 
 
@@ -136,6 +136,6 @@ def test(filename: str = 'star wars'):
 	# print(kjb['sin'])
 	print(speak(kjb))
 	kjb_text = clean_text(filename)
-	print(pretty_freq(kjb_text))
+	print(pretty_freq(kjb_text, 100))
 	export_citations(kjb_text)
 	# print(time() - start_time)
