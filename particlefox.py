@@ -156,7 +156,7 @@ class Isotope:
 				s += str(size)+' '
 				e -= size
 			shell += 1
-	
+
 	@property
 	def electronegativity(self) -> float:
 		"""Mulliken electronegativity"""

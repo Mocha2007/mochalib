@@ -34,7 +34,7 @@ def function(**kwargs): # needs repr and f
 	class Function:
 		def __init__(self, *variables):
 			self.variables = list(variables)
-	
+
 		def __repr__(self) -> str:
 			string = kwargs['repr'].format(*self.variables)
 			if len(self.variables) == 1:

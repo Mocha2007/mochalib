@@ -64,7 +64,7 @@ def histogram(filename: str):
 	fig = plt.figure(figsize=(5, 5))
 	ax = fig.add_subplot(1, 1, 1)
 	ax.set_facecolor('#000000')
-	
+
 	plt.title('Bytes')
 	plt.xlabel('Byte')
 	plt.ylabel('Count')

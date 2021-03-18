@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Angle, Length, Mass, Time, pretty_dim
+from mochaunits import Length, Mass, Time, pretty_dim
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -660,7 +660,7 @@ class Body:
 		planet_a = self.orbit.parent.orbit.apo
 		planet_r = self.orbit.parent.radius
 		moon_a = self.orbit.peri
-		moon_r = self.radius
+		# moon_r = self.radius
 		theta = atan2(star_r - planet_r, planet_a)
 		shadow_r = planet_r-moon_a*tan(theta)
 		orbit_fraction = shadow_r / (pi*self.orbit.a)
@@ -1216,7 +1216,7 @@ class Body:
 
 	def __lt__(self, other) -> bool:
 		return self.radius < other.radius
-	
+
 	# methods
 	def acc_towards(self, other, t: float) -> float:
 		"""Acceleration of self towards other body at time t (m/s^2)"""

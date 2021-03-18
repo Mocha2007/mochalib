@@ -235,7 +235,7 @@ def flipy(matrix):
 
 def flipx(matrix):
 	return matrix[::-1]
-	
+
 def rot(matrix,quarterturns):
 	if quarterturns%1!=0:raise ValueError('The number of quarter-turns must be an integer!\n'+str(quarterturns))
 	if quarterturns%4==0:return matrix
@@ -254,9 +254,10 @@ def disp2(matrix):
 
 def clean(matrix):
 	#clean up unnecessary negatives and floats
-	for i in range(len(matrix)):
-		for j in range(len(matrix[i])):
-			if matrix[i][j]%1==0:matrix[i][j]=int(matrix[i][j])
+	for i, row in enumerate(matrix):
+		for j, cell in enumerate(row):
+			if matrix[i][j]%1==0:
+				matrix[i][j]=int(cell)
 	return matrix
 
 def echelon(matrix):

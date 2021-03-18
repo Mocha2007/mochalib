@@ -66,7 +66,7 @@ def run(prog: str, inp: List[str]) -> str:
 						balance += 1
 					elif prog[i] == ']':
 						balance -= 1
-					
+
 		pointer = pointer % 256
 		mem[pointer] = mem[pointer] % 256
 		i += 1
