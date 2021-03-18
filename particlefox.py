@@ -234,7 +234,7 @@ class Isotope:
 	@property
 	def symbol(self) -> str:
 		return symbols[self.z-1]
-	
+
 	# decay modes
 
 	@property
@@ -278,7 +278,7 @@ class Isotope:
 			return 'N', self.neutron_emission
 		if n+4 < z:
 			return 'EC', self.proton_emission
-		
+
 		# beta decay
 		if z < 20:
 			ratio = n/z
@@ -289,13 +289,13 @@ class Isotope:
 		return 'b-', self.beta_minus_decay
 
 	# double underscore methods
-	
+
 	def __eq__(self, other) -> bool:
 		return all([self.z == other.z, self.n == other.n, self.e == other.e])
-	
+
 	def __hash__(self) -> int:
 		return hash((self.z, self.n, self.e))
-	
+
 	def __str__(self) -> str:
 		return '<Isotope {0}{1}>'.format(self.symbol, self.a)
 
