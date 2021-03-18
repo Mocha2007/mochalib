@@ -773,7 +773,7 @@ class Body:
 	def area(self) -> float:
 		"""Surface area (m^2)"""
 		return 4*pi*self.radius**2
-	
+
 	@property
 	def categories(self) -> set:
 		"""List all possible categories for body"""
@@ -1208,7 +1208,7 @@ class Body:
 		"""SMA of synchronous orbit (m)"""
 		mu = g*self.mass
 		return (mu*self.rotation.p**2/4/pi**2)**(1/3)
-	
+
 	# double underscore methods
 	def __gt__(self, other) -> bool:
 		# WA uses radius, so despite my better judgement, so will I

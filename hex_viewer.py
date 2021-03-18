@@ -108,9 +108,9 @@ def plot_bytes2(filename: str):
 		g, b = bytestring[i+1:i+3]
 		coords = (i//3) % dim, (i//3) // dim
 		screen.set_at(coords, (r, g, b))
-	
+
 	pygame.display.flip()
-	
+
 	while 1:
 		# events
 		for event in pygame.event.get():
