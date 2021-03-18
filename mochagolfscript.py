@@ -9,8 +9,7 @@ def main(prog: str) -> str:
 	esc = False
 	stack = []
 	cnum = ''
-	for i in range(len(prog)):
-		command = prog[i]
+	for i, command in enumerate(prog):
 		errorcode = 'error @ char '+str(i)+': '+command+'\n\tstack ('+str(len(stack))+'): '+str(stack)+'\n\tcode '
 		# TODO " and or xor print p puts rand do while until if abs zip base
 		try:
@@ -106,7 +105,7 @@ def main(prog: str) -> str:
 					elif len(stack): # for commands requiring at least TWO vars
 						temp2 = stack.pop()
 						if command == '+':
-							if type(temp) == int == type(temp2) or type(temp) == list == type(temp2): # int int or arr arr
+							if isinstance(temp, int) and isinstance(temp2, int) or isinstance(temp, list) and isinstance(temp2, list): # int int or arr arr
 								stack.append(temp+temp2)
 							elif isinstance(temp, str) or isinstance(temp2, str): # either string
 								stack.append(str(temp2)+str(temp))
@@ -175,7 +174,7 @@ def main(prog: str) -> str:
 							except TypeError:
 								return errorcode+'m'
 						elif command == '?':
-							if type(temp) == int == type(temp2):
+							if isinstance(temp, int) and isinstance(temp2, int):
 								stack.append(temp2**temp)
 							else:
 								try:

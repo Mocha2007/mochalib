@@ -27,16 +27,16 @@ def matrixmul(m1: list, m2: list) -> list:
 		raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n' +
 						str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	new = []
-	for row in range(len(m1)):
+	for row in m1:
 		newrow = []
-		for column in range(len(m1[row])):
-			if column == 0: # cells don't exist yet, so i have to make them
+		for i, cell in enumerate(row):
+			if i == 0: # cells don't exist yet, so i have to make them
 				for value in m2[0]:
-					newrow += [m1[row][0]*value]
+					newrow += [row[0]*value]
 			else: # now i can just add
 				for value in range(len(m2)):
 					try:
-						newrow[value] += m1[row][column]*m2[column][value]
+						newrow[value] += cell*m2[i][value]
 					except IndexError:
 						pass
 						# print('WARN: IndexError @ Alpha',row,column,value,m1,m2,newrow)
@@ -94,18 +94,17 @@ def det(matrix):
 	if len(matrix)==1:return matrix[0][0]
 	if len(matrix)==2:return matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0]
 	s=0
-	for row in range(len(matrix)):
-		constant=matrix[row][0]
+	for i, row in enumerate(matrix):
+		constant=row[0]
 		#now time to find the smaller matrix
 		newmatrix=[]
-		for row2 in range(len(matrix)):
+		for j, row2 in enumerate(matrix):
 			newrow=[]
-			for column2 in range(len(matrix[row])):
-				if row2!=row and column2!=0:
-					newrow+=[matrix[row2][column2]]
+			for column2 in range(len(row)):
+				if j!=i and column2!=0:
+					newrow+=[row2[column2]]
 			newmatrix+=[newrow] if len(newrow)>0 else []
-		value=constant*det(newmatrix)*(-1)**(row)
-		#print(constant,'* det(',newmatrix,') *',(-1)**(row))
+		value=constant*det(newmatrix)*(-1)**i
 		s+=value
 	return s
 
@@ -131,7 +130,7 @@ def adj(matrix):
 
 def inverse(matrix):
 	return matrixscalar(adj(matrix),1/det(matrix))
-	
+
 def matrixdiv(m1,m2):
 	if len(m1[0])!=len(m2):raise Exception('The number of columns in the first matrix must equal the number of rows in the second!\n'+str(len(m1))+'x'+str(len(m1[0]))+', '+str(len(m2))+'x'+str(len(m2[0])))
 	if len(m2[0])!=len(m2):raise Exception('The divisor must be a square matrix!\n'+str(len(m2))+'x'+str(len(m2[0])))
@@ -181,24 +180,24 @@ def companion(*coefficients):
 	coefficients = list(coefficients)
 	if coefficients[0]!=1:
 		c=coefficients[0]
-		for i in range(len(coefficients)):
-			coefficients[i]=coefficients[i]/c
+		for i, _ in enumerate(coefficients):
+			coefficients[i]/=c
 	coefficients=coefficients[::-1][:-1]#reverse list then remove last value
 	nm=[]
-	for r in range(len(coefficients)):
+	for r, rr in enumerate(coefficients):
 		nr=[]
 		for c in range(len(coefficients)):
 			if r==c+1:nr+=[1]#the diagonalish ones
 			elif c+1!=len(coefficients):nr+=[0]#the filler zeroes
-			else:nr+=[-coefficients[r]]#must be the coefficients
+			else:nr+=[-rr]#must be the coefficients
 		nm+=[nr]
 	return nm
 
 def trace(matrix):
 	if len(matrix[0])!=len(matrix):raise Exception('The matrix must be square!\n'+str(len(matrix))+'x'+str(len(matrix[0])))
 	trace=0
-	for i in range(len(matrix)):
-		trace+=matrix[i][i]
+	for i, row in enumerate(matrix):
+		trace+=row[i]
 	return trace
 
 def smallmatrixsqrt(matrix):

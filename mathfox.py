@@ -23,7 +23,7 @@ def can_apply_function(x) -> bool:
 class Variable:
 	def __init__(self, name: str):
 		self.name = name
-	
+
 	def __repr__(self) -> str:
 		return self.name
 
@@ -232,7 +232,7 @@ def function(**kwargs): # needs repr and f
 					return b.variables[0]
 				if {type(a), type(b)} <= {float, int}:
 					return a+b
-				if type(a) == Power == type(b): # sin^2 + cos^2 = 1
+				if isinstance(a, Power) and isinstance(b, Power): # sin^2 + cos^2 = 1
 					a_, ap = a.variables
 					b_, bp = b.variables
 					powers_are_two = ap == bp == 2
@@ -318,7 +318,7 @@ def function(**kwargs): # needs repr and f
 				if isinstance(b, Quotient): # a/(m/n)
 					m, n = b.variables
 					return Quotient(Product(a, n), m).simplify()
-				if type(a) == int == type(b) and 1 < gcd(a, b):
+				if isinstance(a, int) and isinstance(b, int) and 1 < gcd(a, b):
 					g = gcd(a, b)
 					return Quotient(a//g, b//g).simplify()
 				# trig division

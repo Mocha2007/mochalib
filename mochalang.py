@@ -128,9 +128,9 @@ def lettersquare(n: int, mode: str) -> str:
 	else:
 		source = 'abcdefghijklmnopqrstuvwxyz'
 	o = '```'
-	for row in range(n):
+	for _ in range(n):
 		r = '\n'
-		for column in range(n):
+		for _ in range(n):
 			r += choice(source)
 		o += r
 	return o+'\n```'

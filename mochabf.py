@@ -27,7 +27,7 @@ def run(prog: str, inp: List[str]) -> str:
 			command = prog[i]
 		except IndexError:
 			break
-		
+
 		if command == '>':
 			pointer += 1
 		elif command == '<':

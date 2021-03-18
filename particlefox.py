@@ -134,7 +134,7 @@ class Isotope:
 	@property
 	def block(self) -> str:
 		return self.electron_configuration[-2]
-	
+
 	@property
 	def electron_affinity(self) -> float:
 		return affinity[self.z]
