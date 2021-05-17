@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Length, Mass, Time, pretty_dim
+from mochaunits import Angle, Length, Mass, Time, pretty_dim
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
