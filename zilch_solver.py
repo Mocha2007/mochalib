@@ -32,14 +32,14 @@ def scoring(dice: List[int]) -> int:
 
 def mean_next_roll(unheld_dice: int=6) -> float:
 	held_dice = 6-unheld_dice
-	excuse_six_unhelds = lambda score: score if score else 500 if not held_dice else 0
+	excuse_six_unhelds = lambda score: 500 if not (score or held_dice) else score
 	average = sum(excuse_six_unhelds(scoring(d6(unheld_dice))) for _ in range(trials))/trials
 	return average
 
 def zilch_chance_next_roll(unheld_dice: int=6) -> float:
 	if unheld_dice == 6:
 		return 0
-	return sum(0<scoring(d6(unheld_dice)) for _ in range(trials))/trials
+	return sum(0 == scoring(d6(unheld_dice)) for _ in range(trials))/trials
 
 def should_i_roll(current_score: int=0, unheld_dice: int=6):
 	mnr = mean_next_roll(unheld_dice)
