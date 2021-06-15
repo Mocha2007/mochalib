@@ -50,7 +50,7 @@ def mean_next_roll(unheld_dice: int=6) -> float:
 def zilch_chance_next_roll(unheld_dice: int=6) -> float:
 	if unheld_dice == 6:
 		return 0
-	return sum(0 == scoring(d6(unheld_dice)) for _ in range(trials))/trials
+	return sum(0 == scoring(d6(unheld_dice)[0]) for _ in range(trials))/trials
 
 def expected(current_score: int=0, unheld_dice: int=6) -> float:
 	mnr = mean_next_roll(unheld_dice)
