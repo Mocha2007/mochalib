@@ -22,7 +22,7 @@ def scoring(dice: List[int]) -> Tuple[int, int]:
 				(unique if unique != 1 else 10*unique)
 			potentially_usable += count
 	# run, three pair
-	if len(set(dice)) == 3 and all(dice.count(i) == 2 for i in dice):
+	if len(set(dice)) == 6 or (len(set(dice)) == 3 and all(dice.count(i) == 2 for i in dice)):
 		score += 1500
 		potentially_usable = 6
 	# ones are 100 each unless there are 3+
