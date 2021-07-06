@@ -2,10 +2,10 @@
 	{
 		"name": "Namei",
 		"class": "star",
-		"mass": "7/9*sun.mass",
-		"radius": ".75798*sun.radius",
-		"luminosity": ".060435*sun.luminosity",
-		"temperature": "3885",
+		"mass": "2/3*sun.mass",
+		"radius": "2/3*sun.radius",
+		"luminosity": "1/8*sun.luminosity",
+		"temperature": "4185",
 		"notes": "universe_sim(search('namei'))"
 	},
 	{
@@ -24,7 +24,7 @@
 			"man": "218.35625555"
 		},
 		"rotation": {
-			"period": "111.12*hour",
+			"period": "432154.2424183355",
 			"tilt": "2.5*deg"
 		},
 		"atmosphere": {
@@ -56,7 +56,7 @@
 			"man": "108*deg"
 		},
 		"rotation": {
-			"period": "10.102*day",
+			"period": "942904.8964899578",
 			"tilt": "1*deg"
 		}
 	},
@@ -76,7 +76,7 @@
 			"man": "333*deg"
 		},
 		"rotation": {
-			"period": "20.899*day",
+			"period": "1950700.886099735",
 			"tilt": "5/60*deg"
 		}
 	},
@@ -96,7 +96,7 @@
 			"man": "311*deg"
 		},
 		"rotation": {
-			"period": "24*day",
+			"period": "2/3 * 3353836.015796726",
 			"tilt": 0
 		},
 		"atmosphere": {
@@ -113,7 +113,7 @@
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
-			"sma": ".32*au",
+			"sma": ".34*au",
 			"e": 0.02,
 			"i": 0,
 			"lan": 0,
@@ -156,6 +156,34 @@
 		"notes": "Guesses: mass, radius, orbital elements other than sma; search('nikki').solar_eclipse()"
 	},
 	{
+		"name": "Don",
+		"class": "planet",
+		"mass": 1.4064e22,
+		"radius": 1.09839e6,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Namei",
+			"sma": "1.2237*au",
+			"e": 0.011,
+			"i": "37.25/60*deg",
+			"lan": "244*deg",
+			"aop": "283*deg",
+			"man": "85*deg"
+		},
+		"rotation": {
+			"period": "42*hour + 52*minute + 52.57",
+			"tilt": "1*deg"
+		},
+		"atmosphere": {
+			"scale_height": 5e4,
+			"surface_pressure": 1,
+			"composition": {
+				"N2": 1
+			}
+		},
+		"notes": "6.562yr"
+	},
+	{
 		"name": "Eisen",
 		"class": "planet",
 		"mass": "9.0586*jupiter.mass",
@@ -163,7 +191,7 @@
 		"albedo": 0.504936,
 		"orbit": {
 			"parent": "Namei",
-			"sma": "1.5*au",
+			"sma": "2.5*au",
 			"e": 0.093,
 			"i": ".636*deg",
 			"lan": "18*deg",
@@ -215,34 +243,6 @@
 			"period": "(126 + 2/3)*hour"
 		},
 		"notes": "plot_grav_acc(search('maia'), search('seter'))"
-	},
-	{
-		"name": "Don",
-		"class": "planet",
-		"mass": 1.4064e22,
-		"radius": 1.09839e6,
-		"albedo": 0.3,
-		"orbit": {
-			"parent": "Namei",
-			"sma": "3.2237*au",
-			"e": 0.011,
-			"i": "37.25/60*deg",
-			"lan": "244*deg",
-			"aop": "283*deg",
-			"man": "85*deg"
-		},
-		"rotation": {
-			"period": "42*hour + 52*minute + 52.57",
-			"tilt": "1*deg"
-		},
-		"atmosphere": {
-			"scale_height": 5e4,
-			"surface_pressure": 1,
-			"composition": {
-				"N2": 1
-			}
-		},
-		"notes": "6.562yr"
 	},
 	{
 		"name": "Neuve",
