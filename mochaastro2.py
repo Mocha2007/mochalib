@@ -4,7 +4,8 @@ import numpy as np
 from matplotlib.patches import Circle, Patch
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
-from mochaunits import Angle, Length, Mass, Time, pretty_dim
+from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
+from typing import Callable, Dict, Optional, Tuple
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
@@ -37,7 +38,7 @@ N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
 # functions
-def axisEqual3D(ax: Axes3D):
+def axisEqual3D(ax: Axes3D) -> None:
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
@@ -47,7 +48,7 @@ def axisEqual3D(ax: Axes3D):
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
 
 
-def linear_map(interval1: (float, float), interval2: (float, float)):
+def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) -> Callable[[float], float]:
 	"""Create a linear map from one interval to another"""
 	return lambda x: (x - interval1[0]) / (interval1[1] - interval1[0]) * (interval2[1] - interval2[0]) + interval2[0]
 
@@ -64,7 +65,7 @@ def synodic(p1: float, p2: float) -> float:
 
 # classes
 class Orbit:
-	def __init__(self, **properties):
+	def __init__(self, **properties) -> None:
 		self.properties = properties
 
 	@property
@@ -84,6 +85,7 @@ class Orbit:
 
 	@property
 	def copy(self):
+		# type: (Orbit) -> Orbit
 		from copy import deepcopy
 		return deepcopy(self)
 
@@ -129,8 +131,9 @@ class Orbit:
 
 	@property
 	def parent(self):
+		 # type: (Orbit) -> Body
 		"""Parent body"""
-		return self.properties['parent'] # type: Body
+		return self.properties['parent']
 
 	@property
 	def peri(self) -> float:
@@ -185,13 +188,14 @@ class Orbit:
 		return '\n\t'.join(bits).format(**self.properties)+'\n>'
 
 	def at_time(self, t: float):
+		# type: (Orbit, float) -> Orbit
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		new = self.copy
 		new.properties['man'] += t/self.p * 2*pi
 		new.properties['man'] %= 2*pi
 		return new
 
-	def cartesian(self, t: float = 0) -> (float, float, float, float, float, float):
+	def cartesian(self, t: float = 0) -> Tuple[float, float, float, float, float, float]:
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		# ~29μs avg.
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
@@ -211,7 +215,7 @@ class Orbit:
 		omega, Omega = self.aop, self.lan
 		co, C, s, S = cos(omega), cos(Omega), sin(omega), sin(Omega)
 
-		def R(x: (float, float, float)) -> (float, float, float):
+		def R(x: Tuple[float, float, float]) -> Tuple[float, float, float]:
 			return (
 				x[0]*(co*C - s*cos(i)*S) - x[1]*(s*C + co*cos(i)*S),
 				x[0]*(co*S + s*cos(i)*C) + x[1]*(co*cos(i)*C - s*S),
@@ -245,9 +249,10 @@ class Orbit:
 		"""do two orbits cross?"""
 		return self.peri < other.peri < self.apo or other.peri < self.peri < other.apo
 
-	def distance(self, other) -> (float, float):
+	def distance(self, other) -> Tuple[float, float]:
 		# other is of type Orbit
 		"""Min and max distances (rad)"""
+		# todo - fix it so you can do planet => moon!
 		ds = abs(self.peri - other.apo), abs(self.apo - other.peri), \
 			abs(self.peri + other.apo), abs(self.apo + other.peri)
 		dmin, dmax = min(ds), max(ds)
@@ -282,7 +287,24 @@ class Orbit:
 		"""Change in mean anomaly over a period of time"""
 		return ((t / self.p) % 1) * 2*pi
 
-	def get_resonance(self, other, sigma: int = 3) -> (int, int):
+	# todo...
+	"""
+	def get_common_parent(self, other):
+		# type: (Orbit, Orbit) -> Body
+		# planet => planet or moon => moon
+		if self.parent == other.parent:
+			return self.parent
+		# a planet => a planet's moon
+		if self.parent == other.parent.orbit.parent:
+			return self.parent
+		# a moon => a planet
+		if self.parent.orbit.parent == other.parent:
+			return other.get_common_parent(self)
+		raise NotImplementedError("This type of orbital relationship is not supported")
+	"""
+
+	def get_resonance(self, other, sigma: int = 3):
+		# type: (Orbit, Orbit, int) -> Tuple[int, int]
 		"""Estimate resonance from periods, n-sigma certainty (outer, inner)"""
 		# ~102μs avg.
 		q = self.p / other.p
@@ -309,7 +331,7 @@ class Orbit:
 		d, h = other.a, self.a
 		return pi/((d/h)**1.5)
 
-	def plot(self):
+	def plot(self) -> None:
 		"""Plot orbit with pyplot"""
 		n = 1000
 		ts = [i*self.p/n for i in range(n)]
@@ -339,12 +361,14 @@ class Orbit:
 		return acos(np.dot(v_self, v_other))
 
 	def resonant(self, ratio: float):
+		# type: (Orbit, float) -> Orbit
 		"""Get a resonant orbit from this one"""
 		p = {key: value for key, value in self.properties.items()}
 		p['sma'] = self.a * ratio**(2/3)
 		return Orbit(**p)
 
 	def stretch_to(self, other):
+		# type: (Orbit, Orbit) -> Orbit
 		"""Stretch one orbit to another, doing the minimum to make them cross"""
 		# ~156μs avg.
 		# if already crossing
@@ -365,10 +389,12 @@ class Orbit:
 		return new
 
 	def synodic(self, other) -> float:
+		# type: (Orbit, Orbit) -> float
 		"""Synodic period of two orbits (s)"""
 		return synodic(self.p, other.p)
 
 	def t_collision(self, other) -> float:
+		# type: (Orbit, Body) -> float
 		"""Collision timescale: other is a body object orbiting the same primary, out in (s)"""
 		# Hamilton and Burns (Science 264, 550-553, 1994)
 		# U_r / U is baaaasically 1, right? :^)
@@ -384,19 +410,22 @@ class Orbit:
 		return timescale
 
 	def t_kozai(self, other) -> float:
+		# type: (Orbit, Body) -> float
 		"""Kozai oscillation timescale (s)"""
 		# other is type Body
 		e, M, m_2, p, p_2 = other.orbit.e, self.parent.mass, other.mass, self.p, other.orbit.p
 		return M/m_2*p_2**2/p*(1-e**2)**1.5
 
 	def tisserand(self, other) -> float:
+		# type: (Orbit, Orbit) -> float
 		"""Tisserand's parameter (dimensionless)"""
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
 		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
-
+	# """Compute optimal transfer burn (m/s, m/s, m/s, s)"""
+	"""
 	def transfer(self, other, t: float = 0,
-		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> (float, float, float, float):
-		"""Compute optimal transfer burn (m/s, m/s, m/s, s)"""
+		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> Tuple[float, float, float, float]:
+
 		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
 		# initial guess needs to be "bring my apo up/peri down to the orbit
 		initial_guess = self.stretch_to(other)
@@ -493,6 +522,7 @@ class Orbit:
 			str(dv_best),
 		))
 		raise ValueError(errorstring)
+	"""
 
 	def true_anomaly(self, t: float = 0) -> float:
 		"""True anomaly (rad)"""
@@ -510,7 +540,7 @@ class Rotation:
 		self.properties = properties
 
 	@property
-	def axis_vector(self) -> (float, float, float):
+	def axis_vector(self) -> Tuple[float, float, float]:
 		"""Return unit vector of axis (dimensionless)"""
 		theta, phi = self.dec, self.ra
 		return sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)
@@ -678,19 +708,20 @@ class Body:
 		return self.orbit.a*(self.mass/self.orbit.parent.mass)**.4
 
 	@property
-	def star(self): # -> Star
+	def star(self):
+		# type: (Body) -> Star
 		"""Get the nearest star in the hierarchy"""
 		p = self.orbit.parent
 		return p if isinstance(p, Star) else p.star
 
 	@property
-	def star_dist(self): # -> Star
+	def star_dist(self) -> float:
 		"""Get the distance to the nearest star in the hierarchy"""
 		p = self.orbit.parent
 		return self.orbit.a if isinstance(p, Star) else p.star_dist
 
 	@property
-	def star_radius(self): # -> Star
+	def star_radius(self) -> float:
 		"""Get the radius of the nearest star in the hierarchy"""
 		p = self.orbit.parent
 		return p.radius if isinstance(p, Star) else p.star_radius
@@ -1086,7 +1117,7 @@ class Body:
 		return string
 
 	@property
-	def metals(self):
+	def metals(self) -> Tuple[Dict[str, Optional[int]], bool]:
 		"""Metal data for metal/mining reports"""
 		symbols = 'Fe Ni Cu Pt Au Ag U Co Al'.split(' ')
 		assume = False
@@ -1211,18 +1242,22 @@ class Body:
 
 	# double underscore methods
 	def __gt__(self, other) -> bool:
+		# type: (Body, Body) -> bool
 		# WA uses radius, so despite my better judgement, so will I
 		return other.radius < self.radius
 
 	def __lt__(self, other) -> bool:
+		# type: (Body, Body) -> bool
 		return self.radius < other.radius
 
 	# methods
 	def acc_towards(self, other, t: float) -> float:
+		# type: (Body, Body, float) -> float
 		"""Acceleration of self towards other body at time t (m/s^2)"""
 		return self.force_between(other, t) / self.mass
 
-	def acc_vector_towards(self, other, t: float) -> (float, float, float):
+	def acc_vector_towards(self, other, t: float) -> Tuple[float, float, float]:
+		# type: (Body, Body, float) -> Tuple[float, float, float]
 		"""Acceleration vector of self towards other body at time t (m/s^2)"""
 		a, b = self.orbit.cartesian(t)[:3], other.orbit.cartesian(t)[:3]
 		dx, dy, dz = [i-j for i, j in zip(a, b)]
@@ -1234,7 +1269,7 @@ class Body:
 		# print('plot_grav_acc_vector(sedna, planet_nine)')
 		return ax, ay, az
 
-	def angular_diameter(self, other: Orbit) -> (float, float):
+	def angular_diameter(self, other: Orbit) -> Tuple[float, float]:
 		"""Angular diameter, min and max (rad)"""
 		dmin, dmax = self.orbit.distance(other)
 		return self.angular_diameter_at(dmax), self.angular_diameter_at(dmin)
@@ -1243,7 +1278,7 @@ class Body:
 		"""Angular diameter at distance (rad)"""
 		return 2*atan2(self.radius, dist)
 
-	def app_mag(self, other: Orbit) -> (float, float):
+	def app_mag(self, other: Orbit) -> Tuple[float, float]:
 		"""Apparent magnitude, min and max (dimensionless)"""
 		dmin, dmax = self.orbit.distance(other)
 		return self.app_mag_at(dmax), self.app_mag_at(dmin)
@@ -1289,7 +1324,7 @@ class Body:
 		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
 		return dv1 + dv2
 
-	def lunar_eclipse(self):
+	def lunar_eclipse(self) -> None:
 		"""Draw maximum eclipsing radii"""
 		satellite, planet = self, self.orbit.parent
 		a = satellite.orbit.peri
@@ -1327,7 +1362,7 @@ class Body:
 
 		plt.show()
 
-	def net_grav_acc_vector(self, system, t: float) -> (float, float, float):
+	def net_grav_acc_vector(self, system, t: float) -> Tuple[float, float, float]:
 		"""Net gravitational acceleration vector (m/s^2)"""
 		vectors = [self.acc_vector_towards(body, t) for body in system.bodies if body != self]
 		return tuple(map(sum, zip(*vectors)))
@@ -1393,7 +1428,7 @@ class Star(Body):
 		return -2.5 * log10(self.luminosity / L_0)
 
 	@property
-	def habitable_zone(self) -> (float, float):
+	def habitable_zone(self) -> Tuple[float, float]:
 		"""Inner and outer habitable zone (m)"""
 		center = au*(self.luminosity/sun.luminosity)**.5
 		inner = .95*center
@@ -1469,7 +1504,7 @@ class System:
 		"""List of bodies sorted by semimajor axis"""
 		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
 
-	def plot(self):
+	def plot(self) -> None:
 		"""Plot system with pyplot"""
 		# see above plot for notes and sources
 		n = 1000
@@ -1490,7 +1525,7 @@ class System:
 		axisEqual3D(ax)
 		plt.show()
 
-	def plot2d(self):
+	def plot2d(self) -> None:
 		"""2D Plot system with pyplot"""
 		# see above plot for notes and sources
 		n = 1000
@@ -1508,7 +1543,7 @@ class System:
 
 		plt.show()
 
-	def mass_pie(self):
+	def mass_pie(self) -> None:
 		"""Mass pie chart"""
 		system_masses = [i.mass for i in self.bodies]
 
@@ -1522,7 +1557,7 @@ class System:
 
 		plt.show()
 
-	def sim(self):
+	def sim(self) -> None:
 		"""Use pygame to produce a better simulation, albeit in 2D"""
 		import pygame
 		from time import sleep # , time
@@ -1658,11 +1693,11 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
 	return out # .plot2d()
 
 
-def apsides2ecc(apo: float, peri: float) -> (float, float):
+def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
 	return (apo+peri)/2, (apo-peri)/(apo+peri)
 
 
-def keplerian(parent: Body, cartesian: (float, float, float, float, float, float)) -> Orbit:
+def keplerian(parent: Body, cartesian: Tuple[float, float, float, float, float, float]) -> Orbit:
 	"""Get keplerian orbital parameters (a, e, i, O, o, m)"""
 	# https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 	r, r_ = np.array(cartesian[:3]), np.array(cartesian[3:])
@@ -1845,7 +1880,7 @@ def load_data(seed: dict) -> dict:
 	return universe_data
 
 
-def plot_grav_acc(body1: Body, body2: Body):
+def plot_grav_acc(body1: Body, body2: Body) -> None:
 	"""Plot gravitational acceleration from one body to another over several orbits"""
 	resolution = 1000
 	orbits = 8
@@ -1863,7 +1898,7 @@ def plot_grav_acc(body1: Body, body2: Body):
 	plt.show()
 
 
-def plot_grav_acc_vector(body1: Body, body2: Body):
+def plot_grav_acc_vector(body1: Body, body2: Body) -> None:
 	"""Plot gravitational acceleration vector from one body to another over several orbits"""
 	resolution = 100
 	orbits = 8
@@ -1921,19 +1956,19 @@ def stargen(m: float) -> Star:
 	})
 
 
-def test_functions():
+def test_functions() -> None:
 	print(str(earth.orbit))
 	print('~'*40)
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
-def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selection: Body=None):
+def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), selection: Body=None) -> None:
 	# TODO
 	# moon display
 	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
 	import pygame
-	from pygame import gfxdraw
+	# from pygame import gfxdraw
 	from time import sleep, time
 	from math import hypot
 	from mochamath import dist
@@ -1969,7 +2004,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 	font_small = 12
 
 	# verify onscreen
-	def is_onscreen(coords: (int, int), buffer: int=0) -> bool:
+	def is_onscreen(coords: Tuple[int, int], buffer: int=0) -> bool:
 		x, y = coords
 		return -buffer <= x <= width+buffer and -buffer <= y <= height+buffer
 
@@ -1980,10 +2015,10 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 				return True
 		return False
 
-	def center_on_selection(coords: (int, int)) -> (int, int):
+	def center_on_selection(coords: Tuple[int, int]) -> Tuple[int, int]:
 		return tuple(i-j+k for i, j, k in zip(coords, current_coords, center))
 
-	def coord_remap(coords: (float, float), smooth: bool=True) -> (int, int):
+	def coord_remap(coords: Tuple[float, float], smooth: bool=True) -> Tuple[int, int]:
 		a = current_a if smooth else max_a
 		b = height/width * a
 		xmap = linear_map((-a, a), (0, width))
@@ -1991,12 +2026,12 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 		x, y = coords
 		return int(round(xmap(x))), int(round(ymap(y)))
 
-	def is_hovering(body: Body, coords: (int, int)) -> bool:
+	def is_hovering(body: Body, coords: Tuple[int, int]) -> bool:
 		apparent_radius = body.radius * width/(2*current_a) if 'radius' in body.properties else dot_radius
 		return dist(coords, pygame.mouse.get_pos()) < max(mouse_sensitivity, apparent_radius)
 
 	# display body
-	def point(at: (int, int), radius: float, color: (int, int, int)=white, fill: bool=True, highlight: bool=False):
+	def point(at: Tuple[int, int], radius: float, color: Tuple[int, int, int]=white, fill: bool=True, highlight: bool=False) -> None:
 		"""radius is in meters, NOT pixels!!!"""
 		star_radius = round(radius * width/(2*current_a))
 		r = star_radius if dot_radius < star_radius else dot_radius
@@ -2012,7 +2047,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 				screen.fill(color)
 
 	# display body
-	def show_body(body: Body, coords: (int, int), name: str=''):
+	def show_body(body: Body, coords: Tuple[int, int], name: str='') -> None:
 		"""Coords are the actual screen coords"""
 		hovering = is_hovering(body, coords)
 		r = body.radius if 'radius' in body.properties else 1
@@ -2023,7 +2058,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 		text(name, name_coords, font_normal, grey)
 
 	# display arrow
-	def arrow(a: (int, int), b: (int, int), color: (int, int, int)=red):
+	def arrow(a: Tuple[int, int], b: Tuple[int, int], color: Tuple[int, int, int]=red) -> None:
 		"""Coords are the actual screen coords"""
 		tip_scale = 10
 		# todo: the arrow "tip"
@@ -2044,7 +2079,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 			pygame.draw.aalines(screen, color, True, arrow_tip)
 
 	# display text
-	def text(string: str, at: (int, int), size: int=font_normal, color: (int, int, int)=white, shadow: bool=False):
+	def text(string: str, at: Tuple[int, int], size: int=font_normal, color: Tuple[int, int, int]=white, shadow: bool=False) -> None:
 		if not is_onscreen(at):
 			return None
 		this_font = pygame.font.SysFont('Courier New', size)
@@ -2060,10 +2095,10 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 			screen.blit(textsurface, (x, y))
 
 	# precompute orbits (time0, time1, ..., timeN)
-	def precompute_orbit(obj: Body) -> tuple:
+	def precompute_orbit(obj: Body) -> Tuple[Tuple[int, int], ...]:
 		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
 
-	def zoom(r: float=0):
+	def zoom(r: float=0) -> None:
 		nonlocal max_a
 		nonlocal selection_coords
 		max_a *= 2**r
@@ -2210,7 +2245,7 @@ def universe_sim(parent: Body, t: float=0, size: (int, int)=(1024, 640), selecti
 			sleep(wait_time)
 
 
-def warnings():
+def warnings() -> None:
 	"""Attempt to find missing data"""
 	for name, body in universe.items():
 		# print('Checking {}...'.format(name))
