@@ -118,6 +118,16 @@ class Orbit:
 	def mean_longitude(self) -> float:
 		"""Mean Longitude (radians)"""
 		return self.lan + self.aop + self.man
+	
+	@property
+	def orbit_tree(self):
+		# type: (Orbit) -> Tuple[Body, ...]
+		if 'parent' not in self.properties:
+			return tuple()
+		o = [self.parent]
+		if 'orbit' in self.parent.properties:
+			o += self.parent.orbit.orbit_tree
+		return tuple(o)
 
 	@property
 	def orbital_energy(self) -> float:
@@ -250,16 +260,35 @@ class Orbit:
 		return self.peri < other.peri < self.apo or other.peri < self.peri < other.apo
 
 	def distance(self, other) -> Tuple[float, float]:
-		# other is of type Orbit
-		"""Min and max distances (rad)"""
-		# todo - fix it so you can do planet => moon!
-		ds = abs(self.peri - other.apo), abs(self.apo - other.peri), \
-			abs(self.peri + other.apo), abs(self.apo + other.peri)
-		dmin, dmax = min(ds), max(ds)
-		return dmin, dmax
+		# type: (Orbit, Orbit) -> Tuple[float, float]
+		"""Min and max distances (m)"""
+		# NEW FEATURE: it can now do planet => moon or any other relationship!
+		ot1, ot2 = self.orbit_tree, other.orbit_tree
+		assert ot1[-1] == ot2[-1]
+		if ot1[0] == ot2[0]:
+			ds = abs(self.peri - other.apo), abs(self.apo - other.peri), \
+				abs(self.peri + other.apo), abs(self.apo + other.peri)
+			return min(ds), max(ds)
+		if 1 < len(ot2) and ot1[0] == ot2[1]: # planet, moon
+			if self == ot2[0]: # a planet and its moon
+				return other.peri, other.apo
+			# a planet and the moon of another
+			dmin, dmax = self.distance(other.parent.orbit)
+			dmin -= other.apo
+			dmax += other.apo
+			return dmin, dmax
+		if 1 < len(ot1) and ot1[1] == ot2[0]: # moon, planet
+			return other.distance(self)
+		if len(ot1) > 1 < len(ot2) and ot1[1] == ot2[1]: # moon, moon
+			dmin, dmax = self.parent.orbit.distance(other.parent.orbit)
+			dmin -= self.apo + other.apo
+			dmax += self.apo + other.apo
+			return dmin, dmax
+		raise NotImplementedError('this type of orbital relationship is not supported')
+		
 
 	def distance_to(self, other, t: float) -> float:
-		# other is of type Orbit
+		# type: (Orbit, Orbit, float) -> float
 		"""Distance between orbits at time t (m)"""
 		# ~65μs avg.
 		a, b = self.cartesian(t)[:3], other.cartesian(t)[:3]
@@ -286,22 +315,6 @@ class Orbit:
 	def mean_anomaly_delta(self, t: float = 0) -> float:
 		"""Change in mean anomaly over a period of time"""
 		return ((t / self.p) % 1) * 2*pi
-
-	# todo...
-	"""
-	def get_common_parent(self, other):
-		# type: (Orbit, Orbit) -> Body
-		# planet => planet or moon => moon
-		if self.parent == other.parent:
-			return self.parent
-		# a planet => a planet's moon
-		if self.parent == other.parent.orbit.parent:
-			return self.parent
-		# a moon => a planet
-		if self.parent.orbit.parent == other.parent:
-			return other.get_common_parent(self)
-		raise NotImplementedError("This type of orbital relationship is not supported")
-	"""
 
 	def get_resonance(self, other, sigma: int = 3):
 		# type: (Orbit, Orbit, int) -> Tuple[int, int]
