@@ -47,6 +47,4 @@ class Wave:
 	@property
 	def pcm(self) -> bytes:
 		import numpy as np
-		xs = self.normalized
-		frames = (0x7FFF * np.array(xs)).astype(np.int16)
-		return frames.tobytes()
+		return (0x7FFF * np.array(self.normalized)).astype(np.int16).tobytes()
