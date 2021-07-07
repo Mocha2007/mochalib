@@ -1,5 +1,3 @@
-from typing import Optional
-
 def pcm_to_wav(data: bytes, filename: str = 'output.wav', bits_per_sample: int = 16) -> None:
 	# http://soundfile.sapp.org/doc/WaveFormat/
 	# compute data
@@ -24,18 +22,25 @@ def pcm_to_wav(data: bytes, filename: str = 'output.wav', bits_per_sample: int =
 	with open(filename, 'wb+') as file:
 		file.write(header + data)
 
-def play_file(filename: str) -> Optional[int]:
+def play_file(filename: str) -> int:
+	"""Outputs console error code, if any, as int"""
 	from os import name as os_name
 	if os_name == 'nt': # Windows NT
 		from winsound import PlaySound, SND_FILENAME
-		return PlaySound(filename, SND_FILENAME)
+		PlaySound(filename, SND_FILENAME)
+		return 0
 	if os_name == 'posix': # Linux OR Mac... probably
 		from os import system
 		from platform import system as get_os_name
 		if get_os_name() == 'Linux':
 			return system(f'aplay {filename}')
-		elif get_os_name() == 'Darwin':
+		elif get_os_name() == 'Darwin': # Mac
 			return system(f'afplay {filename}')
+		elif get_os_name()[-3:] == 'BSD':
+			error_code = 32512
+			for command in 'vlc aplay cmus moc mpv mplayer mplayer2'.split():
+				if not system(f'{command} {filename}'):
+					return 0
 		elif get_os_name() == 'Haiku':
 			return system(f'media_client play {filename}')
 	# unknown OS, try to use pygame
@@ -44,4 +49,5 @@ def play_file(filename: str) -> Optional[int]:
 	pygame.mixer.init()
 	pygame.mixer.music.load(filename)
 	pygame.mixer.music.play()
-	return pygame.quit()
+	pygame.quit()
+	return 0
