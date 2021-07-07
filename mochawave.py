@@ -75,6 +75,11 @@ class Wave:
 		"""change amplitude of wave"""
 		return Wave(i*other for i in self.amplitude_data, self.sample_rate)
 
+	def __neg__(self):
+		# type: (Wave) -> Wave
+		"""negate amplitude"""
+		return Wave(-x for x in self.amplitude_data, self.sample_rate)
+
 	# methods
 
 	def set_speed(self, mul: int = 1, div: int = 1):
