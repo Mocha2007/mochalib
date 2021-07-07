@@ -1693,8 +1693,8 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
 			break
 	# print(time() - start)
 	# construct system
-	star = Star(**{'mass': star_mass})
-	out = System(*(Body(**{'mass': mass, 'orbit': Orbit(**{
+	star = stargen(star_mass)
+	out = System(star, *(Body(**{'mass': mass, 'orbit': Orbit(**{
 		'parent': star,
 		'sma': a,
 		'e': uniform(0, .1), 'i': uniform(0, 4*deg), 'lan': uniform(0, 2*pi), 'aop': uniform(0, 2*pi), 'man': uniform(0, 2*pi)
