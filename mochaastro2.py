@@ -1804,9 +1804,9 @@ def plot_distance(orbit1: Orbit, orbit2: Orbit):
 
 
 def distance_audio(orbit1: Orbit, orbit2: Orbit):
-	from mochaaudio import pcm_to_wav
+	from mochaaudio import pcm_to_wav, play_file
 	"""Play wave of plot_distance
-	Encoding   | Signed 32-bit PCM
+	Encoding   | Signed 16-bit PCM
 	Byte order | little endian
 	Channels   | 1 channel mono
 	"""
@@ -1823,7 +1823,7 @@ def distance_audio(orbit1: Orbit, orbit2: Orbit):
 	xs_m, xs_M = np.amin(xs), np.amax(xs)
 	xs = np.array([2 * (i-xs_m)/(xs_M-xs_m) - 1 for i in xs])
 	# print(xs, np.amin(xs), np.amax(xs))
-	frames = (0x7FFFFFFF * np.array(xs)).astype(np.int32)
+	frames = (0x7FFF * np.array(xs)).astype(np.int16)
 	# print(frames, np.amin(frames), np.amax(frames))
 	# end plot_distance
 
@@ -1831,6 +1831,8 @@ def distance_audio(orbit1: Orbit, orbit2: Orbit):
 	# with open('audacity.txt', 'wb+') as file:
 	#	file.write(frames.tobytes())
 	pcm_to_wav(frames.tobytes())
+	# play audio
+	play_file('output.wav')
 
 
 def value_parse(value) -> float:
