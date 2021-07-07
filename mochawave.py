@@ -34,6 +34,8 @@ class Wave:
 		self.amplitude_data = amplitude_data
 		self.sample_rate = sample_rate
 
+	# properties
+
 	@property
 	def max(self) -> float:
 		return max(abs(i) for i in self.amplitude_data)
@@ -50,10 +52,33 @@ class Wave:
 		import numpy as np
 		return (0x7FFF * np.array(self.normalized)).astype(np.int16).tobytes()
 
+	# double underscore methods
+
+	def __add__(self, other):
+		# type: (Wave, Wave) -> Wave
+		"""concatenate two waves"""
+		assert self.sample_rate == other.sample_rate
+		return Wave(list(self.amplitude_data) + list(other.amplitude_data), self.sample_rate)
+
+	def __matmul__(self, other):
+		# type: (Wave, Wave) -> Wave
+		"""overlay two waves"""
+		assert self.sample_rate == other.sample_rate and len(self) == len(other)
+		return Wave(x + other.amplitude_data[i] for i, x in enumerate(self.amplitude_data), self.sample_rate)
+
+	def __mul__(self, other: float):
+		# type: (Wave, float) -> Wave
+		"""change amplitude of wave"""
+		return Wave(i*other for i in self.amplitude_data, self.sample_rate)
+
+	# methods
+
 	def wav(self) -> None:
 		"""output as wav file"""
 		from mochaaudio import pcm_to_wav
 		pcm_to_wav(self.pcm, sample_rate=self.sample_rate)
+
+	# static methods
 
 	@staticmethod
 	def square(freq: int = 440, t: float = 1, sample_rate: int = 44100):
