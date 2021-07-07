@@ -1,5 +1,5 @@
-import pynput
-from mss import mss
+import pynput # https://pynput.readthedocs.io/en/latest/keyboard.html#monitoring-the-keyboard
+from mss import mss # https://python-mss.readthedocs.io/examples.html#pil ; https://pypi.org/project/mss/
 from PIL import Image #, ImageGrab
 
 # todo: AIs to play various flash games
@@ -26,3 +26,6 @@ def test() -> None:
 	im[x, y] # gets pixel at x, y as (r, g, b)
 	# ImageGrab.grab() # get screenshot
 	# bbox=(left, top, right, bottom)
+
+# https://www.geeksforgeeks.org/with-statement-in-python/
+# can create objects that can utilize with. might be useful for opening/closing menus in some games?
