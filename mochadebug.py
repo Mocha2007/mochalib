@@ -45,7 +45,8 @@ run = lambda f:f()
 @run
 def y() -> int:
 	return 2
-y # it's yellow, but it's now a constant!
+y # returns 2
+# it's yellow, but it's now a constant!
 
 # how to make the letters blue in vs code:
 double = lambda x: 2*x
