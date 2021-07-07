@@ -1298,11 +1298,12 @@ class Body:
 
 	def app_mag_at(self, dist: float) -> float:
 		"""Apparent magnitude at distance (dimensionless)"""
-		# https://astronomy.stackexchange.com/a/5983
-		correction = 3 # solution given in SE gives high results
+		# https://astronomy.stackexchange.com/a/38377
 		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.star_dist, self.star.abs_mag
-		v_planet = -2.5*log10(a_p * r_p**2 / (4*d_s**2)) - v_sun
-		return v_planet + 5*log10(dist / pc) + correction
+		h_star = v_sun + 5*log10(au/(10*pc))
+		d_0 = 2*au*10**(h_star/5)
+		h = 5 * log10(d_0 / (2*r_p * a_p**.5))
+		return h + 5*log10(d_s * dist / au**2)
 
 	def atm_supports(self, molmass: float) -> bool:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
