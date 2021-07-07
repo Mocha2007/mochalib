@@ -1,4 +1,5 @@
 from math import pi, log2, sin
+from typing import Iterable
 
 # basic waveforms
 def square(x: float, freq: float, amp: float) -> float:
@@ -29,5 +30,23 @@ def n2f(n: str) -> float:
 
 # wave class for manipulating data
 class Wave:
-	def __init__(self) -> None:
-		pass
+	def __init__(self, amplitude_data: Iterable[float], sample_rate: int = 44100) -> None:
+		self.amplitude_data = amplitude_data
+		self.sample_rate = sample_rate
+
+	@property
+	def max(self) -> float:
+		return max(abs(i) for i in self.amplitude_data)
+
+	@property
+	def normalized(self):
+		# type (Wave) -> Wave
+		m = self.max
+		return Wave((i/m for i in self.amplitude_data), self.sample_rate)
+
+	@property
+	def pcm(self) -> bytes:
+		import numpy as np
+		xs = self.normalized
+		frames = (0x7FFF * np.array(xs)).astype(np.int16)
+		return frames.tobytes()

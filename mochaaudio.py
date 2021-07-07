@@ -1,10 +1,10 @@
-def pcm_to_wav(data: bytes, filename: str = 'output.wav', bits_per_sample: int = 16) -> None:
+def pcm_to_wav(data: bytes, filename: str = 'output.wav', bits_per_sample: int = 16, \
+		sample_rate: int = 44100) -> None:
 	# http://soundfile.sapp.org/doc/WaveFormat/
 	# compute data
 	data_size = len(data)
 	chunk_size = data_size + 36
 	channels = 1
-	sample_rate = 44100
 	# construct header
 	header = b'RIFF' + \
 		chunk_size.to_bytes(4, byteorder='little') + \
