@@ -1294,7 +1294,7 @@ class Body:
 	def app_mag(self, other: Orbit) -> Tuple[float, float]:
 		"""Apparent magnitude, min and max (dimensionless)"""
 		dmin, dmax = self.orbit.distance(other)
-		return self.app_mag_at(dmin), self.app_mag_at(dmax)
+		return self.app_mag_at(dmax), self.app_mag_at(dmin)
 
 	def app_mag_at(self, dist: float) -> float:
 		"""Apparent magnitude at distance (dimensionless)"""
