@@ -68,17 +68,17 @@ class Wave:
 		# type: (Wave, Wave) -> Wave
 		"""overlay two waves"""
 		assert self.sample_rate == other.sample_rate and len(self) == len(other)
-		return Wave(x + other.amplitude_data[i] for i, x in enumerate(self.amplitude_data), self.sample_rate)
+		return Wave((x + other.amplitude_data[i] for i, x in enumerate(self.amplitude_data)), self.sample_rate)
 
 	def __mul__(self, other: float):
 		# type: (Wave, float) -> Wave
 		"""change amplitude of wave"""
-		return Wave(i*other for i in self.amplitude_data, self.sample_rate)
+		return Wave((i*other for i in self.amplitude_data), self.sample_rate)
 
 	def __neg__(self):
 		# type: (Wave) -> Wave
 		"""negate amplitude"""
-		return Wave(-x for x in self.amplitude_data, self.sample_rate)
+		return Wave((-x for x in self.amplitude_data), self.sample_rate)
 
 	# methods
 
