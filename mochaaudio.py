@@ -36,6 +36,8 @@ def play_file(filename: str) -> Optional[int]:
 			return system(f'aplay {filename}')
 		elif get_os_name() == 'Darwin':
 			return system(f'afplay {filename}')
+		elif get_os_name() == 'Haiku':
+			return system(f'media_client play {filename}')
 	# unknown OS, try to use pygame
 	import pygame # unfortunately no 32-bit support
 	# play audio file with pygame
