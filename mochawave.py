@@ -1,31 +1,33 @@
-from math import pi,log,sin
-import cmath
+from math import pi, log2, sin
 
-#using mod
-def square(x,freq,amp):
+# basic waveforms
+def square(x: float, freq: float, amp: float) -> float:
 	return amp*(2*(x/freq//1%2)-1)
-#using logsine
-def square1(x,freq,amp):
-	return amp*(2/pi*cmath.log(sin(2*x*pi/frequency)).imag-1)
-#using abs and mod
-def triangle(x,freq,amp):
+
+def triangle(x: float, freq: float, amp: float) -> float:
 	return amp*(abs(4*((x/freq)%1)-2)-1)
-def sine(x,freq,amp):
+
+def sine(x: float, freq: float, amp: float) -> float:
 	return amp*sin(2*pi*x/freq)
-#using powers of i
-def sine1(x,freq,amp):
-	return (amp*1j**(4*x/freq)).imag
-def sawtooth(x,freq,amp):
+
+def sawtooth(x: float, freq: float, amp: float) -> float:
 	return amp*(2*((x/freq)%1)-1)
-def f2n(f):
-	l=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
-	c=55/2**1.75
-	o=int(log(f/c,2))
-	n=round(12*(log(f/c,2)-o))
-	return l[n]+str(o)
-def n2f(n):
-	l=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
-	c=55/2**1.75
+
+# note to freq conversions
+note_names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+c0 = 55/2**1.75
+
+def f2n(f: float) -> str:
+	o=int(log2(f/c0))
+	n=round(12*(log2(f/c0)-o))
+	return note_names[n]+str(o)
+
+def n2f(n: str) -> float:
 	o=int(n[-1:])
-	n=int(l.index(n[:-1]))
-	return c*2**(o+n/12)
+	n=int(note_names.index(n[:-1]))
+	return c0*2**(o+n/12)
+
+# wave class for manipulating data
+class Wave:
+	def __init__(self) -> None:
+		pass
