@@ -46,5 +46,6 @@ class Wave:
 
 	@property
 	def pcm(self) -> bytes:
+		"""transform into 16-bit mono pcm"""
 		import numpy as np
 		return (0x7FFF * np.array(self.normalized)).astype(np.int16).tobytes()
