@@ -43,6 +43,8 @@ def play_file(filename: str) -> int:
 					return 0
 		elif get_os_name() == 'Haiku':
 			return system(f'media_client play {filename}')
+	if os_name == 'os2':
+		return system(f'fmgplay {filename}')
 	# unknown OS, try to use pygame
 	import pygame # unfortunately no 32-bit support
 	# play audio file with pygame
