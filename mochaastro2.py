@@ -1677,19 +1677,16 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
 		chosen_particle = particles[i_c]
 		m_c, a_c = chosen_particle
 		# find target
-		found = False
 		for i, (m_o, a_o) in enumerate(particles):
+			# merge
 			if a_c/sweep_area < a_o < a_c*sweep_area and chosen_particle != (m_o, a_o):
-				found = True
+				m_new = m_c + m_o
+				a_new = (m_c*a_c + m_o*a_o)/m_new
+				particles[i_c] = m_new, a_new
+				del particles[i]
 				break
-		# merge
-		if found:
-			m_new = m_c + m_o
-			a_new = (m_c*a_c + m_o*a_o)/m_new
-			particles[i_c] = m_new, a_new
-			del particles[i]
 		# early end
-		if len(particles) <= 6: # todo
+		if len(particles) <= 6:
 			break
 	# print(time() - start)
 	# construct system
