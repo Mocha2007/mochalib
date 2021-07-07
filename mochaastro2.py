@@ -1981,7 +1981,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 	# comet tails
 	"""Use pygame to show the system of [parent] and all subsystems"""
 	import pygame
-	# from pygame import gfxdraw
+	from pygame import gfxdraw # DO NOT REMOVE THIS IT BREAKS SHIT
 	from time import sleep, time
 	from math import hypot
 	from mochamath import dist
