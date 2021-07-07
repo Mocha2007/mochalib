@@ -8,6 +8,8 @@ from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed u
 from typing import Callable, Dict, Optional, Tuple
 # pylint: disable=E1101,W0612
 # module has no member; unused variable
+# pylint bugs out with pygame, and I want var names for some unused vars,
+# in case i need them in the future
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
