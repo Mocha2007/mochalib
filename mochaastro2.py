@@ -6,6 +6,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
 from typing import Callable, Dict, Optional, Tuple
+# pylint: disable=E1101,W0612
+# module has no member; unused variable
 
 # constants
 epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
