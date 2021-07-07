@@ -2074,7 +2074,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 	def arrow(a: Tuple[int, int], b: Tuple[int, int], color: Tuple[int, int, int]=red) -> None:
 		"""Coords are the actual screen coords"""
 		tip_scale = 10
-		# todo: the arrow "tip"
+		# the arrow "tip"
 		displacement = tuple(j-i for i, j in zip(a, b))
 		# -> point between the - and the >
 		tip_base = tuple((tip_scale-3)/tip_scale * i for i in displacement)
@@ -2280,6 +2280,8 @@ sun = Star(**{
 	'rotation': Rotation(**{
 		'period': 25.05*day,
 		'tilt': .127,
+		'ra': 286.13*deg,
+		'dec': 63.87*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 6050,
@@ -2324,6 +2326,8 @@ mercury = Body(**{
 	'rotation': Rotation(**{
 		'period': 58.646 * day,
 		'tilt': .00059, # to orbit
+		'ra': 281.01*deg,
+		'dec': 61.42*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 26000,
@@ -2347,6 +2351,8 @@ venus = Body(**{
 	'rotation': Rotation(**{
 		'period': 243.025 * day,
 		'tilt': 3.0955,
+		'ra': 272.76*deg,
+		'dec': 67.16*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 15900,
@@ -2501,6 +2507,8 @@ moon = Body(**{
 	'rotation': Rotation(**{
 		'period': 27.321661*day,
 		'tilt': .02692,
+		'ra': 270*deg,
+		'dec': 66.54*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 41860,
@@ -2541,6 +2549,8 @@ mars = Body(**{
 	'rotation': Rotation(**{
 		'period': 1.025957*day,
 		'tilt': .4396, # to orbital plane
+		'ra': 317.68*deg,
+		'dec': 52.89*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 11100,
@@ -2572,6 +2582,8 @@ jupiter = Body(**{
 	'rotation': Rotation(**{
 		'period': 9.925*hour,
 		'tilt': .0546, # to orbit
+		'ra': 268.05*deg,
+		'dec': 64.49*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 27000,
@@ -2595,6 +2607,8 @@ saturn = Body(**{
 	'rotation': Rotation(**{
 		'period': 10*hour + 33*minute + 38,
 		'tilt': .4665, # to orbit
+		'ra': 40.60*deg,
+		'dec': 83.54*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 59500,
@@ -2618,6 +2632,8 @@ uranus = Body(**{
 	'rotation': Rotation(**{
 		'period': .71833*day,
 		'tilt': 1.706, # to orbit
+		'ra': 257.43*deg,
+		'dec': -15.10*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 27700,
@@ -2640,6 +2656,8 @@ neptune = Body(**{
 	'rotation': Rotation(**{
 		'period': .6713*day,
 		'tilt': .4943, # to orbit
+		'ra': 299.36*deg,
+		'dec': 43.46*deg,
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 19700,
@@ -2667,7 +2685,6 @@ solar_system = {
 	'Neptune': neptune,
 }
 universe = load_data(solar_system.copy())
-# todo rotational axis RA and DEC https://en.wikipedia.org/wiki/Axial_tilt#Solar_System_bodies
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
 # solar_system.sim()

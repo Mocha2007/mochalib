@@ -32,7 +32,9 @@
 		},
 		"rotation": {
 			"period": "6.38723*day",
-			"tilt": 2.1386
+			"tilt": 2.1386,
+			"ra": "312.99*deg",
+			"dec": "6.16*deg"
 		},
 		"atmosphere": {
 			"scale_height": 5e4,
