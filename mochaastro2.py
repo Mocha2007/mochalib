@@ -1504,14 +1504,10 @@ class Star(Body):
 
 class System:
 	"""Set of orbiting bodies"""
-	def __init__(self, *bodies):
+	def __init__(self, parent: Body, *bodies: Body) -> None:
 		"""Star system containing bodies.\nDoesn't need to be ordered."""
+		self.parent = parent
 		self.bodies = set(bodies)
-
-	@property
-	def any_body(self) -> Body:
-		"""Returns a body (may or may not be the same each time)"""
-		return list(self.bodies)[0]
 
 	@property
 	def sorted_bodies(self) -> list:
@@ -1563,7 +1559,7 @@ class System:
 
 		plt.subplot(1, 2, 1)
 		plt.title('System mass')
-		plt.pie(system_masses + [self.any_body.orbit.parent.mass])
+		plt.pie(system_masses + [self.parent.mass])
 
 		plt.subplot(1, 2, 2)
 		plt.title('System mass (excl. primary)')
@@ -1581,7 +1577,6 @@ class System:
 		black, blue, white = (0,)*3, (0, 0, 255), (255,)*3
 		timerate = self.sorted_bodies[0].orbit.p/32
 		max_a = self.sorted_bodies[-1].orbit.apo
-		parent = self.any_body.orbit.parent
 
 		size = 800, 800
 		width, height = size
@@ -1605,7 +1600,7 @@ class System:
 			screen.fill(black)
 			# show bodies
 			# show star
-			star_radius = round(parent.radius/max_a * width)
+			star_radius = round(self.parent.radius/max_a * width)
 			try:
 				pygame.draw.circle(screen, white, (width//2, height//2),
 					star_radius if dot_radius < star_radius else dot_radius)
@@ -2685,6 +2680,7 @@ solar_system = {
 	'Uranus': uranus,
 	'Neptune': neptune,
 }
+solar_system_object = System(sun, *(i for i in solar_system.values() if i is not sun))
 universe = load_data(solar_system.copy())
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
