@@ -1,5 +1,5 @@
 from math import pi, log2, sin
-from typing import Iterable
+from typing import Callable, Iterable
 
 # basic waveforms
 def square(x: float, freq: float, amp: float = 1) -> float:
@@ -95,6 +95,26 @@ class Wave:
 	# static methods
 
 	@staticmethod
+	def from_function(f: Callable[[float, float, float], float], freq: int = 440, t: float = 1, sample_rate: int = 44100):
+		# type: (Callable[[float, float, float], float], int, float, int) -> Wave
+		return Wave(f(i/sample_rate, freq) for i in range(int(t*sample_rate)))
+
+	@staticmethod
+	def sawtooth(freq: int = 440, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, int) -> Wave
+		return Wave.from_function(sawtooth, freq, t, sample_rate)
+
+	@staticmethod
+	def sine(freq: int = 440, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, int) -> Wave
+		return Wave.from_function(sine, freq, t, sample_rate)
+
+	@staticmethod
 	def square(freq: int = 440, t: float = 1, sample_rate: int = 44100):
 		# type: (int, float, int) -> Wave
-		return Wave(square(i/sample_rate, freq) for i in range(int(t*sample_rate)))
+		return Wave.from_function(square, freq, t, sample_rate)
+
+	@staticmethod
+	def triangle(freq: int = 440, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, int) -> Wave
+		return Wave.from_function(triangle, freq, t, sample_rate)
