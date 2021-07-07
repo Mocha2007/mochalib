@@ -60,6 +60,10 @@ class Wave:
 		assert self.sample_rate == other.sample_rate
 		return Wave(list(self.amplitude_data) + list(other.amplitude_data), self.sample_rate)
 
+	def __len__(self) -> int:
+		"""sample points"""
+		return len(self.amplitude_data)
+
 	def __matmul__(self, other):
 		# type: (Wave, Wave) -> Wave
 		"""overlay two waves"""
@@ -72,6 +76,11 @@ class Wave:
 		return Wave(i*other for i in self.amplitude_data, self.sample_rate)
 
 	# methods
+
+	def set_speed(self, mul: int = 1, div: int = 1):
+		# type: (Wave, int, int) -> Wave
+		"""mul increases length by the multiplier and div decreases it by the same"""
+		return Wave([self.amplitude_data[i//mul] for i in range(mul*len(self))][::div], self.sample_rate)
 
 	def wav(self) -> None:
 		"""output as wav file"""
