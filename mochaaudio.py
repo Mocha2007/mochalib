@@ -44,7 +44,7 @@ def play_file(filename: str) -> int:
 					return 0
 			else:
 				return 32512
-	else if os_name == 'os2':
+	elif os_name == 'os2':
 		return system(f'fmgplay {filename}')
 	# unknown OS, try to use pygame
 	import pygame # unfortunately no 32-bit support
