@@ -1,11 +1,11 @@
 from math import acos, copysign, pi, log2, sin
 from random import uniform
-from typing import Callable, Iterable
+from typing import Callable, Iterable, List
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	# w = Wave.from_function(circle, amp=0.05).oscillate_amplitude(10, 0.5)
-	w = Wave.from_function(brown_noise, amp=0.05)
+	w = Wave.from_function(brown_noise, amp=0.1).oscillate_amplitude(10, 0.5)
+	#  w = Wave.from_function(brown_noise, amp=0.05)
 	pcm_to_wav(w.pcm)
 	play_file('output.wav')
 
@@ -52,7 +52,7 @@ def n2f(n: str) -> float:
 # wave class for manipulating data
 class Wave:
 	def __init__(self, amplitude_data: Iterable[float], sample_rate: int = 44100) -> None:
-		self.amplitude_data = list(amplitude_data)
+		self.amplitude_data = amplitude_data if isinstance(amplitude_data, list) else list(amplitude_data) # type: List[float]
 		self.sample_rate = sample_rate
 
 	# properties
@@ -78,6 +78,11 @@ class Wave:
 		"""transform into 16-bit mono pcm"""
 		import numpy as np
 		return (0x7FFF * np.array(self.cut_off.amplitude_data)).astype(np.int16).tobytes()
+
+	@property
+	def reverse(self):
+		# type: (Wave) -> Wave
+		return Wave(self.amplitude_data[::-1], self.sample_rate)
 
 	# double underscore methods
 
@@ -108,6 +113,16 @@ class Wave:
 		return Wave((-x for x in self.amplitude_data), self.sample_rate)
 
 	# methods
+
+	def linear_falloff(self, t: float = 0.1):
+		#type: (Wave, float) -> Wave
+		"""to soften the end"""
+		return self.reverse.linear_onset(t).reverse
+
+	def linear_onset(self, t: float = 0.1):
+		#type: (Wave, float) -> Wave
+		"""to soften the beginning"""
+		return Wave((x*(i/self.sample_rate if i/self.sample_rate < t else 1) for i, x in enumerate(self.amplitude_data)), self.sample_rate)
 
 	def oscillate_amplitude(self, freq: int, min_amp: float = 0):
 		# type: (Wave, int, float) -> Wave
