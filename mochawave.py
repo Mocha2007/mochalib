@@ -1,9 +1,9 @@
-from math import copysign, pi, log2, sin
+from math import acos, copysign, pi, log2, sin
 from typing import Callable, Iterable
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	pcm_to_wav((Wave.triangle()*0.02).pcm)
+	pcm_to_wav((Wave.from_function(circle)*0.02).pcm)
 	play_file('output.wav')
 
 # basic waveforms
@@ -18,6 +18,11 @@ def sine(x: float, freq: float, amp: float = 1) -> float:
 
 def sawtooth(x: float, freq: float, amp: float = 1) -> float:
 	return amp*(2*((x*freq)%1)-1)
+
+# momomomomomomomo
+def circle(x: float, freq: float, amp: float = 1) -> float:
+	x *= 4*freq
+	return amp*sin(acos(x%2 - 1))*(-1)**(x//2 % 2)
 
 # note to freq conversions
 note_names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
