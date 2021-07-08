@@ -1,9 +1,9 @@
-from math import pi, log2, sin
-from typing import Callable, Iterable\
+from math import copysign, pi, log2, sin
+from typing import Callable, Iterable
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	pcm_to_wav(Wave.triangle().pcm)
+	pcm_to_wav((Wave.triangle()*0.02).pcm)
 	play_file('output.wav')
 
 # basic waveforms
@@ -42,6 +42,12 @@ class Wave:
 	# properties
 
 	@property
+	def cut_off(self):
+		"""force amplitude to be in [-1, 1]"""
+		# type (Wave) -> Wave
+		return Wave((i if abs(i) < 1 else copysign(1, i) for i in self.amplitude_data), self.sample_rate)
+
+	@property
 	def max(self) -> float:
 		return max(abs(i) for i in self.amplitude_data)
 
@@ -55,7 +61,7 @@ class Wave:
 	def pcm(self) -> bytes:
 		"""transform into 16-bit mono pcm"""
 		import numpy as np
-		return (0x7FFF * np.array(self.normalized.amplitude_data)).astype(np.int16).tobytes()
+		return (0x7FFF * np.array(self.cut_off.amplitude_data)).astype(np.int16).tobytes()
 
 	# double underscore methods
 
