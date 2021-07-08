@@ -4,7 +4,8 @@ from typing import Callable, Iterable, List
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	w = Wave.from_function(brown_noise, amp=0.1).oscillate_amplitude(10, 0.5)
+	# w = Wave.from_function(brown_noise, amp=0.1).oscillate_amplitude(10, 0.5)
+	w = Wave.sine(amp=0.1).binary_harmonic(10)
 	#  w = Wave.from_function(brown_noise, amp=0.05)
 	pcm_to_wav(w.pcm)
 	play_file('output.wav')
@@ -58,6 +59,11 @@ class Wave:
 	# properties
 
 	@property
+	def copy(self):
+		# type (Wave) -> Wave
+		return Wave(self.amplitude_data, self.sample_rate)
+
+	@property
 	def cut_off(self):
 		"""force amplitude to be in [-1, 1]"""
 		# type (Wave) -> Wave
@@ -99,8 +105,13 @@ class Wave:
 	def __matmul__(self, other):
 		# type: (Wave, Wave) -> Wave
 		"""overlay two waves"""
-		assert self.sample_rate == other.sample_rate and len(self) == len(other)
-		return Wave((x + other.amplitude_data[i] for i, x in enumerate(self.amplitude_data)), self.sample_rate)
+		assert self.sample_rate == other.sample_rate
+		a, b = self, other
+		if len(a) < len(b):
+			a = a.pad(len(b) - len(a))
+		elif len(b) < len(a):
+			b = b.pad(len(a) - len(b))
+		return Wave((x + b.amplitude_data[i] for i, x in enumerate(a.amplitude_data)), self.sample_rate)
 
 	def __mul__(self, other: float):
 		# type: (Wave, float) -> Wave
@@ -114,13 +125,21 @@ class Wave:
 
 	# methods
 
+	def binary_harmonic(self, n: int = 3):
+		# type (Wave, int) -> Wave
+		"""bear in mind this function could as much as double the amplitude of the original wave"""
+		o = self.copy
+		for i in range(1, n+1):
+			o @= self.set_speed(div=2**i).repeat(2**i) * 0.5**i
+		return o
+
 	def linear_falloff(self, t: float = 0.1):
-		#type: (Wave, float) -> Wave
+		# type: (Wave, float) -> Wave
 		"""to soften the end"""
 		return self.reverse.linear_onset(t).reverse
 
 	def linear_onset(self, t: float = 0.1):
-		#type: (Wave, float) -> Wave
+		# type: (Wave, float) -> Wave
 		"""to soften the beginning"""
 		return Wave((x*(i/self.sample_rate if i/self.sample_rate < t else 1) for i, x in enumerate(self.amplitude_data)), self.sample_rate)
 
@@ -128,6 +147,14 @@ class Wave:
 		# type: (Wave, int, float) -> Wave
 		o = lambda x: (sin(2*pi*x*freq/self.sample_rate)+1+min_amp)/(2+min_amp)
 		return Wave((x*o(i) for i, x in enumerate(self.amplitude_data)), self.sample_rate)
+
+	def pad(self, n: int):
+		# type: (Wave, int) -> Wave
+		return Wave(self.amplitude_data+[0]*n, self.sample_rate)
+
+	def repeat(self, count: int):
+		# type: (Wave, int) -> Wave
+		return Wave(self.amplitude_data*count, self.sample_rate)
 
 	def set_speed(self, mul: int = 1, div: int = 1):
 		# type: (Wave, int, int) -> Wave
@@ -148,21 +175,21 @@ class Wave:
 		return Wave((f(i/sample_rate, freq, amp) for i in range(int(t*sample_rate))), sample_rate)
 
 	@staticmethod
-	def sawtooth(freq: int = 440, t: float = 1, sample_rate: int = 44100):
-		# type: (int, float, int) -> Wave
-		return Wave.from_function(sawtooth, freq, t, sample_rate)
+	def sawtooth(freq: int = 440, amp: float = 1, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, float, int) -> Wave
+		return Wave.from_function(sawtooth, freq, amp, t, sample_rate)
 
 	@staticmethod
-	def sine(freq: int = 440, t: float = 1, sample_rate: int = 44100):
-		# type: (int, float, int) -> Wave
-		return Wave.from_function(sine, freq, t, sample_rate)
+	def sine(freq: int = 440, amp: float = 1, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, float, int) -> Wave
+		return Wave.from_function(sine, freq, amp, t, sample_rate)
 
 	@staticmethod
-	def square(freq: int = 440, t: float = 1, sample_rate: int = 44100):
-		# type: (int, float, int) -> Wave
-		return Wave.from_function(square, freq, t, sample_rate)
+	def square(freq: int = 440, amp: float = 1, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, float, int) -> Wave
+		return Wave.from_function(square, freq, amp, t, sample_rate)
 
 	@staticmethod
-	def triangle(freq: int = 440, t: float = 1, sample_rate: int = 44100):
-		# type: (int, float, int) -> Wave
-		return Wave.from_function(triangle, freq, t, sample_rate)
+	def triangle(freq: int = 440, amp: float = 1, t: float = 1, sample_rate: int = 44100):
+		# type: (int, float, float, int) -> Wave
+		return Wave.from_function(triangle, freq, amp, t, sample_rate)
