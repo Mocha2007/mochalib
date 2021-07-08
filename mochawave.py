@@ -5,7 +5,7 @@ from typing import Callable, Iterable
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
 	# w = Wave.from_function(circle, amp=0.05).oscillate_amplitude(10, 0.5)
-	w = Wave.from_function(white_noise, amp=0.05)
+	w = Wave.from_function(brown_noise, amp=0.05)
 	pcm_to_wav(w.pcm)
 	play_file('output.wav')
 
@@ -23,6 +23,11 @@ def sawtooth(x: float, freq: float, amp: float = 1) -> float:
 	return amp*(2*((x*freq)%1)-1)
 
 # momomomomomomomo
+def brown_noise(_: float, __: float, amp: float = 1) -> float:
+	brown_noise.prev += 0.1*uniform(-amp-brown_noise.prev, amp-brown_noise.prev)
+	return brown_noise.prev
+brown_noise.prev = 0
+
 def circle(x: float, freq: float, amp: float = 1) -> float:
 	x *= 4*freq
 	return amp*sin(acos(x%2 - 1))*(-1)**(x//2 % 2)
