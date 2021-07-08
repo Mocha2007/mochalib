@@ -3,7 +3,7 @@ from typing import Callable, Iterable
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	pcm_to_wav((Wave.from_function(circle)*0.02).pcm)
+	pcm_to_wav((Wave.from_function(circle)*0.02).oscillate_amplitude(10, 0.5).pcm)
 	play_file('output.wav')
 
 # basic waveforms
@@ -97,6 +97,11 @@ class Wave:
 		return Wave((-x for x in self.amplitude_data), self.sample_rate)
 
 	# methods
+
+	def oscillate_amplitude(self, freq: int, min_amp: float = 0):
+		# type: (Wave, int, float) -> Wave
+		o = lambda x: (sin(2*pi*x*freq/self.sample_rate)+1+min_amp)/(2+min_amp)
+		return Wave((x*o(i) for i, x in enumerate(self.amplitude_data)), self.sample_rate)
 
 	def set_speed(self, mul: int = 1, div: int = 1):
 		# type: (Wave, int, int) -> Wave
