@@ -1,9 +1,12 @@
 from math import acos, copysign, pi, log2, sin
+from random import uniform
 from typing import Callable, Iterable
 
 def _test() -> None:
 	from mochaaudio import pcm_to_wav, play_file
-	pcm_to_wav((Wave.from_function(circle)*0.02).oscillate_amplitude(10, 0.5).pcm)
+	# w = Wave.from_function(circle, amp=0.05).oscillate_amplitude(10, 0.5)
+	w = Wave.from_function(white_noise, amp=0.05)
+	pcm_to_wav(w.pcm)
 	play_file('output.wav')
 
 # basic waveforms
@@ -23,6 +26,9 @@ def sawtooth(x: float, freq: float, amp: float = 1) -> float:
 def circle(x: float, freq: float, amp: float = 1) -> float:
 	x *= 4*freq
 	return amp*sin(acos(x%2 - 1))*(-1)**(x//2 % 2)
+
+def white_noise(_: float, __: float, amp: float = 1) -> float:
+	return amp*uniform(-1, 1)
 
 # note to freq conversions
 note_names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
@@ -116,9 +122,10 @@ class Wave:
 	# static methods
 
 	@staticmethod
-	def from_function(f: Callable[[float, float, float], float], freq: int = 440, t: float = 1, sample_rate: int = 44100):
-		# type: (Callable[[float, float, float], float], int, float, int) -> Wave
-		return Wave((f(i/sample_rate, freq) for i in range(int(t*sample_rate))), sample_rate)
+	def from_function(f: Callable[[float, float, float], float], freq: int = 440,
+			amp: float = 1, t: float = 1, sample_rate: int = 44100):
+		# type: (Callable[[float, float, float], float], int, float, float, int) -> Wave
+		return Wave((f(i/sample_rate, freq, amp) for i in range(int(t*sample_rate))), sample_rate)
 
 	@staticmethod
 	def sawtooth(freq: int = 440, t: float = 1, sample_rate: int = 44100):
