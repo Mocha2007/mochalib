@@ -52,6 +52,16 @@ def axisEqual3D(ax: Axes3D) -> None:
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
 
 
+def blagg(n: int,
+		A: float = 0.338163, B: float = 2.81213,
+		a: float = 1.40708, b: float = 0.982812,
+		base: float = 1.73809) -> float:
+	"""https://en.wikipedia.org/wiki/Titius%E2%80%93Bode_law#Blagg_Formulation
+	https://www.desmos.com/calculator/fpnxyw41r3"""
+	f = lambda psi: cos(psi)/(3-cos(2*psi)) + 1/(6-4*cos(2*(psi-30*deg)))
+	return A * base**n * (B + f(a + n*b))
+
+
 def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) -> Callable[[float], float]:
 	"""Create a linear map from one interval to another"""
 	return lambda x: (x - interval1[0]) / (interval1[1] - interval1[0]) * (interval2[1] - interval2[0]) + interval2[0]
