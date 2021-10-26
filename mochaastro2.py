@@ -1628,6 +1628,7 @@ class System:
 				x, y, z, vx, vy, vz = body.orbit.cartesian(t)
 				coords = int(round(xmap(x))), int(round(ymap(y)))
 				# redraw orbit
+				# todo: o to toggle asteroid orbits...
 				for start_pos, end_pos in orbits[body]:
 					x, y = start_pos
 					start_coords = int(round(xmap(x))), int(round(ymap(y)))
