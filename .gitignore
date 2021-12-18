@@ -1,5 +1,6 @@
 .idea/*
 .vscode/*
+saveddomains/*
 *.pyc
 *.py___jb_old___
 *.py___jb_tmp___

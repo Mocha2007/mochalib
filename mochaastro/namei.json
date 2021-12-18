@@ -163,7 +163,7 @@
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
-			"sma": "1.2237*au",
+			"sma": "0.6262853547688657*au",
 			"e": 0.011,
 			"i": "37.25/60*deg",
 			"lan": "244*deg",
@@ -181,7 +181,7 @@
 				"N2": 1
 			}
 		},
-		"notes": "6.562yr"
+		"notes": "5:2 with oneia"
 	},
 	{
 		"name": "Eisen",

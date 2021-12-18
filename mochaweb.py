@@ -2,7 +2,6 @@ import urllib.request, mochamw
 from re import compile, sub, findall, search, M
 from random import choice
 from json import loads
-from discord import Embed
 from telnetlib import Telnet
 
 linkpattern = r'\[\[[^\]]+?\]\]'
@@ -106,12 +105,12 @@ def horizons(name: str) -> str:
 	return sub(r'^[^*]*\*+|\*+[^*]*$', '', x.decode('ascii'))
 
 
-fixerioapikey = open('../fixer.io.txt', 'r').read()
 j = False
 
 
 def currency(a: str, b: str) -> float:
 	global j
+	fixerioapikey = open('../fixer.io.txt', 'r').read()
 	if not j:
 		j = loads(l('http://data.fixer.io/api/latest?access_key='+fixerioapikey))
 	if a != 'EUR':
@@ -145,7 +144,8 @@ def metar(string: str) -> str:
 	return '```\n' + s + '```'
 
 
-def gi(searchstring: str) -> Embed:
+def gi(searchstring: str): # outs Embed
+	from discord import Embed
 	url = 'https://www.google.com/search?tbm=isch&q='+searchstring.replace(' ', '%20')+'&safe=active'
 	o = Embed(title=searchstring, type="rich", url=url, color=0x00ff00)
 	# now time to find an image!
@@ -160,7 +160,8 @@ def gi(searchstring: str) -> Embed:
 	return o
 
 
-def jisho(searchstring: str) -> Embed:
+def jisho(searchstring: str): # outs Embed
+	from discord import Embed
 	url = 'https://jisho.org/api/v1/search/words?keyword='+searchstring
 	embed = Embed(title=searchstring, type="rich", url=url, color=0x56D926)
 	try:
@@ -180,7 +181,8 @@ def jisho(searchstring: str) -> Embed:
 	return embed
 
 
-def tarot() -> Embed:
+def tarot(): # outs Embed
+	from discord import Embed
 	json = loads(l('https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json'))
 	cards = json["tarot_interpretations"]
 	card = choice(cards)
@@ -195,7 +197,8 @@ def tarot() -> Embed:
 	return embed
 
 
-def jeopardy() -> (Embed, str):
+def jeopardy(): # outs (Embed, str)
+	from discord import Embed
 	json = loads(l('https://raw.githubusercontent.com/dariusk/corpora/master/data/games/jeopardy_questions.json'))
 	card = choice(json["questions"])
 
