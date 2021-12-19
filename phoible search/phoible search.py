@@ -1,8 +1,10 @@
+from typing import Set
+
 filename = 'phoible.csv'
 
 langdata = {}
 
-for line in open(filename, 'r', encoding='utf-8').read().split('\n'):
+for line in open(filename, 'r', encoding='utf-8').read().split('\n')[1:]:
 	# print(line) # debug
 	lang, segment = line.split(',')
 	if lang in langdata:
@@ -16,6 +18,36 @@ acceptable = {'p', 'b', 't', 'd', 'k', 'ɡ'}
 
 # len(list(filter(lambda l: 'ɡ' in langdata[l] and 'b' not in langdata[l], langdata)))
 
-def list6():
+def list6() -> None:
         for lang, data in langdata.items():
                 print(data & acceptable)
+
+def implies(x: str) -> Set[str]:
+	s = None
+	for data in langdata.values():
+		if x in data:
+			if s is None:
+				s = data
+			else:
+				s &= data
+	return s
+
+def absence_implies(x: str) -> Set[str]:
+	s = None
+	for data in langdata.values():
+		if x not in data:
+			if s is None:
+				s = data
+			else:
+				s &= data
+	return s
+
+def conditional_implication(x: str, y: str) -> float:
+	"""Does x -> y ?"""
+	xx = yy = 0
+	for data in langdata.values():
+		if x in data:
+			xx += 1
+			if y in data:
+				yy += 1
+	return yy/xx
