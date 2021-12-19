@@ -12,7 +12,10 @@ for line in open(filename, 'r', encoding='utf-8').read().split('\n'):
 
 # now find languages with /p b t k g/ but no /d/
 
-acceptable = {'p', 'b', 't', 'k', 'g'}
+acceptable = {'p', 'b', 't', 'd', 'k', 'ɡ'}
 
-print(list(filter(lambda l: acceptable <= langdata[l] and 'd' not in langdata[l], langdata)))
 # len(list(filter(lambda l: 'ɡ' in langdata[l] and 'b' not in langdata[l], langdata)))
+
+def list6():
+        for lang, data in langdata.items():
+                print(data & acceptable)
