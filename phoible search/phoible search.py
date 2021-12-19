@@ -32,7 +32,7 @@ def implies(x: str) -> Set[str]:
 				s &= data
 	return s
 
-def almost_implies(x: str, threshold: float = 0.9) -> Set[str]:
+def almost_implies(x: str, threshold: float = 0.95) -> Set[str]:
 	xx = 0
 	yy = {}
 	for data in langdata.values():
