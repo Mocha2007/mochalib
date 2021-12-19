@@ -32,6 +32,24 @@ def implies(x: str) -> Set[str]:
 				s &= data
 	return s
 
+def almost_implies(x: str, threshold: float = 0.9) -> Set[str]:
+	xx = 0
+	yy = {}
+	for data in langdata.values():
+		if x in data:
+			xx += 1
+			for y in data:
+				if y in yy:
+					yy[y] += 1
+				else:
+					yy[y] = 1
+	# delete insufficient entries
+	o = {}
+	for i, y in yy.items():
+		if threshold <= y/xx:
+			o[i] = y/xx
+	return o
+
 def absence_implies(x: str) -> Set[str]:
 	s = None
 	for data in langdata.values():
