@@ -60,6 +60,24 @@ def absence_implies(x: str) -> Set[str]:
 				s &= data
 	return s
 
+def absence_almost_implies(x: str, threshold: float = 0.95) -> Set[str]:
+	xx = 0
+	yy = {}
+	for data in langdata.values():
+		if x not in data:
+			xx += 1
+			for y in data:
+				if y in yy:
+					yy[y] += 1
+				else:
+					yy[y] = 1
+	# delete insufficient entries
+	o = {}
+	for i, y in yy.items():
+		if threshold <= y/xx:
+			o[i] = y/xx
+	return o
+
 def conditional_implication(x: str, y: str) -> float:
 	"""Does x -> y ?"""
 	xx = yy = 0
@@ -69,3 +87,40 @@ def conditional_implication(x: str, y: str) -> float:
 			if y in data:
 				yy += 1
 	return yy/xx
+
+def gt_size_almost_implies(n: int, threshold: float = 0.95) -> Set[str]:
+	xx = 0
+	yy = {}
+	for data in langdata.values():
+		if n < len(data):
+			xx += 1
+			for y in data:
+				if y in yy:
+					yy[y] += 1
+				else:
+					yy[y] = 1
+	# delete insufficient entries
+	o = {}
+	for i, y in yy.items():
+		if threshold <= y/xx:
+			o[i] = y/xx
+	return o
+
+
+def lt_size_almost_implies(n: int, threshold: float = 0.95) -> Set[str]:
+	xx = 0
+	yy = {}
+	for data in langdata.values():
+		if len(data) < n:
+			xx += 1
+			for y in data:
+				if y in yy:
+					yy[y] += 1
+				else:
+					yy[y] = 1
+	# delete insufficient entries
+	o = {}
+	for i, y in yy.items():
+		if threshold <= y/xx:
+			o[i] = y/xx
+	return o
