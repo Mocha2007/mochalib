@@ -46,7 +46,7 @@ def almost_implies(x: str, threshold: float = 0.95) -> Set[str]:
 	# delete insufficient entries
 	o = {}
 	for i, y in yy.items():
-		if threshold <= y/xx:
+		if i != x and threshold <= y/xx:
 			o[i] = y/xx
 	return o
 
