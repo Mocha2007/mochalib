@@ -103,9 +103,9 @@ formats = {
 
 def convert_to_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
 	proj = formats[projection]
-	zomp_map = {}
 	with Image.open(f"maps/{source_filename}") as im:
 		w, h = im.width, im.height
+		output = Image.new('RGB', (w, h))
 		for x in range(w):
 			for y in range(h):
 				# turn x, y of EQ map to lat, lon
@@ -114,11 +114,7 @@ def convert_to_equirectangular(source_filename: str, projection: str, destinatio
 				x_, y_ = sinu_scaled_to_xy((w, h), *proj(lat, lon))
 				# print(x_, y_)
 				# take that pixel of ZOMP and associate it with the coords of EQ
-				zomp_map[(x, y)] = im.getpixel((x_, y_))
-	output = Image.new('RGB', (w, h))
-	for x in range(w):
-		for y in range(h):
-			output.putpixel((x, y), zomp_map[(x, y)])
+				output.putpixel((x, y), im.getpixel((x_, y_)))
 	output.save(f"maps/{destination_filename}", "PNG")
 
 def convert_from_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
