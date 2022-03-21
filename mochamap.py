@@ -20,8 +20,8 @@ def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
 	x /= 3 * (9*a4*theta**8 + 7*a3*theta**6 + 3*a2*theta**2 + a1)
 	y = a4*theta**9 + a3*theta**7 + a2*theta**3 + a1*theta
 	# remap to [-1, 1] for both
-	x /= 2.75
-	y /= 1.32
+	x /= 2.7066297319215575 # found experimentally
+	y /= 1.312188760937488 # found experimentally
 	return y, x
 
 def robinson_helper(lat: float) -> Tuple[float, float]:
