@@ -1,4 +1,4 @@
-from math import copysign, cos, floor, pi
+from math import asin, copysign, cos, floor, pi, sin
 from PIL import Image
 from typing import Tuple
 
@@ -12,6 +12,17 @@ def clamp(x: float, min: float, max: float) -> float:
 sign = lambda x: copysign(1, x)
 
 # projections
+
+def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
+	a1, a2, a3, a4 = 1.340264, -0.081106, 0.000893, 0.0003796
+	theta = asin(3**.5 / 2 * sin(lat))
+	x = 2*3**.5 * lon * cos(theta)
+	x /= 3 * (9*a4*theta**8 + 7*a3*theta**6 + 3*a2*theta**2 + a1)
+	y = a4*theta**9 + a3*theta**7 + a2*theta**3 + a1*theta
+	# remap to [-1, 1] for both
+	x /= 2.75
+	y /= 1.32
+	return y, x
 
 def robinson_helper(lat: float) -> Tuple[float, float]:
 	lat = abs(lat)
@@ -96,6 +107,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
 formats = {
+	'equal earth': equal_earth,
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
 	'zompist': eq_to_zomp,
