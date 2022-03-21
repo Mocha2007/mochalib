@@ -1,4 +1,4 @@
-from math import asin, copysign, cos, floor, pi, sin
+from math import asin, copysign, cos, floor, log, pi, sin, tan
 from PIL import Image
 from typing import Tuple
 
@@ -22,6 +22,14 @@ def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
 	# remap to [-1, 1] for both
 	x /= 2.7066297319215575 # found experimentally
 	y /= 1.312188760937488 # found experimentally
+	return y, x
+
+def miller(lat: float, lon: float) -> Tuple[float, float]:
+	x = lon
+	y = 5/4 * log(tan(pi/4 + 2*lat/5))
+	# remap to [-1, 1] for both
+	x /= pi
+	y /= 1498/2044 * pi # appx
 	return y, x
 
 def robinson_helper(lat: float) -> Tuple[float, float]:
@@ -108,6 +116,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 
 formats = {
 	'equal earth': equal_earth,
+	'miller': miller,
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
 	'zompist': eq_to_zomp,
