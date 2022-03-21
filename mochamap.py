@@ -67,16 +67,21 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	y = h - h * (rel_lat+1)/2
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
-def invert_zomp() -> None:
+formats = {
+	'zompist': eq_to_zomp,
+}
+
+def convert_to_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
+	proj = formats[projection]
 	zomp_map = {}
-	with Image.open("maps/zomp.png") as im:
+	with Image.open(f"maps/{source_filename}") as im:
 		w, h = im.width, im.height
 		for x in range(w):
 			for y in range(h):
 				# turn x, y of EQ map to lat, lon
 				lat, lon = xy_to_lat_lon((w, h), x, y)
 				# turn lat, lon into [-1, 1] range coords, then shift those to match ZOMP image
-				x_, y_ = sinu_scaled_to_xy((w, h), *eq_to_zomp(lat, lon))
+				x_, y_ = sinu_scaled_to_xy((w, h), *proj(lat, lon))
 				# print(x_, y_)
 				# take that pixel of ZOMP and associate it with the coords of EQ
 				zomp_map[(x, y)] = im.getpixel((x_, y_))
@@ -84,6 +89,9 @@ def invert_zomp() -> None:
 	for x in range(w):
 		for y in range(h):
 			output.putpixel((x, y), zomp_map[(x, y)])
-	output.save("maps/zomp_out.png", "PNG")
+	output.save(f"maps/{destination_filename}", "PNG")
+
+def invert_zomp() -> None:
+	convert_to_equirectangular("zomp.png", "zompist", "zomp_out.png")
 
 invert_zomp()
