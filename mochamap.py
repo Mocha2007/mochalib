@@ -9,6 +9,15 @@ def clamp(x: float, min: float, max: float) -> float:
 		return max
 	return x
 
+# projections
+
+def sinusoidal(lat: float, lon: float) -> Tuple[float, float]:
+	x = lon * cos(lat)
+	y = lat
+	x /= pi
+	y /= pi/2
+	return y, x
+
 # convert zompist map from interrupted sinusoidal to equirectangular
 # (1) find where each pixel maps to in the EQ -> SIN projection
 # (2) using that map, take each pixel in zompist's image and remap it to the EQ image
@@ -68,6 +77,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
 formats = {
+	'sinusoidal': sinusoidal,
 	'zompist': eq_to_zomp,
 }
 
@@ -94,4 +104,4 @@ def convert_to_equirectangular(source_filename: str, projection: str, destinatio
 def invert_zomp() -> None:
 	convert_to_equirectangular("zomp.png", "zompist", "zomp_out.png")
 
-invert_zomp()
+# invert_zomp()
