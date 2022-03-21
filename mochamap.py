@@ -17,8 +17,34 @@ def clamp(x: float, min: float, max: float) -> float:
 def eq_to_zomp(lat: float, lon: float) -> Tuple[float, float]:
 	# interruptions in the northern hemisphere: -45, +90
 	# interruptions in the southern hemisphere: +22.5
-	# todo: don't ignore interruptions
-	x = lon * cos(lat)
+	# account for interruptions
+	delta_x = 0
+	# southern hemi
+	if lat < 0:
+		# left part
+		if lon < pi/8:
+			lon -= -pi/4
+			delta_x += -pi/4
+		# right part
+		else:
+			lon -= pi/2
+			delta_x += pi/2
+	# northern hemi
+	else:
+		# left part
+		if lon < -pi/4:
+			lon -= -pi/2
+			delta_x += -pi/2
+		# middle part
+		elif lon < pi/2:
+			lon -= pi/8
+			delta_x += pi/8
+		# right part
+		else:
+			lon -= 3*pi/4
+			delta_x += 3*pi/4
+	# main
+	x = lon * cos(lat) + delta_x
 	y = lat
 	# [-pi/2, pi/2] -> [-1, 1]
 	x /= pi
