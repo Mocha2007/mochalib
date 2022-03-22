@@ -261,7 +261,7 @@ formats = {
 	'azimuthal equidistant': azimuthal_equidistant, # equidistant
 	'equal earth': equal_earth, # equal-area
 	'eu4': eu4, # compromise
-	'imperator': imperator, # equal-area
+	'imperator': imperator, # conformal
 	'mercator': mercator, # conformal
 	'miller': miller, # compromise
 	'mollweide': mollweide, # equal-area
