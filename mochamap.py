@@ -177,6 +177,27 @@ def orthographic(lat0: float, lon0: float):
 		return y, x
 	return function
 
+def orthographic2(lat0: float, lon0: float):
+	"""double orthographic - shows both sides"""
+	def function(lat: float, lon: float) -> Tuple[float, float]:
+		# determine clipping
+		c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
+		if not -pi/2 < c < pi/2:
+			try:
+				y, x = orthographic2(-lat0, lon0 + pi)(lat, lon)
+			except RecursionError:
+				return 1, 1
+			x += 1
+			return y, x
+		# main
+		x = cos(lat) * sin(lon - lon0)
+		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
+		# remap to [-1, 0] so the other half can be on the right
+		x -= 1
+		x /= 2
+		return y, x
+	return function
+
 def robinson_helper(lat: float) -> Tuple[float, float]:
 	lat = abs(lat)
 	xx = [radians(5*i) for i in range(19)] # every 5 deg from 0 to 90
@@ -315,6 +336,7 @@ formats = {
 	'miller': miller, # compromise
 	'mollweide': mollweide, # equal-area
 	'orthographic': orthographic(0, 0), # perspective
+	'orthographic2': orthographic2(0, 0), # perspective
 	'robinson': robinson, # compromise
 	'sinusoidal': sinusoidal, # equal-area
 	'stereographic': stereographic(0, 0), # conformal
