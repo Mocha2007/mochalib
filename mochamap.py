@@ -39,6 +39,7 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 cot = lambda x: 1/tan(x)
 sec = lambda x: 1/cos(x)
 sign = lambda x: copysign(1, x)
+sinc = lambda x: sin(x)/x if x else 1
 
 def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
 	range1, range2 = max1-min1, max2-min2
@@ -212,6 +213,15 @@ def victoria2(lat: float, lon: float) -> Tuple[float, float]:
 	y = remap(y, -32/90, 61/90, -1, 1)
 	return y, x
 
+@debug_max
+def winkel_tripel(lat: float, lon: float) -> Tuple[float, float]:
+	alpha = acos(cos(lat) * cos(lon/2))
+	x = lon + 2*cos(lat)*sin(lon/2)/sinc(alpha)
+	y = lat + sin(lat)/sinc(alpha)
+	x /= 2*pi
+	y /= pi
+	return y, x
+
 # function to convert EQ to Zompist's Sinusoidal
 def zomp(lat: float, lon: float) -> Tuple[float, float]:
 	# convert zompist map from interrupted sinusoidal to equirectangular
@@ -281,6 +291,7 @@ formats = {
 	'robinson': robinson, # compromise
 	'sinusoidal': sinusoidal, # equal-area
 	'victoria2': victoria2, # compromise
+	'winkel tripel': winkel_tripel, # compromise
 	'zompist': zomp, # equal-area
 }
 
