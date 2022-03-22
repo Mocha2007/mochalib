@@ -123,6 +123,15 @@ def victoria2(lat: float, lon: float) -> Tuple[float, float]:
 	y = remap(y, -32/90, 61/90, -1, 1)
 	return y, x
 
+def mercator(lat: float, lon: float) -> Tuple[float, float]:
+	"""truncated near poles"""
+	x = lon
+	y = log(tan(pi/4 + lat/2))
+	# remap to [-1, 1] for both
+	x /= pi
+	y /= pi
+	return y, x
+
 def miller(lat: float, lon: float) -> Tuple[float, float]:
 	x = lon
 	y = 5/4 * log(tan(pi/4 + 2*lat/5))
@@ -244,6 +253,7 @@ formats = {
 	'equal earth': equal_earth,
 	'eu4': eu4,
 	'imperator': imperator,
+	'mercator': mercator,
 	'miller': miller,
 	'mollweide': mollweide,
 	'orthographic': orthographic(0, 0),
