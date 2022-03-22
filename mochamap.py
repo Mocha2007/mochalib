@@ -96,9 +96,7 @@ def eu4(lat: float, lon: float) -> Tuple[float, float]:
 	return y, x
 
 def gnomonic(lat0: float, lon0: float):
-	"""the formula given by wolfram is incorrect, but I can't find the correct one"""
 	# https://mathworld.wolfram.com/GnomonicProjection.html
-	# todo account for lat shift
 	def function(lat: float, lon: float) -> Tuple[float, float]:
 		c = sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon - lon0)
 		# determine clipping
