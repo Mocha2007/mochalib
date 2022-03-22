@@ -95,6 +95,20 @@ def eu4(lat: float, lon: float) -> Tuple[float, float]:
 	y = remap(y, -28/90, 61/90, -1, 1)
 	return y, x
 
+def gnomonic(lat0: float, lon0: float):
+	"""the formula given by wolfram is incorrect, but I can't find the correct one"""
+	# https://mathworld.wolfram.com/GnomonicProjection.html
+	# todo account for lat shift
+	def function(lat: float, lon: float) -> Tuple[float, float]:
+		c = sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon - lon0)
+		x = cos(lat)*sin(lon - lon0)
+		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
+		# remap to [-1, 1] for both
+		x /= 2*c
+		y /= 2*c
+		return y, x
+	return function
+
 def imperator(lat: float, lon: float) -> Tuple[float, float]:
 	y, x = lambert_conformal_conic(radians(20), radians(50))(lat, lon)
 	x -= 0.62
@@ -294,6 +308,7 @@ formats = {
 	'azimuthal equidistant': azimuthal_equidistant, # equidistant
 	'equal earth': equal_earth, # equal-area
 	'eu4': eu4, # compromise
+	'gnomonic': gnomonic(pi/2, 0), # gnomonic
 	'imperator': imperator, # conformal
 	'mercator': mercator, # conformal
 	'miller': miller, # compromise
