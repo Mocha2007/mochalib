@@ -192,6 +192,18 @@ def sinusoidal(lat: float, lon: float) -> Tuple[float, float]:
 	y /= pi/2
 	return y, x
 
+def stereographic(lat0: float, lon0: float):
+	# todo account for lat shift
+	def function(lat: float, lon: float) -> Tuple[float, float]:
+		r = 2*tan(pi/4 - lat/2)
+		x = r*cos(lon-lon0)
+		y = r*sin(lon-lon0)
+		# remap to [-1, 1] for both
+		x /= pi
+		y /= pi
+		return y, x
+	return function
+
 def victoria2(lat: float, lon: float) -> Tuple[float, float]:
 	# the victoria 2 map is identical to the eu4 map, except AUS and south america are left unchanged.
 	# (1) the poles are trimmed
@@ -213,7 +225,6 @@ def victoria2(lat: float, lon: float) -> Tuple[float, float]:
 	y = remap(y, -32/90, 61/90, -1, 1)
 	return y, x
 
-@debug_max
 def winkel_tripel(lat: float, lon: float) -> Tuple[float, float]:
 	alpha = acos(cos(lat) * cos(lon/2))
 	x = lon + 2*cos(lat)*sin(lon/2)/sinc(alpha)
@@ -290,6 +301,7 @@ formats = {
 	'orthographic': orthographic(0, 0), # perspective
 	'robinson': robinson, # compromise
 	'sinusoidal': sinusoidal, # equal-area
+	'stereographic': stereographic(0, 0), # conformal
 	'victoria2': victoria2, # compromise
 	'winkel tripel': winkel_tripel, # compromise
 	'zompist': zomp, # equal-area
