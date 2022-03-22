@@ -40,6 +40,15 @@ def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1
 
 # projections
 
+def azimuthal_equidistant(lat: float, lon: float) -> Tuple[float, float]:
+	rho = pi/2 - lat
+	x = rho * sin(lon)
+	y = -rho * cos(lon)
+	# remap to [-1, 1] for both
+	x /= pi
+	y /= pi
+	return y, x
+
 def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
 	a1, a2, a3, a4 = 1.340264, -0.081106, 0.000893, 0.0003796
 	theta = asin(3**.5 / 2 * sin(lat))
@@ -250,6 +259,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
 formats = {
+	'azimuthal equidistant': azimuthal_equidistant,
 	'equal earth': equal_earth,
 	'eu4': eu4,
 	'imperator': imperator,
