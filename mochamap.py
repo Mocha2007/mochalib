@@ -111,27 +111,6 @@ def lambert_conformal_conic(lat1: float, lat2: float):
 		return y, x
 	return function
 
-def victoria2(lat: float, lon: float) -> Tuple[float, float]:
-	# the victoria 2 map is identical to the eu4 map, except AUS and south america are left unchanged.
-	# (1) the poles are trimmed
-	if not radians(-56) < lat < radians(72):
-		return 1, 1
-	# (2) east siberia is stretched
-	if radians(50) < lat and radians(154) < lon:
-		lat += (lon - radians(154)) / 3
-	# (3) new zealand is moved northward, but less than eu4
-	if lat < radians(-33) and radians(165) < lon:
-		lat += radians(4)
-	# (4) greenland and iceland and jan mayen are moved northward
-	if radians(-57) < lon < radians(-8) and radians(59) < lat:
-		lat += radians(5)
-	# (5) the americas are moved northward
-	elif lon < radians(-34):
-		lat += radians(13)
-	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
-	y = remap(y, -32/90, 61/90, -1, 1)
-	return y, x
-
 def mercator(lat: float, lon: float) -> Tuple[float, float]:
 	"""truncated near poles"""
 	x = lon
@@ -200,12 +179,32 @@ def sinusoidal(lat: float, lon: float) -> Tuple[float, float]:
 	y /= pi/2
 	return y, x
 
-# convert zompist map from interrupted sinusoidal to equirectangular
-# (1) find where each pixel maps to in the EQ -> SIN projection
-# (2) using that map, take each pixel in zompist's image and remap it to the EQ image
+def victoria2(lat: float, lon: float) -> Tuple[float, float]:
+	# the victoria 2 map is identical to the eu4 map, except AUS and south america are left unchanged.
+	# (1) the poles are trimmed
+	if not radians(-56) < lat < radians(72):
+		return 1, 1
+	# (2) east siberia is stretched
+	if radians(50) < lat and radians(154) < lon:
+		lat += (lon - radians(154)) / 3
+	# (3) new zealand is moved northward, but less than eu4
+	if lat < radians(-33) and radians(165) < lon:
+		lat += radians(4)
+	# (4) greenland and iceland and jan mayen are moved northward
+	if radians(-57) < lon < radians(-8) and radians(59) < lat:
+		lat += radians(5)
+	# (5) the americas are moved northward
+	elif lon < radians(-34):
+		lat += radians(13)
+	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
+	y = remap(y, -32/90, 61/90, -1, 1)
+	return y, x
 
 # function to convert EQ to Zompist's Sinusoidal
-def eq_to_zomp(lat: float, lon: float) -> Tuple[float, float]:
+def zomp(lat: float, lon: float) -> Tuple[float, float]:
+	# convert zompist map from interrupted sinusoidal to equirectangular
+	# (1) find where each pixel maps to in the EQ -> SIN projection
+	# (2) using that map, take each pixel in zompist's image and remap it to the EQ image
 	# interruptions in the northern hemisphere: -45, +90
 	# interruptions in the southern hemisphere: +22.5
 	# account for interruptions
@@ -270,7 +269,7 @@ formats = {
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
 	'victoria2': victoria2,
-	'zompist': eq_to_zomp,
+	'zompist': zomp,
 }
 
 def convert_to_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
