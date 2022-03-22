@@ -1,6 +1,6 @@
 from math import acos, asin, copysign, cos, floor, log, pi, radians, sin, tan
 from PIL import Image
-from typing import Tuple
+from typing import Iterable, Tuple
 
 def clamp(x: float, min: float, max: float) -> float:
 	if x < min:
@@ -23,6 +23,12 @@ def debug_max(f):
 			debug_max_y = abs(y)
 		return y, x
 	return inner
+
+def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> float:
+	for i, x_tick in enumerate(xx[1:]):
+		if x <= x_tick:
+			return remap(x, xx[i], x_tick, yy[i], yy[i+1])
+	raise ValueError(f"{x} not in [{xx[0]}, {xx[-1]}]")
 
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
@@ -157,10 +163,16 @@ def orthographic(lat0: float, lon0: float):
 
 def robinson_helper(lat: float) -> Tuple[float, float]:
 	lat = abs(lat)
-	# appx...
+	xx = [radians(5*i) for i in range(19)] # every 5 deg from 0 to 90
 	# https://en.wikipedia.org/wiki/Robinson_projection#Formulation
-	X = cos(0.642 * lat)
-	Y = 2/pi * lat
+	X = linear_interpolation(lat, xx,
+		[1, 0.9986, 0.9954, 0.99, 0.9822, 0.973, 0.96, 0.9427, 0.9216, 0.8962,
+		0.8679, 0.835, 0.7986, 0.7597, 0.7186, 0.6732, 0.6213, 0.5722, 0.5322]
+	)
+	Y = linear_interpolation(lat, xx, 
+		[0, 0.062, 0.124, 0.186, 0.248, 0.31, 0.372, 0.434, 0.4958, 0.5571,
+		0.6176, 0.6769, 0.7346, 0.7903, 0.8435, 0.8936, 0.9394, 0.9761, 1]
+	)
 	return X, Y
 
 def robinson(lat: float, lon: float) -> Tuple[float, float]:
