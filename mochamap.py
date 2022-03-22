@@ -339,7 +339,7 @@ formats = {
 	'orthographic2': orthographic2(0, 0), # perspective
 	'orthographic africa': orthographic(radians(5), radians(15)),
 	'orthographic antarctica': orthographic(0, -pi/2),
-	'orthographic antarctica': orthographic(pi/4, pi/2),
+	'orthographic asia': orthographic(pi/4, pi/2),
 	'orthographic australia': orthographic(radians(-25), radians(135)),
 	'orthographic north america': orthographic(radians(35), radians(-100)),
 	'orthographic europe': orthographic(radians(50), radians(15)),
