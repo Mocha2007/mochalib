@@ -9,6 +9,26 @@ def clamp(x: float, min: float, max: float) -> float:
 		return max
 	return x
 
+debug_max_x = 0
+debug_max_y = 0
+
+def debug_max(f):
+	def inner(lat: float, lon: float) -> Tuple[float, float]:
+		global debug_max_x, debug_max_y
+		y, x = f(lat, lon)
+		if debug_max_x < abs(x):
+			debug_max_x = abs(x)
+		if debug_max_y < abs(y):
+			debug_max_y = abs(y)
+		return y, x
+	return inner
+
+def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
+	while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
+		x = x_
+		max_iter -= 1
+	return x
+
 cot = lambda x: 1/tan(x)
 sec = lambda x: 1/cos(x)
 sign = lambda x: copysign(1, x)
@@ -108,6 +128,18 @@ def miller(lat: float, lon: float) -> Tuple[float, float]:
 	# remap to [-1, 1] for both
 	x /= pi
 	y /= 1498/2044 * pi # appx
+	return y, x
+
+def mollweide(lat: float, lon: float) -> Tuple[float, float]:
+	if abs(lat) == pi/2:
+		theta = lat
+	else:
+		theta = newton_raphson(lat, 
+			lambda x: 2*x + sin(2*x) - pi*sin(lat),
+			lambda x: 2 + 2*cos(2*x))
+	x = lon * cos(theta) / pi
+	y = sin(theta)
+	# todo: remap to [-1, 1] for both
 	return y, x
 
 def orthographic(lat0: float, lon0: float):
@@ -212,6 +244,7 @@ formats = {
 	'eu4': eu4,
 	'imperator': imperator,
 	'miller': miller,
+	'mollweide': mollweide,
 	'orthographic': orthographic(0, 0),
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
