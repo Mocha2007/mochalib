@@ -1,4 +1,4 @@
-from math import asin, copysign, cos, floor, log, pi, radians, sin, tan
+from math import acos, asin, copysign, cos, floor, log, pi, radians, sin, tan
 from PIL import Image
 from typing import Tuple
 
@@ -110,6 +110,21 @@ def miller(lat: float, lon: float) -> Tuple[float, float]:
 	y /= 1498/2044 * pi # appx
 	return y, x
 
+def orthographic(lat0: float, lon0: float):
+	def function(lat: float, lon: float) -> Tuple[float, float]:
+		# determine clipping
+		c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
+		if not -pi/2 < c < pi/2:
+			return 1, 1
+		# main
+		x = cos(lat) * sin(lon - lon0)
+		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
+		# remap to [-1, 1] for both
+		# x /= pi
+		# y /= pi
+		return y, x
+	return function
+
 def robinson_helper(lat: float) -> Tuple[float, float]:
 	lat = abs(lat)
 	# appx...
@@ -197,6 +212,7 @@ formats = {
 	'eu4': eu4,
 	'imperator': imperator,
 	'miller': miller,
+	'orthographic': orthographic(0, 0),
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
 	'victoria2': victoria2,
@@ -204,7 +220,10 @@ formats = {
 }
 
 def convert_to_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
-	proj = formats[projection]
+	if isinstance(projection, str):
+		proj = formats[projection]
+	else:
+		proj = projection
 	with Image.open(f"maps/{source_filename}") as im:
 		w, h = im.width, im.height
 		output = Image.new('RGB', (w, h))
@@ -220,7 +239,10 @@ def convert_to_equirectangular(source_filename: str, projection: str, destinatio
 	output.save(f"maps/{destination_filename}", "PNG")
 
 def convert_from_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
-	proj = formats[projection]
+	if isinstance(projection, str):
+		proj = formats[projection]
+	else:
+		proj = projection
 	with Image.open(f"maps/{source_filename}") as im:
 		w, h = im.width, im.height
 		output = Image.new('RGB', (w, h))
