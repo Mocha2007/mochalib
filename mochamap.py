@@ -13,6 +13,7 @@ debug_max_x = 0
 debug_max_y = 0
 
 def debug_max(f):
+	"""use this as a decorator to get max x/y"""
 	def inner(lat: float, lon: float) -> Tuple[float, float]:
 		global debug_max_x, debug_max_y
 		y, x = f(lat, lon)
