@@ -101,6 +101,9 @@ def gnomonic(lat0: float, lon0: float):
 	# todo account for lat shift
 	def function(lat: float, lon: float) -> Tuple[float, float]:
 		c = sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon - lon0)
+		# determine clipping
+		if not -pi/2 < acos(c) < pi/2:
+			return 1, 1
 		x = cos(lat)*sin(lon - lon0)
 		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
 		# remap to [-1, 1] for both
