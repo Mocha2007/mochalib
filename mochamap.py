@@ -9,6 +9,8 @@ def clamp(x: float, min: float, max: float) -> float:
 		return max
 	return x
 
+cot = lambda x: 1/tan(x)
+sec = lambda x: 1/cos(x)
 sign = lambda x: copysign(1, x)
 
 def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
@@ -55,6 +57,29 @@ def eu4(lat: float, lon: float) -> Tuple[float, float]:
 	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
 	y = remap(y, -28/90, 61/90, -1, 1)
 	return y, x
+
+def imperator(lat: float, lon: float) -> Tuple[float, float]:
+	y, x = lambert_conformal_conic(radians(20), radians(50))(lat, lon)
+	x -= 0.62
+	y -= 0.72
+	x *= 1.3
+	y *= 2.6
+	return y, x
+
+def lambert_conformal_conic(lat1: float, lat2: float):
+	if lat1 == lat2:
+		n = sin(lat1)
+	else:
+		n = log(cos(lat1) * sec(lat2)) \
+			/ log(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
+	F = cos(lat1) * tan(pi/4 + lat1/2)**n / n
+	def function(lat: float, lon: float) -> Tuple[float, float]:
+		rho = F * cot(pi/4 + lat/2)**n
+		x = rho*sin(n*lon)
+		y = F - rho*cos(n*lon)
+		# todo: scale...
+		return y, x
+	return function
 
 def victoria2(lat: float, lon: float) -> Tuple[float, float]:
 	# the victoria 2 map is identical to the eu4 map, except AUS and south america are left unchanged.
@@ -170,6 +195,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 formats = {
 	'equal earth': equal_earth,
 	'eu4': eu4,
+	'imperator': imperator,
 	'miller': miller,
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
