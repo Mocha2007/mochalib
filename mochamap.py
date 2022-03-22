@@ -53,7 +53,28 @@ def eu4(lat: float, lon: float) -> Tuple[float, float]:
 		if lat < radians(-31):
 			lat = remap(lat, radians(-45), radians(-31), radians(-37), radians(-31))
 	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
-	y = remap(y, -28/90, 62/90, -1, 1)
+	y = remap(y, -28/90, 61/90, -1, 1)
+	return y, x
+
+def victoria2(lat: float, lon: float) -> Tuple[float, float]:
+	# the victoria 2 map is identical to the eu4 map, except AUS and south america are left unchanged.
+	# (1) the poles are trimmed
+	if not radians(-56) < lat < radians(72):
+		return 1, 1
+	# (2) east siberia is stretched
+	if radians(50) < lat and radians(154) < lon:
+		lat += (lon - radians(154)) / 3
+	# (3) new zealand is moved northward, but less than eu4
+	if lat < radians(-33) and radians(165) < lon:
+		lat += radians(4)
+	# (4) greenland and iceland and jan mayen are moved northward
+	if radians(-57) < lon < radians(-8) and radians(59) < lat:
+		lat += radians(5)
+	# (5) the americas are moved northward
+	elif lon < radians(-34):
+		lat += radians(13)
+	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
+	y = remap(y, -32/90, 61/90, -1, 1)
 	return y, x
 
 def miller(lat: float, lon: float) -> Tuple[float, float]:
@@ -152,6 +173,7 @@ formats = {
 	'miller': miller,
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
+	'victoria2': victoria2,
 	'zompist': eq_to_zomp,
 }
 
