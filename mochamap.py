@@ -258,18 +258,18 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
 formats = {
-	'azimuthal equidistant': azimuthal_equidistant,
-	'equal earth': equal_earth,
-	'eu4': eu4,
-	'imperator': imperator,
-	'mercator': mercator,
-	'miller': miller,
-	'mollweide': mollweide,
-	'orthographic': orthographic(0, 0),
-	'robinson': robinson,
-	'sinusoidal': sinusoidal,
-	'victoria2': victoria2,
-	'zompist': zomp,
+	'azimuthal equidistant': azimuthal_equidistant, # equidistant
+	'equal earth': equal_earth, # equal-area
+	'eu4': eu4, # compromise
+	'imperator': imperator, # equal-area
+	'mercator': mercator, # conformal
+	'miller': miller, # compromise
+	'mollweide': mollweide, # equal-area
+	'orthographic': orthographic(0, 0), # perspective
+	'robinson': robinson, # compromise
+	'sinusoidal': sinusoidal, # equal-area
+	'victoria2': victoria2, # compromise
+	'zompist': zomp, # equal-area
 }
 
 def convert_to_equirectangular(source_filename: str, projection: str, destination_filename: str = 'output.png') -> None:
