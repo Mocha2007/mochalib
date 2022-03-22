@@ -1,4 +1,4 @@
-from math import asin, copysign, cos, floor, log, pi, sin, tan
+from math import asin, copysign, cos, floor, log, pi, radians, sin, tan
 from PIL import Image
 from typing import Tuple
 
@@ -11,6 +11,10 @@ def clamp(x: float, min: float, max: float) -> float:
 
 sign = lambda x: copysign(1, x)
 
+def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
+	range1, range2 = max1-min1, max2-min2
+	return (val-min1)/range1 * range2 + min2
+
 # projections
 
 def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
@@ -22,6 +26,34 @@ def equal_earth(lat: float, lon: float) -> Tuple[float, float]:
 	# remap to [-1, 1] for both
 	x /= 2.7066297319215575 # found experimentally
 	y /= 1.312188760937488 # found experimentally
+	return y, x
+
+def eu4(lat: float, lon: float) -> Tuple[float, float]:
+	# the eu4 map is mostly miller, but:
+	# (1) the poles are trimmed
+	if not radians(-56) < lat < radians(72):
+		return 1, 1
+	# (2) east siberia is stretched
+	if radians(50) < lat and radians(154) < lon:
+		lat += (lon - radians(154)) / 3
+	# (3) australia is shunken and moved northward
+	if lat < radians(-11) and radians(112) < lon < radians(154):
+		lat = remap(lat, radians(-39), radians(-11), radians(-35), radians(-11))
+		lon = remap(lon, radians(112), radians(154), radians(116), radians(151))
+	# (4) new zealand is moved northward
+	if lat < radians(-33) and radians(165) < lon:
+		lat += radians(8)
+	# (5) greenland and iceland and jan mayen are moved northward
+	if radians(-57) < lon < radians(-8) and radians(59) < lat:
+		lat += radians(5)
+	# (6) the americas are moved northward
+	elif lon < radians(-34):
+		lat += radians(13)
+		# (7) in addition, the bottom of south america is squished
+		if lat < radians(-31):
+			lat = remap(lat, radians(-45), radians(-31), radians(-37), radians(-31))
+	y, x = miller(clamp(lat, -pi/2, pi/2), lon)
+	y = remap(y, -28/90, 62/90, -1, 1)
 	return y, x
 
 def miller(lat: float, lon: float) -> Tuple[float, float]:
@@ -116,6 +148,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 
 formats = {
 	'equal earth': equal_earth,
+	'eu4': eu4,
 	'miller': miller,
 	'robinson': robinson,
 	'sinusoidal': sinusoidal,
