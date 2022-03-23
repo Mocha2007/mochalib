@@ -175,14 +175,21 @@ def mocha_eu(lat: float, lon: float) -> Tuple[float, float]:
 	y *= 3
 	return y, x
 
+@debug_max
 def mocha3(lat: float, lon: float) -> Tuple[float, float]:
+	def s(x: float) -> float:
+		"""(-inf, 0) -> (-1, 1/4) -> (0, 1/2) -> (1, 3/4) -> (inf, 1)"""
+		return 1/pi * atan(x) + 1/2
 	# a projection that mimics the stereotype of how people see the world
-	x = lon * cos(lat)**.5
+	# stretches certain latitudes out
+	stretch_factor = s(2*(lat-pi/5)) - s(2*(lat+pi/5)) + 4/5
+	x = lon * cos(lat)**.5 # the cos is to preserve area
+	# x *= stretch_factor**.5 # take the square root so the horizontal compensation is not as extreme
 	# artificially raise the americas north
 	lat -= 0.2 * sin(lon + 0.2)
-	y = lat*(1/pi*atan(2*(abs(lat)-pi/5)) + 1/2)
+	y = lat*stretch_factor
 	x /= pi
-	y /= 1.4
+	y /= 1.25
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
