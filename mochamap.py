@@ -177,10 +177,10 @@ def mocha_eu(lat: float, lon: float) -> Tuple[float, float]:
 
 @debug_max
 def mocha3(lat: float, lon: float) -> Tuple[float, float]:
+	"""a projection that mimics the stereotype of how people see the world"""
 	def s(x: float) -> float:
 		"""(-inf, 0) -> (-1, 1/4) -> (0, 1/2) -> (1, 3/4) -> (inf, 1)"""
 		return 1/pi * atan(x) + 1/2
-	# a projection that mimics the stereotype of how people see the world
 	# stretches certain latitudes out
 	stretch_factor = s(2*(lat-pi/5)) - s(2*(lat+pi/5)) + 4/5
 	x = lon * cos(lat)**.5 # the cos is to preserve area
