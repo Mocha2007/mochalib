@@ -181,15 +181,19 @@ def mocha3(lat: float, lon: float) -> Tuple[float, float]:
 	def s(x: float) -> float:
 		"""(-inf, 0) -> (-1, 1/4) -> (0, 1/2) -> (1, 3/4) -> (inf, 1)"""
 		return 1/pi * atan(x) + 1/2
+	def impulse_range(x: float, m: float, M: float) -> float:
+		"""~1 within the range, ~0 outside"""
+		d = M - m
+		return 2**.5 * (s(4/d * (x-m)) - s(4/d*(x-M)))
 	# stretches certain latitudes out
-	stretch_factor = s(2*(lat-pi/5)) - s(2*(lat+pi/5)) + 4/5
+	stretch_factor = 1 - 3/4 * impulse_range(lat, -pi/5, pi/5)
 	x = lon * cos(lat)**.5 # the cos is to preserve area
 	x *= stretch_factor**.15 # take a root so the horizontal compensation is not as extreme
 	# artificially raise the americas north
 	lat -= 0.3 * sin(lon + 0.2)
 	y = lat*stretch_factor
-	x /= 2.5272094703960315 # found experimentally
-	y /= 1.25
+	x /= 2.59450642298623 # found experimentally
+	y /= 1.75
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
