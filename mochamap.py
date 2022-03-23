@@ -392,3 +392,5 @@ def invert_zomp() -> None:
 
 # invert_zomp()
 # convert_to_equirectangular("ib.png", "robinson")
+# blue marble is...
+# orthographic(radians(-28), radians(38))
