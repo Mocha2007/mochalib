@@ -1,4 +1,4 @@
-from math import acos, asin, copysign, cos, floor, log, pi, radians, sin, tan
+from math import acos, asin, atan, copysign, cos, floor, log, pi, radians, sin, tan
 from PIL import Image
 from typing import Iterable, Tuple
 
@@ -36,6 +36,7 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 		max_iter -= 1
 	return x
 
+cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
 cot = lambda x: 1/tan(x)
 sec = lambda x: 1/cos(x)
 sign = lambda x: copysign(1, x)
@@ -172,6 +173,13 @@ def mocha_eu(lat: float, lon: float) -> Tuple[float, float]:
 	y -= 0.05
 	x *= 1.5
 	y *= 3
+	return y, x
+
+def mocha3(lat: float, lon: float) -> Tuple[float, float]:
+	x = lon * cos(lat)**.5
+	y = lat*(1/pi*atan(8*(abs(lat)-pi/5)) + 1/2)
+	x /= pi
+	y /= 1/2 * atan(12*pi/5) + pi/4
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
@@ -360,6 +368,7 @@ formats = {
 	'miller': miller, # compromise
 	'mocha 1': mocha_eu_us, # debug/testing
 	'mocha 2': mocha_eu, # debug/testing
+	'mocha 3': mocha3, # debug/testing
 	'mollweide': mollweide, # equal-area
 	'orthographic': orthographic(0, 0), # perspective
 	'orthographic2': orthographic2(0, 0), # perspective
