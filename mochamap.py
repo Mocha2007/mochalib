@@ -1,4 +1,4 @@
-from math import acos, asin, atan, copysign, cos, floor, log, pi, radians, sin, tan
+from math import acos, asin, atan, atan2, copysign, cos, floor, log, pi, radians, sin, tan
 from PIL import Image
 from typing import Iterable, Tuple
 
@@ -35,6 +35,13 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 		x = x_
 		max_iter -= 1
 	return x
+
+def normalize_spherical_coords(lat: float, lon: float) -> Tuple[float, float]:
+	x, y, z = cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat)
+	lon = atan2(y, x)
+	lat = asin(z)
+	print(x, y, z)
+	return lat, lon
 
 cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
 cot = lambda x: 1/tan(x)
