@@ -37,6 +37,7 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	return x
 
 def normalize_spherical_coords(lat: float, lon: float) -> Tuple[float, float]:
+	"""normalizes lat to [-pi/2, pi/2] and lon to [-pi, pi]"""
 	x, y, z = cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat)
 	lon = atan2(y, x)
 	lat = asin(z)
