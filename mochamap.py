@@ -178,10 +178,10 @@ def mocha_eu(lat: float, lon: float) -> Tuple[float, float]:
 def mocha3(lat: float, lon: float) -> Tuple[float, float]:
 	x = lon * cos(lat)**.5
 	# artificially raise the americas north
-	lat -= 0.1 * sin(lon + 0.2)
+	lat -= 0.2 * sin(lon + 0.2)
 	y = lat*(1/pi*atan(8*(abs(lat)-pi/5)) + 1/2)
 	x /= pi
-	y /= 1/2 * atan(12*pi/5) + pi/4
+	y /= 1.6
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
