@@ -152,7 +152,7 @@ def miller(lat: float, lon: float) -> Tuple[float, float]:
 	y /= 1498/2044 * pi # appx
 	return y, x
 
-def mocha(lat: float, lon: float) -> Tuple[float, float]:
+def mocha_eu_us(lat: float, lon: float) -> Tuple[float, float]:
 	# a map that gets europe and the US really clear
 	y, x = lambert_conformal_conic(
 		radians(30), radians(65), radians(40), radians(-55)
@@ -161,6 +161,17 @@ def mocha(lat: float, lon: float) -> Tuple[float, float]:
 	y -= 0.27
 	x /= 4/3
 	y *= 1.5
+	return y, x
+
+def mocha_eu(lat: float, lon: float) -> Tuple[float, float]:
+	# a map that gets europe and the US really clear
+	y, x = lambert_conformal_conic(
+		radians(40), radians(70), radians(50), radians(15)
+		)(lat, lon)
+	#x += 0.2
+	y -= 0.05
+	x *= 1.5
+	y *= 3
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
@@ -347,7 +358,8 @@ formats = {
 	'imperator': imperator, # conformal
 	'mercator': mercator, # conformal
 	'miller': miller, # compromise
-	'mocha': mocha, # debug/testing
+	'mocha 1': mocha_eu_us, # debug/testing
+	'mocha 2': mocha_eu, # debug/testing
 	'mollweide': mollweide, # equal-area
 	'orthographic': orthographic(0, 0), # perspective
 	'orthographic2': orthographic2(0, 0), # perspective
