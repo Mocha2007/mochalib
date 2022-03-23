@@ -41,7 +41,6 @@ def normalize_spherical_coords(lat: float, lon: float) -> Tuple[float, float]:
 	x, y, z = cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat)
 	lon = atan2(y, x)
 	lat = asin(z)
-	print(x, y, z)
 	return lat, lon
 
 cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
@@ -197,7 +196,7 @@ def mocha3(lat: float, lon: float) -> Tuple[float, float]:
 	def fourier(x: float, max_n: int = 10) -> float:
 		return sum(((-1)**n - 5)*sin(n*x)/n for n in range(1, max_n+1))/9
 	lat += 0.1 * fourier(lon + 0.4)
-	lat = clamp(lat, -pi/2, pi/2)
+	lat, lon = normalize_spherical_coords(lat, lon)
 	# stretches certain latitudes out
 	stretch_factor = 1 - 3/4 * impulse_range(lat, -pi/5, pi/5)
 	x = lon * cos(lat)**.5 # the cos is to preserve area
