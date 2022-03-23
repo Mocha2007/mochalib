@@ -111,11 +111,11 @@ def gnomonic(lat0: float, lon0: float):
 	return function
 
 def imperator(lat: float, lon: float) -> Tuple[float, float]:
-	y, x = lambert_conformal_conic(radians(20), radians(50))(lat, lon)
-	x -= 0.62
-	y -= 0.72
-	x *= 1.3
-	y *= 2.6
+	y, x = lambert_conformal_conic(radians(5), radians(60))(lat, lon)
+	x -= 0.57
+	y -= 0.66
+	x *= 1.4
+	y *= 2.8
 	return y, x
 
 def lambert_conformal_conic(lat1: float, lat2: float):
