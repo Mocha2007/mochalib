@@ -119,17 +119,18 @@ def imperator(lat: float, lon: float) -> Tuple[float, float]:
 	y *= 2.8
 	return y, x
 
-def lambert_conformal_conic(lat1: float, lat2: float):
+def lambert_conformal_conic(lat1: float, lat2: float, lat0: float = 0, lon0: float = 0):
 	if lat1 == lat2:
 		n = sin(lat1)
 	else:
 		n = log(cos(lat1) * sec(lat2)) \
 			/ log(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
 	F = cos(lat1) * tan(pi/4 + lat1/2)**n / n
+	rho0 = F * cot(pi/4 + lat0/2)**n
 	def function(lat: float, lon: float) -> Tuple[float, float]:
 		rho = F * cot(pi/4 + lat/2)**n
-		x = rho*sin(n*lon)
-		y = F - rho*cos(n*lon)
+		x = rho*sin(n*(lon-lon0))
+		y = rho0 - rho*cos(n*(lon-lon0))
 		# todo: scale...
 		return y, x
 	return function
@@ -149,6 +150,17 @@ def miller(lat: float, lon: float) -> Tuple[float, float]:
 	# remap to [-1, 1] for both
 	x /= pi
 	y /= 1498/2044 * pi # appx
+	return y, x
+
+def mocha(lat: float, lon: float) -> Tuple[float, float]:
+	# a map that gets europe and the US really clear
+	y, x = lambert_conformal_conic(
+		radians(30), radians(65), radians(40), radians(-55)
+		)(lat, lon)
+	#x += 0.2
+	y -= 0.27
+	x /= 4/3
+	y *= 1.5
 	return y, x
 
 def mollweide(lat: float, lon: float) -> Tuple[float, float]:
@@ -335,6 +347,7 @@ formats = {
 	'imperator': imperator, # conformal
 	'mercator': mercator, # conformal
 	'miller': miller, # compromise
+	'mocha': mocha, # debug/testing
 	'mollweide': mollweide, # equal-area
 	'orthographic': orthographic(0, 0), # perspective
 	'orthographic2': orthographic2(0, 0), # perspective
