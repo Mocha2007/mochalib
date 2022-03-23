@@ -184,11 +184,11 @@ def mocha3(lat: float, lon: float) -> Tuple[float, float]:
 	# stretches certain latitudes out
 	stretch_factor = s(2*(lat-pi/5)) - s(2*(lat+pi/5)) + 4/5
 	x = lon * cos(lat)**.5 # the cos is to preserve area
-	# x *= stretch_factor**.5 # take the square root so the horizontal compensation is not as extreme
+	x *= stretch_factor**.15 # take a root so the horizontal compensation is not as extreme
 	# artificially raise the americas north
-	lat -= 0.2 * sin(lon + 0.2)
+	lat -= 0.3 * sin(lon + 0.2)
 	y = lat*stretch_factor
-	x /= pi
+	x /= 2.5272094703960315 # found experimentally
 	y /= 1.25
 	return y, x
 
