@@ -172,6 +172,10 @@ def plot_bytes3(filename: str, key: str='type'): # todo prerender the image firs
 			scroll(-1)
 		elif pressed[pygame.K_d]:
 			scroll(1)
+		elif pressed[pygame.K_z]:
+			scroll(-256)
+		elif pressed[pygame.K_c]:
+			scroll(256)
 		sleep(1/30)
 
 
