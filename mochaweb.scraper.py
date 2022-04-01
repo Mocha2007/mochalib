@@ -1,4 +1,3 @@
-from base64 import encode
 import urllib.request
 from os import mkdir
 from os.path import isdir, isfile
