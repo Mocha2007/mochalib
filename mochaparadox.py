@@ -18,7 +18,7 @@ def eu4_army_comp(units: int, cavalry_ratio: float = 0.5, use_artillery: bool = 
 
 def estimate_siege_time(siege_phase_time: int = 35, siege_status: int = 0, leader: int = 0, artillery: int = 0,
 		blockade: int = 0, fort: int = 0, breach: int = 0, garrison: int = 1000,
-		obsolete_fort_bonus: int = 0, attacker_max_fort: int = 2, trials: int = 1000) -> int:
+		obsolete_fort_bonus: int = 0, attacker_max_fort: int = 2, trials: int = 1000) -> float:
 	def simulate_siege() -> int:
 		_siege_status = siege_status
 		_breach = breach
