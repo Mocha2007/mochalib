@@ -1,6 +1,7 @@
 """For super basic functions missing from vanilla python I expect to use in multiple places..."""
 from math import copysign, cos, inf, sin, tan
 from typing import Any, Callable, Iterable
+# try https://www.csestack.org/calling-c-functions-from-python/ for newton-raphson
 
 cbrt: Callable[[float], float] = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
 cot: Callable[[float], float]  = lambda x: 1/tan(x)
