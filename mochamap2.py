@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import asin, atan2, cos, pi, sin
+from math import acos, asin, atan2, cos, pi, sin
 from PIL import Image
 from typing import Iterable, Tuple
 
@@ -51,13 +51,17 @@ class Map:
 		self.height = height
 		self.image = Image.new('RGB', (width, height))
 
-	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png', interpolate: bool = False) -> None:
+	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png',
+			interpolate: bool = False, output_resolution: Tuple[int, int] = None) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
-			output = Image.new('RGB', (w, h))
+			if not output_resolution:
+				output_resolution = w, h
+			output = Image.new('RGB', output_resolution)
 			for x in range(w):
 				for y in range(h):
-					coord_ = ImageCoord(x, y).geocoord_from_eq(output).project(projection).imagecoord(output)
+					# todo - turn this into a local function and reuse it for interpolation below to remove code duplication
+					coord_ = ImageCoord(x, y).geocoord_from_eq(im).project(projection).imagecoord(output)
 					x_, y_ = coord_.x, coord_.y
 					try:
 						output.putpixel((x_, y_), im.getpixel((x, y)))
@@ -66,7 +70,7 @@ class Map:
 					# interpolation
 					if not interpolate:
 						continue
-					coord_ = ImageCoord(x + 0.5, y + 0.5).geocoord_from_eq(output).project(projection).imagecoord(output)
+					coord_ = ImageCoord(x + 0.5, y + 0.5).geocoord_from_eq(im).project(projection).imagecoord(output)
 					x_, y_ = coord_.x, coord_.y
 					try:
 						color = average_colors(
@@ -80,13 +84,16 @@ class Map:
 						pass
 		output.save(f"maps/{destination_filename}", "PNG")
 
-	def to_eq(source_filename: str, projection, destination_filename: str = 'output.png') -> None:
+	def to_eq(source_filename: str, projection, destination_filename: str = 'output.png',
+			output_resolution: Tuple[int, int] = None) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
-			output = Image.new('RGB', (w, h))
+			if not output_resolution:
+				output_resolution = w, h
+			output = Image.new('RGB', output_resolution)
 			for x in range(w):
 				for y in range(h):
-					coord_ = ImageCoord(x, y).geocoord_from_eq(output).project(projection).imagecoord(output)
+					coord_ = ImageCoord(x, y).geocoord_from_eq(im).project(projection).imagecoord(output)
 					x_, y_ = coord_.x, coord_.y
 					try:
 						output.putpixel((x, y), im.getpixel((x_, y_)))
@@ -105,11 +112,16 @@ def average_colors(*colors: Iterable[Tuple[int, int, int]]) -> Tuple[int, int, i
 	return r, g, b
 
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
-	while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
-		x = x_
-		max_iter -= 1
+	try:
+		while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
+			x = x_
+			max_iter -= 1
+	except ZeroDivisionError: # todo fix this
+		return x
 	return x
+
 # projections
+
 def mollweide(coord: GeoCoord) -> MapCoord:
 	lat, lon = coord.lat, coord.lon
 	if abs(lat) == pi/2:
@@ -120,8 +132,21 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 			lambda x: 2 + 2*cos(2*x))
 	x = lon * cos(theta) / pi
 	y = sin(theta)
-	# todo: remap to [-1, 1] for both
 	return MapCoord(x, y)
+
+def orthographic(coord0: GeoCoord):
+	lat0, lon0 = coord0.lat, coord0.lon
+	def function(coord: GeoCoord) -> MapCoord:
+		lat, lon = coord.lat, coord.lon
+		# determine clipping
+		c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
+		if not -pi/2 < c < pi/2:
+			return 1, 1
+		# main
+		x = cos(lat) * sin(lon - lon0)
+		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
+		return MapCoord(x, y)
+	return function
 # I need like... a map DATA object... ugh...
 # is this how it works??? I forgot tbh
 # (1) Take input image
@@ -129,4 +154,8 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 # (3) Turn use data matrix
 def test() -> None:
 	# Map.from_eq('test.png', mollweide, interpolate=True)
-	Map.to_eq('test.png', mollweide, interpolate=True)
+	# Map.to_eq('test.png', mollweide, interpolate=True)
+	Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
+	#Map.sequence_from_eq('test.png',
+	#	(orthographic(GeoCoord(0, 12*i)) for i in range(30)),
+	#False, (256, 256))
