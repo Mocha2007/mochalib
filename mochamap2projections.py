@@ -1,6 +1,6 @@
 
 from math import acos, log, tan
-from mochamap import winkel_tripel
+from common import clamp, cot, linear_interpolation, newton_raphson, remap, sec, sign, sinc
 from mochamap2 import *
 
 def aitoff(coord: GeoCoord) -> MapCoord:
