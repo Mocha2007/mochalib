@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import acos, asin, atan2, cos, pi, radians, sin
+from math import acos, asin, atan2, cos, log, pi, radians, sin, tan
 from PIL import Image
 from subprocess import check_output
 from typing import Iterable, Tuple
@@ -59,28 +59,28 @@ class Map:
 			if not output_resolution:
 				output_resolution = w, h
 			output = Image.new('RGB', output_resolution)
+			def get_coord_(xx, yy) -> Tuple[int, int]:
+				coord_ = ImageCoord(xx, yy).geocoord_from_eq(im).project(projection).imagecoord(output)
+				return coord_.x, coord_.y
 			for x in range(w):
 				for y in range(h):
-					# todo - turn this into a local function and reuse it for interpolation below to remove code duplication
-					coord_ = ImageCoord(x, y).geocoord_from_eq(im).project(projection).imagecoord(output)
-					x_, y_ = coord_.x, coord_.y
+					# interpolation
+					if interpolate:
+						x_, y_ = get_coord_(x + 0.5, y + 0.5)
+						try:
+							color = average_colors(
+								im.getpixel((x, y)),
+								im.getpixel((x+1, y)),
+								im.getpixel((x, y+1)),
+								im.getpixel((x+1, y+1))
+							)
+							output.putpixel((x_, y_), color)
+						except IndexError:
+							pass
+					# regular
+					x_, y_ = get_coord_(x, y)
 					try:
 						output.putpixel((x_, y_), im.getpixel((x, y)))
-					except IndexError:
-						continue
-					# interpolation
-					if not interpolate:
-						continue
-					coord_ = ImageCoord(x + 0.5, y + 0.5).geocoord_from_eq(im).project(projection).imagecoord(output)
-					x_, y_ = coord_.x, coord_.y
-					try:
-						color = average_colors(
-							im.getpixel((x, y)),
-							im.getpixel((x+1, y)),
-							im.getpixel((x, y+1)),
-							im.getpixel((x+1, y+1))
-						)
-						output.putpixel((x_, y_), color)
 					except IndexError:
 						pass
 		output.save(f"maps/{destination_filename}", "PNG")
@@ -134,6 +134,12 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 
 # projections
 
+def mercator(coord: GeoCoord) -> MapCoord:
+	"""truncated near poles"""
+	x = coord.lon
+	y = log(tan(pi/4 + coord.lat/2))
+	return MapCoord(x/pi, y/pi)
+
 def mollweide(coord: GeoCoord) -> MapCoord:
 	lat, lon = coord.lat, coord.lon
 	if abs(lat) == pi/2:
@@ -168,6 +174,6 @@ def test() -> None:
 	# Map.from_eq('test.png', mollweide, interpolate=True)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
 	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
-	Map.sequence_from_eq('test.png',
+	Map.sequence_from_eq('almea2.png',
 		(orthographic(GeoCoord(0, radians(12*i))) for i in range(30)),
-	True, (256, 256))
+	False, (512, 512))
