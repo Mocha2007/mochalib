@@ -50,6 +50,7 @@ class Map:
 		self.width = width
 		self.height = height
 		self.image = Image.new('RGB', (width, height))
+
 	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png', interpolate: bool = False) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
@@ -77,7 +78,20 @@ class Map:
 						output.putpixel((x_, y_), color)
 					except IndexError:
 						pass
+		output.save(f"maps/{destination_filename}", "PNG")
 
+	def to_eq(source_filename: str, projection, destination_filename: str = 'output.png') -> None:
+		with Image.open(f"maps/{source_filename}") as im:
+			w, h = im.width, im.height
+			output = Image.new('RGB', (w, h))
+			for x in range(w):
+				for y in range(h):
+					coord_ = ImageCoord(x, y).geocoord_from_eq(output).project(projection).imagecoord(output)
+					x_, y_ = coord_.x, coord_.y
+					try:
+						output.putpixel((x, y), im.getpixel((x_, y_)))
+					except IndexError:
+						pass
 		output.save(f"maps/{destination_filename}", "PNG")
 
 # utility functions
@@ -114,4 +128,5 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 # (2) Turn image into matrix of data (lat/lon) -> color
 # (3) Turn use data matrix
 def test() -> None:
-	Map.from_eq('test.png', mollweide, interpolate=True)
+	# Map.from_eq('test.png', mollweide, interpolate=True)
+	Map.to_eq('test.png', mollweide, interpolate=True)
