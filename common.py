@@ -16,6 +16,23 @@ def clamp(x: float, min: float, max: float) -> float:
 	"""Force x to be in a specific range - uses min or max if x is outside"""
 	return min if x < min else max if x < max else x
 
+# todo: annotate the types for f and such here and in newton_raphson
+def halleys_method(x: float, f, f_, f__, max_iter = 100) -> float:
+	"""root-finding method
+
+	measured as taking 201 microseconds avg. on my laptop
+	to find the root of a random quadratic with random start
+	"""
+	try:
+		while (x_ := x - 2*f(x)*f_(x)/(2*f_(x)**2 - f(x)*f__(x))) != x \
+				and 0 < max_iter:
+			x = x_
+			max_iter -= 1
+	except ZeroDivisionError:
+		return x
+	print(max_iter)
+	return x
+
 def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> float:
 	"""given xy coords, and an x value, use linear interpolation to find the estimated y value"""
 	for i, x_tick in enumerate(xx[1:]):
@@ -30,10 +47,10 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	to find the root of a random quadratic with random start
 	"""
 	try:
-		while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
+		while (x_ := x - f(x)/f_(x)) != x and 0 < max_iter:
 			x = x_
 			max_iter -= 1
-	except ZeroDivisionError: # todo fix this
+	except ZeroDivisionError: # too bad so sad
 		return x
 	return x
 
@@ -97,8 +114,10 @@ def _test() -> None:
 		c = random()
 		f = lambda x: a*x**2 + b*x + c
 		f_ = lambda x: 2*a*x + b
-		# @debug_timer
-		@debug_range
+		f__ = lambda _: 2*a
+		@debug_timer
+		# @debug_range
 		def test_helper() -> float:
-			return newton_raphson(random(), f, f_)
+			return halleys_method(random(), f, f_, f__)
 		test_helper()
+	print(f"{average(*_debug_timer_times)} s")
