@@ -181,7 +181,7 @@ def orthographic2(coord0: GeoCoord):
 
 def robinson(coord: GeoCoord) -> MapCoord:
 	lat, lon = coord.lat, coord.lon
-	def robinson_helper(lat: float) -> Tuple[float, float]:
+	def robinson_helper(lat: float) -> tuple[float, float]:
 		lat = abs(lat)
 		xx = [radians(5*i) for i in range(19)] # every 5 deg from 0 to 90
 		# https://en.wikipedia.org/wiki/Robinson_projection#Formulation

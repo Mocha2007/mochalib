@@ -2,7 +2,7 @@ from __future__ import annotations
 from math import asin, atan2, cos, pi, radians, sin
 from PIL import Image
 from subprocess import check_output
-from typing import Iterable, Tuple
+from typing import Iterable
 from common import average
 
 class ImageCoord:
@@ -71,13 +71,13 @@ class Map:
 		self.image = Image.new('RGB', (width, height))
 
 	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png',
-			interpolate: bool = False, output_resolution: Tuple[int, int] = None) -> None:
+			interpolate: bool = False, output_resolution: tuple[int, int] = None) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
 			if not output_resolution:
 				output_resolution = w, h
 			output = Image.new('RGB', output_resolution)
-			def get_coord_(xx, yy) -> Tuple[int, int]:
+			def get_coord_(xx, yy) -> tuple[int, int]:
 				coord_ = ImageCoord(xx, yy).geocoord_from_eq(im).project(projection).imagecoord(output)
 				return coord_.x, coord_.y
 			for x in range(w):
@@ -104,7 +104,7 @@ class Map:
 		output.save(f"maps/{destination_filename}", "PNG")
 
 	def to_eq(source_filename: str, projection, destination_filename: str = 'output.png',
-			output_resolution: Tuple[int, int] = None) -> None:
+			output_resolution: tuple[int, int] = None) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
 			if not output_resolution:
@@ -121,7 +121,7 @@ class Map:
 		output.save(f"maps/{destination_filename}", "PNG")
 
 	def sequence_from_eq(source_filename: str, projection_series,
-			interpolate: bool = False, output_resolution: Tuple[int, int] = None) -> None:
+			interpolate: bool = False, output_resolution: tuple[int, int] = None) -> None:
 		series = list(projection_series)
 		print(f"Running Map Sequence[{len(series)}]")
 		for i, projection in enumerate(series):
@@ -133,7 +133,7 @@ class Map:
 
 # utility functions
 
-def average_colors(*colors: Iterable[Tuple[int, int, int]]) -> Tuple[int, int, int]:
+def average_colors(*colors: Iterable[tuple[int, int, int]]) -> tuple[int, int, int]:
 	r = int(average(*(c[0] for c in colors)))
 	g = int(average(*(c[1] for c in colors)))
 	b = int(average(*(c[2] for c in colors)))
@@ -154,7 +154,7 @@ debug_max_y = 0
 
 def debug_max(f):
 	"""use this as a decorator to get max x/y"""
-	def inner(lat: float, lon: float) -> Tuple[float, float]:
+	def inner(lat: float, lon: float) -> tuple[float, float]:
 		global debug_max_x, debug_max_y
 		y, x = f(lat, lon)
 		if debug_max_x < abs(x):
