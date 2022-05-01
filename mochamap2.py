@@ -134,6 +134,9 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 
 # projections
 
+def equirectangular(coord: GeoCoord) -> MapCoord:
+	return MapCoord(coord.lon/pi, coord.lat/(pi/2))
+
 def mercator(coord: GeoCoord) -> MapCoord:
 	"""truncated near poles"""
 	x = coord.lon
@@ -168,6 +171,14 @@ def orthographic(coord0: GeoCoord):
 		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
 		return MapCoord(x, y)
 	return function
+
+def debug_proj(coord: GeoCoord) -> MapCoord:
+	main = mollweide(coord)
+	coord2 = coord
+	coord2.lon += radians(12)
+	secondary = equirectangular(coord2)
+	blend = MapCoord((main.x + secondary.x)/2, (main.y + secondary.y)/2)
+	return blend
 # I need like... a map DATA object... ugh...
 # is this how it works??? I forgot tbh
 # (1) Take input image
