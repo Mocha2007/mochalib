@@ -134,7 +134,10 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 	else:
 		theta = newton_raphson(lat, 
 			lambda x: 2*x + sin(2*x) - pi*sin(lat),
-			lambda x: 2 + 2*cos(2*x))
+			lambda x: 2 + 2*cos(2*x),
+			threshold=1e-4)
+			# this should be sufficient for getting the pixel in the correct location;
+			# it results in a worst-case 0.2 px error if the map size is 2048 px
 	x = lon * cos(theta) / pi
 	y = sin(theta)
 	return MapCoord(x, y)
