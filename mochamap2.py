@@ -157,7 +157,10 @@ def orthographic(coord0: GeoCoord):
 	def function(coord: GeoCoord) -> MapCoord:
 		lat, lon = coord.lat, coord.lon
 		# determine clipping
-		c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
+		try:
+			c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
+		except ValueError: # unfortunate floating point errors for 45 degree lat0
+			c = pi if lat < 0 else 0
 		if not -pi/2 < c < pi/2:
 			return MapCoord(1, 1)
 		# main
