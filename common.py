@@ -17,20 +17,19 @@ def clamp(x: float, min: float, max: float) -> float:
 	return min if x < min else max if x < max else x
 
 # todo: annotate the types for f and such here and in newton_raphson
-def halleys_method(x: float, f, f_, f__, max_iter = 100) -> float:
+def halleys_method(x: float, f, f_, f__, max_iter = 20, threshold = 1e-10) -> float:
 	"""root-finding method
 
-	measured as taking 201 microseconds avg. on my laptop
+	measured as taking 85 microseconds avg. on my laptop
 	to find the root of a random quadratic with random start
 	"""
 	try:
-		while (x_ := x - 2*f(x)*f_(x)/(2*f_(x)**2 - f(x)*f__(x))) != x \
-				and 0 < max_iter:
+		while 0 < max_iter and threshold < abs(x -
+				(x_ := x - 2*f(x)*f_(x)/(2*f_(x)**2 - f(x)*f__(x)))):
 			x = x_
 			max_iter -= 1
 	except ZeroDivisionError:
 		return x
-	print(max_iter)
 	return x
 
 def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> float:
@@ -40,14 +39,14 @@ def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> 
 			return remap(x, xx[i], x_tick, yy[i], yy[i+1])
 	raise ValueError(f"{x} not in [{xx[0]}, {xx[-1]}]")
 
-def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
+def newton_raphson(x: float, f, f_, max_iter = 20, threshold = 1e-10) -> float:
 	"""root-finding method
 
-	measured as taking 100 microseconds avg. on my laptop
+	measured as taking 53 microseconds avg. on my laptop
 	to find the root of a random quadratic with random start
 	"""
 	try:
-		while (x_ := x - f(x)/f_(x)) != x and 0 < max_iter:
+		while 0 < max_iter and threshold < abs(x - (x_ := x - f(x)/f_(x))):
 			x = x_
 			max_iter -= 1
 	except ZeroDivisionError: # too bad so sad
