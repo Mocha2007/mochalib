@@ -1,6 +1,6 @@
 """For super basic functions missing from vanilla python I expect to use in multiple places..."""
 from math import copysign, cos, inf, sin, tan
-from typing import Iterable
+from typing import Any, Callable, Iterable
 
 cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
 cot = lambda x: 1/tan(x)
@@ -47,7 +47,7 @@ def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1
 _debug_range_max = -inf
 _debug_range_min = inf
 
-def debug_range(f):
+def debug_range(f: Callable[[Any], float]) -> Callable[[Any], float]:
 	"""use this as a decorator to get min/max values for a function"""
 	def inner(*args, **kwargs) -> float:
 		global _debug_range_max, _debug_range_min
@@ -61,10 +61,10 @@ def debug_range(f):
 
 _debug_timer_times: list[float] = []
 
-def debug_timer(f):
+def debug_timer(f: Callable) -> Callable:
 	from time import time
 	"""use this as a decorator to time a function"""
-	def inner(*args, **kwargs) -> float:
+	def inner(*args, **kwargs) -> Any:
 		global _debug_timer_times
 		start = time()
 		x = f(*args, **kwargs)
