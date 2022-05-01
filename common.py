@@ -1,7 +1,6 @@
-from math import copysign, cos, sin, tan
-from typing import Iterable, Tuple
-
 """For super basic functions missing from vanilla python I expect to use in multiple places..."""
+from math import copysign, cos, sin, tan
+from typing import Iterable
 
 cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
 cot = lambda x: 1/tan(x)
