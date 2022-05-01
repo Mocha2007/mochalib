@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import acos, asin, atan2, cos, log, pi, radians, sin, tan
+from math import asin, atan2, cos, pi, radians, sin
 from PIL import Image
 from subprocess import check_output
 from typing import Iterable, Tuple
@@ -123,6 +123,13 @@ def average_colors(*colors: Iterable[Tuple[int, int, int]]) -> Tuple[int, int, i
 	b = int(average(*(c[2] for c in colors)))
 	return r, g, b
 
+def blend_proj(proj1, proj2):
+	def output(coord: GeoCoord) -> MapCoord:
+		map1 = proj1(coord)
+		map2 = proj2(coord)
+		return MapCoord((map1.x + map2.x)/2, (map1.y + map2.y)/2)
+	return output
+
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	try:
 		while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
@@ -132,60 +139,8 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 		return x
 	return x
 
-# projections
-
-def blend_proj(proj1, proj2):
-	def output(coord: GeoCoord) -> MapCoord:
-		map1 = proj1(coord)
-		map2 = proj2(coord)
-		return MapCoord((map1.x + map2.x)/2, (map1.y + map2.y)/2)
-	return output
-
-def equirectangular(coord: GeoCoord) -> MapCoord:
-	return MapCoord(coord.lon/pi, coord.lat/(pi/2))
-
-def mercator(coord: GeoCoord) -> MapCoord:
-	"""truncated near poles"""
-	x = coord.lon
-	y = log(tan(pi/4 + coord.lat/2))
-	return MapCoord(x/pi, y/pi)
-
-def mollweide(coord: GeoCoord) -> MapCoord:
-	lat, lon = coord.lat, coord.lon
-	if abs(lat) == pi/2:
-		theta = lat
-	else:
-		theta = newton_raphson(lat, 
-			lambda x: 2*x + sin(2*x) - pi*sin(lat),
-			lambda x: 2 + 2*cos(2*x))
-	x = lon * cos(theta) / pi
-	y = sin(theta)
-	return MapCoord(x, y)
-
-def orthographic(coord0: GeoCoord):
-	lat0, lon0 = coord0.lat, coord0.lon
-	def function(coord: GeoCoord) -> MapCoord:
-		lat, lon = coord.lat, coord.lon
-		# determine clipping
-		try:
-			c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
-		except ValueError: # unfortunate floating point errors for 45 degree lat0
-			c = pi if lat < 0 else 0
-		if not -pi/2 < c < pi/2:
-			return MapCoord(1, 1)
-		# main
-		x = cos(lat) * sin(lon - lon0)
-		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
-		return MapCoord(x, y)
-	return function
-
-debug_proj = blend_proj(mollweide, equirectangular)
-# I need like... a map DATA object... ugh...
-# is this how it works??? I forgot tbh
-# (1) Take input image
-# (2) Turn image into matrix of data (lat/lon) -> color
-# (3) Turn use data matrix
 def test() -> None:
+	from mochamap2projections import orthographic
 	# Map.from_eq('test.png', mollweide, interpolate=True)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
 	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
