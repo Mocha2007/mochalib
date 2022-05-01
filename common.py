@@ -2,11 +2,11 @@
 from math import copysign, cos, inf, sin, tan
 from typing import Any, Callable, Iterable
 
-cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
-cot = lambda x: 1/tan(x)
-sec = lambda x: 1/cos(x)
-sign = lambda x: copysign(1, x)
-sinc = lambda x: sin(x)/x if x else 1
+cbrt: Callable[[float], float] = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
+cot: Callable[[float], float]  = lambda x: 1/tan(x)
+sec: Callable[[float], float]  = lambda x: 1/cos(x)
+sign: Callable[[float], float]  = lambda x: copysign(1, x)
+sinc: Callable[[float], float]  = lambda x: sin(x)/x if x else 1
 
 def average(*values: Iterable[float]) -> float:
 	"""arithmetic mean of the given values"""
