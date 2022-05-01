@@ -51,6 +51,7 @@ def newton_raphson(x: float, f, f_, max_iter = 20, threshold = 1e-10) -> float:
 			max_iter -= 1
 	except ZeroDivisionError: # too bad so sad
 		return x
+	# print(20 - max_iter)
 	return x
 
 def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
@@ -105,18 +106,19 @@ def debug_timer(f: Callable) -> Callable:
 
 def _test() -> None:
 	"""Used for testing various functions in common.py"""
-	from random import random
+	from random import uniform
+	from math import pi
 	for _ in range(1000):
-		# finding the root of a random quadratic
-		a = random()
-		b = random()
-		c = random()
-		f = lambda x: a*x**2 + b*x + c
-		f_ = lambda x: 2*a*x + b
-		f__ = lambda _: 2*a
+		# finding the theta (for mollweide) of a random latitude
+		lat = uniform(-pi/2, pi/2)
+		f = lambda x: 2*x + sin(2*x) - pi*sin(lat)
+		f_ = lambda x: 2 + 2*cos(2*x)
+		# f__ = lambda x: -4*sin(2*x)
+		initial_guess = 0.071374*lat**3 + 0.756175*lat
 		@debug_timer
 		# @debug_range
 		def test_helper() -> float:
-			return halleys_method(random(), f, f_, f__)
-		test_helper()
+			return newton_raphson(initial_guess, f, f_, threshold=1e-4)
+		theta = test_helper()
+		# print(f"{lat}\t{theta}")
 	print(f"{average(*_debug_timer_times)} s")

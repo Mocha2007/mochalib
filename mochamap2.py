@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import asin, atan2, cos, pi, radians, sin
+from math import asin, atan2, cos, pi, sin
 from PIL import Image
 from subprocess import check_output
 from typing import Iterable
@@ -164,11 +164,14 @@ def debug_max(f):
 		return y, x
 	return inner
 
-def test() -> None:
-	from mochamap2projections import orthographic
-	# Map.from_eq('test.png', mollweide, interpolate=True)
+def _test() -> None:
+	from mochamap2projections import mollweide
+	from time import time
+	start = time()
+	Map.from_eq('test.png', mollweide)
+	print(time() - start)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
 	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
-	Map.sequence_from_eq('almea2.png',
-		(orthographic(GeoCoord(0, radians(12*i))) for i in range(30)),
-	False, (512, 512))
+	#Map.sequence_from_eq('almea2.png',
+	#	(orthographic(GeoCoord(0, radians(12*i))) for i in range(30)),
+	#False, (512, 512))

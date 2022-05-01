@@ -1,6 +1,6 @@
 
 from math import acos, log, tan
-from common import clamp, cot, linear_interpolation, newton_raphson, remap, sec, sign, sinc
+from common import clamp, cot, debug_timer, linear_interpolation, newton_raphson, remap, sec, sign, sinc
 from mochamap2 import *
 
 def aitoff(coord: GeoCoord) -> MapCoord:
@@ -132,12 +132,21 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 	if abs(lat) == pi/2:
 		theta = lat
 	else:
-		theta = newton_raphson(lat, 
+		start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
+		# found experimentally via regressionon desmos.com
+		# start_guess = lat 							-> 1.4355945587158203 s for test.png
+		# start_guess = 0.8615*lat						-> 1.3415701389312744 s for test.png
+		# start_guess = 1.35075 * asin(0.571506 * lat)	-> 1.2727408409118652 s for test.png
+		# start_guess = [cubic]							-> 1.2726495265960693 s for test.png
+		# start_guess = [quintic]						-> 1.272195816040039 s for test.png
+		theta = newton_raphson(start_guess,
 			lambda x: 2*x + sin(2*x) - pi*sin(lat),
 			lambda x: 2 + 2*cos(2*x),
 			threshold=1e-4)
 			# this should be sufficient for getting the pixel in the correct location;
 			# it results in a worst-case 0.2 px error if the map size is 2048 px
+			# lat is a very good first guess for x_0; theta(lat) looks like arcsin(0.6x) but flatter
+			# this takes 10 iterations at MOST, but usually takes 2
 	x = lon * cos(theta) / pi
 	y = sin(theta)
 	return MapCoord(x, y)
