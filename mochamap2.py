@@ -1,6 +1,7 @@
 from __future__ import annotations
 from math import asin, atan2, cos, pi, sin
 from PIL import Image
+from typing import Iterable, Tuple
 
 class ImageCoord:
 	"""pixel coords"""
@@ -49,7 +50,7 @@ class Map:
 		self.width = width
 		self.height = height
 		self.image = Image.new('RGB', (width, height))
-	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png') -> None:
+	def from_eq(source_filename: str, projection, destination_filename: str = 'output.png', interpolate: bool = False) -> None:
 		with Image.open(f"maps/{source_filename}") as im:
 			w, h = im.width, im.height
 			output = Image.new('RGB', (w, h))
@@ -60,10 +61,35 @@ class Map:
 					try:
 						output.putpixel((x_, y_), im.getpixel((x, y)))
 					except IndexError:
+						continue
+					# interpolation
+					if not interpolate:
+						continue
+					coord_ = ImageCoord(x + 0.5, y + 0.5).geocoord_from_eq(output).project(projection).imagecoord(output)
+					x_, y_ = coord_.x, coord_.y
+					try:
+						color = average_colors(
+							im.getpixel((x, y)),
+							im.getpixel((x+1, y)),
+							im.getpixel((x, y+1)),
+							im.getpixel((x+1, y+1))
+						)
+						output.putpixel((x_, y_), color)
+					except IndexError:
 						pass
+
 		output.save(f"maps/{destination_filename}", "PNG")
 
 # utility functions
+def average(*values: Iterable[float]) -> float:
+	return sum(values)/len(values)
+
+def average_colors(*colors: Iterable[Tuple[int, int, int]]) -> Tuple[int, int, int]:
+	r = int(average(*(c[0] for c in colors)))
+	g = int(average(*(c[1] for c in colors)))
+	b = int(average(*(c[2] for c in colors)))
+	return r, g, b
+
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
 		x = x_
@@ -88,4 +114,4 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 # (2) Turn image into matrix of data (lat/lon) -> color
 # (3) Turn use data matrix
 def test() -> None:
-	Map.from_eq('test.png', mollweide)
+	Map.from_eq('test.png', mollweide, interpolate=True)
