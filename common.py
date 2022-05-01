@@ -44,31 +44,31 @@ def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1
 
 # debugging functions
 
-debug_range_max = -inf
-debug_range_min = inf
+_debug_range_max = -inf
+_debug_range_min = inf
 
 def debug_range(f):
 	"""use this as a decorator to get min/max values for a function"""
 	def inner(*args, **kwargs) -> float:
-		global debug_range_max, debug_range_min
+		global _debug_range_max, _debug_range_min
 		x = f(*args, **kwargs)
-		if debug_range_max < x:
-			debug_range_max = x
-		if x < debug_range_min:
-			debug_range_min = x
+		if _debug_range_max < x:
+			_debug_range_max = x
+		if x < _debug_range_min:
+			_debug_range_min = x
 		return x
 	return inner
 
-debug_timer_times: list[float] = []
+_debug_timer_times: list[float] = []
 
 def debug_timer(f):
 	from time import time
 	"""use this as a decorator to time a function"""
 	def inner(*args, **kwargs) -> float:
-		global debug_timer_times
+		global _debug_timer_times
 		start = time()
 		x = f(*args, **kwargs)
-		debug_timer_times.append(time() - start)
+		_debug_timer_times.append(time() - start)
 		return x
 	return inner
 
