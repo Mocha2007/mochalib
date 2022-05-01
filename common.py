@@ -1,5 +1,5 @@
 """For super basic functions missing from vanilla python I expect to use in multiple places..."""
-from math import copysign, cos, sin, tan
+from math import copysign, cos, inf, sin, tan
 from typing import Iterable
 
 cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
@@ -24,7 +24,11 @@ def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> 
 	raise ValueError(f"{x} not in [{xx[0]}, {xx[-1]}]")
 
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
-	"""root-finding method"""
+	"""root-finding method
+
+	measured as taking 100 microseconds avg. on my laptop
+	to find the root of a random quadratic with random start
+	"""
 	try:
 		while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
 			x = x_
@@ -37,3 +41,49 @@ def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1
 	"""applies a conformal map from one linear range to another"""
 	range1, range2 = max1-min1, max2-min2
 	return (val-min1)/range1 * range2 + min2
+
+# debugging functions
+
+debug_range_max = -inf
+debug_range_min = inf
+
+def debug_range(f):
+	"""use this as a decorator to get min/max values for a function"""
+	def inner(*args, **kwargs) -> float:
+		global debug_range_max, debug_range_min
+		x = f(*args, **kwargs)
+		if debug_range_max < x:
+			debug_range_max = x
+		if x < debug_range_min:
+			debug_range_min = x
+		return x
+	return inner
+
+debug_timer_times: list[float] = []
+
+def debug_timer(f):
+	from time import time
+	"""use this as a decorator to time a function"""
+	def inner(*args, **kwargs) -> float:
+		global debug_timer_times
+		start = time()
+		x = f(*args, **kwargs)
+		debug_timer_times.append(time() - start)
+		return x
+	return inner
+
+def _test() -> None:
+	"""Used for testing various functions in common.py"""
+	from random import random
+	for _ in range(1000):
+		# finding the root of a random quadratic
+		a = random()
+		b = random()
+		c = random()
+		f = lambda x: a*x**2 + b*x + c
+		f_ = lambda x: 2*a*x + b
+		# @debug_timer
+		@debug_range
+		def test_helper() -> float:
+			return newton_raphson(random(), f, f_)
+		test_helper()
