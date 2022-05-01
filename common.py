@@ -59,6 +59,21 @@ def debug_range(f: Callable[[Any], float]) -> Callable[[Any], float]:
 		return x
 	return inner
 
+_debug_mag_range_max = -inf
+_debug_mag_range_min = inf
+
+def debug_mag_range(f: Callable[[Any], complex]) -> Callable[[Any], complex]:
+	"""use this as a decorator to get min/max magnitudes for a function"""
+	def inner(*args, **kwargs) -> float:
+		global _debug_mag_range_max, _debug_mag_range_min
+		x = f(*args, **kwargs)
+		if _debug_mag_range_max < abs(x):
+			_debug_mag_range_max = abs(x)
+		if abs(x) < _debug_mag_range_min:
+			_debug_mag_range_min = abs(x)
+		return x
+	return inner
+
 _debug_timer_times: list[float] = []
 
 def debug_timer(f: Callable) -> Callable:
