@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import asin, atan2, cos, pi, radians, sin
+from math import asin, atan2, copysign, cos, pi, radians, sin, tan
 from PIL import Image
 from subprocess import check_output
 from typing import Iterable, Tuple
@@ -32,9 +32,26 @@ class GeoCoord:
 	@property
 	def cartesiancoord(self) -> SpatialCoord:
 		return SpatialCoord(cos(self.lat)*cos(self.lon), cos(self.lat)*sin(self.lon), sin(self.lat))
+	# double underscore methods
+	def __repr__(self) -> str:
+		return f"GeoCoord({self.lat}, {self.lon})"
 	# methods
 	def project(self, projection) -> MapCoord:
 		return projection(self)
+	def normalize(self) -> None:
+		"""Forces lat in [-pi/2, pi/2] and lon in [-pi, pi]"""
+		# first fix lat
+		self.lat += pi/2
+		self.lat %= 2*pi
+		self.lat -= pi/2
+		# now we know lat is in [-pi/2, 3*pi/2]
+		if pi/2 < self.lat: # outside range
+			self.lat = pi - self.lat
+			self.lon += pi
+		# then fix lon
+		self.lon += pi
+		self.lon %= 2*pi
+		self.lon -= pi
 
 class SpatialCoord:
 	"""x, y, z of a lat/lon pair"""
@@ -114,6 +131,13 @@ class Map:
 		print(check_output('ffmpeg -i "maps/output.mp4" -pix_fmt rgb24 "maps/output.gif"'))
 
 # utility functions
+
+cbrt = lambda x: x**(1/3) if 0 <= x else -(-x)**(1/3)
+cot = lambda x: 1/tan(x)
+sec = lambda x: 1/cos(x)
+sign = lambda x: copysign(1, x)
+sinc = lambda x: sin(x)/x if x else 1
+
 def average(*values: Iterable[float]) -> float:
 	return sum(values)/len(values)
 
@@ -130,6 +154,19 @@ def blend_proj(proj1, proj2):
 		return MapCoord((map1.x + map2.x)/2, (map1.y + map2.y)/2)
 	return output
 
+def clamp(x: float, min: float, max: float) -> float:
+	if x < min:
+		return min
+	if max < x:
+		return max
+	return x
+
+def linear_interpolation(x: float, xx: Iterable[float], yy: Iterable[float]) -> float:
+	for i, x_tick in enumerate(xx[1:]):
+		if x <= x_tick:
+			return remap(x, xx[i], x_tick, yy[i], yy[i+1])
+	raise ValueError(f"{x} not in [{xx[0]}, {xx[-1]}]")
+
 def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	try:
 		while ((x_ := x - f(x)/f_(x)) != x and 0 < max_iter):
@@ -138,6 +175,28 @@ def newton_raphson(x: float, f, f_, max_iter = 100) -> float:
 	except ZeroDivisionError: # todo fix this
 		return x
 	return x
+
+def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
+	range1, range2 = max1-min1, max2-min2
+	return (val-min1)/range1 * range2 + min2
+
+# testing/debug
+
+debug_max_x = 0
+debug_max_y = 0
+# debug_proj = blend_proj(mollweide, equirectangular)
+
+def debug_max(f):
+	"""use this as a decorator to get max x/y"""
+	def inner(lat: float, lon: float) -> Tuple[float, float]:
+		global debug_max_x, debug_max_y
+		y, x = f(lat, lon)
+		if debug_max_x < abs(x):
+			debug_max_x = abs(x)
+		if debug_max_y < abs(y):
+			debug_max_y = abs(y)
+		return y, x
+	return inner
 
 def test() -> None:
 	from mochamap2projections import orthographic
