@@ -12,6 +12,22 @@ def average(*values: Iterable[float]) -> float:
 	"""arithmetic mean of the given values"""
 	return sum(values)/len(values)
 
+def bisection_method(x_min: float, x_max: float, f, max_iter = 20, threshold = 1e-10) -> float:
+	"""root-finding method"""
+	while 0 < max_iter:
+		x = (x_min + x_max)/2
+		fx = f(x)
+		# check threshold
+		if -threshold < fx < threshold:
+			return x
+		# otherwise, iterate
+		if sign(fx) == sign(f(x_min)):
+			x_min = x
+		else:
+			x_max = x
+		max_iter -= 1
+	return x
+
 def clamp(x: float, min: float, max: float) -> float:
 	"""Force x to be in a specific range - uses min or max if x is outside"""
 	return min if x < min else max if x < max else x

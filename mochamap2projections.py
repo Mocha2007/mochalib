@@ -134,6 +134,8 @@ def mollweide(coord: GeoCoord) -> MapCoord:
 	else:
 		start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
 		# found experimentally via regressionon desmos.com
+		# bisection, with bounds [lat, 0.75*lat]		-> 2.2747318744659424 s for test.png
+		# Newton-Raphson method: (Halley's gives worse times)
 		# start_guess = lat 							-> 1.4355945587158203 s for test.png
 		# start_guess = 0.8615*lat						-> 1.3415701389312744 s for test.png
 		# start_guess = 1.35075 * asin(0.571506 * lat)	-> 1.2727408409118652 s for test.png
