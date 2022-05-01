@@ -1,6 +1,7 @@
 from __future__ import annotations
-from math import acos, asin, atan2, cos, pi, sin
+from math import acos, asin, atan2, cos, pi, radians, sin
 from PIL import Image
+from subprocess import check_output
 from typing import Iterable, Tuple
 
 class ImageCoord:
@@ -101,6 +102,17 @@ class Map:
 						pass
 		output.save(f"maps/{destination_filename}", "PNG")
 
+	def sequence_from_eq(source_filename: str, projection_series,
+			interpolate: bool = False, output_resolution: Tuple[int, int] = None) -> None:
+		series = list(projection_series)
+		print(f"Running Map Sequence[{len(series)}]")
+		for i, projection in enumerate(series):
+			print(f"Rendering frame {i+1}/{len(series)}")
+			Map.from_eq(source_filename, projection, "sequence/" + "{0}".format(str(i).zfill(5)) + ".png", interpolate, output_resolution)
+		print(f"Attempting to stitch using ffmpeg...")
+		print(check_output('ffmpeg -framerate 30 -i "maps/sequence/%05d.png" -c:v libx264 -pix_fmt yuv420p "maps/output.mp4"')) # shell=True
+		# ffmpeg -f image2 -framerate 9 -i image_%003d.jpg -vf scale=531x299,transpose=1,crop=299,431,0,100 out.gif
+
 # utility functions
 def average(*values: Iterable[float]) -> float:
 	return sum(values)/len(values)
@@ -141,7 +153,7 @@ def orthographic(coord0: GeoCoord):
 		# determine clipping
 		c = acos(sin(lat0)*sin(lat) + cos(lat0)*cos(lat)*cos(lon-lon0))
 		if not -pi/2 < c < pi/2:
-			return 1, 1
+			return MapCoord(1, 1)
 		# main
 		x = cos(lat) * sin(lon - lon0)
 		y = cos(lat0)*sin(lat) - sin(lat0)*cos(lat)*cos(lon-lon0)
@@ -155,7 +167,7 @@ def orthographic(coord0: GeoCoord):
 def test() -> None:
 	# Map.from_eq('test.png', mollweide, interpolate=True)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
-	Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
-	#Map.sequence_from_eq('test.png',
-	#	(orthographic(GeoCoord(0, 12*i)) for i in range(30)),
-	#False, (256, 256))
+	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
+	Map.sequence_from_eq('test.png',
+		(orthographic(GeoCoord(0, radians(12*i))) for i in range(30)),
+	True, (256, 256))
