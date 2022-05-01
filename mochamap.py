@@ -55,6 +55,14 @@ def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1
 
 # projections
 
+def aitoff(lat: float, lon: float) -> Tuple[float, float]:
+	alpha = acos(cos(lat) * cos(lon/2))
+	x = 2*cos(lat)*sin(lon/2)/sinc(alpha)
+	y = sin(lat)/sinc(alpha)
+	x /= pi
+	y /= pi/2
+	return y, x
+
 def azimuthal_equidistant(lat: float, lon: float) -> Tuple[float, float]:
 	rho = pi/2 - lat
 	x = rho * sin(lon)
@@ -383,6 +391,7 @@ def sinu_scaled_to_xy(size: Tuple[int, int],
 	return clamp(floor(x), 0, w-1), clamp(floor(y), 0, h-1)
 
 formats = {
+	'aitoff': aitoff, # compromise
 	'azimuthal equidistant': azimuthal_equidistant, # equidistant
 	'equal earth': equal_earth, # equal-area
 	'eu4': eu4, # compromise
