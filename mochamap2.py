@@ -55,6 +55,7 @@ class GeoCoord:
 		self.lon %= 2*pi
 		self.lon -= pi
 	def rotate(self, delta: GeoCoord) -> GeoCoord:
+		"""rotate center of map by lat, lon"""
 		lat, lon = self.lat, self.lon
 		lon += delta.lon # shift longitude
 		out = GeoCoord(lat, lon)
@@ -66,6 +67,23 @@ class GeoCoord:
 		theta = atan2(spatial.z, spatial.x)
 		theta += delta.lat
 		spatial.x = r*cos(theta)
+		spatial.z = r*sin(theta)
+		# now convert back to 3d spherical
+		out = spatial.geocoords
+		out.normalize()
+		return out
+	def rotate_x(self, delta: float) -> GeoCoord:
+		"""rotate about the X-axis (causes world to look upside-down)"""
+		lat, lon = self.lat, self.lon
+		out = GeoCoord(lat, lon)
+		# time to shift latitude
+		spatial = out.cartesiancoord
+		# x coord will be held constant, y/z will be rotated about x-axis
+		# convert the y, z to r, theta about the x-axis
+		r = hypot(spatial.y, spatial.z)
+		theta = atan2(spatial.z, spatial.y)
+		theta += delta.lat
+		spatial.y = r*cos(theta)
 		spatial.z = r*sin(theta)
 		# now convert back to 3d spherical
 		out = spatial.geocoords
