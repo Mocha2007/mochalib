@@ -85,26 +85,28 @@ def gnomonic(coord0: GeoCoord):
 
 def imperator(coord: GeoCoord) -> MapCoord:
 	lat, lon = coord.lat, coord.lon
+	# truncate
+	if not radians(-15) < lon < radians(100) or not radians(-5) < lat < radians(65):
+		return MapCoord(1, 1)
 	# https://steamcommunity.com/sharedfiles/filedetails/?id=2333851309
-	y, x = lambert_conformal_conic(radians(5), radians(60))(lat, lon)
+	lcc = lambert_conformal_conic(radians(5), radians(60))(lat, lon)
+	x, y = lcc.x, lcc.y
 	x -= 0.57
 	y -= 0.66
 	x *= 1.4
 	y *= 2.8
 	return MapCoord(x, y)
 
-def lambert_conformal_conic(coord0: GeoCoord, coord1: GeoCoord):
+def lambert_conformal_conic(lat1: float, lat2: float, coord0: GeoCoord = GeoCoord(0, 0)):
 	lat0, lon0 = coord0.lat, coord0.lon
-	lat1, lon1 = coord1.lat, coord1.lon
-	if lat0 == lat1:
-		n = sin(lat0)
+	if lat1 == lat2:
+		n = sin(lat1)
 	else:
-		n = log(cos(lat0) * sec(lat1)) \
-			/ log(tan(pi/4 + lat1/2) * cot(pi/4 + lat0/2))
-	F = cos(lat0) * tan(pi/4 + lat0/2)**n / n
+		n = log(cos(lat1) * sec(lat2)) \
+			/ log(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
+	F = cos(lat1) * tan(pi/4 + lat1/2)**n / n
 	rho0 = F * cot(pi/4 + lat0/2)**n
-	def function(coord: GeoCoord) -> MapCoord:
-		lat, lon = coord.lat, coord.lon
+	def function(lat: float, lon: float) -> MapCoord:
 		rho = F * cot(pi/4 + lat/2)**n
 		x = rho*sin(n*(lon-lon0))
 		y = rho0 - rho*cos(n*(lon-lon0))
