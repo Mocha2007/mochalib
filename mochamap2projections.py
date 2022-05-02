@@ -101,16 +101,29 @@ def lambert_conformal_conic(lat1: float, lat2: float, coord0: GeoCoord = GeoCoor
 	lat0, lon0 = coord0.lat, coord0.lon
 	if lat1 == lat2:
 		n = sin(lat1)
+		if n == 0:
+			raise ValueError("The standard parallels cannot both be zero! Use Mercator instead!")
 	else:
-		n = log(cos(lat1) * sec(lat2)) \
-			/ log(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
+		try:
+			n = log(cos(lat1) * sec(lat2)) \
+				/ log(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
+		except ValueError:
+			# print(lat1, lat2, coord0)
+			# print(cos(lat1) * sec(lat2))
+			# print(tan(pi/4 + lat2/2) * cot(pi/4 + lat1/2))
+			raise ValueError("Bad standard parallels - is one outside +/- 90 degrees?")
 	F = cos(lat1) * tan(pi/4 + lat1/2)**n / n
 	rho0 = F * cot(pi/4 + lat0/2)**n
-	def function(lat: float, lon: float) -> MapCoord:
+	def function(coord: GeoCoord) -> MapCoord:
+		lat, lon = coord.lat, coord.lon
 		rho = F * cot(pi/4 + lat/2)**n
 		x = rho*sin(n*(lon-lon0))
 		y = rho0 - rho*cos(n*(lon-lon0))
-		# todo: scale...
+		# scaling
+		x /= pi
+		y /= pi
+		if not -1 <= x <= 1 or not -1 <= y <= 1:
+			return MapCoord(1, 1)
 		return MapCoord(x, y)
 	return function
 
