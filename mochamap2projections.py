@@ -84,17 +84,19 @@ def gnomonic(coord0: GeoCoord):
 	return function
 
 def imperator(coord: GeoCoord) -> MapCoord:
-	lat, lon = coord.lat, coord.lon
+	"""I recommend you output this to a canvas no more than half the original, AND use interpolation."""
 	# truncate
-	if not radians(-15) < lon < radians(100) or not radians(-5) < lat < radians(65):
+	if not radians(-15) < coord.lon < radians(100) or not radians(-5) < coord.lat < radians(65):
 		return MapCoord(1, 1)
 	# https://steamcommunity.com/sharedfiles/filedetails/?id=2333851309
-	lcc = lambert_conformal_conic(radians(5), radians(60))(lat, lon)
-	x, y = lcc.x, lcc.y
+	lcc = lambert_conformal_conic(radians(5), radians(60))(coord)
+	x, y = lcc.x*pi, lcc.y*pi
 	x -= 0.57
 	y -= 0.66
 	x *= 1.4
 	y *= 2.8
+	if not -1 <= x <= 1 or not -1 <= y <= 1:
+		return MapCoord(1, 1)
 	return MapCoord(x, y)
 
 def lambert_conformal_conic(lat1: float, lat2: float, coord0: GeoCoord = GeoCoord(0, 0)):

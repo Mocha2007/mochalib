@@ -204,14 +204,15 @@ def debug_max(f):
 	return inner
 
 def _test() -> None:
-	from mochamap2projections import mollweide
+	from math import radians
+	from mochamap2projections import imperator
 	# from time import time
 	# start = time()
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
-	Map.from_eq('test.png', mollweide(GeoCoord(-pi/2, 0)))
+	Map.from_eq('test.png', imperator, interpolate=True, output_resolution=(256, 128))
 	# print(time() - start)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
 	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
-	#Map.sequence_from_eq('almea2.png',
-	#	(orthographic(GeoCoord(0, radians(12*i))) for i in range(30)),
+	#Map.sequence_from_eq('test.png',
+	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
 	#False, (512, 512))
