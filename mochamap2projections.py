@@ -229,13 +229,12 @@ def sinusoidal(coord: GeoCoord) -> MapCoord:
 	return MapCoord(x, y)
 
 def stereographic(coord0: GeoCoord):
-	lat0, lon0 = coord0.lat, coord0.lon
-	# todo account for lat shift
 	def function(coord: GeoCoord) -> MapCoord:
-		lat, lon = coord.lat, coord.lon
+		coord_ = coord.rotate(coord0)
+		lat, lon = coord_.lat, coord_.lon
 		r = 2*tan(pi/4 - lat/2)
-		x = r*cos(lon-lon0)
-		y = r*sin(lon-lon0)
+		x = r*cos(lon)
+		y = r*sin(lon)
 		# remap to [-1, 1] for both
 		x /= pi
 		y /= pi
