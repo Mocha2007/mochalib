@@ -1,5 +1,5 @@
 from __future__ import annotations
-from math import asin, atan2, cos, pi, sin
+from math import asin, atan2, cos, hypot, pi, sin
 from PIL import Image
 from subprocess import check_output
 from typing import Iterable
@@ -36,6 +36,7 @@ class GeoCoord:
 	# double underscore methods
 	def __repr__(self) -> str:
 		return f"GeoCoord({self.lat}, {self.lon})"
+	# todo __neg__
 	# methods
 	def project(self, projection) -> MapCoord:
 		return projection(self)
@@ -53,6 +54,23 @@ class GeoCoord:
 		self.lon += pi
 		self.lon %= 2*pi
 		self.lon -= pi
+	def rotate(self, delta: GeoCoord) -> GeoCoord:
+		lat, lon = self.lat, self.lon
+		lon += delta.lon # shift longitude
+		out = GeoCoord(lat, lon)
+		# time to shift latitude
+		spatial = out.cartesiancoord
+		# y coord will be held constant, x/z will be rotated about y-axis
+		# convert the x, z to r, theta about the y-axis
+		r = hypot(spatial.x, spatial.z)
+		theta = atan2(spatial.z, spatial.x)
+		theta += delta.lat
+		spatial.x = r*cos(theta)
+		spatial.z = r*sin(theta)
+		# now convert back to 3d spherical
+		out = spatial.geocoords
+		out.normalize()
+		return out
 
 class SpatialCoord:
 	"""x, y, z of a lat/lon pair"""
@@ -62,7 +80,10 @@ class SpatialCoord:
 		self.z = z
 	@property
 	def geocoords(self) -> GeoCoord:
-		return GeoCoord(atan2(self.y, self.x), asin(self.z))
+		return GeoCoord(asin(self.z), atan2(self.y, self.x))
+	# double underscore methods
+	def __repr__(self) -> str:
+		return f"SpatialCoord({self.x}, {self.y}, {self.z})"
 
 class Map:
 	def __init__(self, width: int, height: int) -> None:
@@ -166,10 +187,11 @@ def debug_max(f):
 
 def _test() -> None:
 	from mochamap2projections import mollweide
-	from time import time
-	start = time()
-	Map.from_eq('test.png', mollweide)
-	print(time() - start)
+	# from time import time
+	# start = time()
+	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
+	Map.from_eq('test.png', mollweide(GeoCoord(-pi/2, 0)))
+	# print(time() - start)
 	# Map.to_eq('test.png', mollweide, interpolate=True)
 	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
 	#Map.sequence_from_eq('almea2.png',

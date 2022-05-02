@@ -127,31 +127,34 @@ def miller(coord: GeoCoord) -> MapCoord:
 	y /= 1498/2044 * pi # appx
 	return MapCoord(x, y)
 
-def mollweide(coord: GeoCoord) -> MapCoord:
-	lat, lon = coord.lat, coord.lon
-	if abs(lat) == pi/2:
-		theta = lat
-	else:
-		start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
-		# found experimentally via regressionon desmos.com
-		# bisection, with bounds [lat, 0.75*lat]		-> 2.2747318744659424 s for test.png
-		# Newton-Raphson method: (Halley's gives worse times)
-		# start_guess = lat 							-> 1.4355945587158203 s for test.png
-		# start_guess = 0.8615*lat						-> 1.3415701389312744 s for test.png
-		# start_guess = 1.35075 * asin(0.571506 * lat)	-> 1.2727408409118652 s for test.png
-		# start_guess = [cubic]							-> 1.2726495265960693 s for test.png
-		# start_guess = [quintic]						-> 1.272195816040039 s for test.png
-		theta = newton_raphson(start_guess,
-			lambda x: 2*x + sin(2*x) - pi*sin(lat),
-			lambda x: 2 + 2*cos(2*x),
-			threshold=1e-4)
-			# this should be sufficient for getting the pixel in the correct location;
-			# it results in a worst-case 0.2 px error if the map size is 2048 px
-			# lat is a very good first guess for x_0; theta(lat) looks like arcsin(0.6x) but flatter
-			# this takes 10 iterations at MOST, but usually takes 2
-	x = lon * cos(theta) / pi
-	y = sin(theta)
-	return MapCoord(x, y)
+def mollweide(coord0: GeoCoord):
+	def function(coord: GeoCoord) -> MapCoord:
+		coord_ = coord.rotate(coord0)
+		lat, lon = coord_.lat, coord_.lon
+		if abs(lat) == pi/2:
+			theta = lat
+		else:
+			start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
+			# found experimentally via regressionon desmos.com
+			# bisection, with bounds [lat, 0.75*lat]		-> 2.2747318744659424 s for test.png
+			# Newton-Raphson method: (Halley's gives worse times)
+			# start_guess = lat 							-> 1.4355945587158203 s for test.png
+			# start_guess = 0.8615*lat						-> 1.3415701389312744 s for test.png
+			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 1.2727408409118652 s for test.png
+			# start_guess = [cubic]							-> 1.2726495265960693 s for test.png
+			# start_guess = [quintic]						-> 1.272195816040039 s for test.png
+			theta = newton_raphson(start_guess,
+				lambda x: 2*x + sin(2*x) - pi*sin(lat),
+				lambda x: 2 + 2*cos(2*x),
+				threshold=1e-4)
+				# this should be sufficient for getting the pixel in the correct location;
+				# it results in a worst-case 0.2 px error if the map size is 2048 px
+				# lat is a very good first guess for x_0; theta(lat) looks like arcsin(0.6x) but flatter
+				# this takes 10 iterations at MOST, but usually takes 2
+		x = lon * cos(theta) / pi
+		y = sin(theta)
+		return MapCoord(x, y)
+	return function
 
 def orthographic(coord0: GeoCoord):
 	lat0, lon0 = coord0.lat, coord0.lon
