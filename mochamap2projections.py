@@ -153,12 +153,14 @@ def mollweide(coord0: GeoCoord):
 			theta = lat
 		else:
 			# found experimentally via regression on desmos.com
+			# using +- instead of - increases the speed by 5% because... reasons?
 			start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
 			# (method description)							-> test.png, avg. for mollweide.function w/ default settings
 			# bisection, with bounds [lat, 0.75*lat]		-> 63.477857208251955 μs
 			# Newton-Raphson method: (Halley's gives worse times)
 			# start_guess = lat 							-> 29.57691650390625 μs
 			# start_guess = 0.8615*lat						-> 26.59794464111328 μs
+			# start_guess = [septic]						-> 25.40723571777344 μs
 			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 25.216746520996093 μs
 			# start_guess = 0.071374*lat**3 + 0.756175*lat	-> 24.96328201293945 μs
 			# start_guess = [quintic]						-> 24.84760284423828 μs
