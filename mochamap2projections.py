@@ -1,6 +1,6 @@
 
 from math import acos, log, radians, tan
-from common import clamp, cot, debug_timer, linear_interpolation, newton_raphson, remap, sec, sign, sinc
+from common import brents_method, clamp, cot, debug_timer, linear_interpolation, remap, sec, sign, sinc
 from mochamap2 import *
 
 def aitoff(coord: GeoCoord) -> MapCoord:
@@ -164,9 +164,8 @@ def mollweide(coord0: GeoCoord):
 			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 25.216746520996093 μs
 			# start_guess = 0.071374*lat**3 + 0.756175*lat	-> 24.96328201293945 μs
 			# start_guess = [quintic]						-> 24.84760284423828 μs
-			theta = newton_raphson(start_guess,
+			theta = brents_method(lat, 0.75*lat,
 				lambda x: 2*x + sin(2*x) - pi*sin(lat),
-				lambda x: 2 + 2*cos(2*x),
 				threshold=1e-4)
 				# this should be sufficient for getting the pixel in the correct location;
 				# it results in a worst-case 0.2 px error if the map size is 2048 px
@@ -333,10 +332,10 @@ def zomp(coord: GeoCoord) -> MapCoord:
 
 def _test() -> None:
 	# from math import radians
-	# from common import average, _debug_timer_times
+	from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
-	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
-	# print(f"{average(_debug_timer_times)/1e3} μs")
+	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)))
+	print(f"{average(_debug_timer_times)/1e3} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
 	#False, (512, 512))

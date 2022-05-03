@@ -32,6 +32,45 @@ def bisection_method(x_min: float, x_max: float, f, max_iter = 20, threshold = 1
 		max_iter -= 1
 	return x
 
+def brents_method(a: float, b: float, f, max_iter = 20, threshold = 1e-10) -> float:
+	"""Root-finding method. The root must be bracketed by a and b"""
+	# https://en.wikipedia.org/wiki/Brent%27s_method
+	# assert f(a)*f(b) < 0
+	if abs(f(a)) < abs(fb := f(b)): # make sure |f(a)| is bigger
+		_a = a
+		a = b
+		b = _a
+	c = d = s = a
+	mflag = True
+	while 0 <= max_iter and threshold < abs(b-a) and (fb := f(b)) and f(s):
+		if (fa := f(a)) != (fc := f(c)) and fb != fc:
+			s = a*fb*fc / ((fa-fb)*(fa-fc)) \
+				+ b*fa*fc / ((fb-fa)*(fb-fc)) \
+				+ c*fa*fb / ((fc-fa)*(fc-fb))
+		else:
+			s = b - fb * (b-a) / (fb - fa)
+		if not ((3*a+b)/4 <= s <= b or b <= s <= (3*a+b)/4) \
+			or (mflag and abs(s-b) >= abs(b-c)/2) \
+			or (not mflag and abs(s-b) >= abs(c-d)/2) \
+			or (mflag and abs(b-c) < threshold) \
+			or (not mflag and abs(c-d) < threshold):
+			s = (a+b)/2
+			mflag = True
+		else:
+			mflag = False
+		d = c
+		c = b
+		if fa*f(s) < 0:
+			b = s
+		else:
+			a = s
+		if abs(f(a)) < abs(f(b)):
+			_a = a
+			a = b
+			b = _a
+		max_iter -= 1
+	return s if fb else b
+
 def clamp(x: float, min: float, max: float) -> float:
 	"""Force x to be in a specific range - uses min or max if x is outside"""
 	return min if x < min else max if x < max else x
