@@ -122,18 +122,15 @@ class Map:
 			for x in range(w):
 				for y in range(h):
 					# interpolation
-					if interpolate:
+					if interpolate and x+1 < w and y+1 < h:
 						x_, y_ = get_coord_(x + 0.5, y + 0.5)
-						try:
-							color = average_colors(
-								im.getpixel((x, y)),
-								im.getpixel((x+1, y)),
-								im.getpixel((x, y+1)),
-								im.getpixel((x+1, y+1))
-							)
-							output.putpixel((x_, y_), color)
-						except IndexError:
-							pass
+						color = average_colors(
+							im.getpixel((x, y)),
+							im.getpixel((x+1, y)),
+							im.getpixel((x, y+1)),
+							im.getpixel((x+1, y+1))
+						)
+						output.putpixel((x_, y_), color)
 					# regular
 					x_, y_ = get_coord_(x, y)
 					try:
