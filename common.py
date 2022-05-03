@@ -69,9 +69,10 @@ def newton_raphson(x: float, f, f_, max_iter = 20, threshold = 1e-10) -> float:
 		while 0 < max_iter and threshold < abs(x - (x_ := x - f(x)/f_(x))):
 			x = x_
 			max_iter -= 1
-	except ZeroDivisionError: # too bad so sad
-		return x
-	# print(20 - max_iter)
+	except ZeroDivisionError: # stuck in a flat zone of the function
+		# try to move x by a miniscule amount
+		return newton_raphson(x + threshold, f, f_, max_iter, threshold) \
+			if f_(x + threshold) else x
 	return x
 
 def remap(val: float, min1: float, max1: float, min2: float = 0, max2: float = 1) -> float:
