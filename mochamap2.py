@@ -2,7 +2,7 @@ from __future__ import annotations
 from math import asin, atan2, cos, hypot, pi, sin
 from PIL import Image
 from subprocess import check_output
-from typing import Iterable
+from typing import Callable, Iterable
 from common import average
 
 class ImageCoord:
@@ -89,6 +89,33 @@ class GeoCoord:
 		out = spatial.geocoords
 		out.normalize()
 		return out
+
+class Interruption:
+	def __init__(self, left_bound: float, right_bound: float, center: float, in_northern_hemisphere: bool):
+		self.left_bound = left_bound
+		self.right_bound = right_bound
+		self.center = center
+		self.in_northern_hemisphere = in_northern_hemisphere
+	@staticmethod
+	def wrap_projection(*i: Iterable[Interruption]) -> Callable[[Callable[[GeoCoord], MapCoord]], Callable[[GeoCoord], MapCoord]]:
+		def inner(proj: Callable[[GeoCoord], MapCoord]) -> Callable[[GeoCoord], MapCoord]:
+			def innest(coord: GeoCoord) -> MapCoord:
+				delta_x = 0
+				for interruption in i:
+					# correct hemisphere
+					if (0 < coord.lat) == interruption.in_northern_hemisphere:
+						# correct part
+						if interruption.left_bound <= coord.lon < interruption.right_bound:
+							coord.lon -= interruption.center
+							delta_x += interruption.center
+							break
+				# now apply projection as normal
+				mc = proj(coord)
+				# correct for interruption
+				mc.x += delta_x/pi
+				return mc
+			return innest
+		return inner
 
 class SpatialCoord:
 	"""x, y, z of a lat/lon pair"""
