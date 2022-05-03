@@ -9,9 +9,12 @@ sec: Callable[[float], float]  = lambda x: 1/cos(x)
 sign: Callable[[float], float]  = lambda x: copysign(1, x)
 sinc: Callable[[float], float]  = lambda x: sin(x)/x if x else 1
 
-def average(*values: Iterable[float]) -> float:
+def average(values: Iterable[float]) -> float:
 	"""arithmetic mean of the given values"""
-	return sum(values)/len(values)
+	try:
+		return sum(values)/len(values)
+	except TypeError: # tried to use a generator or something
+		return average(list(values))
 
 def bisection_method(x_min: float, x_max: float, f, max_iter = 20, threshold = 1e-10) -> float:
 	"""root-finding method"""
@@ -138,4 +141,4 @@ def _test() -> None:
 			return newton_raphson(initial_guess, f, f_, threshold=1e-4)
 		theta = test_helper()
 		# print(f"{lat}\t{theta}")
-	print(f"{average(*_debug_timer_times)/1e3} μs")
+	print(f"{average(_debug_timer_times)/1e3} μs")

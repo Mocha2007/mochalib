@@ -173,10 +173,7 @@ class Map:
 # utility functions
 
 def average_colors(*colors: Iterable[tuple[int, int, int]]) -> tuple[int, int, int]:
-	r = int(average(*(c[0] for c in colors)))
-	g = int(average(*(c[1] for c in colors)))
-	b = int(average(*(c[2] for c in colors)))
-	return r, g, b
+	return tuple(map(int, map(average, zip(*colors))))
 
 def blend_proj(proj1, proj2):
 	def output(coord: GeoCoord) -> MapCoord:
@@ -184,35 +181,3 @@ def blend_proj(proj1, proj2):
 		map2 = proj2(coord)
 		return MapCoord((map1.x + map2.x)/2, (map1.y + map2.y)/2)
 	return output
-
-# testing/debug
-
-debug_max_x = 0
-debug_max_y = 0
-# debug_proj = blend_proj(mollweide, equirectangular)
-
-def debug_max(f):
-	"""use this as a decorator to get max x/y"""
-	def inner(lat: float, lon: float) -> tuple[float, float]:
-		global debug_max_x, debug_max_y
-		y, x = f(lat, lon)
-		if debug_max_x < abs(x):
-			debug_max_x = abs(x)
-		if debug_max_y < abs(y):
-			debug_max_y = abs(y)
-		return y, x
-	return inner
-
-def _test() -> None:
-	from math import radians
-	from mochamap2projections import imperator
-	# from time import time
-	# start = time()
-	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
-	Map.from_eq('test.png', imperator, interpolate=True, output_resolution=(256, 128))
-	# print(time() - start)
-	# Map.to_eq('test.png', mollweide, interpolate=True)
-	# Map.from_eq('test.png', mollweide, output_resolution=(300, 300))
-	#Map.sequence_from_eq('test.png',
-	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
-	#False, (512, 512))

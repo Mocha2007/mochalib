@@ -1,6 +1,6 @@
 
 from math import acos, log, radians, tan
-from common import clamp, cot, linear_interpolation, newton_raphson, remap, sec, sign, sinc
+from common import clamp, cot, debug_timer, linear_interpolation, newton_raphson, remap, sec, sign, sinc
 from mochamap2 import *
 
 def aitoff(coord: GeoCoord) -> MapCoord:
@@ -144,6 +144,7 @@ def miller(coord: GeoCoord) -> MapCoord:
 	y /= 1498/2044 * pi # appx
 	return MapCoord(x, y)
 
+@debug_timer
 def mollweide(coord0: GeoCoord):
 	def function(coord: GeoCoord) -> MapCoord:
 		coord_ = coord.rotate(coord0)
@@ -324,3 +325,17 @@ def zomp(coord: GeoCoord) -> MapCoord:
 	y /= pi/2
 	# both in [-1, 1]
 	return MapCoord(x, y)
+
+# testing/debug
+
+def _test() -> None:
+	# from math import radians
+	from common import average, _debug_timer_times
+	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
+	Map.from_eq('test.png', mollweide(GeoCoord(-0.2, -0.25)), interpolate=True)
+	print(f"{average(_debug_timer_times)/1e3} μs")
+	#Map.sequence_from_eq('test.png',
+	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
+	#False, (512, 512))
+
+# _test()
