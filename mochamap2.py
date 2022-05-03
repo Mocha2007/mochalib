@@ -82,7 +82,7 @@ class GeoCoord:
 		# convert the y, z to r, theta about the x-axis
 		r = hypot(spatial.y, spatial.z)
 		theta = atan2(spatial.z, spatial.y)
-		theta += delta.lat
+		theta += delta
 		spatial.y = r*cos(theta)
 		spatial.z = r*sin(theta)
 		# now convert back to 3d spherical
@@ -157,7 +157,10 @@ class Map:
 							im.getpixel((x, y+1)),
 							im.getpixel((x+1, y+1))
 						)
-						output.putpixel((x_, y_), color)
+						try:
+							output.putpixel((x_, y_), color)
+						except IndexError: # can happen with interruptions + oblique center
+							pass
 					# regular
 					x_, y_ = get_coord_(x, y)
 					try:
@@ -205,3 +208,11 @@ def blend_proj(proj1, proj2):
 		map2 = proj2(coord)
 		return MapCoord((map1.x + map2.x)/2, (map1.y + map2.y)/2)
 	return output
+
+def center(c: GeoCoord, rot: float = 0) -> Callable[[Callable[[GeoCoord], MapCoord]], Callable[[GeoCoord], MapCoord]]:
+	"""A decorator to recenter a projection"""
+	def inner(proj: Callable[[GeoCoord], MapCoord]) -> Callable[[GeoCoord], MapCoord]:
+		def innest(coord: GeoCoord) -> MapCoord:
+			return proj(coord.rotate(c).rotate_x(rot))
+		return innest
+	return inner

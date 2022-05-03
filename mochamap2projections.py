@@ -334,6 +334,7 @@ def zomp(coord: GeoCoord) -> MapCoord:
 
 # testing/debug
 
+@center(GeoCoord(-pi/4, 0))
 @Interruption.wrap_projection(
 	# South
 	Interruption(-pi, -pi/15, -pi/6, False),
@@ -351,7 +352,7 @@ def _test() -> None:
 	# from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
 	# Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
-	Map.from_eq('tissot.png', _test_proj, interpolate=True)
+	Map.from_eq('test.png', _test_proj, interpolate=True)
 	# print(f"{round(average(_debug_timer_times)/1e3, 1)} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
