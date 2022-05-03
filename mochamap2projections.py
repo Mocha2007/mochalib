@@ -169,7 +169,7 @@ def mollweide(coord0: GeoCoord):
 			else:
 				theta = ITP_method(lat, 0.75*lat,
 					lambda x: 2*x + sin(2*x) - pi*sin(lat),
-					# BEST = 13.6 microseconds
+					# BEST = 12.3 microseconds
 					threshold=2e-4, k_1 = 0.2, k_2 = 2, n_0 = 0.5)
 				# this should be sufficient for getting the pixel in the correct location;
 				# it results in a worst-case 0.4 px error if the map size is 2048 px
