@@ -334,15 +334,15 @@ def zomp(coord: GeoCoord) -> MapCoord:
 
 # testing/debug
 
-@center(GeoCoord(-pi/4, 0))
+@center(GeoCoord(-pi/4, 0), pi/6)
 @Interruption.wrap_projection(
 	# South
-	Interruption(-pi, -pi/15, -pi/6, False),
-	Interruption(-pi/15, 0.4*pi, pi/8, False),
-	Interruption(0.4*pi, pi, 3*pi/4, False),
+	Interruption(-pi, -pi/12, -pi/4, False),
+	Interruption(-pi/12, 0.6*pi, pi/4, False),
+	Interruption(0.6*pi, pi, 3*pi/4, False),
 	# North
-	Interruption(-pi, -0.14*pi, -pi/2, True),
-	Interruption(-0.14*pi, pi, pi/3, True),
+	Interruption(-pi, -0.07*pi, -pi/3, True),
+	Interruption(-0.07*pi, pi, pi/3, True),
 )
 def _test_proj(coord: GeoCoord) -> MapCoord:
 	return mollweide(GeoCoord(0, 0))(coord)
