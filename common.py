@@ -38,7 +38,7 @@ def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, k_2: 
 	k1 > 0
 
 	k2 in [1, 1+phi]
-	
+
 	n_0 non-negative"""
 	# https://en.wikipedia.org/wiki/ITP_method
 	# make sure a and b are ordered right

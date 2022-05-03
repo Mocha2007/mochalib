@@ -169,8 +169,8 @@ def mollweide(coord0: GeoCoord):
 			else:
 				theta = ITP_method(lat, 0.75*lat,
 					lambda x: 2*x + sin(2*x) - pi*sin(lat),
-					# BEST = 14 microseconds
-					threshold=2e-4, k_1 = 0.1, k_2 = 2, n_0 = 0.5)
+					# BEST = 13.6 microseconds
+					threshold=2e-4, k_1 = 0.2, k_2 = 2, n_0 = 0.5)
 				# this should be sufficient for getting the pixel in the correct location;
 				# it results in a worst-case 0.4 px error if the map size is 2048 px
 				# lat is a very good first guess for x_0; theta(lat) looks like arcsin(0.6x) but flatter
@@ -339,7 +339,7 @@ def _test() -> None:
 	from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
 	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
-	print(f"{average(_debug_timer_times)/1e3} μs")
+	print(f"{round(average(_debug_timer_times)/1e3, 1)} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
 	#False, (512, 512))
