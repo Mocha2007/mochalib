@@ -344,14 +344,14 @@ def zomp(coord: GeoCoord) -> MapCoord:
 	Interruption(-0.14*pi, pi, pi/3, True),
 )
 def _test_proj(coord: GeoCoord) -> MapCoord:
-	return sinusoidal(coord)
+	return mollweide(GeoCoord(0, 0))(coord)
 
 def _test() -> None:
 	# from math import radians
 	# from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
 	# Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
-	Map.from_eq('test.png', _test_proj)
+	Map.from_eq('tissot.png', _test_proj, interpolate=True)
 	# print(f"{round(average(_debug_timer_times)/1e3, 1)} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
