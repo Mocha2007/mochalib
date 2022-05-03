@@ -210,7 +210,9 @@ def blend_proj(proj1, proj2):
 	return output
 
 def center(c: GeoCoord, rot: float = 0) -> Callable[[Callable[[GeoCoord], MapCoord]], Callable[[GeoCoord], MapCoord]]:
-	"""A decorator to recenter a projection"""
+	"""A decorator to recenter a projection
+	
+	Must be added BEFORE any interruptions"""
 	def inner(proj: Callable[[GeoCoord], MapCoord]) -> Callable[[GeoCoord], MapCoord]:
 		def innest(coord: GeoCoord) -> MapCoord:
 			return proj(coord.rotate(c).rotate_x(rot))
