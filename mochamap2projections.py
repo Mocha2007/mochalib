@@ -144,23 +144,24 @@ def miller(coord: GeoCoord) -> MapCoord:
 	y /= 1498/2044 * pi # appx
 	return MapCoord(x, y)
 
-@debug_timer
 def mollweide(coord0: GeoCoord):
+	# @debug_timer
 	def function(coord: GeoCoord) -> MapCoord:
 		coord_ = coord.rotate(coord0)
 		lat, lon = coord_.lat, coord_.lon
 		if abs(lat) == pi/2:
 			theta = lat
 		else:
+			# found experimentally via regression on desmos.com
 			start_guess = 0.0322574 * lat**5 + -0.0157267 * lat**3 + 0.801411*lat
-			# found experimentally via regressionon desmos.com
-			# bisection, with bounds [lat, 0.75*lat]		-> 2.2747318744659424 s for test.png
+			# (method description)							-> test.png, avg. for mollweide.function w/ default settings
+			# bisection, with bounds [lat, 0.75*lat]		-> 63.477857208251955 μs
 			# Newton-Raphson method: (Halley's gives worse times)
-			# start_guess = lat 							-> 1.4355945587158203 s for test.png
-			# start_guess = 0.8615*lat						-> 1.3415701389312744 s for test.png
-			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 1.2727408409118652 s for test.png
-			# start_guess = [cubic]							-> 1.2726495265960693 s for test.png
-			# start_guess = [quintic]						-> 1.272195816040039 s for test.png
+			# start_guess = lat 							-> 29.57691650390625 μs
+			# start_guess = 0.8615*lat						-> 26.59794464111328 μs
+			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 25.216746520996093 μs
+			# start_guess = 0.071374*lat**3 + 0.756175*lat	-> 24.96328201293945 μs
+			# start_guess = [quintic]						-> 24.84760284423828 μs
 			theta = newton_raphson(start_guess,
 				lambda x: 2*x + sin(2*x) - pi*sin(lat),
 				lambda x: 2 + 2*cos(2*x),
@@ -332,7 +333,7 @@ def _test() -> None:
 	# from math import radians
 	from common import average, _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
-	Map.from_eq('test.png', mollweide(GeoCoord(-0.2, -0.25)), interpolate=True)
+	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)))
 	print(f"{average(_debug_timer_times)/1e3} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
