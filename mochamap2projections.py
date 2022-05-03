@@ -341,7 +341,7 @@ def zomp(coord: GeoCoord) -> MapCoord:
 	Interruption(-pi/12, 0.55*pi, pi/4, False),
 	Interruption(0.55*pi, pi, 5*pi/6, False),
 	# North
-	Interruption(-pi, 0.6*pi, -pi/6, True),
+	Interruption(-pi, 0.6*pi, 0, True),
 	Interruption(0.6*pi, pi, 0.8*pi, True),
 )
 def _test_proj(coord: GeoCoord) -> MapCoord:
