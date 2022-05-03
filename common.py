@@ -1,5 +1,5 @@
 """For super basic functions missing from vanilla python I expect to use in multiple places..."""
-from math import copysign, cos, inf, sin, tan
+from math import ceil, copysign, cos, inf, log2, sin, tan
 from typing import Any, Callable, Iterable
 # try https://www.csestack.org/calling-c-functions-from-python/ for newton-raphson
 
@@ -31,6 +31,60 @@ def bisection_method(x_min: float, x_max: float, f, max_iter = 20, threshold = 1
 			x_max = x
 		max_iter -= 1
 	return x
+
+def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, k_2: float = 2, n_0: float = 1) -> float:
+	"""Root-finding method
+
+	k1 > 0
+
+	k2 in [1, 1+phi]
+	
+	n_0 non-negative"""
+	# https://en.wikipedia.org/wiki/ITP_method
+	# make sure a and b are ordered right
+	ya = f(a)
+	yb = f(b)
+	if not (ya < 0 < yb):
+		_ya = ya
+		ya = yb
+		yb = _ya
+		_a = a
+		a = b
+		b = _a
+	# Preprocessing
+	n_12 = ceil(log2((b-a)/(2*threshold)))
+	n_max = n_12 + n_0
+	j = 0
+	while 2*threshold < b-a:
+		# input(f"{a}, {b}, {ya}, {yb}")
+		# Calculating Parameters
+		x_12 = (a+b)/2
+		r = threshold * 2**(n_max-j) - (b-a)/2
+		delta = k_1*(b-a)**k_2
+		# Interpolation
+		x_f = (yb*a - ya*b) / (yb - ya)
+		# Truncation
+		sigma = sign(x_12 - x_f)
+		if delta <= abs(x_12 - x_f):
+			x_t = x_f + sigma*delta
+		else:
+			x_t = x_12
+		# Projection
+		if abs(x_t - x_12) <= r:
+			x_itp = x_t
+		else:
+			x_itp = x_12 - sigma*r
+		# Updating Interval
+		y_itp = f(x_itp)
+		if y_itp > 0:
+			b = x_itp
+			yb = f(b)
+		elif y_itp < 0:
+			a = x_itp
+			ya = f(a)
+		else:
+			return x_itp # functionally equivalent but simpler
+	return (a+b)/2
 
 def brents_method(a: float, b: float, f, max_iter = 20, threshold = 1e-10) -> float:
 	"""Root-finding method. The root must be bracketed by a and b"""

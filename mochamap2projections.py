@@ -1,6 +1,6 @@
 
 from math import acos, log, radians, tan
-from common import brents_method, clamp, cot, debug_timer, linear_interpolation, remap, sec, sign, sinc
+from common import ITP_method, clamp, cot, debug_timer, linear_interpolation, remap, sec, sign, sinc
 from mochamap2 import *
 
 def aitoff(coord: GeoCoord) -> MapCoord:
@@ -164,11 +164,15 @@ def mollweide(coord0: GeoCoord):
 			# start_guess = 1.35075 * asin(0.571506 * lat)	-> 25.216746520996093 μs
 			# start_guess = 0.071374*lat**3 + 0.756175*lat	-> 24.96328201293945 μs
 			# start_guess = [quintic]						-> 24.84760284423828 μs
-			theta = brents_method(lat, 0.75*lat,
-				lambda x: 2*x + sin(2*x) - pi*sin(lat),
-				threshold=1e-4)
+			if lat in {-pi/2, 0, pi/2}:
+				theta = lat
+			else:
+				theta = ITP_method(lat, 0.75*lat,
+					lambda x: 2*x + sin(2*x) - pi*sin(lat),
+					# BEST = 14 microseconds
+					threshold=2e-4, k_1 = 0.1, k_2 = 2, n_0 = 0.5)
 				# this should be sufficient for getting the pixel in the correct location;
-				# it results in a worst-case 0.2 px error if the map size is 2048 px
+				# it results in a worst-case 0.4 px error if the map size is 2048 px
 				# lat is a very good first guess for x_0; theta(lat) looks like arcsin(0.6x) but flatter
 				# this takes 10 iterations at MOST, but usually takes 2
 		x = lon * cos(theta) / pi
@@ -334,7 +338,7 @@ def _test() -> None:
 	# from math import radians
 	from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
-	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)))
+	Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
 	print(f"{average(_debug_timer_times)/1e3} μs")
 	#Map.sequence_from_eq('test.png',
 	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
