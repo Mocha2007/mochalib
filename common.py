@@ -108,16 +108,16 @@ def debug_mag_range(f: Callable[[Any], complex]) -> Callable[[Any], complex]:
 		return x
 	return inner
 
-_debug_timer_times: list[float] = []
+_debug_timer_times: list[int] = [] # in ns
 
 def debug_timer(f: Callable) -> Callable:
-	from time import time
+	from time import perf_counter_ns
 	"""use this as a decorator to time a function"""
 	def inner(*args, **kwargs) -> Any:
 		global _debug_timer_times
-		start = time()
+		start = perf_counter_ns()
 		x = f(*args, **kwargs)
-		_debug_timer_times.append(time() - start)
+		_debug_timer_times.append(perf_counter_ns() - start)
 		return x
 	return inner
 
@@ -125,7 +125,7 @@ def _test() -> None:
 	"""Used for testing various functions in common.py"""
 	from random import uniform
 	from math import pi
-	for _ in range(1000):
+	for _ in range(100000):
 		# finding the theta (for mollweide) of a random latitude
 		lat = uniform(-pi/2, pi/2)
 		f = lambda x: 2*x + sin(2*x) - pi*sin(lat)
@@ -138,4 +138,4 @@ def _test() -> None:
 			return newton_raphson(initial_guess, f, f_, threshold=1e-4)
 		theta = test_helper()
 		# print(f"{lat}\t{theta}")
-	print(f"{average(*_debug_timer_times)} s")
+	print(f"{average(*_debug_timer_times)/1e3} μs")
