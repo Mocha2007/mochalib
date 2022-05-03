@@ -54,12 +54,12 @@ def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, k_2: 
 	# Preprocessing
 	n_12 = ceil(log2((b-a)/(2*threshold)))
 	n_max = n_12 + n_0
-	j = 0
+	scaled_epsilon = threshold * 2**n_max
 	while 2*threshold < b-a:
 		# input(f"{a}, {b}, {ya}, {yb}")
 		# Calculating Parameters
-		x_12 = (a+b)/2
-		r = threshold * 2**(n_max-j) - (b-a)/2
+		x_12 = 0.5 * (a+b)
+		r = scaled_epsilon - 0.5 * (b-a)
 		delta = k_1*(b-a)**k_2
 		# Interpolation
 		x_f = (yb*a - ya*b) / (yb - ya)
@@ -78,13 +78,14 @@ def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, k_2: 
 		y_itp = f(x_itp)
 		if y_itp > 0:
 			b = x_itp
-			yb = f(b)
+			yb = y_itp
 		elif y_itp < 0:
 			a = x_itp
-			ya = f(a)
+			ya = y_itp
 		else:
 			return x_itp # functionally equivalent but simpler
-	return (a+b)/2
+		scaled_epsilon *= 0.5
+	return 0.5 * (a+b)
 
 def brents_method(a: float, b: float, f, max_iter = 20, threshold = 1e-10) -> float:
 	"""Root-finding method. The root must be bracketed by a and b"""
