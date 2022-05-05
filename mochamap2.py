@@ -187,14 +187,14 @@ class Map:
 		output.save(f"maps/{destination_filename}", "PNG")
 
 	def sequence_from_eq(source_filename: str, projection_series,
-			interpolate: bool = False, output_resolution: tuple[int, int] = None) -> None:
+			interpolate: bool = False, output_resolution: tuple[int, int] = None, fps: int = 30) -> None:
 		series = list(projection_series)
 		print(f"Running Map Sequence[{len(series)}]")
 		for i, projection in enumerate(series):
 			print(f"Rendering frame {i+1}/{len(series)}")
 			Map.from_eq(source_filename, projection, "sequence/" + "{0}".format(str(i).zfill(5)) + ".png", interpolate, output_resolution)
 		print(f"Attempting to stitch using ffmpeg...")
-		print(check_output('ffmpeg -framerate 30 -i "maps/sequence/%05d.png" -c:v libx264 -pix_fmt yuv420p "maps/output.mp4"')) # shell=True
+		print(check_output(f'ffmpeg -framerate {fps} -i "maps/sequence/%05d.png" -c:v libx264 -pix_fmt yuv420p "maps/output.mp4"')) # shell=True
 		print(check_output('ffmpeg -i "maps/output.mp4" -pix_fmt rgb24 "maps/output.gif"'))
 
 # utility functions

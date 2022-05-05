@@ -348,14 +348,13 @@ def _test_proj(coord: GeoCoord) -> MapCoord:
 	return mollweide(GeoCoord(0, 0))(coord)
 
 def _test() -> None:
-	# from math import radians
 	# from common import _debug_timer_times
 	# Map.from_eq('almea.png', mollweide(GeoCoord(-0.2, -0.25)))
 	# Map.from_eq('test.png', mollweide(GeoCoord(0, 0)), interpolate=True)
 	Map.from_eq('test.png', _test_proj, interpolate=True)
 	# print(f"{round(average(_debug_timer_times)/1e3, 1)} μs")
-	#Map.sequence_from_eq('test.png',
-	#	(lambert_conformal_conic(radians(0.25*i), radians(3*i)) for i in range(1, 31)),
-	#False, (512, 512))
+	Map.sequence_from_eq('almea.png',
+		(orthographic(GeoCoord(0, radians(360/40*i))) for i in range(40)),
+	True, (256, 256), fps=10)
 
 # _test()
