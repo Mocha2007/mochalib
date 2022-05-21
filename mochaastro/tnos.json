@@ -230,7 +230,7 @@
 		"name": "Planet Nine",
 		"class": "planet",
 		"mass": "6.3*earth.mass",
-		"radius": "6.3**(1/3)*earth.radius",
+		"radius": 15e3,
 		"albedo": 0.5,
 		"orbit": {
 			"parent": "sun",
@@ -241,6 +241,6 @@
 			"aop": 2.6,
 			"man": 0
 		},
-		"notes": "Albedo estimated from KBOs; radius from analogy with inner planets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf"
+		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf"
 	}
 ]
