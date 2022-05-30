@@ -44,7 +44,7 @@ def test_factoring() -> None:
 	while 1:
 		l1, l2, q = random_factorable_quadratic(settings["linear_term_cmax"][0], \
 			settings["a_must_be_positive"][0], settings["a_must_be_1"][0])
-		print(f"{q[0]}x² + {q[1]} x + {q[0]}")
+		print(f"{q[0]}x² + {q[1]} x + {q[2]}")
 		input("Solve, and then press enter to see the answer:")
 		print(f"({l1[0]}x + {l1[1]})({l2[0]}x + {l2[1]})")
 		print(f"[Alternative] ({-l1[0]}x + {-l1[1]})({-l2[0]}x + {-l2[1]})")
