@@ -4,9 +4,9 @@ Math testing for the BOI
 from random import randint
 
 settings = {
-	"a_must_be_positive": True,
-	"a_must_be_1": False,
-	"linear_term_cmax": 9,
+	"a_must_be_positive": [True, "Whether the leading coefficient must be positive"],
+	"a_must_be_1": [False, "Whether the leading coefficient must be 1"],
+	"linear_term_cmax": [9, "Maximum coefficient magnitude in linear factors"],
 }
 
 def expect_yn(prompt: str = "") -> bool:
@@ -58,12 +58,13 @@ def settings_menu() -> None:
 	while 1:
 		print("~~~~ Settings ~~~~")
 		# list settings
-		for i, j in settings.items():
+		for i, (j, k) in settings.items():
 			print(f" {i} = {j}")
+			print(f"\t{k}")
 		# try get key
 		while (option := input("Select option:\n\t").lower()) not in settings:
 			print(f"{option} is not a valid option; please try again:")
-		t = type(settings[option])
+		t = type(settings[option][0])
 		if t == bool: # python's bool thing doesn't work right with strings
 			t = lambda x: x.lower() in {"true", "t"}
 		# try get value
@@ -73,7 +74,7 @@ def settings_menu() -> None:
 				break
 			except:
 				print("Invalid setting, please try again.")
-		settings[option] = value
+		settings[option][0] = value
 		print(f"{option} set to {value}")
 		if expect_yn("Would you like to go back to the menu?\n\t"):
 			return
