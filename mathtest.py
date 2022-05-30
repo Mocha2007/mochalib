@@ -79,7 +79,6 @@ def settings_menu() -> None:
 		if expect_yn("Would you like to go back to the menu?\n\t"):
 			return
 
-
 tests = {
 	"factoring": test_factoring,
 	"settings": settings_menu,
