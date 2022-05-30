@@ -6,6 +6,7 @@ from random import randint
 settings = {
 	"a_must_be_positive": True,
 	"a_must_be_1": False,
+	"linear_term_cmax": 9,
 }
 
 def expect_yn(prompt: str = "") -> bool:
@@ -19,7 +20,7 @@ def expect_yn(prompt: str = "") -> bool:
 		print("Invalid response.")
 	return oo[o]
 
-def random_factorable_quadratic(cmax: int = 9,
+def random_factorable_quadratic(cmax: int = settings["linear_term_cmax"],
 		a_must_be_positive: bool = settings["a_must_be_positive"],
 		a_must_be_1: bool = settings["a_must_be_1"]) \
 		-> tuple[tuple[int, int], tuple[int, int], tuple[int, int, int]]:
@@ -42,7 +43,8 @@ def random_factorable_quadratic(cmax: int = 9,
 def test_factoring() -> None:
 	"""Factoring tester"""
 	while 1:
-		l1, l2, q = random_factorable_quadratic()
+		l1, l2, q = random_factorable_quadratic(settings["linear_term_cmax"], \
+			settings["a_must_be_positive"], settings["a_must_be_1"])
 		print(f"{q[0]}x² + {q[1]} x + {q[0]}")
 		input("Solve, and then press enter to see the answer:")
 		print(f"({l1[0]}x + {l1[1]})({l2[0]}x + {l2[1]})")
