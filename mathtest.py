@@ -20,9 +20,8 @@ def expect_yn(prompt: str = "") -> bool:
 		print("Invalid response.")
 	return oo[o]
 
-def random_factorable_quadratic(cmax: int = settings["linear_term_cmax"],
-		a_must_be_positive: bool = settings["a_must_be_positive"],
-		a_must_be_1: bool = settings["a_must_be_1"]) \
+def random_factorable_quadratic(cmax: int = 9,
+		a_must_be_positive: bool = True, a_must_be_1: bool = False) \
 		-> tuple[tuple[int, int], tuple[int, int], tuple[int, int, int]]:
 	a1, a2, b1, b2 = [randint(-cmax, cmax) for _ in range(4)]
 	if a1*a2 == 0: # bad value
@@ -43,8 +42,8 @@ def random_factorable_quadratic(cmax: int = settings["linear_term_cmax"],
 def test_factoring() -> None:
 	"""Factoring tester"""
 	while 1:
-		l1, l2, q = random_factorable_quadratic(settings["linear_term_cmax"], \
-			settings["a_must_be_positive"], settings["a_must_be_1"])
+		l1, l2, q = random_factorable_quadratic(settings["linear_term_cmax"][0], \
+			settings["a_must_be_positive"][0], settings["a_must_be_1"][0])
 		print(f"{q[0]}x² + {q[1]} x + {q[0]}")
 		input("Solve, and then press enter to see the answer:")
 		print(f"({l1[0]}x + {l1[1]})({l2[0]}x + {l2[1]})")
