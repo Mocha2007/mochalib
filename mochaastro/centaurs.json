@@ -11,8 +11,7 @@
 			"i": "42.521*deg",
 			"lan": "21.42*deg",
 			"aop": "56.651*deg",
-			"man": "227.536*deg",
-			"epoch": "J2000 (computed)"
+			"man": "227.536*deg"
 		},
 		"rotation": {
 			"period": "10.063hour"
@@ -30,8 +29,7 @@
 			"i": "23.382*deg",
 			"lan": "300.42*deg",
 			"aop": "242.9*deg",
-			"man": "336.625*deg",
-			"epoch": "J2000 (computed)"
+			"man": "336.625*deg"
 		},
 		"rotation": {
 			"period": "7.004*hour"

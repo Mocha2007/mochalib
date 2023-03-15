@@ -12,7 +12,6 @@
 			"lan": "316.54*deg",
 			"aop": "133.5*deg",
 			"man": "13.29*deg",
-			"epoch": "J2000 (computed)",
 			"notes": "search('achilles').orbit.mean_anomaly_delta(18*year + 2*30*day + 22*day)"
 		},
 		"rotation": {
@@ -32,8 +31,7 @@
 			"i": "22.047*deg",
 			"lan": "44.354*deg",
 			"aop": "308.15*deg",
-			"man": "339.78*deg",
-			"epoch": "J2000 (computed)"
+			"man": "339.78*deg"
 		},
 		"rotation": {
 			"period": "103*hour"
@@ -52,8 +50,7 @@
 			"i": "18.166*deg",
 			"lan": "342.79*deg",
 			"aop": "185.22*deg",
-			"man": "311.81*deg",
-			"epoch": "J2000 (computed)"
+			"man": "311.81*deg"
 		},
 		"rotation": {
 			"period": "6.9205*hour"
