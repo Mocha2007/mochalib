@@ -273,7 +273,7 @@
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
-			"sma": "12.7328*au",
+			"sma": "13.73*au",
 			"e": 0.056,
 			"i": "1*deg",
 			"lan": "301*deg",
@@ -284,7 +284,7 @@
 			"period": "30*hour + 19*minute + 7.31",
 			"tilt": "102*deg"
 		},
-		"notes": "51.905yr"
+		"notes": "62.312yr"
 	},
 	{
 		"name": "Mannu",
