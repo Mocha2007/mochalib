@@ -266,6 +266,26 @@
 		"notes": "20.774yr"
 	},
 	{
+		"name": "Neuve V",
+		"class": "moon",
+		"mass": 3e21,
+		"radius": 7e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Neuve",
+			"sma": 536937e3,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "(6 * 2**0.5)*day"
+		},
+		"notes": "goal is to have the orbital period be 6 root 2 days"
+	},
+	{
 		"name": "Dicito",
 		"class": "planet",
 		"mass": 4.358e23,
