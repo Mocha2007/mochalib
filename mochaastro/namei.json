@@ -266,6 +266,63 @@
 		"notes": "20.774yr; The eight major moons are all tidally locked, and have periods forming an approximate 1:1.5:2:3:6:9:18:27 ratio."
 	},
 	{
+		"name": "Neuve I",
+		"class": "moon",
+		"mass": 6.4e19,
+		"radius": 2e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Neuve",
+			"sma": 162613716.80972394,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "(1 * 2**0.5)*day"
+		}
+	},
+	{
+		"name": "Neuve II",
+		"class": "moon",
+		"mass": 1.3e21,
+		"radius": 6e5,
+		"albedo": 0.5,
+		"orbit": {
+			"parent": "Neuve",
+			"sma": 213084249.4547033,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "(1.5 * 2**0.5)*day"
+		}
+	},
+	{
+		"name": "Neuve III",
+		"class": "moon",
+		"mass": 1.3e21,
+		"radius": 6e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Neuve",
+			"sma": 258133185.12821466,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "(2 * 2**0.5)*day"
+		}
+	},
+	{
 		"name": "Neuve IV",
 		"class": "moon",
 		"mass": 3.4e21,
