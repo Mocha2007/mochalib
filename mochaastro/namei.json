@@ -252,7 +252,7 @@
 		"albedo": 0.421864,
 		"orbit": {
 			"parent": "Namei",
-			"sma": "6.4639*au",
+			"sma": "6.6013*au",
 			"e": 0.045,
 			"i": "11/60*deg",
 			"lan": "200*deg",
@@ -263,7 +263,7 @@
 			"period": "8*hour + 54*minute + 58.38",
 			"tilt": "68*deg"
 		},
-		"notes": "18.631yr"
+		"notes": "20.774yr"
 	},
 	{
 		"name": "Dicito",
@@ -273,7 +273,7 @@
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
-			"sma": "13.73*au",
+			"sma": "13.7314*au",
 			"e": 0.056,
 			"i": "1*deg",
 			"lan": "301*deg",
@@ -284,7 +284,7 @@
 			"period": "30*hour + 19*minute + 7.31",
 			"tilt": "102*deg"
 		},
-		"notes": "62.312yr"
+		"notes": "62.321yr"
 	},
 	{
 		"name": "Mannu",
