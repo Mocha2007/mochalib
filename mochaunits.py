@@ -1,7 +1,8 @@
 from copy import deepcopy
 from math import floor, log10, pi
+from typing import Tuple
 
-prefixes = {key-8: value for key, value in enumerate('yzafpnµm kMGTPEZY')}
+prefixes = {key-10: value for key, value in enumerate('qryzafpnµm kMGTPEZYRQ')}
 prefixes[0] = '' # set up prefix dict
 temperatures = {
 	'celsius': ('C', 1, -273.15),
@@ -17,7 +18,7 @@ temperatures = {
 }
 
 
-def get_si(value: float) -> (float, str):
+def get_si(value: float) -> Tuple[float, str]:
 	if value == 0:
 		return 0, prefixes[0]
 	index = floor(log10(value)/3)
