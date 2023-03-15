@@ -1996,7 +1996,7 @@ def test_functions() -> None:
 	print(str(keplerian(sun, earth.orbit.cartesian(0))))
 
 
-def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), selection: Body=None) -> None:
+def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), selection: Body=None, smoothMotion=False) -> None:
 	# TODO
 	# moon display
 	# comet tails
@@ -2052,8 +2052,8 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 	def center_on_selection(coords: Tuple[int, int]) -> Tuple[int, int]:
 		return tuple(i-j+k for i, j, k in zip(coords, current_coords, center))
 
-	def coord_remap(coords: Tuple[float, float], smooth: bool=True) -> Tuple[int, int]:
-		a = current_a if smooth else max_a
+	def coord_remap(coords: Tuple[float, float]) -> Tuple[int, int]:
+		a = current_a if smoothMotion else max_a
 		b = height/width * a
 		xmap = linear_map((-a, a), (0, width))
 		ymap = linear_map((-b, b), (height, 0))
@@ -2268,8 +2268,8 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 				pygame.display.set_mode(event.size, pygame.RESIZABLE)
 				# print(event.size) # debug
 		# smooth zoom
-		current_a = (max_a + current_a)/2
-		current_coords = tuple((i + j)//2 for i, j in zip(selection_coords, current_coords))
+		current_a = (max_a + current_a)/2 if smoothMotion else max_a
+		current_coords = tuple((i + j)//2 for i, j in zip(selection_coords, current_coords)) if smoothMotion else selection_coords
 		# refresh title
 		title = '{}, {} System - {}'.format(inverse_universe[selection], inverse_universe[parent], current_date)
 		pygame.display.set_caption(title)
