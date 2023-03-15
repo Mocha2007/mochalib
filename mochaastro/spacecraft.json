@@ -27,7 +27,7 @@
 			"lan": "124.3*deg",
 			"aop": "229*deg",
 			"man": "113.6*deg",
-			"epoch": "August 23, 2018"
+			"epoch": "23 August 2018"
 		}
 	},
 	{
@@ -75,7 +75,7 @@
 			"lan": 5.2,
 			"aop": 0.6,
 			"man": 5.6,
-			"epoch": 2004
+			"epoch": "1 January 2004"
 		}
 	}
 ]

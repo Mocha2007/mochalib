@@ -109,6 +109,13 @@ class Orbit:
 		return self.properties['e']
 
 	@property
+	def epoch_offset(self) -> float:
+		"""Based on the epoch in properties, return the time in seconds to subtract when computing position"""
+		if 'epoch' not in self.properties:
+			return 0
+		return (datetime.strptime(self.properties['epoch'], '%d %B %Y') - epoch).total_seconds()
+
+	@property
 	def i(self) -> float:
 		"""Inclination (radians)"""
 		return self.properties['i']
@@ -222,6 +229,8 @@ class Orbit:
 	def cartesian(self, t: float = 0) -> Tuple[float, float, float, float, float, float]:
 		"""Get cartesian orbital parameters (m, m, m, m/s, m/s, m/s)"""
 		# ~29μs avg.
+        # account for abnormal epochs
+		t -= self.epoch_offset
 		# https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
 		# 2 GOOD eccentric anomaly
 		E = self.eccentric_anomaly(t)
