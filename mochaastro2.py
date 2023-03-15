@@ -1404,6 +1404,10 @@ class Body:
 		vectors = [self.acc_vector_towards(body, t) for body in system.bodies if body != self]
 		return tuple(map(sum, zip(*vectors)))
 
+	def orbit_in(self, t: float) -> float:
+		"""Returns SMA (m) of an orbit with period t (s)"""
+		return (self.mu*(t/(2*pi))**2)**(1/3)
+
 	def penumbra_at(self, distance: float) -> float:
 		"""Penumbra radius at distance (m)"""
 		planet, star = self, self.orbit.parent
