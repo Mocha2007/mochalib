@@ -263,17 +263,36 @@
 			"period": "8*hour + 54*minute + 58.38",
 			"tilt": "68*deg"
 		},
-		"notes": "20.774yr"
+		"notes": "20.774yr; The eight major moons are all tidally locked, and have periods forming an approximate 1:1.5:2:3:6:9:18:27 ratio."
+	},
+	{
+		"name": "Neuve IV",
+		"class": "moon",
+		"mass": 3.4e21,
+		"radius": 8e5,
+		"albedo": 0.3,
+		"orbit": {
+			"parent": "Neuve",
+			"sma": 338250161.74225026,
+			"e": 0,
+			"i": 0,
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "(3 * 2**0.5)*day"
+		}
 	},
 	{
 		"name": "Neuve V",
 		"class": "moon",
-		"mass": 3e21,
+		"mass": 3.1e21,
 		"radius": 7e5,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Neuve",
-			"sma": 536937e3,
+			"sma": 536938662.5780617,
 			"e": 0,
 			"i": 0,
 			"lan": 0,
@@ -283,7 +302,7 @@
 		"rotation": {
 			"period": "(6 * 2**0.5)*day"
 		},
-		"notes": "goal is to have the orbital period be 6 root 2 days"
+		"notes": "Pitang-Ra outpost"
 	},
 	{
 		"name": "Dicito",
