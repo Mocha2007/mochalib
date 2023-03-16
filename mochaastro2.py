@@ -50,6 +50,15 @@ def axisEqual3D(ax: Axes) -> None:
 	r = maxsize/2
 	for ctr, dim in zip(centers, 'xyz'):
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
+		# https://stackoverflow.com/a/45766598
+		# this fixes a bug in Matplotlib where 3d plots put scientific notation labels outside the plot
+		# axis = getattr(ax, '{}axis'.format(dim))
+		# offset = axis.get_major_formatter().get_offset() # type: str
+		# axis.get_major_formatter().set_useMathText(True)
+		# original = axis.get_label_text() # type: str
+		# print(len(offset), offset)
+		# axis.offsetText.set_visible(False)
+		# axis.set_label_text(original + " " + offset)
 
 
 def blagg(n: int,
