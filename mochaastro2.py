@@ -1,8 +1,8 @@
 from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.axes import Axes
 from matplotlib.patches import Circle, Patch
-from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime, timedelta
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
 from typing import Callable, Dict, Optional, Tuple
@@ -42,7 +42,7 @@ N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
 # functions
-def axisEqual3D(ax: Axes3D) -> None:
+def axisEqual3D(ax: Axes) -> None:
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
@@ -375,7 +375,7 @@ class Orbit:
 		xs, ys, zs, vxs, vys, vzs = zip(*cs)
 
 		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
+		ax = plt.axes(projection='3d')
 		plt.cla()
 		ax.set_title('Orbit')
 		ax.set_xlabel('x (m)')
@@ -1547,7 +1547,7 @@ class System:
 		n = 1000
 
 		fig = plt.figure(figsize=(7, 7))
-		ax = Axes3D(fig)
+		ax = plt.axes(projection='3d')
 		ax.set_title('Orbit')
 		ax.set_xlabel('x (m)')
 		ax.set_ylabel('y (m)')
@@ -1796,7 +1796,7 @@ def plot_delta_between(orbit1: Orbit, orbit2: Orbit):
 	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
 
 	fig = plt.figure(figsize=(7, 7))
-	ax = Axes3D(fig)
+	ax = plt.axes(projection='3d')
 	ax.set_title('Body Delta')
 	ax.set_xlabel('dx (m)')
 	ax.set_ylabel('dy (m)')
@@ -1943,7 +1943,7 @@ def plot_grav_acc_vector(body1: Body, body2: Body) -> None:
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
 
 	fig = plt.figure(figsize=(7, 7))
-	ax = Axes3D(fig)
+	ax = plt.axes(projection='3d')
 	ax.set_title('Acceleration')
 	ax.set_xlabel('x (m/s^2)')
 	ax.set_ylabel('y (m/s^2)')
