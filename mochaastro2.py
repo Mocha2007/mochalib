@@ -2700,7 +2700,7 @@ solar_system = {
 	'Uranus': uranus,
 	'Neptune': neptune,
 }
-solar_system_object = System(sun, *(i for i in solar_system.values() if i is not sun))
+solar_system_object = System(sun, *(i for i in solar_system.values() if i is not sun and i is not moon))
 universe = load_data(solar_system.copy())
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
