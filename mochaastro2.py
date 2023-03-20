@@ -2021,7 +2021,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 	from mochamath import dist
 	from mochaunits import round_time
 
-	orbit_res = 64
+	orbit_res = 48
 	dot_radius = 2
 	black, blue, beige, white, grey = (0,)*3, (0, 0, 255), (255, 192, 128), (255,)*3, (128,)*3
 	red = blue[::-1]
@@ -2143,7 +2143,8 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 
 	# precompute orbits (time0, time1, ..., timeN)
 	def precompute_orbit(obj: Body) -> Tuple[Tuple[int, int], ...]:
-		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/orbit_res)[:2] for i in range(orbit_res))
+		total_res = int(orbit_res * (obj.orbit.e + 1)**3)
+		return tuple(obj.orbit.cartesian(t+i*obj.orbit.p/total_res)[:2] for i in range(total_res))
 
 	def zoom(r: float=0) -> None:
 		nonlocal max_a
