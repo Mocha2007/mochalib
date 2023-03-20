@@ -1617,10 +1617,10 @@ class System:
 		body_xv = [body.orbit.cartesian() if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
 		body_v = [list(elem[3:]) for elem in body_xv]
+		body_a = [[0, 0, 0] for _ in bodies]
 		xs = []
 		# compute positions
 		for i in range(steps):
-			body_a = [[0, 0, 0] for _ in bodies]
 			xs.append([])
 			for (bi, _) in enumerate(bodies):
 				# copy xs to output list
@@ -1629,11 +1629,13 @@ class System:
 				for dim in range(3):
 					body_x[bi][dim] += body_v[bi][dim] * timestep
 					body_v[bi][dim] += body_a[bi][dim] * timestep
+				# reset acc...
+				body_a[bi] = [0, 0, 0]
 				# new acc
 				for (other_body_i, other_body_x) in [pip for pip in enumerate(body_x) if pip[0] != bi]:
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
 					r = sum(d**2 for d in dx)**.5
-					a = g * bodies[other_body_i].mass / r**2 * timestep
+					a = g * bodies[other_body_i].mass / r**2
 					for dim in range(3):
 						body_a[bi][dim] += a * dx[dim] / r # I think???
 		# draw
