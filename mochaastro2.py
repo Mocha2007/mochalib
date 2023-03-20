@@ -1614,13 +1614,6 @@ class System:
 		steps = 100
 		timestep = min(b.orbit.p for b in self.bodies) / 100
 
-		fig = plt.figure(figsize=(7, 7))
-		ax = plt.axes(projection='3d')
-		ax.set_title('Orbit')
-		ax.set_xlabel('x (m)')
-		ax.set_ylabel('y (m)')
-		ax.set_zlabel('z (m)')
-		# ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 		body_xv = [body.orbit.cartesian(0) if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
 		body_v = [list(elem[3:]) for elem in body_xv]
@@ -1646,9 +1639,15 @@ class System:
 						theta_scale = dx[dim] / r # I think???
 						body_a[bi][dim] += theta_scale * g * bodies[other_body_i].mass / r**2 * timestep
 		# draw
+		fig = plt.figure(figsize=(7, 7))
+		ax = plt.axes(projection='3d')
+		ax.set_title('Orbit')
+		ax.set_xlabel('x (m)')
+		ax.set_ylabel('y (m)')
+		ax.set_zlabel('z (m)')
+		# ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 		for (p_i, planet_coords) in enumerate(list(zip(*xs))[1:]):
 			x, y, z = zip(*planet_coords)
-			print(x)
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
 			# ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
