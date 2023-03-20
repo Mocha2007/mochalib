@@ -1646,7 +1646,7 @@ class System:
 		ax.set_ylabel('y (m)')
 		ax.set_zlabel('z (m)')
 		# ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-		for (p_i, planet_coords) in enumerate(list(zip(*xs))[1:]):
+		for (p_i, planet_coords) in enumerate(list(zip(*xs))):
 			x, y, z = zip(*planet_coords)
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
