@@ -1614,7 +1614,7 @@ class System:
 		steps = 100
 		timestep = min(b.orbit.p for b in self.bodies) / 100
 
-		body_xv = [body.orbit.cartesian(0) if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
+		body_xv = [body.orbit.cartesian() if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
 		body_v = [list(elem[3:]) for elem in body_xv]
 		body_a = [[0, 0, 0] for _ in bodies]
@@ -1625,11 +1625,9 @@ class System:
 			for (bi, _) in enumerate(bodies):
 				# copy xs to output list
 				xs[i].append(body_x[bi][:])
-				# new x
+				# new x, v
 				for dim in range(3):
 					body_x[bi][dim] += body_v[bi][dim] * timestep
-				# new v
-				for dim in range(3):
 					body_v[bi][dim] += body_a[bi][dim] * timestep
 				# new acc
 				body_a[bi] = [0, 0, 0]
