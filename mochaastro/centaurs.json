@@ -2,8 +2,8 @@
 	{
 		"name": "944 Hidalgo",
 		"class": "centaur",
-		"radius": 2.623e4,
-		"albedo": 0.04,
+		"radius": 26.225e3,
+		"albedo": 0.03,
 		"orbit": {
 			"parent": "sun",
 			"sma": "5.741*au",
@@ -11,10 +11,30 @@
 			"i": "42.521*deg",
 			"lan": "21.42*deg",
 			"aop": "56.651*deg",
-			"man": "227.536*deg"
+			"man": "13.078*deg",
+			"epoch": "27 April 2019"
 		},
 		"rotation": {
 			"period": "10.063*hour"
+		}
+	},
+	{
+		"name": "2060 Chiron",
+		"class": "centaur",
+		"radius": 107.8e3,
+		"albedo": 0.1,
+		"orbit": {
+			"parent": "sun",
+			"sma": "13.7*au",
+			"e": 0.3772,
+			"i": "6.9299*deg",
+			"lan": "209.27*deg",
+			"aop": "339.71*deg",
+			"man": "180.70*deg",
+			"epoch": "01 July 2021"
+		},
+		"rotation": {
+			"period": "5.918*hour"
 		}
 	},
 	{
@@ -29,7 +49,8 @@
 			"i": "23.382*deg",
 			"lan": "300.42*deg",
 			"aop": "242.9*deg",
-			"man": "336.625*deg"
+			"man": "77.67*deg",
+			"epoch": "04 September 2017"
 		},
 		"rotation": {
 			"period": "7.004*hour"
