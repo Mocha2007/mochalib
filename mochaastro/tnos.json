@@ -233,22 +233,5 @@
 		"rotation": {
 			"period": "10.273*hour"
 		}
-	},
-	{
-		"name": "Planet Nine",
-		"class": "planet",
-		"mass": "6.3*earth.mass",
-		"radius": 15e6,
-		"albedo": 0.5,
-		"orbit": {
-			"parent": "sun",
-			"sma": "460*au",
-			"e": "11/45",
-			"i": "16*deg",
-			"lan": "97*deg",
-			"aop": 2.6,
-			"man": 0
-		},
-		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf"
 	}
 ]
