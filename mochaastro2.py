@@ -1120,7 +1120,7 @@ class Body:
 		for line in lines:
 			try:
 				string.append(eval(line))
-			except KeyError:
+			except (KeyError, OverflowError):
 				pass
 		return '\n'.join(string)
 
