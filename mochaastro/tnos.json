@@ -1,5 +1,45 @@
 [
 	{
+		"name": "50000 Quaoar",
+		"class": "TNO",
+		"mass": 1.4e21,
+		"radius": 5.55e5,
+		"albedo": 0.109,
+		"orbit": {
+			"parent": "sun",
+			"sma": "43.47200381956696*au",
+			"e": 0.04098702510897952,
+			"i": "7.991232171849933*deg",
+			"lan": "189.0902949942479*deg",
+			"aop": "155.214428533145*deg",
+			"man": "296.22300217209*deg",
+			"epoch": "9 August 2022"
+		},
+		"rotation": {
+			"period": "8.84*hour"
+		}
+	},
+	{
+		"name": "90377 Sedna",
+		"class": "TNO",
+		"mass": 9e20,
+		"radius": 5e5,
+		"albedo": 0.32,
+		"orbit": {
+			"parent": "sun",
+			"sma": "532.3064703980097*au",
+			"e": 0.8565069519144183,
+			"i": "11.93034000375754*deg",
+			"lan": "144.2584776398181*deg",
+			"aop": "310.8687900929183*deg",
+			"man": "358.4694078785378*deg",
+			"epoch": "25 February 2023"
+		},
+		"rotation": {
+			"period": "10.273*hour"
+		}
+	},
+	{
 		"name": "90482 Orcus",
 		"class": "TNO",
 		"mass": 6.41e20,
@@ -20,7 +60,27 @@
 		}
 	},
 	{
-		"name": "Pluto",
+		"name": "120347 Salacia",
+		"class": "TNO",
+		"mass": 4.38e20,
+		"radius": 4.27e5,
+		"albedo": 0.044,
+		"orbit": {
+			"parent": "sun",
+			"sma": "42.35461912178502*au",
+			"e": 0.1009142057880126,
+			"i": "23.9257623381197*deg",
+			"lan": "280.0901447813225*deg",
+			"aop": "312.8805451969196*deg",
+			"man": "126.3377896140553*deg",
+			"epoch": "25 February 2023"
+		},
+		"rotation": {
+			"period": "6.09*hour"
+		}
+	},
+	{
+		"name": "134340 Pluto",
 		"class": "dwarf planet",
 		"mass": 1.303e22,
 		"radius": 1.1883e6,
@@ -60,7 +120,7 @@
 		"radius": 6.06e5,
 		"albedo": 0.4,
 		"orbit": {
-			"parent": "Pluto",
+			"parent": "134340 Pluto",
 			"sma": 1.9591e7,
 			"e": 0.0002,
 			"i": ".08*deg",
@@ -70,42 +130,6 @@
 		},
 		"rotation": {
 			"period": "6.3872304*day"
-		}
-	},
-	{
-		"name": "2002 MS4",
-		"class": "TNO",
-		"radius": 3.63e5,
-		"albedo": 0.051,
-		"orbit": {
-			"parent": "sun",
-			"sma": "41.84184797471185*au",
-			"e": 0.1454946987722993,
-			"i": "17.71049417087726*deg",
-			"lan": "216.2572185159254*deg",
-			"aop": "212.9182840100322*deg",
-			"man": "228.7172381090813*deg",
-			"epoch": "25 February 2023"
-		}
-	},
-	{
-		"name": "120347 Salacia",
-		"class": "TNO",
-		"mass": 4.38e20,
-		"radius": 4.27e5,
-		"albedo": 0.044,
-		"orbit": {
-			"parent": "sun",
-			"sma": "42.35461912178502*au",
-			"e": 0.1009142057880126,
-			"i": "23.9257623381197*deg",
-			"lan": "280.0901447813225*deg",
-			"aop": "312.8805451969196*deg",
-			"man": "126.3377896140553*deg",
-			"epoch": "25 February 2023"
-		},
-		"rotation": {
-			"period": "6.09*hour"
 		}
 	},
 	{
@@ -129,23 +153,23 @@
 		}
 	},
 	{
-		"name": "50000 Quaoar",
-		"class": "TNO",
-		"mass": 1.4e21,
-		"radius": 5.55e5,
-		"albedo": 0.109,
+		"name": "136199 Eris",
+		"class": "dwarf planet",
+		"mass": 1.66e22,
+		"radius": 1.163e6,
+		"albedo": 0.96,
 		"orbit": {
 			"parent": "sun",
-			"sma": "43.47200381956696*au",
-			"e": 0.04098702510897952,
-			"i": "7.991232171849933*deg",
-			"lan": "189.0902949942479*deg",
-			"aop": "155.214428533145*deg",
-			"man": "296.22300217209*deg",
-			"epoch": "9 August 2022"
+			"sma": "68.14536545526268*au",
+			"e": 0.4319581224809352,
+			"i": "43.76049565740999*deg",
+			"lan": "36.07068767579804*deg",
+			"aop": "150.9970340507818*deg",
+			"man": "208.7617474668772*deg",
+			"epoch": "25 February 2023"
 		},
 		"rotation": {
-			"period": "8.84*hour"
+			"period": "25.9*hour"
 		}
 	},
 	{
@@ -195,43 +219,19 @@
 		}
 	},
 	{
-		"name": "136199 Eris",
-		"class": "dwarf planet",
-		"mass": 1.66e22,
-		"radius": 1.163e6,
-		"albedo": 0.96,
-		"orbit": {
-			"parent": "sun",
-			"sma": "68.14536545526268*au",
-			"e": 0.4319581224809352,
-			"i": "43.76049565740999*deg",
-			"lan": "36.07068767579804*deg",
-			"aop": "150.9970340507818*deg",
-			"man": "208.7617474668772*deg",
-			"epoch": "25 February 2023"
-		},
-		"rotation": {
-			"period": "25.9*hour"
-		}
-	},
-	{
-		"name": "90377 Sedna",
+		"name": "307261 2002 MS4",
 		"class": "TNO",
-		"mass": 9e20,
-		"radius": 5e5,
-		"albedo": 0.32,
+		"radius": 3.63e5,
+		"albedo": 0.051,
 		"orbit": {
 			"parent": "sun",
-			"sma": "532.3064703980097*au",
-			"e": 0.8565069519144183,
-			"i": "11.93034000375754*deg",
-			"lan": "144.2584776398181*deg",
-			"aop": "310.8687900929183*deg",
-			"man": "358.4694078785378*deg",
+			"sma": "41.84184797471185*au",
+			"e": 0.1454946987722993,
+			"i": "17.71049417087726*deg",
+			"lan": "216.2572185159254*deg",
+			"aop": "212.9182840100322*deg",
+			"man": "228.7172381090813*deg",
 			"epoch": "25 February 2023"
-		},
-		"rotation": {
-			"period": "10.273*hour"
 		}
 	}
 ]
