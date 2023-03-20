@@ -2,18 +2,18 @@
 	{
 		"name": "Planet Nine",
 		"class": "planet",
-		"mass": "6.3*earth.mass",
-		"radius": 15e6,
-		"albedo": 0.5,
+		"mass": "6.59*earth.mass",
+		"radius": "2.20*earth.radius",
+		"albedo": 0.476,
 		"orbit": {
 			"parent": "sun",
-			"sma": "460*au",
-			"e": "11/45",
-			"i": "16*deg",
-			"lan": "97*deg",
-			"aop": 2.6,
-			"man": 0
+			"sma": "412*au",
+			"e": 0.221,
+			"i": "15.6*deg",
+			"lan": "98.6*deg",
+			"aop": "150*deg",
+			"man": "180*deg"
 		},
-		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf"
+		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf and https://arxiv.org/pdf/2203.07642.pdf and https://data.caltech.edu/records/0yypt-j3n93"
 	}
 ]
