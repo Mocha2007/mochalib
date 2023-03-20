@@ -1635,9 +1635,9 @@ class System:
 				for (other_body_i, other_body_x) in [pip for pip in enumerate(body_x) if pip[0] != bi]:
 					dx = tuple(body_x[bi][dim] - other_body_x[dim] for dim in range(3))
 					r = sum(d**2 for d in dx)**.5
+					a = g * bodies[other_body_i].mass / r**2 * timestep
 					for dim in range(3):
-						theta_scale = dx[dim] / r # I think???
-						body_a[bi][dim] += theta_scale * g * bodies[other_body_i].mass / r**2 * timestep
+						body_a[bi][dim] = a * dx[dim] / r # I think???
 		# draw
 		fig = plt.figure(figsize=(7, 7))
 		ax = plt.axes(projection='3d')
