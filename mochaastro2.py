@@ -1858,6 +1858,24 @@ def plot_grav_acc(body1: Body, body2: Body) -> None:
 	plt.show()
 
 
+def plot_grav_accs(body: Body, other_bodies: Tuple[Body]) -> None:
+	"""Plot total gravitational acceleration from one body to several others over several orbits"""
+	resolution = 1000
+	orbits = 8
+	outerp = max(body, *other_bodies, key=lambda x: x.orbit.p).orbit.p
+
+	plt.figure(figsize=(7, 7))
+	plt.title('Body Delta')
+	plt.xlabel('time since epoch (s)')
+	plt.ylabel('acceleration (m/s^2)')
+	plt.yscale('log')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs = [sum(body.acc_towards(body2, t) for body2 in other_bodies) for t in ts]
+	plt.plot(ts, xs, color='k')
+
+	plt.show()
+
+
 def plot_grav_acc_vector(body1: Body, body2: Body) -> None:
 	"""Plot gravitational acceleration vector from one body to another over several orbits"""
 	resolution = 100
