@@ -1,0 +1,101 @@
+[
+	{
+		"name": "Charon",
+		"class": "moon",
+		"mass": 1.586e21,
+		"radius": 6.06e5,
+		"albedo": 0.4,
+		"orbit": {
+			"parent": "134340 Pluto",
+			"sma": 1.9591e7,
+			"e": 0.0002,
+			"i": ".08*deg",
+			"lan": "223.046*deg",
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "6.3872304*day"
+		}
+	},
+	{
+		"name": "Styx",
+		"class": "moon",
+		"mass": 7.5e15,
+		"radius": 5.5e3,
+		"albedo": 0.65,
+		"orbit": {
+			"parent": "134340 Pluto",
+			"sma": 42656e3,
+			"e": 0.005787,
+			"i": ".809*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "3.24*day",
+			"tilt": "82*deg"
+		}
+	},
+	{
+		"name": "Nix",
+		"class": "moon",
+		"mass": 4.5e16,
+		"radius": 19e3,
+		"albedo": 0.56,
+		"orbit": {
+			"parent": "134340 Pluto",
+			"sma": 48694e3,
+			"e": 0.002036,
+			"i": ".133*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "1.829*day",
+			"tilt": "132*deg"
+		}
+	},
+	{
+		"name": "Kerberos",
+		"class": "moon",
+		"mass": 1.65e16,
+		"radius": 6.3e3,
+		"albedo": 0.56,
+		"orbit": {
+			"parent": "134340 Pluto",
+			"sma": 57783e3,
+			"e": 0.00328,
+			"i": ".389*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "5.31*day",
+			"tilt": "96*deg"
+		}
+	},
+	{
+		"name": "Hydra",
+		"class": "moon",
+		"mass": 4.8e16,
+		"radius": 19.65e3,
+		"albedo": 0.83,
+		"orbit": {
+			"parent": "134340 Pluto",
+			"sma": 64738e3,
+			"e": 0.005862,
+			"i": ".242*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		},
+		"rotation": {
+			"period": "0.4295*day",
+			"tilt": "110*deg"
+		}
+	}
+]
