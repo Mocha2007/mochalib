@@ -1607,12 +1607,12 @@ class System:
 
 		plt.show()
 
-	def grav_sim(self) -> None:
+	def grav_sim(self, res = 100, p=25) -> None:
 		"""I don't know why this doesn't work, but it doesn't..."""
 		# solar_system_object.grav_sim()
 		bodies = list(self.bodies) + [self.parent]
-		steps = 100
-		timestep = min(b.orbit.p for b in self.bodies) / 100
+		steps = res*p
+		timestep = min(b.orbit.p for b in self.bodies) / res
 
 		body_xv = [body.orbit.cartesian() if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
