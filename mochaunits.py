@@ -226,19 +226,13 @@ class Time(Dimension):
 		minute = 60
 		h = 60*minute
 		d = 24*h
-		wk = 7*d
 		yr = 365.2425*d
-		mo = yr / 12
 		if self.value < h:
 			return str(x/minute) + ' min'
 		if self.value < d:
 			return str(x/h) + ' h'
-		if self.value < wk:
-			return str(x/d) + ' d'
-		if self.value < mo:
-			return str(x/wk) + ' wk'
 		if self.value < yr:
-			return str(x/mo) + ' mo'
+			return str(x/d) + ' d'
 		return '{} {}yr'.format(*get_si(x/yr))
 
 	# double underscore methods
