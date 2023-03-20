@@ -178,20 +178,5 @@
 		"rotation": {
 			"period": "7.627*hour"
 		}
-	},
-	{
-		"name": "2007 EB26",
-		"class": "asteroid",
-		"radius": 4e2,
-		"orbit": {
-			"parent": "sun",
-			"sma": ".54760*au",
-			"e": 0.78867,
-			"i": "8.4867*deg",
-			"lan": "63.22*deg",
-			"aop": "236.71*deg",
-			"man": "237.91*deg",
-			"epoch": "11 March 2007"
-		}
 	}
 ]
