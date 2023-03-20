@@ -63,8 +63,8 @@
 	{
 		"name": "Tata",
 		"class": "dwarf planet",
-		"mass": 7.1205e22,
-		"radius": 1.52081e6,
+		"mass": 1.4064e22,
+		"radius": 1.09839e6,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
@@ -78,7 +78,8 @@
 		"rotation": {
 			"period": "1950700.886099735",
 			"tilt": "5/60*deg"
-		}
+		},
+		"notes": "[(search(s).planetary_discriminant / mars.planetary_discriminant, search(s).planetary_discriminant2 / mars.planetary_discriminant) for s in ('ara', 'falto', 'tata', 'bau', 'oneia', 'don', 'eisen', 'neuve', 'dicito', 'mannu')]"
 	},
 	{
 		"name": "Bau",
@@ -158,8 +159,8 @@
 	{
 		"name": "Don",
 		"class": "planet",
-		"mass": 1.4064e22,
-		"radius": 1.09839e6,
+		"mass": 7.1205e22,
+		"radius": 1.52081e6,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
