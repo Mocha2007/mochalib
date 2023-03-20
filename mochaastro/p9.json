@@ -12,7 +12,8 @@
 			"i": "15.6*deg",
 			"lan": "98.6*deg",
 			"aop": "150*deg",
-			"man": "180*deg"
+			"man": "180*deg",
+			"epoch": "01 June 2018"
 		},
 		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf and https://arxiv.org/pdf/2203.07642.pdf and https://data.caltech.edu/records/0yypt-j3n93"
 	}
