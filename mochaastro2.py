@@ -1215,14 +1215,18 @@ class Body:
 	def planetary_discriminant(self) -> float:
 		"""Margot's planetary discriminant (dimensionless)"""
 		a, m, M = self.orbit.a/au, self.mass/earth.mass, self.orbit.parent.mass/sun.mass
-		# everything above is confirmed correct
-		# https://en.wikipedia.org/wiki/Clearing_the_neighbourhood#cite_note-5
-		# C, m_earth, m_sun, t_sun = 2*3**.5, earth.mass, sun.mass, sun.lifespan/year
-		# k = 3**.5 * C**(-3/2) * (100*t_sun)**(3/4) * m_earth/m_sun
-		# everything below is confirmed correct
-		# print(807, '~', k)
+		# https://en.wikipedia.org/wiki/Clearing_the_neighbourhood#Margot's_%CE%A0
 		k = 807
 		return k*m/(M**(5/2)*a**(9/8))
+
+	@property
+	def planetary_discriminant2(self) -> float:
+		"""Stern-Levinston planetary discriminant (dimensionless)"""
+		a, m = self.orbit.a, self.mass/self.orbit.parent.mass
+		# https://en.wikipedia.org/wiki/Clearing_the_neighbourhood#Stern%E2%80%93Levison's_%CE%9B
+		# https://www.boulder.swri.edu/~hal/PDF/planet_def.pdf
+		k = 9.84e32
+		return k * m**2 * a**-1.5
 
 	@property
 	def radius(self) -> float:
