@@ -1634,10 +1634,10 @@ class System:
 				# new acc
 				for (other_body_i, other_body_x) in [pip for pip in enumerate(body_x) if pip[0] != bi]:
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
-					r2 = sum(d**2 for d in dx)
-					a = g * bodies[other_body_i].mass / r2
+					r = sum(d**2 for d in dx)**.5
+					a = g * bodies[other_body_i].mass / r**2
 					for dim in range(3):
-						body_a[bi][dim] += a * dx[dim]**2 / r2 # I think???
+						body_a[bi][dim] += a * dx[dim] / r # I think???
 		# draw
 		fig = plt.figure(figsize=(7, 7))
 		ax = plt.axes(projection='3d')
