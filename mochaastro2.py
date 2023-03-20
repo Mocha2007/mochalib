@@ -1624,7 +1624,7 @@ class System:
 			xs.append([])
 			for (bi, _) in enumerate(bodies):
 				# copy xs to output list
-				xs[i].append(body_x[bi])
+				xs[i].append(body_x[bi][:])
 				# new x
 				for dim in range(3):
 					body_x[bi][dim] += body_v[bi][dim] * timestep
@@ -2705,3 +2705,4 @@ universe = load_data(solar_system.copy())
 # solar_system.sim()
 # burn = earth.orbit.transfer(mars.orbit)
 # universe_sim(sun)
+# solar_system_object.grav_sim()
