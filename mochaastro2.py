@@ -1632,7 +1632,9 @@ class System:
 				# reset acc...
 				body_a[bi] = [0, 0, 0]
 				# new acc
-				for (other_body_i, other_body_x) in [pip for pip in enumerate(body_x) if pip[0] != bi]:
+				for (other_body_i, other_body_x) in enumerate(body_x):
+					if other_body_i == bi:
+						continue
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
 					r = sum(d**2 for d in dx)**.5
 					a = g * bodies[other_body_i].mass / r**2
