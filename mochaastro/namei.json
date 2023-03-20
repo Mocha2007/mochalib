@@ -365,7 +365,7 @@
 	{
 		"name": "Dicito",
 		"class": "planet",
-		"mass": 4.358e23,
+		"mass": 6.358e23,
 		"radius": 3.37187e6,
 		"albedo": 0.3,
 		"orbit": {
