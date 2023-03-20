@@ -797,7 +797,7 @@ class Body:
 	def solar_day(self) -> float:
 		"""True solar day (s)"""
 		t, T = self.rotation.p, self.orbit.p
-		return (t*T)/(T-t)
+		return inf if t == T else (t*T)/(T-t)
 
 	@property
 	def v_tan(self) -> float:
