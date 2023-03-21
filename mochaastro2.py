@@ -830,7 +830,10 @@ class Body:
 		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
 		# maybe try fitting the min() to arctan()???
 		gh = self.atmosphere.greenhouse
-		insolation = self.star.radiation_pressure_at(self.orbit.a)
+		o = self.orbit
+		while o.parent != self.star:
+			o = o.parent.orbit
+		insolation = self.star.radiation_pressure_at(o.a)
 		C1 = 1.58725
 		C2 = 0.0653011
 		# print(self.temp, gh/insolation)
