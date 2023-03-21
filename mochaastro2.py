@@ -1848,49 +1848,54 @@ def distance_audio(orbit1: Orbit, orbit2: Orbit):
 	play_file('output.wav')
 
 
-def value_parse(value) -> float:
-	try:
-		return eval(value) if isinstance(value, str) else value
-	except (NameError, SyntaxError):
-		return value
-
-
-def convert_atmosphere(data: dict) -> Atmosphere:
-	return Atmosphere(**{key: value_parse(value) for key, value in data.items()})
-
-
-def convert_orbit(data: dict, current_universe: dict) -> Orbit:
-	out = Orbit(**{key: value_parse(value) for key, value in data.items()})
-	# string -> bod
-	if isinstance(out.parent, str):
-		out.properties['parent'] = value_parse(out.parent)
-		# still string -> parent doesn't exist as a var maybe
-		if isinstance(out.parent, str):
-			out.properties['parent'] = current_universe[out.parent]
-	return out
-
-
-def convert_rotation(data: dict) -> Rotation:
-	return Rotation(**{key: value_parse(value) for key, value in data.items()})
-
-
-def convert_body(data: dict, current_universe: dict, datatype=Body) -> Body:
-	body_data = {}
-	for key, value in data.items():
-		if key == 'atmosphere':
-			body_data[key] = convert_atmosphere(value)
-		elif key == 'orbit':
-			body_data[key] = convert_orbit(value, current_universe)
-		elif key == 'rotation':
-			body_data[key] = convert_rotation(value)
-		else:
-			body_data[key] = value_parse(value)
-	return datatype(**body_data)
-
-
 def load_data(seed: dict) -> dict:
 	import os
 	from json import load
+
+	def convert_body(data: dict, current_universe: dict, datatype=Body) -> Body:
+		def convert_atmosphere(data: dict) -> Atmosphere:
+			return Atmosphere(**{key: value_parse(value) for key, value in data.items()})
+		def convert_orbit(data: dict, current_universe: dict) -> Orbit:
+			out = Orbit(**{key: value_parse(value) for key, value in data.items()})
+			# string -> bod
+			if isinstance(out.parent, str):
+				out.properties['parent'] = value_parse(out.parent)
+				# still string -> parent doesn't exist as a var maybe
+				if isinstance(out.parent, str):
+					out.properties['parent'] = current_universe[out.parent]
+			return out
+		def convert_rotation(data: dict) -> Rotation:
+			return Rotation(**{key: value_parse(value) for key, value in data.items()})
+		def value_parse(value) -> float:
+			try:
+				return eval(value) if isinstance(value, str) else value
+			except (NameError, SyntaxError):
+				return value
+
+		body_data = {}
+		for key, value in data.items():
+			if key == 'atmosphere':
+				body_data[key] = convert_atmosphere(value)
+			elif key == 'orbit':
+				body_data[key] = convert_orbit(value, current_universe)
+			elif key == 'rotation':
+				body_data[key] = convert_rotation(value)
+			else:
+				body_data[key] = value_parse(value)
+		return datatype(**body_data)
+	def warnings(data) -> None:
+		"""Attempt to find missing data"""
+		for name, body in data.items():
+			# print('Checking {}...'.format(name))
+			# check for missing albedo data
+			if 'albedo' not in body.properties:
+				if 6e19 < body.mass < 1.5e29 and 'orbit' in body.properties and body.orbit.a < 600*au:
+					print('Albedo data missing from {}, should be easy to find'.format(name))
+			# check for missing atm data
+			elif 'atmosphere' not in body.properties and \
+					'mass' in body.properties and body.atm_retention < .131 and \
+					body.orbit.a < 67*au:
+				print('Atmosphere data missing from {}, atmosphere predicted'.format(name))
 
 	loc = os.path.dirname(os.path.abspath(__file__)) + '\\mochaastro'
 	universe_data = seed
@@ -1899,7 +1904,7 @@ def load_data(seed: dict) -> dict:
 		json_data = load(open(loc + '\\' + file, 'r'))
 		for obj in json_data:
 			universe_data[obj['name']] = convert_body(obj, universe_data, (Star if obj['class'] == 'star' else Body))
-
+	warnings(universe_data)
 	return universe_data
 
 
@@ -2285,19 +2290,6 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 		wait_time = 1/fps - (time() - start_time)
 		if 0 < wait_time:
 			sleep(wait_time)
-
-
-def warnings() -> None:
-	"""Attempt to find missing data"""
-	for name, body in universe.items():
-		# print('Checking {}...'.format(name))
-		# check for missing albedo data
-		if 'albedo' not in body.properties:
-			if 6e19 < body.mass < 1.5e29 and body.orbit.a < 600*au:
-				print('Albedo data missing from {}, should be easy to find'.format(name))
-		# check for missing atm data
-		elif 'atmosphere' not in body.properties and body.atm_retention < .131 and body.orbit.a < 67*au:
-			print('Atmosphere data missing from {}, atmosphere predicted'.format(name))
 
 
 # bodies - this file only contains the sun, moon, and planets. json files provide the rest.
