@@ -1608,14 +1608,16 @@ class System:
 		"""Model newtonian gravity"""
 		# from time import time
 		# solar_system_object.grav_sim()
-		bodies = list(self.bodies) + [self.parent]
+		parent = self.parent
+		bodies = list(self.bodies) + [parent]
 		steps = res*p
 		timestep = (focus.orbit.p if focus else min(b.orbit.p for b in self.bodies)) / res
 
-		body_xv = [body.orbit.cartesian() if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
+		body_xv = [body.orbit.cartesian() if body != parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
 		body_v = [list(elem[3:]) for elem in body_xv]
 		body_a = [[0, 0, 0] for _ in bodies]
+		body_mass_cache = [b.mass for b in bodies]
 		xs = []
 		# start = time()
 		# compute positions
@@ -1623,7 +1625,7 @@ class System:
 			xs.append([])
 			for (bi, body) in enumerate(bodies):
 				if (focus and body != focus):
-					xs[i].append((0, 0, 0) if body == self.parent else body.orbit.cartesian(timestep * i)[:3])
+					xs[i].append((0, 0, 0) if body == parent else body.orbit.cartesian(timestep * i)[:3])
 					continue
 				# copy xs to output list
 				xs[i].append(body_x[bi][:])
@@ -1639,7 +1641,7 @@ class System:
 						continue
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
 					r = hypot(*dx)
-					a = g * bodies[other_body_i].mass / (r*r)
+					a = g * body_mass_cache[other_body_i] / (r*r)
 					for dim in range(3):
 						body_a[bi][dim] += a * dx[dim] / r
 		# print(time() - start)
