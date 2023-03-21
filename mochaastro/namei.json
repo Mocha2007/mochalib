@@ -381,7 +381,7 @@
 			"period": "30*hour + 19*minute + 7.31",
 			"tilt": "102*deg"
 		},
-		"notes": "62.321yr"
+		"notes": "62.321yr;System(search('namei'), search('eisen'), search('neuve'), search('dicito'), search('mannu')).grav_sim(search('dicito'), 10000, 25, 100)"
 	},
 	{
 		"name": "Mannu",

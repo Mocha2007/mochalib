@@ -1604,12 +1604,12 @@ class System:
 
 		plt.show()
 
-	def grav_sim(self, res = 1000, p=25, skip=10) -> None:
+	def grav_sim(self, focus = None, res = 1000, p=25, skip=10) -> None:
 		"""Model newtonian gravity"""
 		# solar_system_object.grav_sim()
 		bodies = list(self.bodies) + [self.parent]
 		steps = res*p
-		timestep = min(b.orbit.p for b in self.bodies) / res
+		timestep = (focus.orbit.p if focus else min(b.orbit.p for b in self.bodies)) / res
 
 		body_xv = [body.orbit.cartesian() if body != self.parent else (0, 0, 0, 0, 0, 0) for body in bodies]
 		body_x = [list(elem[:3]) for elem in body_xv]
@@ -1619,7 +1619,10 @@ class System:
 		# compute positions
 		for i in range(steps):
 			xs.append([])
-			for (bi, _) in enumerate(bodies):
+			for (bi, body) in enumerate(bodies):
+				if (focus and body != focus):
+					xs[i].append((0, 0, 0) if body == self.parent else body.orbit.cartesian(timestep * i)[:3])
+					continue
 				# copy xs to output list
 				xs[i].append(body_x[bi][:])
 				# new x, v
@@ -1649,8 +1652,9 @@ class System:
 			x, y, z = zip(*planet_coords[::skip])
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
-			# ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
-			ax.text(*planet_coords[0], bodies[p_i].name, size=8, color='k', zorder=3*len(bodies) + p_i)
+			ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
+			ax.text(*planet_coords[0], bodies[p_i].name + "^", size=8, color='k', zorder=3*len(bodies) + p_i)
+			ax.text(*planet_coords[-1], bodies[p_i].name + "$", size=8, color='k', zorder=4*len(bodies) + p_i)
 
 		axisEqual3D(ax)
 		plt.show()
