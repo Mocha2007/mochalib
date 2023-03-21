@@ -18,6 +18,7 @@ g = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
 c = 299792458 # m/s; exact; speed of light
 L_0 = 3.0128e28 # W; exact; zero point luminosity
 L_sun = 3.828e26 # W; exact; nominal solar luminosity
+SQRT2 = sqrt(2)
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute
@@ -128,7 +129,7 @@ class Orbit:
 	@property
 	def L_z(self) -> float:
 		"""L_z Kozai constant (dimensionless)"""
-		return (1-self.e**2)**.5*cos(self.i)
+		return sqrt(1-self.e**2)*cos(self.i)
 
 	@property
 	def man(self) -> float:
@@ -158,7 +159,7 @@ class Orbit:
 	@property
 	def p(self) -> float:
 		"""Period (seconds)"""
-		return 2*pi*(self.a**3/self.parent.mu)**.5
+		return 2*pi*sqrt(self.a**3/self.parent.mu)
 
 	@property
 	def parent(self):
@@ -188,7 +189,7 @@ class Orbit:
 		if self.e == 0:
 			return self.v
 		e = self.e
-		return ((1-e)*self.parent.mu/(1+e)/self.a)**.5
+		return sqrt((1-e)*self.parent.mu/(1+e)/self.a)
 
 	@property
 	def v_peri(self) -> float:
@@ -196,7 +197,7 @@ class Orbit:
 		if self.e == 0:
 			return self.v
 		e = self.e
-		return ((1+e)*self.parent.mu/(1-e)/self.a)**.5
+		return sqrt((1+e)*self.parent.mu/(1-e)/self.a)
 
 	# double underscore methods
 	def __gt__(self, other) -> bool:
@@ -315,7 +316,7 @@ class Orbit:
 		"""Distance between orbits at time t (m)"""
 		# ~65μs avg.
 		a, b = self.cartesian(t)[:3], other.cartesian(t)[:3]
-		return sum((i-j)**2 for i, j in zip(a, b))**.5
+		return hypot(*(i-j for i, j in zip(a, b)))
 
 	def eccentric_anomaly(self, t: float = 0) -> float:
 		"""Eccentric anomaly (radians)"""
@@ -357,7 +358,7 @@ class Orbit:
 				# print('\t {0}:{1}\t-> {2}'.format(outer, inner, p))
 				best = outer, inner, p
 			# certain?
-			if best[2] < 1 - erf(sigma/2**.5):
+			if best[2] < 1 - erf(sigma/SQRT2):
 				break
 		return best[:2]
 
@@ -435,7 +436,7 @@ class Orbit:
 		# Hamilton and Burns (Science 264, 550-553, 1994)
 		# U_r / U is baaaasically 1, right? :^)
 		assert self.crosses(other.orbit)
-		line1 = pi * (sin(self.i)**2 + sin(other.orbit.i)**2)**.5
+		line1 = pi * sqrt(sin(self.i)**2 + sin(other.orbit.i)**2)
 		line2 = (other.orbit.a / other.radius)**2 * self.p
 		timescale = line1*line2
 		v_col = self.e * other.orbit.v
@@ -456,7 +457,7 @@ class Orbit:
 		# type: (Orbit, Orbit) -> float
 		"""Tisserand's parameter (dimensionless)"""
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
-		return a_P/a + 2*cos(i) * (a/a_P * (1-e**2))**.5
+		return a_P/a + 2*cos(i) * sqrt(a/a_P * (1-e**2))
 	# """Compute optimal transfer burn (m/s, m/s, m/s, s)"""
 	"""
 	def transfer(self, other, t: float = 0,
@@ -569,7 +570,7 @@ class Orbit:
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
-		return (self.parent.mu*(2/r-1/self.a))**.5
+		return sqrt(self.parent.mu*(2/r-1/self.a))
 
 
 class Rotation:
@@ -767,13 +768,13 @@ class Body:
 	def temp(self) -> float:
 		"""Planetary equilibrium temperature (K)"""
 		a, R, sma, T = self.albedo, self.star_radius, self.star_dist, self.star.temperature
-		return T*(1-a)**.25*(R/2/sma)**.5
+		return T * (1-a)**.25 * sqrt(R/2/sma)
 
 	@property
 	def temp_subsolar(self) -> float:
 		"""Planetary temperature at subsolar point(K)"""
 		# based on formula from Reichart
-		return self.temp * 2**.5
+		return self.temp * SQRT2
 
 	@property
 	def tidal_locking(self) -> float:
@@ -1271,7 +1272,7 @@ class Body:
 	@property
 	def v_e(self) -> float:
 		"""Surface escape velocity (m/s)"""
-		return (2*self.mu/self.radius)**.5
+		return sqrt(2*self.mu/self.radius)
 
 	@property
 	def volume(self) -> float:
@@ -1306,7 +1307,7 @@ class Body:
 		"""Acceleration vector of self towards other body at time t (m/s^2)"""
 		a, b = self.orbit.cartesian(t)[:3], other.orbit.cartesian(t)[:3]
 		dx, dy, dz = [i-j for i, j in zip(a, b)]
-		scale_factor = (dx**2 + dy**2 + dz**2)**.5
+		scale_factor = hypot(dx, dy, dz)
 		acc = self.acc_towards(other, t)
 		ax, ay, az = [acc*i/scale_factor for i in (dx, dy, dz)] # scale_factor*i is in [0, 1]
 		# print(self.acc_towards(other, t))
@@ -1334,7 +1335,7 @@ class Body:
 		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.star_dist, self.star.abs_mag
 		h_star = v_sun + 5*log10(au/(10*pc))
 		d_0 = 2*au*10**(h_star/5)
-		h = 5 * log10(d_0 / (2*r_p * a_p**.5))
+		h = 5 * log10(d_0 / (2*r_p * sqrt(a_p)))
 		return h + 5*log10(d_s * dist / au**2)
 
 	def atm_supports(self, molmass: float) -> bool:
@@ -1351,9 +1352,9 @@ class Body:
 		mu = self.mu
 		a1 = (i+m)/2
 		a2 = (m+o)/2
-		dv1 = (2*mu/i-mu/a1)**.5-(mu/i)**.5
-		dv2 = (2*mu/m-mu/a2)**.5-(2*mu/m-mu/a1)**.5
-		dv3 = (2*mu/o-mu/a2)**.5-(mu/o)**.5
+		dv1 = sqrt(2*mu/i-mu/a1)-sqrt(mu/i)
+		dv2 = sqrt(2*mu/m-mu/a2)-sqrt(2*mu/m-mu/a1)
+		dv3 = sqrt(2*mu/o-mu/a2)-sqrt(mu/o)
 		return dv1 + dv2 + dv3
 
 	def force_between(self, other, t: float = 0) -> float:
@@ -1366,8 +1367,8 @@ class Body:
 		"""Hohmann transfer delta-v (m/s)"""
 		i, o = inner.a, outer.a
 		mu = self.mu
-		dv1 = (mu/i)**.5*((2*o/(i+o))**.5-1)
-		dv2 = (mu/i)**.5*(1-(2*i/(i+o))**.5)
+		dv1 = sqrt(mu/i)*(sqrt(2*o/(i+o))-1)
+		dv2 = sqrt(mu/i)*(1-sqrt(2*i/(i+o)))
 		return dv1 + dv2
 
 	def lunar_eclipse(self) -> None:
@@ -1480,7 +1481,7 @@ class Star(Body):
 	@property
 	def habitable_zone(self) -> Tuple[float, float]:
 		"""Inner and outer habitable zone (m)"""
-		center = au*(self.luminosity/sun.luminosity)**.5
+		center = au*sqrt(self.luminosity/sun.luminosity)
 		inner = .95*center
 		outer = 1.37*center
 		return inner, outer
@@ -1533,7 +1534,7 @@ class Star(Body):
 	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
 		"""Stellar radiation force on a planet at a time"""
 		wattage = self.luminosity / sun.luminosity
-		dist = sum(i**2 for i in obj.orbit.cartesian(t)[:3])**.5 / au
+		dist = hypot(obj.orbit.cartesian(t)[:3]) / au
 		area = obj.area / 2
 		return wattage * G_SC / (c*dist**2) * area
 
@@ -1734,9 +1735,9 @@ def keplerian(parent: Body, cartesian: Tuple[float, float, float, float, float, 
 	# 3 Determine the orbit eccentricity e [1],
 	# which is simply the magnitude of the eccentricity vector e, and the eccentric anomaly E [1]:
 	eccentricity = np.linalg.norm(e)
-	E = 2 * atan(tan(nu/2) / ((1+eccentricity)/(1-eccentricity))**.5)
+	E = 2 * atan(tan(nu/2) / sqrt((1+eccentricity)/(1-eccentricity)))
 	# print(nu, eccentricity, '-> E =', E)
-	# E = 2 * atan2(((1+eccentricity)/(1-eccentricity))**.5, tan(nu/2))
+	# E = 2 * atan2(sqrt((1+eccentricity)/(1-eccentricity)), tan(nu/2))
 	# 4 Obtain the longitude of the ascending node Omega and the argument of periapsis omega:
 	if np.linalg.norm(n):
 		temp = acos(n[0] / np.linalg.norm(n))
