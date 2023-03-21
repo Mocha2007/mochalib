@@ -269,5 +269,21 @@
 		"rotation": {
 			"period": "7.33*hour"
 		}
+	},
+	{
+		"name": "541132 Leleākūhonua",
+		"class": "TNO",
+		"radius": 110e3,
+		"albedo": 0.21,
+		"orbit": {
+			"parent": "sun",
+			"sma": "1085*au",
+			"e": 0.93997,
+			"i": "11.654*deg",
+			"lan": "300.780*deg",
+			"aop": "117.778*deg",
+			"man": "359.418*deg",
+			"epoch": "31 May 2020"
+		}
 	}
 ]

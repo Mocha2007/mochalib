@@ -1877,7 +1877,7 @@ def load_data(seed: dict) -> dict:
 	universe_data = seed
 	for file in [f for f in os.listdir(loc) if f.endswith('.json')]:
 		print('Loading', file, '...')
-		json_data = load(open(loc + '\\' + file, 'r'))
+		json_data = load(open(loc + '\\' + file, 'r', encoding="utf8"))
 		for obj in json_data:
 			universe_data[obj['name']] = convert_body(obj, universe_data, (Star if obj['class'] == 'star' else Body))
 	warnings(universe_data)
