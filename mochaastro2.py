@@ -1531,10 +1531,9 @@ class Star(Body):
 
 	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
 		"""Stellar radiation force on a planet at a time (W)"""
-		wattage = self.luminosity / sun.luminosity
 		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
 		area = obj.area / 2
-		return G_SC * wattage / dist**2 * area
+		return self.radiation_pressure_at(dist) * area
 
 
 class System:
