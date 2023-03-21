@@ -17,6 +17,13 @@
 		},
 		"rotation": {
 			"period": "8.84*hour"
+		},
+		"atmosphere": {
+			"surface_pressure": "10e-9*atm",
+			"composition": {
+				"CH4":   1
+			},
+			"notes": "pressure is an upper bound"
 		}
 	},
 	{
@@ -130,7 +137,10 @@
 			"epoch": "25 February 2023"
 		},
 		"rotation": {
-			"period": "3.9154*hour"
+			"period": "3.9154*hour",
+			"tilt": "126*deg",
+			"ra": "282.6*deg",
+			"dec": "-13*deg"
 		}
 	},
 	{
