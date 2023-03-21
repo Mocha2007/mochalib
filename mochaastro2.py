@@ -1,4 +1,4 @@
-from math import acos, atan, atan2, cos, erf, exp, inf, isfinite, log, log10, pi, sin, tan
+from math import acos, atan, atan2, cos, erf, exp, hypot, inf, isfinite, log, log10, pi, sin, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
@@ -1604,8 +1604,9 @@ class System:
 
 		plt.show()
 
-	def grav_sim(self, focus = None, res = 1000, p=25, skip=10) -> None:
+	def grav_sim(self, focus = None, res = 10000, p=25, skip=100) -> None:
 		"""Model newtonian gravity"""
+		# from time import time
 		# solar_system_object.grav_sim()
 		bodies = list(self.bodies) + [self.parent]
 		steps = res*p
@@ -1616,6 +1617,7 @@ class System:
 		body_v = [list(elem[3:]) for elem in body_xv]
 		body_a = [[0, 0, 0] for _ in bodies]
 		xs = []
+		# start = time()
 		# compute positions
 		for i in range(steps):
 			xs.append([])
@@ -1636,10 +1638,11 @@ class System:
 					if other_body_i == bi:
 						continue
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
-					r = sum(d**2 for d in dx)**.5
-					a = g * bodies[other_body_i].mass / r**2
+					r = hypot(*dx)
+					a = g * bodies[other_body_i].mass / (r*r)
 					for dim in range(3):
-						body_a[bi][dim] += a * dx[dim] / r # I think???
+						body_a[bi][dim] += a * dx[dim] / r
+		# print(time() - start)
 		# draw
 		fig = plt.figure(figsize=(7, 7))
 		ax = plt.axes(projection='3d')
