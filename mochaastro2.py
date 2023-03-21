@@ -1811,6 +1811,8 @@ def load_data(seed: dict) -> dict:
 
 	def convert_body(data: dict, current_universe: dict, datatype=Body) -> Body:
 		def convert_atmosphere(data: dict) -> Atmosphere:
+			if isinstance(data, str):
+				return value_parse(data)
 			return Atmosphere(**{key: value_parse(value) for key, value in data.items()})
 		def convert_orbit(data: dict, current_universe: dict) -> Orbit:
 			out = Orbit(**{key: value_parse(value) for key, value in data.items()})
@@ -1851,7 +1853,7 @@ def load_data(seed: dict) -> dict:
 			# check for missing atm data
 			elif 'atmosphere' not in body.properties and \
 					'mass' in body.properties and body.atm_retention < .131 and \
-					body.orbit.a < 67*au:
+					body.orbit.parent == body.star and body.orbit.a < 67*au:
 				print('Atmosphere data missing from {}, atmosphere predicted'.format(name))
 
 	loc = os.path.dirname(os.path.abspath(__file__)) + '\\mochaastro'

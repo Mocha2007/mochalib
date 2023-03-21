@@ -58,7 +58,8 @@
 		"rotation": {
 			"period": "942904.8964899578",
 			"tilt": "1*deg"
-		}
+		},
+		"atmosphere": "neptune.atmosphere"
 	},
 	{
 		"name": "Tata",
@@ -203,6 +204,7 @@
 			"period": "7.784*hour",
 			"tilt": "(10 + 22/60 + 42.21/60/60)*deg"
 		},
+		"atmosphere": "jupiter.atmosphere",
 		"notes": "plot_grav_acc(search('oneia'), search('eisen'))"
 	},
 	{
@@ -223,6 +225,7 @@
 		"rotation": {
 			"period": "76*hour"
 		},
+		"atmosphere": "neptune.atmosphere",
 		"notes": "search('seter').solar_eclipse()"
 	},
 	{
@@ -264,6 +267,7 @@
 			"period": "8*hour + 54*minute + 58.38",
 			"tilt": "68*deg"
 		},
+		"atmosphere": "neptune.atmosphere",
 		"notes": "20.774yr; The eight major moons are all tidally locked, and have periods forming an approximate 1:1.5:2:3:6:9:18:27 ratio."
 	},
 	{
@@ -381,6 +385,7 @@
 			"period": "30*hour + 19*minute + 7.31",
 			"tilt": "102*deg"
 		},
+		"atmosphere": "mars.atmosphere",
 		"notes": "62.321yr;System(search('namei'), search('eisen'), search('neuve'), search('dicito'), search('mannu')).grav_sim(search('dicito'), 10000, 25, 100)"
 	},
 	{
@@ -402,6 +407,7 @@
 			"period": "10*hour + 22*minute + 51.88",
 			"tilt": "150*deg"
 		},
+		"atmosphere": "saturn.atmosphere",
 		"notes": "115.372yr"
 	}
 ]

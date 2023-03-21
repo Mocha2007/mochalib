@@ -22,6 +22,7 @@
 			"aop": 0,
 			"man": 0
 		},
+		"atmosphere": "jupiter.atmosphere",
 		"notes": "albedo is a SWAG; only a & e of orbit known"
 	},
 	{
