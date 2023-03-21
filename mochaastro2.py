@@ -50,15 +50,6 @@ def axisEqual3D(ax: Axes) -> None:
 	r = maxsize/2
 	for ctr, dim in zip(centers, 'xyz'):
 		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
-		# https://stackoverflow.com/a/45766598
-		# this fixes a bug in Matplotlib where 3d plots put scientific notation labels outside the plot
-		# axis = getattr(ax, '{}axis'.format(dim))
-		# offset = axis.get_major_formatter().get_offset() # type: str
-		# axis.get_major_formatter().set_useMathText(True)
-		# original = axis.get_label_text() # type: str
-		# print(len(offset), offset)
-		# axis.offsetText.set_visible(False)
-		# axis.set_label_text(original + " " + offset)
 
 
 def blagg(n: int,
@@ -1612,7 +1603,7 @@ class System:
 		plt.show()
 
 	def grav_sim(self, res = 1000, p=25, skip=10) -> None:
-		"""I don't know why this doesn't work, but it doesn't..."""
+		"""Model newtonian gravity"""
 		# solar_system_object.grav_sim()
 		bodies = list(self.bodies) + [self.parent]
 		steps = res*p
