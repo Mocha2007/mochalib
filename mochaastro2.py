@@ -621,23 +621,15 @@ class Atmosphere:
 
 	@property
 	def greenhouse(self) -> float:
-		"""Estimate greenhouse factor (dimensionless)"""
-		# initially based on trial and error
-		# eventually I gave up and 90% of this is copied from a4x
-		gh_p = self.greenhouse_pressure / atm
-		atm_pressure = self.surface_pressure / earth.atmosphere.surface_pressure
-		correction_factor = 1.319714531668124
-		ghe_max = 3.2141846382913877
-		return min(ghe_max, 1 + ((atm_pressure/10) + gh_p) * correction_factor)
-
-	@property
-	def greenhouse_pressure(self) -> float:
-		"""Surface pressure (Pa)"""
+		"""Increase in radiative forcing caused by greenhouse gases (W/m^2)"""
 		ghg = {
-			'CH4',
-			'CO2',
+			# https://en.wikipedia.org/wiki/IPCC_list_of_greenhouse_gases
+			# in K / (W/m^2)
+			'CH4': 0.48 / (1801e-9 - 700e-9),
+			'CO2': 1.82 / (391e-6 - 278e-6),
+			'N2O': 0.17 / (324e-9 - 265e-9),
 		}
-		return sum(self.partial_pressure(i) for i in ghg if i in self.composition)
+		return sum(ghg[i] * min(1, self.partial_pressure(i)/atm) for i in ghg if i in self.composition)
 
 	@property
 	def mesopause(self) -> float:
@@ -830,7 +822,14 @@ class Body:
 	@property
 	def greenhouse_temp(self) -> float:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
-		return self.temp * self.atmosphere.greenhouse
+		# VENUS TARGET = 737
+		# EARTH TARGET = 287.91
+		# todo: remove reliance on the **0.4 and the min() bits, they don't really make sense..
+		# maybe try fitting the min() to arctan()???
+		gh = self.atmosphere.greenhouse
+		insolation = self.star.radiation_pressure_at(self.orbit.a)
+		print(self.temp, gh, insolation)
+		return self.temp * (1 + (gh / insolation)**0.4)
 
 	# physical properties
 	@property
