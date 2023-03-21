@@ -1212,6 +1212,10 @@ class Body:
 		return g * self.mass
 
 	@property
+	def name(self) -> str:
+		return self.properties['name'] if 'name' in self.properties else str(self)
+
+	@property
 	def planetary_discriminant(self) -> float:
 		"""Margot's planetary discriminant (dimensionless)"""
 		a, m, M = self.orbit.a/au, self.mass/earth.mass, self.orbit.parent.mass/sun.mass
@@ -1652,8 +1656,8 @@ class System:
 			x, y, z = zip(*planet_coords)
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
-			ax.text(*planet_coords[0], str(bodies[p_i]), size=5, zorder=1, color='k')
 			# ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
+			ax.text(*planet_coords[0], bodies[p_i].name, size=8, color='k', zorder=3*len(bodies) + p_i)
 
 		axisEqual3D(ax)
 		plt.show()
@@ -2291,6 +2295,7 @@ def warnings() -> None:
 # bodies - this file only contains the sun, moon, and planets. json files provide the rest.
 # USE BOND ALBEDO PLEASE
 sun = Star(**{
+	'name': 'Sun',
 	'orbit': Orbit(**{
 		'sma': 2.7e20,
 	}),
@@ -2331,6 +2336,7 @@ sun = Star(**{
 })
 
 mercury = Body(**{
+	'name': 'Mercury',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 5.790905e10,
@@ -2356,6 +2362,7 @@ mercury = Body(**{
 })
 
 venus = Body(**{
+	'name': 'Venus',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 1.08208e11,
@@ -2393,6 +2400,7 @@ venus = Body(**{
 })
 
 earth = Body(**{
+	'name': 'Earth',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 1.49598023e11,
@@ -2512,6 +2520,7 @@ earth = Body(**{
 })
 
 moon = Body(**{
+	'name': 'Moon',
 	'orbit': Orbit(**{
 		'parent': earth,
 		'sma': 3.84399e8,
@@ -2554,6 +2563,7 @@ moon = Body(**{
 })
 
 mars = Body(**{
+	'name': 'Mars',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 2.279392e11,
@@ -2587,6 +2597,7 @@ mars = Body(**{
 })
 
 jupiter = Body(**{
+	'name': 'Jupiter',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 5.2044*au,
@@ -2612,6 +2623,7 @@ jupiter = Body(**{
 })
 
 saturn = Body(**{
+	'name': 'Saturn',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 9.5826*au,
@@ -2637,6 +2649,7 @@ saturn = Body(**{
 })
 
 uranus = Body(**{
+	'name': 'Uranus',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 19.2184*au,
@@ -2661,6 +2674,7 @@ uranus = Body(**{
 })
 
 neptune = Body(**{
+	'name': 'Neptune',
 	'orbit': Orbit(**{
 		'parent': sun,
 		'sma': 30.11*au,
