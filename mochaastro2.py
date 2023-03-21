@@ -12,7 +12,7 @@ from typing import Callable, Dict, Optional, Tuple
 # in case i need them in the future
 
 # constants
-epoch = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
+J2000 = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
 
 g = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
 c = 299792458 # m/s; exact; speed of light
@@ -114,7 +114,7 @@ class Orbit:
 		"""Based on the epoch in properties, return the time in seconds to subtract when computing position"""
 		if 'epoch' not in self.properties:
 			return 0
-		return (datetime.strptime(self.properties['epoch'], '%d %B %Y') - epoch).total_seconds()
+		return (datetime.strptime(self.properties['epoch'], '%d %B %Y') - J2000).total_seconds()
 
 	@property
 	def i(self) -> float:
@@ -2217,7 +2217,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 		# print((time()-for_start)/len(orbits))
 		# print date
 		try:
-			current_date = str(round_time(epoch+timedelta(seconds=t)))
+			current_date = str(round_time(J2000+timedelta(seconds=t)))
 		except OverflowError:
 			current_date = '>10000' if 0 < t else '<0'
 		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
