@@ -30,6 +30,25 @@
 		}
 	},
 	{
+		"name": "55565 2002 AW197",
+		"class": "TNO",
+		"radius": 384e3,
+		"albedo": 0.112,
+		"orbit": {
+			"parent": "sun",
+			"sma": "47.042*au",
+			"e": 0.13009,
+			"i": "24.451*deg",
+			"lan": "297.606*deg",
+			"aop": "297.494*deg",
+			"man": "294.532*deg",
+			"epoch": "31 May 2020"
+		},
+		"rotation": {
+			"period": "8.87*hour"
+		}
+	},
+	{
 		"name": "90377 Sedna",
 		"class": "TNO",
 		"mass": 9e20,
