@@ -1605,7 +1605,7 @@ class System:
 
 		plt.show()
 
-	def grav_sim(self, focus = None, res = 10000, p=25, skip=100) -> None:
+	def grav_sim(self, focus: Body = None, res = 10000, p=25, skip=100) -> None:
 		"""Model newtonian gravity"""
 		# from time import time
 		# solar_system_object.grav_sim()
