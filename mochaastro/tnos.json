@@ -2,7 +2,7 @@
 	{
 		"name": "50000 Quaoar",
 		"class": "TNO",
-		"mass": 1.4e21,
+		"mass": 1.2e21,
 		"radius": 5.55e5,
 		"albedo": 0.109,
 		"orbit": {
@@ -16,7 +16,10 @@
 			"epoch": "9 August 2022"
 		},
 		"rotation": {
-			"period": "8.84*hour"
+			"period": "8.84*hour",
+			"tilt": "13.6*deg",
+			"ra": "258.47*deg",
+			"dec": "54.14*deg"
 		},
 		"atmosphere": {
 			"surface_pressure": "10e-9*atm",
@@ -49,8 +52,8 @@
 	{
 		"name": "90482 Orcus",
 		"class": "TNO",
-		"mass": 6.41e20,
-		"radius": 4.55e5,
+		"mass": 6.348e20,
+		"radius": 4.585e5,
 		"albedo": 0.231,
 		"orbit": {
 			"parent": "sun",
@@ -69,7 +72,7 @@
 	{
 		"name": "120347 Salacia",
 		"class": "TNO",
-		"mass": 4.38e20,
+		"mass": 4.922e20,
 		"radius": 4.27e5,
 		"albedo": 0.044,
 		"orbit": {
@@ -91,7 +94,7 @@
 		"class": "dwarf planet",
 		"mass": 1.303e22,
 		"radius": 1.1883e6,
-		"albedo": 0.6,
+		"albedo": 0.72,
 		"orbit": {
 			"parent": "sun",
 			"sma": "39.4450697257358*au",
@@ -104,7 +107,7 @@
 		},
 		"rotation": {
 			"period": "6.38723*day",
-			"tilt": 2.1386,
+			"tilt": "122.53*deg",
 			"ra": "312.99*deg",
 			"dec": "6.16*deg"
 		},
@@ -125,7 +128,7 @@
 		"class": "dwarf planet",
 		"mass": 4.006e21,
 		"radius": 8e5,
-		"albedo": 0.51,
+		"albedo": 0.33,
 		"orbit": {
 			"parent": "sun",
 			"sma": "42.90830758797247*au",
@@ -137,8 +140,8 @@
 			"epoch": "25 February 2023"
 		},
 		"rotation": {
-			"period": "3.9154*hour",
-			"tilt": "126*deg",
+			"period": "3.91541*hour",
+			"tilt": "80*deg",
 			"ra": "282.6*deg",
 			"dec": "-13*deg"
 		}
@@ -146,9 +149,9 @@
 	{
 		"name": "136199 Eris",
 		"class": "dwarf planet",
-		"mass": 1.66e22,
+		"mass": 1.6466e22,
 		"radius": 1.163e6,
-		"albedo": 0.96,
+		"albedo": 0.99,
 		"orbit": {
 			"parent": "sun",
 			"sma": "68.14536545526268*au",
@@ -160,15 +163,15 @@
 			"epoch": "25 February 2023"
 		},
 		"rotation": {
-			"period": "25.9*hour"
+			"period": "15.786*day"
 		}
 	},
 	{
 		"name": "136472 Makemake",
 		"class": "dwarf planet",
-		"mass": 4.4e21,
+		"mass": 3.1e21,
 		"radius": 7.15e5,
-		"albedo": 0.81,
+		"albedo": 0.74,
 		"orbit": {
 			"parent": "sun",
 			"sma": "45.26449818092681*au",
@@ -212,8 +215,8 @@
 	{
 		"name": "307261 2002 MS4",
 		"class": "TNO",
-		"radius": 3.63e5,
-		"albedo": 0.051,
+		"radius": 4e5,
+		"albedo": 0.039,
 		"orbit": {
 			"parent": "sun",
 			"sma": "41.84184797471185*au",
@@ -223,6 +226,9 @@
 			"aop": "212.9182840100322*deg",
 			"man": "228.7172381090813*deg",
 			"epoch": "25 February 2023"
+		},
+		"rotation": {
+			"period": "7.33*hour"
 		}
 	}
 ]
