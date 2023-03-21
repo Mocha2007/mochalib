@@ -13,12 +13,12 @@ from typing import Callable, Dict, Optional, Tuple
 
 # constants
 J2000 = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
+SQRT2 = sqrt(2)
 
-g = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
+GRAV = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
 c = 299792458 # m/s; exact; speed of light
 L_0 = 3.0128e28 # W; exact; zero point luminosity
 L_sun = 3.828e26 # W; exact; nominal solar luminosity
-SQRT2 = sqrt(2)
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute
@@ -1130,7 +1130,7 @@ class Body:
 	@property
 	def gravbinding(self) -> float:
 		"""gravitational binding energy (J)"""
-		return 3*g*self.mass**2/(5*self.radius)
+		return 3*GRAV*self.mass**2/(5*self.radius)
 
 	@property
 	def mass(self) -> float:
@@ -1202,7 +1202,7 @@ class Body:
 	@property
 	def mu(self) -> float:
 		"""Gravitational parameter (m^3/s^2)"""
-		return g * self.mass
+		return GRAV * self.mass
 
 	@property
 	def name(self) -> str:
@@ -1283,8 +1283,7 @@ class Body:
 	@property
 	def synchronous(self) -> float:
 		"""SMA of synchronous orbit (m)"""
-		mu = g*self.mass
-		return (mu*self.rotation.p**2/4/pi**2)**(1/3)
+		return (self.mu*self.rotation.p**2/4/pi**2)**(1/3)
 
 	# double underscore methods
 	def __gt__(self, other) -> bool:
@@ -1359,9 +1358,8 @@ class Body:
 
 	def force_between(self, other, t: float = 0) -> float:
 		"""Force between two bodies at time t (N)"""
-		m1, m2 = self.mass, other.mass
 		r = self.orbit.distance_to(other.orbit, t)
-		return g*m1*m2/r**2
+		return self.mu * other.mass/r**2
 
 	def hohmann(self, inner: Orbit, outer: Orbit) -> float:
 		"""Hohmann transfer delta-v (m/s)"""
@@ -1619,7 +1617,7 @@ class System:
 		body_x = [list(elem[:3]) for elem in body_xv]
 		body_v = [list(elem[3:]) for elem in body_xv]
 		body_a = [[0, 0, 0] for _ in bodies]
-		body_mass_cache = [b.mass for b in bodies]
+		body_mu_cache = [b.mu for b in bodies]
 		xs = []
 		# start = time()
 		# compute positions
@@ -1643,7 +1641,7 @@ class System:
 						continue
 					dx = tuple(other_body_x[dim] - body_x[bi][dim] for dim in range(3))
 					r = hypot(*dx)
-					a = g * body_mass_cache[other_body_i] / (r*r)
+					a = body_mu_cache[other_body_i] / (r*r)
 					for dim in range(3):
 						body_a[bi][dim] += a * dx[dim] / r
 		# print(time() - start)
