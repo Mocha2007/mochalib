@@ -6,7 +6,7 @@
 		"radius": "2/3*sun.radius",
 		"luminosity": "1/8*sun.luminosity",
 		"temperature": "4185",
-		"notes": "universe_sim(search('namei'))"
+		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])"
 	},
 	{
 		"name": "Ara",
