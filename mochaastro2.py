@@ -1561,11 +1561,13 @@ class System:
 		ax.set_ylabel('y (m)')
 		ax.set_zlabel('z (m)')
 		ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+		ax.text(0, 0, 0, self.parent.name, size=8, color='k', zorder=4)
 		for body in self.bodies:
 			cs = [body.orbit.cartesian(t*body.orbit.p/n) for t in range(n)]
 			xs, ys, zs, vxs, vys, vzs = zip(*cs)
 			ax.plot(xs, ys, zs, color='k', zorder=1)
 			ax.scatter(xs[0], ys[0], zs[0], marker='o', s=15, zorder=3)
+			ax.text(xs[0], ys[0], zs[0], body.name, size=8, color='k', zorder=4)
 
 		axisEqual3D(ax)
 		plt.show()
