@@ -1611,7 +1611,7 @@ class System:
 
 		plt.show()
 
-	def grav_sim(self, res = 100, p=25) -> None:
+	def grav_sim(self, res = 1000, p=25, skip=10) -> None:
 		"""I don't know why this doesn't work, but it doesn't..."""
 		# solar_system_object.grav_sim()
 		bodies = list(self.bodies) + [self.parent]
@@ -1653,7 +1653,7 @@ class System:
 		ax.set_zlabel('z (m)')
 		# ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
 		for (p_i, planet_coords) in enumerate(list(zip(*xs))):
-			x, y, z = zip(*planet_coords)
+			x, y, z = zip(*planet_coords[::skip])
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
 			# ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
