@@ -69,13 +69,14 @@
 		"albedo": 0.12,
 		"orbit": {
 			"parent": "earth",
-			"sma": 7.84e8,
-			"e": 0.254,
-			"i": 0.1,
-			"lan": 5.2,
-			"aop": 0.6,
-			"man": 5.6,
-			"epoch": "1 January 2004"
-		}
+			"sma": 736547.16618e3,
+			"e": 0.177721456,
+			"i": "50.6946864*deg",
+			"lan": "100.9859742*deg",
+			"aop": "244.4599096*deg",
+			"man": "234.7643857903*deg",
+			"epoch": "26 July 2018"
+		},
+		"notes": "updated with https://www.projectpluto.com/pluto/mpecs/xl8d89e.htm#elements"
 	}
 ]
