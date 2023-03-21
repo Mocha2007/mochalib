@@ -629,7 +629,7 @@ class Atmosphere:
 			'CO2': 1.82 / (391e-6 - 278e-6),
 			'N2O': 0.17 / (324e-9 - 265e-9),
 		}
-		return sum(ghg[i] * min(1, self.partial_pressure(i)/atm) for i in ghg if i in self.composition)
+		return sum(ghg[i] * self.partial_pressure(i)/atm for i in ghg if i in self.composition) * self.surface_pressure / atm
 
 	@property
 	def mesopause(self) -> float:
@@ -824,12 +824,15 @@ class Body:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
 		# VENUS TARGET = 737
 		# EARTH TARGET = 287.91
-		# todo: remove reliance on the **0.4 and the min() bits, they don't really make sense..
+		# MARS TARGET = 213
+		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
 		# maybe try fitting the min() to arctan()???
 		gh = self.atmosphere.greenhouse
 		insolation = self.star.radiation_pressure_at(self.orbit.a)
-		# print(self.temp, gh, insolation)
-		return self.temp * (1 + (gh / insolation)**0.4)
+		C1 = 1.58745
+		C2 = 0.0652782
+		# print(self.temp, gh/insolation)
+		return self.temp * C1 * (gh / insolation)**C2
 
 	# physical properties
 	@property
