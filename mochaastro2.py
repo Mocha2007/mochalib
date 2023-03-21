@@ -235,7 +235,7 @@ class Orbit:
 		# 2 GOOD eccentric anomaly
 		E = self.eccentric_anomaly(t)
 		# 3 true anomaly
-		nu = self.true_anomaly(t)
+		nu = self.true_anomaly(t, E)
 		# 4 distance to central body
 		a, e = self.a, self.e
 		r_c = a*(1-e*cos(E))
@@ -560,10 +560,11 @@ class Orbit:
 		raise ValueError(errorstring)
 	"""
 
-	def true_anomaly(self, t: float = 0) -> float:
+	def true_anomaly(self, t: float = 0, ecc_anom_cache = None) -> float:
 		"""True anomaly (rad)"""
 		# ~8μs avg.
-		E, e = self.eccentric_anomaly(t), self.e
+		e = self.e
+		E = self.eccentric_anomaly(t) if ecc_anom_cache is None else ecc_anom_cache
 		return 2 * atan2(sqrt(1+e) * sin(E/2), sqrt(1-e) * cos(E/2))
 
 	def v_at(self, r: float) -> float:
