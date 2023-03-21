@@ -42,7 +42,11 @@ gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
 N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
-# functions
+# simple functions
+def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
+	return (apo+peri)/2, (apo-peri)/(apo+peri)
+
+
 def axisEqual3D(ax: Axes) -> None:
 	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
@@ -1712,10 +1716,6 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
 	return out # .plot2d()
 
 
-def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
-	return (apo+peri)/2, (apo-peri)/(apo+peri)
-
-
 def keplerian(parent: Body, cartesian: Tuple[float, float, float, float, float, float]) -> Orbit:
 	"""Get keplerian orbital parameters (a, e, i, O, o, m)"""
 	# https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
@@ -1771,49 +1771,6 @@ def keplerian(parent: Body, cartesian: Tuple[float, float, float, float, float, 
 		'aop': omega,
 		'man': M,
 	})
-
-
-def plot_delta_between(orbit1: Orbit, orbit2: Orbit):
-	"""Plot system with pyplot"""
-	resolution = 100
-	orbits = 8
-	limit = max([orbit1, orbit2], key=lambda x: x.apo).apo*2
-	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
-
-	fig = plt.figure(figsize=(7, 7))
-	ax = plt.axes(projection='3d')
-	ax.set_title('Body Delta')
-	ax.set_xlabel('dx (m)')
-	ax.set_ylabel('dy (m)')
-	ax.set_zlabel('dz (m)')
-	ax.set_xlim(-limit, limit)
-	ax.set_ylim(-limit, limit)
-	ax.set_zlim(-limit, limit)
-	ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
-	b1s = [orbit1.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
-	b2s = [orbit2.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
-	cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
-	xs, ys, zs, vxs, vys, vzs = zip(*cs)
-	ax.plot(xs, ys, zs, color='k', zorder=1)
-
-	plt.show()
-
-
-def plot_distance(orbit1: Orbit, orbit2: Orbit):
-	"""Plot distance between two bodies over several orbits"""
-	resolution = 1000
-	orbits = 8
-	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
-
-	plt.figure(figsize=(7, 7))
-	plt.title('Body Delta')
-	plt.xlabel('time since epoch (s)')
-	plt.ylabel('distance (m)')
-	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
-	xs = [orbit1.distance_to(orbit2, t) for t in ts]
-	plt.plot(ts, xs, color='k')
-
-	plt.show()
 
 
 def distance_audio(orbit1: Orbit, orbit2: Orbit):
@@ -1906,6 +1863,49 @@ def load_data(seed: dict) -> dict:
 			universe_data[obj['name']] = convert_body(obj, universe_data, (Star if obj['class'] == 'star' else Body))
 	warnings(universe_data)
 	return universe_data
+
+
+def plot_delta_between(orbit1: Orbit, orbit2: Orbit):
+	"""Plot system with pyplot"""
+	resolution = 100
+	orbits = 8
+	limit = max([orbit1, orbit2], key=lambda x: x.apo).apo*2
+	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
+
+	fig = plt.figure(figsize=(7, 7))
+	ax = plt.axes(projection='3d')
+	ax.set_title('Body Delta')
+	ax.set_xlabel('dx (m)')
+	ax.set_ylabel('dy (m)')
+	ax.set_zlabel('dz (m)')
+	ax.set_xlim(-limit, limit)
+	ax.set_ylim(-limit, limit)
+	ax.set_zlim(-limit, limit)
+	ax.scatter(0, 0, 0, marker='*', color='y', s=50, zorder=2)
+	b1s = [orbit1.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
+	b2s = [orbit2.cartesian(t*outerp/resolution) for t in range(orbits*resolution)]
+	cs = [[a-b for a, b in zip(b1, b2)] for b1, b2 in zip(b1s, b2s)]
+	xs, ys, zs, vxs, vys, vzs = zip(*cs)
+	ax.plot(xs, ys, zs, color='k', zorder=1)
+
+	plt.show()
+
+
+def plot_distance(orbit1: Orbit, orbit2: Orbit):
+	"""Plot distance between two bodies over several orbits"""
+	resolution = 1000
+	orbits = 8
+	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
+
+	plt.figure(figsize=(7, 7))
+	plt.title('Body Delta')
+	plt.xlabel('time since epoch (s)')
+	plt.ylabel('distance (m)')
+	ts = [(t*outerp/resolution) for t in range(orbits*resolution)]
+	xs = [orbit1.distance_to(orbit2, t) for t in ts]
+	plt.plot(ts, xs, color='k')
+
+	plt.show()
 
 
 def plot_grav_acc(body1: Body, body2: Body) -> None:
@@ -2003,9 +2003,8 @@ def stargen(m: float) -> Star:
 
 
 def test_functions() -> None:
-	print(str(earth.orbit))
-	print('~'*40)
-	print(str(keplerian(sun, earth.orbit.cartesian(0))))
+	universe_sim(sun)
+	solar_system_object.grav_sim()
 
 
 def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), selection: Body=None, smoothMotion=False) -> None:
