@@ -2355,6 +2355,10 @@ mercury = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 26000,
 		'surface_pressure': 5e-10,
+		'composition': { # appx.
+			'H2': .75,
+			'O2':  .25,
+		},
 	}),
 	'mass': 3.3011e23,
 	'radius': 2.4397e6,
@@ -2616,6 +2620,14 @@ jupiter = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 27000,
 		'surface_pressure': 7e5,
+		'composition': {
+			'H2':    .89,
+			'He':   .1,
+			'CH4':  .003,
+			'NH3':  .00026,
+			'C2H6': .000006,
+			'H2O':  .000004,
+		},
 	}),
 	'mass': 1.8982e27,
 	'radius': 6.9911e7,
@@ -2642,6 +2654,13 @@ saturn = Body(**{
 	'atmosphere': Atmosphere(**{
 		'scale_height': 59500,
 		'surface_pressure': 1.4e5,
+		'composition': {
+			'H2':    .963,
+			'He':   .0325,
+			'CH4':  .0045,
+			'NH3':  .000125,
+			'C2H6': .000007,
+		},
 	}),
 	'mass': 5.6834e26,
 	'radius': 5.8232e7,
@@ -2667,6 +2686,12 @@ uranus = Body(**{
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 27700,
+		'surface_pressure': 1e5, # arbitrary guess
+		'composition': {
+			'H2':    .83,
+			'He':   .15,
+			'CH4':  .023,
+		},
 	}),
 	'mass': 8.681e25,
 	'radius': 2.5362e7,
@@ -2692,6 +2717,12 @@ neptune = Body(**{
 	}),
 	'atmosphere': Atmosphere(**{
 		'scale_height': 19700,
+		'surface_pressure': 1e5, # arbitrary guess
+		'composition': {
+			'H2':    .8,
+			'He':   .19,
+			'CH4':  .015,
+		},
 	}),
 	'mass': 1.02413e26,
 	'radius': 2.4622e7,
