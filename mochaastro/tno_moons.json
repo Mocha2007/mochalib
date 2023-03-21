@@ -97,5 +97,21 @@
 			"period": "0.4295*day",
 			"tilt": "110*deg"
 		}
+	},
+	{
+		"name": "Ilmarë",
+		"class": "moon",
+		"mass": 2.2e19,
+		"radius": 178e3,
+		"albedo": 0.1,
+		"orbit": {
+			"parent": "174567 Varda",
+			"sma": 4809e3,
+			"e": 0.0181,
+			"i": "101*deg",
+			"lan": 0,
+			"aop": 0,
+			"man": 0
+		}
 	}
 ]

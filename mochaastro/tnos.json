@@ -212,6 +212,26 @@
 		}
 	},
 	{
+		"name": "174567 Varda",
+		"class": "TNO",
+		"mass": 2.45e20,
+		"radius": 370e3,
+		"albedo": 0.1,
+		"orbit": {
+			"parent": "sun",
+			"sma": "46.11*au",
+			"e": 0.14315,
+			"i": "21.511*deg",
+			"lan": "184.151*deg",
+			"aop": "180.072*deg",
+			"man": "275.208*deg",
+			"epoch": "31 May 2020"
+		},
+		"rotation": {
+			"period": "5.61*hour"
+		}
+	},
+	{
 		"name": "225088 Gonggong",
 		"class": "TNO",
 		"mass": 1.75e21,
