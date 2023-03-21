@@ -1679,6 +1679,8 @@ class Tools:
 	@staticmethod
 	def filter(*filters: Callable[[Iterable[Body]], Iterable[Body]]) -> Set[Body]:
 		"""eg. Tools.filter(Tools.TNOs)"""
+		# wanna find the average mass of a TNO?
+		# (lambda *x: sum(x)/len(x))(*(x.mass for x in Tools.filter(Tools.TNOs) if 'mass' in x.properties))
 		bodies = universe.values()
 		for f in filters:
 			bodies = filter(f, bodies)
