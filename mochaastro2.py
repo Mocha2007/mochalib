@@ -624,7 +624,7 @@ class Atmosphere:
 		"""Increase in radiative forcing caused by greenhouse gases (W/m^2)"""
 		ghg = {
 			# https://en.wikipedia.org/wiki/IPCC_list_of_greenhouse_gases
-			# in K / (W/m^2)
+			# in W/m^2 per mol fraction
 			'CH4': 0.48 / (1801e-9 - 700e-9),
 			'CO2': 1.82 / (391e-6 - 278e-6),
 			'N2O': 0.17 / (324e-9 - 265e-9),
