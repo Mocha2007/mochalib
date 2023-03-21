@@ -825,12 +825,14 @@ class Body:
 		# VENUS TARGET = 737
 		# EARTH TARGET = 287.91
 		# MARS TARGET = 213
+		# TITAN TARGET = 94 (DO NOT USE)
+		# https://www.desmos.com/calculator/p1dobf2cvm
 		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
 		# maybe try fitting the min() to arctan()???
 		gh = self.atmosphere.greenhouse
 		insolation = self.star.radiation_pressure_at(self.orbit.a)
-		C1 = 1.58732
-		C2 = 0.0652868
+		C1 = 1.58725
+		C2 = 0.0653011
 		# print(self.temp, gh/insolation)
 		return self.temp * C1 * (gh / insolation)**C2
 
