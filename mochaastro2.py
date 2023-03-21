@@ -1,18 +1,22 @@
-from math import acos, atan, atan2, cos, erf, exp, hypot, inf, isfinite, log, log10, pi, sin, sqrt, tan
+"""MochaAstro
+An astronomy library used to compute various things for my conworlds.
+"""
+# pylint: disable=eval-used, no-member, unused-import, unused-variable
+# pylint bugs out with pygame, and I want var names for some unused vars,
+# in case i need them in the future
+from datetime import datetime, timedelta
+from math import acos, atan, atan2, cos, erf, exp, hypot, inf, \
+	isfinite, log, log10, pi, sin, sqrt, tan
+from typing import Callable, Dict, Iterable, Optional, Set, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.patches import Circle, Patch
-from datetime import datetime, timedelta
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
-from typing import Callable, Dict, Iterable, Optional, Set, Tuple
-# pylint: disable=E1101,W0612
-# module has no member; unused variable
-# pylint bugs out with pygame, and I want var names for some unused vars,
-# in case i need them in the future
 
 # constants
-J2000 = datetime(2000, 1, 1, 11, 58, 55, 816) # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
+# https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
+J2000 = datetime(2000, 1, 1, 11, 58, 55, 816)
 SQRT2 = sqrt(2)
 
 GRAV = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
@@ -44,17 +48,20 @@ N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 # simple functions
 def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
+	"""Converts an apoapsis and periapsis (any units)
+	into a semimajor axis (same unit) and eccentricity (dimensionless)"""
 	return (apo+peri)/2, (apo-peri)/(apo+peri)
 
 
 def axisEqual3D(ax: Axes) -> None:
-	extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
+	"""Forces each axis to use the same scale"""
+	extents = np.array([getattr(ax, f'get_{dim}lim')() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
 	maxsize = max(abs(sz))
 	r = maxsize/2
 	for ctr, dim in zip(centers, 'xyz'):
-		getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
+		getattr(ax, f'set_{dim}lim')(ctr - r, ctr + r)
 
 
 def blagg(n: int,
@@ -63,13 +70,16 @@ def blagg(n: int,
 		base: float = 1.73809) -> float:
 	"""https://en.wikipedia.org/wiki/Titius%E2%80%93Bode_law#Blagg_Formulation
 	https://www.desmos.com/calculator/fpnxyw41r3"""
-	f = lambda psi: cos(psi)/(3-cos(2*psi)) + 1/(6-4*cos(2*(psi-30*deg)))
+	def f(psi: float) -> float:
+		return cos(psi)/(3-cos(2*psi)) + 1/(6-4*cos(2*(psi-30*deg)))
 	return A * base**n * (B + f(a + n*b))
 
 
-def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) -> Callable[[float], float]:
+def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
+		-> Callable[[float], float]:
 	"""Create a linear map from one interval to another"""
-	return lambda x: (x - interval1[0]) / (interval1[1] - interval1[0]) * (interval2[1] - interval2[0]) + interval2[0]
+	return lambda x: (x - interval1[0]) / (interval1[1] - interval1[0]) \
+		* (interval2[1] - interval2[0]) + interval2[0]
 
 
 def resonance_probability(mismatch: float, outer: int) -> float:
@@ -84,6 +94,8 @@ def synodic(p1: float, p2: float) -> float:
 
 # classes
 class Orbit:
+	"""Stores Keplerian orbital elements,
+	and processes them through its methods."""
 	def __init__(self, **properties) -> None:
 		self.properties = properties
 
@@ -105,6 +117,7 @@ class Orbit:
 	@property
 	def copy(self):
 		# type: (Orbit) -> Orbit
+		"""return a deep copy of this Orbit object"""
 		from copy import deepcopy
 		return deepcopy(self)
 
@@ -115,7 +128,8 @@ class Orbit:
 
 	@property
 	def epoch_offset(self) -> float:
-		"""Based on the epoch in properties, return the time in seconds to subtract when computing position"""
+		"""Based on the epoch in properties,
+		return the time in seconds to subtract when computing position"""
 		if 'epoch' not in self.properties:
 			return 0
 		return (datetime.strptime(self.properties['epoch'], '%d %B %Y') - J2000).total_seconds()
@@ -144,10 +158,11 @@ class Orbit:
 	def mean_longitude(self) -> float:
 		"""Mean Longitude (radians)"""
 		return self.lan + self.aop + self.man
-	
+
 	@property
 	def orbit_tree(self):
 		# type: (Orbit) -> Tuple[Body, ...]
+		"""Get ordered list of parent bodies"""
 		if 'parent' not in self.properties:
 			return tuple()
 		o = [self.parent]
@@ -263,7 +278,8 @@ class Orbit:
 		# print([i/au for i in o], [i/au for i in r])
 		return r + r_
 
-	def close_approach(self, other, t: float = 0, n: float = 1, delta_t_tolerance: float = 1, after_only=True) -> float:
+	def close_approach(self, other, t: float = 0, n: float = 1, \
+		    delta_t_tolerance: float = 1, after_only=True) -> float:
 		"""Get close approach time between two orbits after epoch t, searching +/-n orbits of self. (s)"""
 		# ~5ms total to compute, at least for earth -> mars
 		delta_t = self.p * n
@@ -313,7 +329,7 @@ class Orbit:
 			dmax += self.apo + other.apo
 			return dmin, dmax
 		raise NotImplementedError('this type of orbital relationship is not supported')
-		
+
 
 	def distance_to(self, other, t: float) -> float:
 		# type: (Orbit, Orbit, float) -> float
@@ -578,6 +594,7 @@ class Orbit:
 
 
 class Rotation:
+	"""Stores information about the body's rotation and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
 
@@ -609,6 +626,7 @@ class Rotation:
 
 
 class Atmosphere:
+	"""Stores information about the body's atmosphere and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
 
@@ -633,7 +651,8 @@ class Atmosphere:
 			'CO2': 1.82 / (391e-6 - 278e-6),
 			'N2O': 0.17 / (324e-9 - 265e-9),
 		}
-		return sum(ghg[i] * self.partial_pressure(i)/atm for i in ghg if i in self.composition) * self.surface_pressure / atm
+		return sum(val * self.partial_pressure(key)/atm for (key, val) in ghg.items() \
+	     	if key in self.composition) * self.surface_pressure / atm
 
 	@property
 	def mesopause(self) -> float:
@@ -686,12 +705,14 @@ class Atmosphere:
 
 
 class Body:
+	"""Stores information about celestial bodies and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
 
 	# orbital properties
 	@property
 	def orbit(self) -> Orbit:
+		"""Returns orbit object."""
 		return self.properties['orbit']
 
 	@property
@@ -780,6 +801,7 @@ class Body:
 	# rotation properties
 	@property
 	def rotation(self) -> Rotation:
+		"""Returns the rotation object."""
 		return self.properties['rotation']
 
 	@property
@@ -821,6 +843,7 @@ class Body:
 
 	@property
 	def atmosphere(self) -> Atmosphere:
+		"""Returns the atmosphere object."""
 		return self.properties['atmosphere']
 
 	@property
@@ -939,9 +962,9 @@ class Body:
 			if planet_name in {'Moon', 'Sun'}:
 				continue
 			if self.orbit.peri < body.orbit.apo and body.orbit.peri < self.orbit.apo:
-				categories.add('{} Crosser'.format(planet_name))
+				categories.add(f'{planet_name} Crosser')
 			if self.orbit.get_resonance(body.orbit, 2) == (1, 1): # even the worst matches for jupiter trojans are just over 2 sigma certainty
-				categories.add('{} Trojan'.format(planet_name))
+				categories.add(f'{planet_name} Trojan')
 		# NEO
 		if self.orbit.peri < 1.3*au:
 			categories.add('NEO')
@@ -1003,7 +1026,7 @@ class Body:
 			resonance = self.orbit.get_resonance(jupiter.orbit)
 			if resonance in res_groups:
 				categories.add('Resonant Asteroid')
-				categories.add('{} Asteroid'.format(res_groups[resonance]))
+				categories.add(f'{res_groups[resonance]} Asteroid')
 		elif self.orbit.a < neptune.orbit.a:
 			# https://en.wikipedia.org/wiki/Centaur_(small_Solar_System_body)#Discrepant_criteria
 			categories.add('Centaur')
@@ -1158,11 +1181,11 @@ class Body:
 		if assume:
 			string += '\n(Assuming Earthlike composition)'
 		if any([Fe, Ni]):
-			string += '\nBase Metals\n\tFe: {}\n\tNi: {}'.format(Fe, Ni)
+			string += f'\nBase Metals\n\tFe: {Fe}\n\tNi: {Ni}'
 		if any([Pt, Au, Ag]):
-			string += '\nPrecious\n\tAu: {}\n\tAg: {}\n\tPt: {}'.format(Au, Ag, Pt)
+			string += f'\nPrecious\n\tAu: {Au}\n\tAg: {Ag}\n\tPt: {Pt}'
 		if any([Cu, U]):
-			string += '\nOther\n\tAl: {}\n\tCo: {}\n\tCu: {}\n\tU: {}'.format(Al, Co, Cu, U)
+			string += f'\nOther\n\tAl: {Al}\n\tCo: {Co}\n\tCu: {Cu}\n\tU: {U}'
 		return string
 
 	@property
@@ -1207,7 +1230,7 @@ class Body:
 			string += '\n(Assuming Earthlike composition)'
 		string += '\n(Times assume earthlike extraction rates)'
 		for sym, (mass, time) in sorted(list(ms.items()), key=lambda x: x[1][0], reverse=True):
-			string += '\n\t{}: {} ({})'.format(sym, mass, time)
+			string += f'\n\t{sym}: {mass} ({time})'
 		return string
 
 	@property
@@ -1217,6 +1240,7 @@ class Body:
 
 	@property
 	def name(self) -> str:
+		"""Returns name of object, if available."""
 		return self.properties['name'] if 'name' in self.properties else str(self)
 
 	@property
@@ -1482,6 +1506,7 @@ class Body:
 
 # ty https://www.python-course.eu/python3_inheritance.php
 class Star(Body):
+	"""Star object, which is like body but with a few extra parameters."""
 	@property
 	def abs_mag(self) -> float:
 		"""Absolute Magnitude (dimensionless)"""
@@ -1676,6 +1701,7 @@ class System:
 
 
 class Tools:
+	"""Miscelleneous tools to filter and manage bodies."""
 	@staticmethod
 	def filter(*filters: Callable[[Iterable[Body]], Iterable[Body]]) -> Set[Body]:
 		"""eg. Tools.filter(Tools.TNOs)"""
@@ -1688,12 +1714,14 @@ class Tools:
 
 	@staticmethod
 	def TNOs(b: Body) -> bool:
+		"""A filter to extract TNOs"""
 		return 'orbit' in b.properties and neptune.orbit.a < b.orbit.a and \
 			'parent' in b.orbit.properties and b.orbit.parent == sun
 
 
 # functions
 def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
+	"""Procedurally generate a star system."""
 	from random import randint, uniform
 	# from time import time
 	# constants
@@ -1791,12 +1819,12 @@ def keplerian(parent: Body, cartesian: Tuple[float, float, float, float, float, 
 
 
 def distance_audio(orbit1: Orbit, orbit2: Orbit):
-	from mochaaudio import pcm_to_wav, play_file
 	"""Play wave of plot_distance
 	Encoding   | Signed 16-bit PCM
 	Byte order | little endian
 	Channels   | 1 channel mono
 	"""
+	from mochaaudio import pcm_to_wav, play_file
 	print("* recording")
 
 	# begin plot_distance
@@ -1823,6 +1851,7 @@ def distance_audio(orbit1: Orbit, orbit2: Orbit):
 
 
 def load_data(seed: dict) -> dict:
+	"""Load the data stored in the .json files."""
 	import os
 	from json import load
 
@@ -1866,12 +1895,12 @@ def load_data(seed: dict) -> dict:
 			# check for missing albedo data
 			if 'albedo' not in body.properties:
 				if 6e19 < body.mass < 1.5e29 and 'orbit' in body.properties and body.orbit.a < 600*au:
-					print('Albedo data missing from {}, should be easy to find'.format(name))
+					print(f'Albedo data missing from {name}, should be easy to find')
 			# check for missing atm data
 			elif 'atmosphere' not in body.properties and \
 					'mass' in body.properties and body.atm_retention < .131 and \
 					body.orbit.parent == body.star and body.orbit.a < 67*au:
-				print('Atmosphere data missing from {}, atmosphere predicted'.format(name))
+				print(f'Atmosphere data missing from {name}, atmosphere predicted')
 
 	loc = os.path.dirname(os.path.abspath(__file__)) + '\\mochaastro'
 	universe_data = seed
@@ -1984,6 +2013,7 @@ def plot_grav_acc_vector(body1: Body, body2: Body) -> None:
 
 
 def search(name: str) -> Body:
+	"""Try to find a body with the given name."""
 	# try exact match
 	if name in universe:
 		return universe[name]
@@ -2022,6 +2052,7 @@ def stargen(m: float) -> Star:
 
 
 def test_functions() -> None:
+	"""Debug."""
 	universe_sim(sun)
 	solar_system_object.grav_sim()
 
@@ -2034,7 +2065,6 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 	import pygame
 	from pygame import gfxdraw # DO NOT REMOVE THIS IT BREAKS SHIT
 	from time import sleep, time
-	from math import hypot
 	from mochamath import dist
 	from mochaunits import round_time
 
@@ -2072,7 +2102,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 		x, y = coords
 		return -buffer <= x <= width+buffer and -buffer <= y <= height+buffer
 
-	def are_onscreen(points: tuple, buffer: int=0) -> bool:
+	def are_onscreen(points: tuple) -> bool:
 		"""return true if any onscreen"""
 		for point in points:
 			if is_onscreen(point):
@@ -2230,9 +2260,9 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 				ke_str = ''
 				if 'mass' in body.properties:
 					ke = 1/2 * Mass(body.mass) * (Length(mag)/Time(1))**2
-					ke_str = '\nKE = {}'.format(pretty_dim(ke, 0))
+					ke_str = f'\nKE = {pretty_dim(ke, 0)}'
 				# mag
-				text('{}{}'.format(pretty_dim(Length(mag)/Time(1)), ke_str), vcoords, font_normal, red)
+				text(f'{pretty_dim(Length(mag)/Time(1))}{ke_str}', vcoords, font_normal, red)
 			show_body(body, coords, name)
 			# change selection?
 			if hovering:
@@ -2247,7 +2277,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 			current_date = str(round_time(J2000+timedelta(seconds=t)))
 		except OverflowError:
 			current_date = '>10000' if 0 < t else '<0'
-		information = current_date + ' (x{0}){1}'.format(int(fps*timerate), ' [PAUSED]' if paused else '') + '\n' + \
+		information = current_date + f' (x{int(fps*timerate)}){" [PAUSED]" if paused else ""}\n' + \
 					'Width: '+pretty_dim(Length(2*current_a, 'astro'))
 		text(information, (0, height-font_large*2), font_large, white, True)
 		# print FPS
@@ -2302,7 +2332,7 @@ def universe_sim(parent: Body, t: float=0, size: Tuple[int, int]=(1024, 640), se
 		current_a = (max_a + current_a)/2 if smoothMotion else max_a
 		current_coords = tuple((i + j)//2 for i, j in zip(selection_coords, current_coords)) if smoothMotion else selection_coords
 		# refresh title
-		title = '{}, {} System - {}'.format(inverse_universe[selection], inverse_universe[parent], current_date)
+		title = f'{inverse_universe[selection]}, {inverse_universe[parent]} System - {current_date}'
 		pygame.display.set_caption(title)
 		# sleep
 		wait_time = 1/fps - (time() - start_time)
@@ -2764,7 +2794,8 @@ solar_system = {
 	'Uranus': uranus,
 	'Neptune': neptune,
 }
-solar_system_object = System(sun, *(i for i in solar_system.values() if i is not sun and i is not moon))
+solar_system_object = System(sun, *(i for i in solar_system.values() \
+				    if i is not sun and i is not moon))
 universe = load_data(solar_system.copy()) # type: Dict[str, Body]
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
