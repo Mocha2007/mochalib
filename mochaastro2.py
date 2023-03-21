@@ -883,8 +883,8 @@ class Body:
 				if 10*earth.mass < self.mass:
 					categories.add('Mega-Earth')
 				try:
-					temperature = (self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1) * self.temp
-					if earth.atmosphere.greenhouse * earth.temp < temperature < 300: # death valley avg. 298K
+					temperature = self.greenhouse_temp if 'atmosphere' in self.properties else self.temp
+					if earth.greenhouse_temp < temperature < 300: # death valley avg. 298K
 						# https://en.wikipedia.org/wiki/Desert_planet
 						categories.add('Desert Planet')
 					elif temperature < 260 and .9 < self.albedo:
@@ -1250,7 +1250,7 @@ class Body:
 		"""Space Engine-like classifier"""
 		temperature = self.temp
 		try:
-			temperature *= self.atmosphere.greenhouse
+			temperature = self.greenhouse_temp
 		except KeyError:
 			pass
 		if 800 < temperature:
@@ -1525,16 +1525,16 @@ class Star(Body):
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
 
 	def radiation_pressure_at(self, dist: float) -> float:
-		"""Stellar radiation pressure at a distance"""
+		"""Stellar radiation pressure at a distance (W/m^2)"""
 		wattage = self.luminosity / sun.luminosity
-		return wattage * G_SC / (c*dist**2)
+		return G_SC * wattage / (dist/au)**2
 
 	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
-		"""Stellar radiation force on a planet at a time"""
+		"""Stellar radiation force on a planet at a time (W)"""
 		wattage = self.luminosity / sun.luminosity
-		dist = hypot(obj.orbit.cartesian(t)[:3]) / au
+		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
 		area = obj.area / 2
-		return wattage * G_SC / (c*dist**2) * area
+		return G_SC * wattage / dist**2 * area
 
 
 class System:
@@ -2426,7 +2426,7 @@ earth = Body(**{
 			'O2':  .20946,
 			'H2O':  .01,
 			'Ar':  .00934,
-			'CO2': 4.08e-4,
+			'CO2': 4.2e-4,
 			'Ne':  1.818e-5,
 			'He':  5.24e-6,
 			'CH4': 1.87e-6,
