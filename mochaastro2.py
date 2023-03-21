@@ -828,7 +828,7 @@ class Body:
 		# maybe try fitting the min() to arctan()???
 		gh = self.atmosphere.greenhouse
 		insolation = self.star.radiation_pressure_at(self.orbit.a)
-		print(self.temp, gh, insolation)
+		# print(self.temp, gh, insolation)
 		return self.temp * (1 + (gh / insolation)**0.4)
 
 	# physical properties
