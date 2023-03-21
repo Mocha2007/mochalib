@@ -5,7 +5,7 @@ from matplotlib.axes import Axes
 from matplotlib.patches import Circle, Patch
 from datetime import datetime, timedelta
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
-from typing import Callable, Dict, Optional, Tuple
+from typing import Callable, Dict, Iterable, Optional, Set, Tuple
 # pylint: disable=E1101,W0612
 # module has no member; unused variable
 # pylint bugs out with pygame, and I want var names for some unused vars,
@@ -1675,6 +1675,21 @@ class System:
 		plt.show()
 
 
+class Tools:
+	@staticmethod
+	def filter(*filters: Callable[[Iterable[Body]], Iterable[Body]]) -> Set[Body]:
+		"""eg. Tools.filter(Tools.TNOs)"""
+		bodies = universe.values()
+		for f in filters:
+			bodies = filter(f, bodies)
+		return set(bodies)
+
+	@staticmethod
+	def TNOs(b: Body) -> bool:
+		return 'orbit' in b.properties and neptune.orbit.a < b.orbit.a and \
+			'parent' in b.orbit.properties and b.orbit.parent == sun
+
+
 # functions
 def accrete(star_mass: float = 2e30, particle_n: int = 25000) -> System:
 	from random import randint, uniform
@@ -2748,7 +2763,7 @@ solar_system = {
 	'Neptune': neptune,
 }
 solar_system_object = System(sun, *(i for i in solar_system.values() if i is not sun and i is not moon))
-universe = load_data(solar_system.copy())
+universe = load_data(solar_system.copy()) # type: Dict[str, Body]
 # planet_nine.orbit.plot
 # distance_audio(earth.orbit, mars.orbit)
 # solar_system.sim()
