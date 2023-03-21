@@ -242,7 +242,7 @@ class Orbit:
 		# 5 get pos and vel vectors o and o_
 		mu = self.parent.mu
 		o = tuple(r_c*i for i in (cos(nu), sin(nu), 0))
-		o_ = tuple(((mu*a)**.5/r_c)*i for i in (-sin(E), (1-e**2)**.5*cos(E), 0))
+		o_ = tuple((sqrt(mu*a)/r_c)*i for i in (-sin(E), sqrt(1-e**2)*cos(E), 0))
 		# transform o, o_ into inertial frame
 		i = self.i
 		omega, Omega = self.aop, self.lan
