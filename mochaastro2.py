@@ -1652,6 +1652,7 @@ class System:
 			x, y, z = zip(*planet_coords)
 			ax.plot(x, y, z, color='k', zorder=p_i)
 			ax.scatter(x[0], y[0], z[0], marker='o', s=15, zorder=len(bodies) + p_i)
+			ax.text(*planet_coords[0], str(bodies[p_i]), size=5, zorder=1, color='k')
 			# ax.scatter(x[-1], y[-1], z[-1], marker='o', s=15, zorder=2*len(bodies) + p_i)
 
 		axisEqual3D(ax)
