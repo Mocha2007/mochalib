@@ -1,4 +1,4 @@
-from math import acos, atan, atan2, cos, erf, exp, hypot, inf, isfinite, log, log10, pi, sin, tan
+from math import acos, atan, atan2, cos, erf, exp, hypot, inf, isfinite, log, log10, pi, sin, sqrt, tan
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
@@ -322,7 +322,7 @@ class Orbit:
 		# ~6μs avg.
 		# get new anomaly
 		tau = 2*pi
-		tol = 1e-10
+		tol = 1e-8
 		e, p = self.e, self.p
 		# dt = day * t
 		M = (self.man + tau*t/p) % tau
@@ -332,7 +332,7 @@ class Orbit:
 		while 1: # ~2 digits per loop
 			E_ = M + e*sin(E)
 			if abs(E-E_) < tol:
-				return E
+				return E_
 			E = E_
 
 	def mean_anomaly_delta(self, t: float = 0) -> float:
@@ -564,7 +564,7 @@ class Orbit:
 		"""True anomaly (rad)"""
 		# ~8μs avg.
 		E, e = self.eccentric_anomaly(t), self.e
-		return 2 * atan2((1+e)**.5 * sin(E/2), (1-e)**.5 * cos(E/2))
+		return 2 * atan2(sqrt(1+e) * sin(E/2), sqrt(1-e) * cos(E/2))
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
