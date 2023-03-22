@@ -1,4 +1,7 @@
+"""Coin library for cheating at that one coin game lmao"""
+
 def change(n: float, total: int):
+	"""Figure out how to make the total with n coins"""
 	coins = []
 	while n > 0:
 		n = round(n, 2)
