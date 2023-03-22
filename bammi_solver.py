@@ -1,11 +1,13 @@
+"""AI to solve Bammi games"""
 from copy import deepcopy as copy
-from typing import List
+from typing import List, Set
 
 max_depth = 1
 
 tiles = []
 
 class Tile:
+	"""Board tile"""
 	def __init__(self, size: int, owner: int = -1):
 		self.max_size = size
 		self.current_size = 0
@@ -17,16 +19,19 @@ class Tile:
 		return "<Tile " + str(tiles.index(self)) + ">"
 	# non-static methods
 	def click(self):
+		"""Simulate click"""
 		if self.current_size == self.max_size:
 			self.explode()
 		else:
 			self.current_size += 1
 	def explode(self):
+		"""Explode tile"""
 		self.current_size = 1
 		for t in self.adjacent:
 			t.owner = self.owner
 			t.click()
 	def link(self, other): # other is Tile
+		"""Add an undirected edge between this node and another"""
 		self.adjacent.add(other)
 		other.adjacent.add(self)
 
