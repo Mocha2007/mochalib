@@ -92,7 +92,9 @@ disable=raw-checker-failed,
 		c-extension-no-member, # idc
 		import-outside-toplevel, # idc
 		invalid-name, # bugged; requires an underscore in variable names
-		pointless-string-statement # I use """ for multiline comments
+		pointless-string-statement, # I use """ for multiline comments
+		unused-wildcard-import, # If I'm using * I already don't care
+		wildcard-import # I know when to use this
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
