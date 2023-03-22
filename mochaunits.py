@@ -1,3 +1,4 @@
+"""Module to handle dimensional analysis"""
 from copy import deepcopy
 from math import floor, log10, pi
 from typing import Tuple
@@ -19,6 +20,7 @@ temperatures = {
 
 
 def get_si(value: float) -> Tuple[float, str]:
+	"""Get SI prefix and adjusted value"""
 	if value == 0:
 		return 0, prefixes[0]
 	index = floor(log10(value)/3)
@@ -35,7 +37,7 @@ def round_time(dt = None, round_to: int = 1):
 	Author: Thierry Husson 2012 - Use it as you want but don't blame me.
 	"""
 	import datetime
-	if dt == None:
+	if dt is None:
 		dt = datetime.datetime.now()
 	seconds = (dt.replace(tzinfo=None) - dt.min).seconds
 	rounding = (seconds+round_to/2) // round_to * round_to
@@ -48,10 +50,11 @@ def pretty_dim(multidim, rounding: int=3) -> str:
 	val = round(float(val), rounding)
 	if val % 1 == 0:
 		val = int(val)
-	return '{} {}'.format(val, unit)
+	return f'{val} {unit}'
 
 
 class Dimension:
+	"""Abstract dimension object"""
 	def __init__(self, value, *tags):
 		self.value = value
 		self.tags = set(tags)
@@ -59,6 +62,7 @@ class Dimension:
 	# properties
 	@property
 	def copy(self):
+		"""Returns a deep copy of this object"""
 		return deepcopy(self)
 
 	@property
@@ -117,7 +121,7 @@ class Dimension:
 		return self.multi ** other
 
 	def __repr__(self) -> str:
-		return '{}({}, *{})'.format(type(self).__name__, self.value, self.tags)
+		return f'{type(self).__name__}({self.value}, *{self.tags})'
 
 	def __rmul__(self, other):
 		return self * other
@@ -143,6 +147,7 @@ class Length(Dimension):
 	# properties
 	@property
 	def astro(self) -> str:
+		"""Get astronomically-used units"""
 		x = self.value
 		LD = 3.84402e8
 		au = 1.495978707e11
@@ -155,6 +160,7 @@ class Length(Dimension):
 
 	@property
 	def imperial(self) -> str:
+		"""Get imperial units"""
 		x = self.value
 		inch = 2.54e-2
 		ft = 0.3048
@@ -184,6 +190,7 @@ class Mass(Dimension):
 	# properties
 	@property
 	def astro(self) -> str:
+		"""Get astronomically-used units"""
 		x = self.value
 		m_m = 7.342e22
 		m_e = 5.97237e24
@@ -199,6 +206,7 @@ class Mass(Dimension):
 
 	@property
 	def imperial(self) -> str:
+		"""Get imperial units"""
 		x = self.value
 		lb = .45359237
 		oz = lb / 12
@@ -222,6 +230,7 @@ class Time(Dimension):
 	# properties
 	@property
 	def imperial(self) -> str:
+		"""Get imperial units"""
 		x = self.value
 		minute = 60
 		h = 60*minute
@@ -267,6 +276,7 @@ class Angle(Dimension):
 	# properties
 	@property
 	def degrees(self) -> str:
+		"""Get value in degrees, arcminutes, and arcseconds"""
 		x = self.value
 		deg = pi/180
 		arcmin = deg / 60
@@ -332,10 +342,12 @@ class Multidimension:
 
 	@property
 	def copy(self):
+		"""Returns a deep copy of self"""
 		return deepcopy(self)
 
 	@property
 	def inverse(self):
+		"""1/this"""
 		new = self.copy
 		new.value = 1/self.value
 		new.dimensions = {key: -value for key, value in self.dimensions.items()}
@@ -387,7 +399,7 @@ class Multidimension:
 		return Multidimension(self.value**other, {t: other*i for t, i in self.dimensions.items()}, *self.tags)
 
 	def __repr__(self) -> str:
-		return 'Multivalue({0}, {1}, *{2})'.format(self.value, self.dimensions, self.tags)
+		return f'Multivalue({self.value}, {self.dimensions}, *{self.tags})'
 
 	def __rtruediv__(self, other):
 		return Multidimension(other, {}, *self.tags) / self
@@ -397,7 +409,7 @@ class Multidimension:
 		if x < 0:
 			return '-' + str(-self)
 		val, prefix = get_si(x)
-		return '{} {}{}'.format(val, prefix, self.unit)
+		return f'{val} {prefix}{self.unit}'
 
 	def __sub__(self, other):
 		return self + -other
