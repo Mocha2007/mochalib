@@ -1,7 +1,7 @@
 """MochaAstro
 An astronomy library used to compute various things for my conworlds.
 """
-# pylint: disable=eval-used, no-member, unused-import, unused-variable
+# pylint: disable=eval-used, no-member, unused-import, unused-variable, line-too-long
 # pylint bugs out with pygame, and I want var names for some unused vars,
 # in case i need them in the future
 from datetime import datetime, timedelta
