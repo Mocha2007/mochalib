@@ -32,7 +32,8 @@ def bisection_method(x_min: float, x_max: float, f, max_iter = 20, threshold = 1
 		max_iter -= 1
 	return x
 
-def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, k_2: float = 2, n_0: float = 1) -> float:
+def ITP_method(a: float, b: float, f, threshold = 1e-10, k_1: float = 0.1, \
+		k_2: float = 2, n_0: float = 1) -> float:
 	"""Root-finding method
 
 	k1 > 0
@@ -126,9 +127,9 @@ def brents_method(a: float, b: float, f, max_iter = 20, threshold = 1e-10) -> fl
 		max_iter -= 1
 	return s if fb else b
 
-def clamp(x: float, min: float, max: float) -> float:
+def clamp(x: float, xmin: float, xmax: float) -> float:
 	"""Force x to be in a specific range - uses min or max if x is outside"""
-	return min if x < min else max if x < max else x
+	return xmin if x < xmin else xmax if x < xmax else x
 
 # todo: annotate the types for f and such here and in newton_raphson
 def halleys_method(x: float, f, f_, f__, max_iter = 20, threshold = 1e-10) -> float:
@@ -209,8 +210,8 @@ def debug_mag_range(f: Callable[[Any], complex]) -> Callable[[Any], complex]:
 _debug_timer_times: list[int] = [] # in ns
 
 def debug_timer(f: Callable) -> Callable:
-	from time import perf_counter_ns
 	"""use this as a decorator to time a function"""
+	from time import perf_counter_ns
 	def inner(*args, **kwargs) -> Any:
 		global _debug_timer_times
 		start = perf_counter_ns()

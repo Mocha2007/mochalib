@@ -27,7 +27,7 @@ def export_citations(text: str, minimum_attestation: int = 3):
 	corpus = sorted(list(corpus_from(text, minimum_attestation)))
 	document = ['<dl>']
 	for word in corpus:
-		word_ = ' {} '.format(word)
+		word_ = f' {word} '
 		occurences = []
 		for i in range(minimum_attestation):
 			if i == 0:
@@ -37,9 +37,9 @@ def export_citations(text: str, minimum_attestation: int = 3):
 			occurences.append(index)
 		args = [word]
 		for index in occurences:
-			args.append('...{}...'.format(text[index-20:index+len(word)+20].replace(word_, ' <b>{}</b> '.format(word))))
+			args.append('...{}...'.format(text[index-20:index+len(word)+20].replace(word_, f' <b>{word}</b> ')))
 		document.append(template.format(*args))
-	with open('books/{}.html'.format(abs(hash(text))), 'w+') as file:
+	with open(f'books/{abs(hash(text))}.html', 'w+', encoding="utf8") as file:
 		file.write('\n'.join(document))
 
 
@@ -62,7 +62,7 @@ def letter_count(text: str) -> dict:
 
 
 def load(text_name: str) -> str:
-	return open('books/{}.txt'.format(text_name), 'r', encoding='utf8').read()
+	return open(f'books/{text_name}.txt', 'r', encoding='utf8').read()
 
 
 def make_markov(text: str) -> dict:
@@ -94,7 +94,7 @@ def pretty_letter_count(text: str) -> str:
 	total = sum(i[1] for i in count)
 	maximum = max(i[1] for i in count)
 	for char, hz in count:
-		string.append('{}\t{}%\t{}'.format(char, round(100*hz/total, 3), '█'*round(64*hz/maximum)))
+		string.append(f'{char}\t{round(100*hz/total, 3)}%\t{"█"*round(64*hz/maximum)}')
 	return '\n'.join(string)
 
 
@@ -103,10 +103,9 @@ def pretty_freq(text: str, n: int = 25) -> str:
 	length = len(text.split())
 	lemmata = len(corpus_from(text, 3))
 	lengths = word_lengths(text)
-	header = 'TOTAL\t{} = {} min reading\n\t{} unique words attested at least three times, of length {}-{}\n'.format(
-		length, int(.22*length/60), lemmata, min(lengths), max(lengths))
+	header = f'TOTAL\t{length} = {int(.22*length/60)} min reading\n\t{lemmata} unique words attested at least three times, of length {min(lengths)}-{max(lengths)}\n'
 	top_words = sorted(freq(text).items(), key=lambda x: x[1], reverse=True)[:n]
-	return header+'\n'.join('{}\t{}\t{}%'.format(words, count, round(100*count/length, 3)) for words, count in top_words)
+	return header+'\n'.join(f'{words}\t{count}\t{round(100*count/length, 3)}%' for words, count in top_words)
 
 
 def random_word(frequency: dict) -> str:

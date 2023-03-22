@@ -1,11 +1,13 @@
+"""A tool for reading files as hex"""
+# pylint: disable=no-member
 import os
-import pygame
 import sys
 from math import ceil
 from random import choice
 from struct import unpack
 from time import sleep, time
-from typing import List, Set
+from typing import List, Set, Tuple
+import pygame
 
 black = 0, 0, 0
 blue = 64, 128, 255
@@ -120,7 +122,8 @@ def plot_bytes2(filename: str):
 		sleep(1/30)
 
 
-def plot_bytes3(filename: str, key: str='type'): # todo prerender the image first, then just move the image lol
+def plot_bytes3(filename: str, key: str='type'):
+	# todo prerender the image first, then just move the image lol
 	def scroll(lines: int):
 		nonlocal start
 		# scroll
@@ -200,7 +203,8 @@ def pretty_chars(bytestring: bytes) -> str:
 				string += '\n'
 		else:
 			string += ' '
-		string += ('  ' + chr(byte)) if 0x20 <= byte <= 0x7E else (special[byte] if byte in special else '   ')
+		string += ('  ' + chr(byte)) if 0x20 <= byte <= 0x7E else \
+			(special[byte] if byte in special else '   ')
 		# '\\' + hex_representation(byte)
 	return string
 
@@ -213,7 +217,7 @@ def show_hex(filename: str):
 	pygame.init()
 	screen = pygame.display.set_mode(window_size)
 	cursor = [0, 0]
-	filesize = '\t({} b)'.format(os.path.getsize(filename))
+	filesize = f'\t({os.path.getsize(filename)} b)'
 
 	def cmove(dx: int, dy: int = 0):
 		nonlocal cursor
@@ -228,7 +232,7 @@ def show_hex(filename: str):
 		if start < 0:
 			start = 0
 
-	def text(string: str, coords: (int, int) = (0, 0), color: (int, int, int) = green):
+	def text(string: str, coords: Tuple[int, int] = (0, 0), color: Tuple[int, int, int] = green):
 		string = string.replace('\t', ' '*4)
 		myfont = pygame.font.SysFont('Consolas', font_size)
 		for i, line in enumerate(string.split('\n')):

@@ -6,6 +6,7 @@ corpus_file = open(corpus_filename, 'r', encoding='utf-8').read()
 
 
 def clean(text: str) -> str:
+	"""Normalize text"""
 	text = clean_whitespace(text)
 	text = clean_contractions(text)
 	text = text.lower()
@@ -30,6 +31,7 @@ def clean_punctuation(text: str) -> str:
 
 
 def get_sentences(text: str) -> Set[str]:
+	"""Split string at periods"""
 	return set(text.split('.'))
 
 
@@ -58,7 +60,8 @@ def pretty_associations(raw_corp: str, target: str, limit: int = 20):
 	"""-1 for no limit"""
 	clean_corpus = clean(raw_corp)
 	word_dict = main(raw_corp)[target] # type: Dict[str, int]
-	counts = {word: word_dict[word] / clean_corpus.count(word)**.7 for word in word_dict} # optimal exp somewhere between .5 and .8?
+	counts = {word: word_dict[word] / clean_corpus.count(word)**.7 for word in word_dict}
+	# optimal exp somewhere between .5 and .8?
 	sorted_words = sorted(counts.items(), key=lambda x: x[1], reverse=True)
 	for i, (word, r) in enumerate(sorted_words):
 		if 0 <= limit and limit < i:

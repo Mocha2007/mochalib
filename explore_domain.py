@@ -24,7 +24,8 @@ def linksTo(url: str, domain: str) -> Tuple[str, Set[str]]:
 	return source, set(filter(lambda u: not match(r'https?://', u) or domain in u,
 		set(fixlink(uwu, domain) for uwu in getURLs(source))))
 
-def sitemap(start: str, domain: str, max_depth: int = 3, ignore: Set[str] = set(), save: bool = False) -> Dict[str, Set[str]]:
+def sitemap(start: str, domain: str, max_depth: int = 3, \
+		ignore: Set[str] = set(), save: bool = False) -> Dict[str, Set[str]]:
 	print(f'loading (depth {max_depth}) {start} ...')
 	try:
 		source, links = linksTo(start, domain)

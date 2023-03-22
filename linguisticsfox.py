@@ -47,9 +47,11 @@ class Environment:
 
 
 class Phonotactics:
-	def __init__(self, syllable_structure: Tuple[Tuple[Tuple[Set[Phoneme], bool]]], # bool is for "is this mandatory?"
-				constraints: Tuple[Tuple[Set[Phoneme], Environment, bool]], syllable_count: (int, int) = (1, 4),
-				distribution: (float, float) = (0.48, 0.95)):
+	def __init__(self, syllable_structure: Tuple[Tuple[Tuple[Set[Phoneme], bool]]],
+				constraints: Tuple[Tuple[Set[Phoneme], Environment, bool]],
+				syllable_count: Tuple[int, int] = (1, 4),
+				distribution: Tuple[float, float] = (0.48, 0.95)):
+		"""bool is for "is this mandatory?"""
 		# distribution defaults to English-like; use (0.38, 1.13) for a French-like distribution
 		self.syllable_strcuture = syllable_structure
 		self.constraints = constraints
@@ -79,7 +81,7 @@ class Phonotactics:
 					continue
 				before = morph[i-1] if i-1 else None
 				after = morph[i+1] if i+1 < len(morph) else None
-				if not (environment.obeys(before, after) == b):
+				if environment.obeys(before, after) != b:
 					return False
 		if check_syllables:
 			# check for syllable structure here - may or may not be broken

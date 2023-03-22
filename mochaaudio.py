@@ -1,5 +1,9 @@
+"""Audio file handling library"""
+# pylint: disable=no-member
+
 def pcm_to_wav(data: bytes, filename: str = 'output.wav', bits_per_sample: int = 16, \
 		sample_rate: int = 44100) -> None:
+	"""Turn raw pcm data into an actual wave file"""
 	# http://soundfile.sapp.org/doc/WaveFormat/
 	# compute data
 	data_size = len(data)
@@ -42,8 +46,7 @@ def play_file(filename: str) -> int:
 			for command in 'vlc aplay cmus moc mpv mplayer mplayer2'.split():
 				if not system(f'{command} {filename}'):
 					return 0
-			else:
-				return 32512
+			return 32512
 	elif os_name == 'os2':
 		return system(f'fmgplay {filename}')
 	# unknown OS, try to use pygame
