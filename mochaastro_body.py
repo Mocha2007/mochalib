@@ -227,8 +227,9 @@ class Body:
 		"""Rate of axial precession (rad/s)"""
 		from mochaastro_data import universe
 		# https://en.wikipedia.org/wiki/Axial_precession#Equations
-		C, A = 1, 1 # todo - should be based on oblateness
-		SECOND_TERM = 3/2 * (C-A)/C * cos(self.rotation.tilt) / self.rotation.angular_velocity
+		# http://www.columbia.edu/itc/ldeo/v1011x-1/jcm/Topic2/Topic2.html
+		# (C-A) / A = H = oblateness
+		SECOND_TERM = 3/2 * self.oblateness * cos(self.rotation.tilt) / self.rotation.angular_velocity
 		def dPsi(mu, a, e, i) -> float:
 			return mu*(1-1.5*sin(i)**2)/(a**3 * (1-e**2))**1.5
 		STAR_RATE = dPsi(self.orbit.parent.mu, self.orbit.a, self.orbit.e, 0)
