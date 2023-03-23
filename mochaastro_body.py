@@ -256,6 +256,11 @@ class Body:
 		return inf if t == T else (t*T)/(T-t)
 
 	@property
+	def tropical_year(self) -> float:
+		"""Tropical year (s)"""
+		return 1/(1/self.orbit.p + 1/self.precession_period)
+
+	@property
 	def v_tan(self) -> float:
 		"""Equatorial rotation velocity (m/s)"""
 		return 2*pi*self.radius/self.rotation.p
