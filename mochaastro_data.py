@@ -87,8 +87,8 @@ sun = Star(**{
 		'scale_height': 6050,
 		'surface_pressure': .4,
 	}),
-	'mass': 1.9885e30,
-	'radius': 6.957e8,
+	'mass': 1.98847e30, # https://en.wikipedia.org/wiki/Solar_mass
+	'radius': 6.9566e8, # https://en.wikipedia.org/wiki/Solar_radius
 	'composition': {
 		'H':  .7346,
 		'He': .2483,

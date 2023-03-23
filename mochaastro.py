@@ -16,6 +16,12 @@ from mochaastro_system import System
 class Tools:
 	"""Miscelleneous tools to filter and manage bodies."""
 	@staticmethod
+	def namei_system() -> System:
+		"""Precompute the namei system"""
+		return System(search('namei'), *(search(s) for s in \
+			"ara falto tata bau oneia don eisen neuve dicito mannu".split(" ")))
+
+	@staticmethod
 	def filter(*filters: Callable[[Iterable[Body]], Iterable[Body]]) -> Set[Body]:
 		"""eg. Tools.filter(Tools.TNOs)"""
 		# wanna find the average mass of a TNO?

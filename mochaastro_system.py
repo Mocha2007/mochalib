@@ -1,7 +1,8 @@
 """Star and planetary system objects for mochaastro.py"""
-from math import hypot
+from math import hypot, pi, sqrt
 from mochaastro_body import Body
-from mochaastro_common import axisEqual3D
+from mochaastro_common import axisEqual3D, GRAV
+from mochaastro_orbit import Orbit
 
 class System:
 	"""Set of orbiting bodies"""
@@ -11,9 +12,18 @@ class System:
 		self.bodies = set(bodies)
 
 	@property
+	def mass(self) -> float:
+		"""Get total mass of the system"""
+		return self.parent.mass + sum(b.mass for b in self.bodies)
+
+	@property
 	def sorted_bodies(self) -> list:
 		"""List of bodies sorted by semimajor axis"""
 		return sorted(list(self.bodies), key=lambda x: x.orbit.a)
+
+	def period(self, orbit: Orbit) -> float:
+		"""Return the actual orbital period, accounting for the total system mass"""
+		return 2*pi*sqrt(orbit.a**3 / (GRAV * self.mass))
 
 	def plot(self) -> None:
 		"""Plot system with pyplot"""
