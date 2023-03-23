@@ -18,6 +18,11 @@ class Orbit:
 		return self.properties['sma']
 
 	@property
+	def anomalistic_period(self) -> float:
+		"""The anomalistic orbital period (s)"""
+		return synodic(self.p, 2*pi/self.apsidial_precession)
+
+	@property
 	def aop(self) -> float:
 		"""Argument of periapsis (radians)"""
 		return self.properties['aop']
@@ -26,6 +31,14 @@ class Orbit:
 	def apo(self) -> float:
 		"""Apoapsis (m)"""
 		return (1+self.e)*self.a
+
+	@property
+	def apsidial_precession(self) -> float:
+		"""Apsidial precession rate predicted by general relativity (rad/s)"""
+		# https://en.wikipedia.org/wiki/Apsidal_precession#General_relativity
+		# note that the formula given is PER ORBIT and thus
+		# needs to be divided by T to get it in seconds
+		return 24*pi**3 * self.a**2 / (self.p**3 * c**2 * (1-self.e**2))
 
 	@property
 	def copy(self):
