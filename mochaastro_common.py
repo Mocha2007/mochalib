@@ -94,7 +94,7 @@ def synodic(p1: float, p2: float) -> float:
 def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 	"""Procedurally generate a star system."""
 	from random import randint, uniform
-	from mochaastro_body import Body
+	from mochaastro_body import Body, Rotation
 	from mochaastro_data import mercury, neptune, sun
 	from mochaastro_orbit import Orbit
 	from mochaastro_system import System
@@ -127,13 +127,21 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 			break
 	# print(time() - start)
 	# construct system
+	def body(mass: float, a: float) -> Body:
+		rotation =  Rotation(**{'period': day}) # todo better rotation
+		return Body(**{
+			'mass': mass,
+			'radius': (3*mass/(4*pi*1000))**(1/3), # todo better radius
+			'oblateness': min(1, 4.4732e10 * rotation.p**-2.57479),
+			'rotation' : rotation,
+			'orbit': Orbit(**{
+				'parent': star,
+				'sma': a,
+				'e': uniform(0, .1), 'i': uniform(0, 4*deg), 'lan': uniform(0, 2*pi),
+				'aop': uniform(0, 2*pi), 'man': uniform(0, 2*pi)
+			})})
 	star = stargen(star_mass)
-	out = System(star, *(Body(**{'mass': mass, 'orbit': Orbit(**{
-		'parent': star,
-		'sma': a,
-		'e': uniform(0, .1), 'i': uniform(0, 4*deg), 'lan': uniform(0, 2*pi),
-		'aop': uniform(0, 2*pi), 'man': uniform(0, 2*pi)
-	})}) for mass, a in particles))
+	out = System(star, *(body(mass, a) for mass, a in particles))
 	return out # .plot2d()
 
 
