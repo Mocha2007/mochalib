@@ -26,6 +26,8 @@ def load_data(seed: dict) -> dict:
 					out.properties['parent'] = current_universe[out.parent]
 			return out
 		def convert_rotation(data: dict) -> Rotation:
+			if isinstance(data, str):
+				return value_parse(data)
 			return Rotation(**{key: value_parse(value) for key, value in data.items()})
 		def value_parse(value) -> float:
 			try:
