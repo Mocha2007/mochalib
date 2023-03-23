@@ -128,10 +128,17 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 	# print(time() - start)
 	# construct system
 	def body(mass: float, a: float) -> Body:
+		def density_from_mass(mass: float) -> float: # todo better density
+			if 2e26 < mass:
+				return uniform(600, 1400)
+			if 6e25 < mass:
+				return uniform(1200, 1700)
+			return uniform(3900, 5600)
+
 		rotation =  Rotation(**{'period': day}) # todo better rotation
 		return Body(**{
 			'mass': mass,
-			'radius': (3*mass/(4*pi*1000))**(1/3), # todo better radius
+			'radius': (3*mass/(4*pi*density_from_mass(mass)))**(1/3),
 			'oblateness': min(1, 4.4732e10 * rotation.p**-2.57479),
 			'rotation' : rotation,
 			'orbit': Orbit(**{
