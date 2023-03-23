@@ -223,6 +223,11 @@ class Body:
 
 	# rotation properties
 	@property
+	def precession_period(self) -> float:
+		"""Period of axial precession (s)"""
+		return 2*pi / self.precession_rate
+
+	@property
 	def precession_rate(self) -> float:
 		"""Rate of axial precession (rad/s)"""
 		from mochaastro_data import universe
