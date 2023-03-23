@@ -112,6 +112,7 @@
 		"class": "planet",
 		"mass": "1.28*earth.mass",
 		"radius": 6.987e6,
+		"oblateness": 0.002773859469165522,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
