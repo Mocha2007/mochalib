@@ -12,6 +12,11 @@ class Rotation:
 		self.properties = properties
 
 	@property
+	def angular_velocity(self) -> float:
+		"""Angular velocity (rad/s)"""
+		return 2*pi/self.p
+
+	@property
 	def axis_vector(self) -> Tuple[float, float, float]:
 		"""Return unit vector of axis (dimensionless)"""
 		theta, phi = self.dec, self.ra
@@ -217,6 +222,21 @@ class Body:
 		return 5e28 * self.orbit.a**6 * self.radius / (self.mass * self.orbit.parent.mass**2)
 
 	# rotation properties
+	@property
+	def precession_rate(self) -> float:
+		"""Rate of axial precession (rad/s)"""
+		from mochaastro_data import universe
+		# https://en.wikipedia.org/wiki/Axial_precession#Equations
+		C, A = 1, 1 # todo - should be based on oblateness
+		SECOND_TERM = 3/2 * (C-A)/C * cos(self.rotation.tilt) / self.rotation.angular_velocity
+		def dPsi(mu, a, e, i) -> float:
+			return mu*(1-1.5*sin(i)**2)/(a**3 * (1-e**2))**1.5
+		STAR_RATE = dPsi(self.orbit.parent.mu, self.orbit.a, self.orbit.e, 0)
+		MOONS = filter(lambda x: 'orbit' in x.properties and 'parent' in x.orbit.properties and \
+			x.orbit.parent is self, universe.values())
+		MOONS_RATE = sum(dPsi(moon.mu, moon.orbit.a, moon.orbit.e, moon.orbit.i) for moon in MOONS)
+		return (STAR_RATE + MOONS_RATE) * SECOND_TERM
+
 	@property
 	def rotation(self) -> Rotation:
 		"""Returns the rotation object."""
