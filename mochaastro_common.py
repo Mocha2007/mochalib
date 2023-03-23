@@ -135,7 +135,8 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 				return uniform(1200, 1700)
 			return uniform(3900, 5600)
 
-		rotation =  Rotation(**{'period': day}) # todo better rotation
+		rotation =  Rotation(**{'period': 2.7573e7 * mass**-0.104259, 'tilt': uniform(0, 30)*deg})
+		# this rotation formula is based on a regression of the mass for mars to neptune
 		return Body(**{
 			'mass': mass,
 			'radius': (3*mass/(4*pi*density_from_mass(mass)))**(1/3),
