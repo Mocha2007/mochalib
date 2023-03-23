@@ -231,11 +231,12 @@ class Body:
 		# (C-A) / A = H = oblateness
 		SECOND_TERM = 3/2 * self.oblateness * cos(self.rotation.tilt) / self.rotation.angular_velocity
 		def dPsi(mu, a, e, i) -> float:
-			return mu*(1-1.5*sin(i)**2)/(a**3 * (1-e**2))**1.5
+			return mu*(1-1.5*sin(i)**2)/(a**3 * (1-e**2)**1.5)
 		STAR_RATE = dPsi(self.orbit.parent.mu, self.orbit.a, self.orbit.e, 0)
 		MOONS = filter(lambda x: 'orbit' in x.properties and 'parent' in x.orbit.properties and \
 			x.orbit.parent is self, universe.values())
 		MOONS_RATE = sum(dPsi(moon.mu, moon.orbit.a, moon.orbit.e, moon.orbit.i) for moon in MOONS)
+		# print(STAR_RATE*SECOND_TERM, MOONS_RATE*SECOND_TERM , '\n', list(MOONS))
 		return (STAR_RATE + MOONS_RATE) * SECOND_TERM
 
 	@property
