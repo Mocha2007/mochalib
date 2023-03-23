@@ -679,6 +679,11 @@ class Body:
 		return self.properties['name'] if 'name' in self.properties else str(self)
 
 	@property
+	def oblateness(self) -> float:
+		"""Oblateness (dimensionless)"""
+		return self.properties['oblateness']
+
+	@property
 	def planetary_discriminant(self) -> float:
 		"""Margot's planetary discriminant (dimensionless)"""
 		from mochaastro_data import earth, sun
@@ -698,8 +703,18 @@ class Body:
 
 	@property
 	def radius(self) -> float:
-		"""Radius (m)"""
+		"""Mean Radius (m)"""
 		return self.properties['radius']
+
+	@property
+	def radius_equatorial(self) -> float:
+		"""Equatorial Radius (m)"""
+		return 2*self.radius / (2 - self.oblateness)
+
+	@property
+	def radius_polar(self) -> float:
+		"""Polar Radius (m)"""
+		return 2*(self.oblateness - 1)*self.radius / (self.oblateness - 2)
 
 	@property
 	def rest_energy(self) -> float:

@@ -89,6 +89,7 @@ sun = Star(**{
 	}),
 	'mass': 1.98847e30, # https://en.wikipedia.org/wiki/Solar_mass
 	'radius': 6.9566e8, # https://en.wikipedia.org/wiki/Solar_radius
+	'oblateness': 9e-6,
 	'composition': {
 		'H':  .7346,
 		'He': .2483,
@@ -140,6 +141,7 @@ mercury = Body(**{
 	}),
 	'mass': 3.3011e23,
 	'radius': 2.4397e6,
+	'oblateness': 9e-4,
 	'albedo': .088,
 })
 
@@ -178,6 +180,7 @@ venus = Body(**{
 	}),
 	'mass': 4.8675e24,
 	'radius': 6.0518e6,
+	'oblateness': 0,
 	'albedo': .76,
 })
 
@@ -298,6 +301,7 @@ earth = Body(**{
 	},
 	'mass': 5.97237e24,
 	'radius': 6.371e6,
+	'oblateness': 1/298.257222101,
 	'albedo': .306,
 })
 
@@ -341,6 +345,7 @@ moon = Body(**{
     },
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
+	'oblateness': 1.2e-3,
 	'albedo': .136,
 })
 
@@ -375,6 +380,7 @@ mars = Body(**{
 	}),
 	'mass': 6.4171e23,
 	'radius': 3.3895e6,
+	'oblateness': 5.89e-3,
 	'albedo': .25,
 })
 
@@ -409,6 +415,7 @@ jupiter = Body(**{
 	}),
 	'mass': 1.8982e27,
 	'radius': 6.9911e7,
+	'oblateness': 6.487e-2,
 	'albedo': .503,
 })
 
@@ -442,6 +449,7 @@ saturn = Body(**{
 	}),
 	'mass': 5.6834e26,
 	'radius': 5.8232e7,
+	'oblateness': 9.796e-2,
 	'albedo': .342,
 })
 
@@ -473,6 +481,7 @@ uranus = Body(**{
 	}),
 	'mass': 8.681e25,
 	'radius': 2.5362e7,
+	'oblateness': 2.29e-2,
 	'albedo': .3,
 })
 
@@ -504,6 +513,7 @@ neptune = Body(**{
 	}),
 	'mass': 1.02413e26,
 	'radius': 2.4622e7,
+	'oblateness': 1.71e-2,
 	'albedo': .29,
 })
 
