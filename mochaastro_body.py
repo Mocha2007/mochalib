@@ -223,6 +223,14 @@ class Body:
 
 	# rotation properties
 	@property
+	def J2(self) -> float:
+		"""J2 second dynamic form factor (dimensionless?)"""
+		# https://en.wikipedia.org/wiki/Nodal_precession#Rate_of_precession
+		return 2*self.oblateness/3 \
+			- self.radius_equatorial**3 * self.rotation.angular_velocity**2 \
+			/ (3 * self.mu)
+
+	@property
 	def precession_period(self) -> float:
 		"""Period of axial precession (s)"""
 		return 2*pi / self.precession_rate

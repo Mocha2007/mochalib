@@ -48,6 +48,11 @@ class Orbit:
 		return deepcopy(self)
 
 	@property
+	def draconic_period(self) -> float:
+		"""Draconic orbital period (s)"""
+		return 1/(1/self.p - self.nodal_precession/(2*pi))
+
+	@property
 	def e(self) -> float:
 		"""Eccentricity (dimensionless)"""
 		return self.properties['e']
@@ -84,6 +89,13 @@ class Orbit:
 	def mean_longitude(self) -> float:
 		"""Mean Longitude (radians)"""
 		return self.lan + self.aop + self.man
+
+	@property
+	def nodal_precession(self) -> float:
+		"""Nodal precession rate (rad/s)"""
+		# https://en.wikipedia.org/wiki/Nodal_precession#Rate_of_precession
+		return -3/2 * self.parent.radius**2 * self.parent.J2 * (2*pi/self.p) * cos(self.i) \
+			/ (self.a*(1-self.e**2))**2
 
 	@property
 	def orbit_tree(self):
