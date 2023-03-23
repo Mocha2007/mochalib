@@ -140,6 +140,7 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 			'mass': mass,
 			'radius': (3*mass/(4*pi*density_from_mass(mass)))**(1/3),
 			'oblateness': min(1, 4.4732e10 * rotation.p**-2.57479),
+			# oblateness of 1 occurs when rotation ~ 3.8h
 			'rotation' : rotation,
 			'orbit': Orbit(**{
 				'parent': star,
