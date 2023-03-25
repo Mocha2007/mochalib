@@ -182,7 +182,8 @@ venus = Body(**{
 	}),
 	'mass': 4.8675e24,
 	'radius': 6.0518e6,
-	'oblateness': 0,
+	'oblateness': 1/29825.7222101,
+	# upper bound; see https://ui.adsabs.harvard.edu/abs/1968AJS....73R.162A/abstract
 	'albedo': .76,
 })
 
