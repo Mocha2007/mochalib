@@ -237,6 +237,7 @@
 		"class": "moon",
 		"mass": 6.2073e24,
 		"radius": 7.12e6,
+		"oblateness": "earth.oblateness",
 		"albedo": 0.2,
 		"orbit": {
 			"parent": "Eisen",
