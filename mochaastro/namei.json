@@ -193,6 +193,7 @@
 		"class": "planet",
 		"mass": "9.0586*jupiter.mass",
 		"radius": 7.691186e7,
+		"oblateness": "jupiter.oblateness",
 		"albedo": 0.504936,
 		"orbit": {
 			"parent": "Namei",
