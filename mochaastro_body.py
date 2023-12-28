@@ -335,9 +335,9 @@ class Body:
 		# https://www.desmos.com/calculator/jwvm8ymlcp
 		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
 		# maybe try fitting the min() to arctan()???
-		C1 = 0.0661957
+		C1 = 0.0662386
 		# print(self.temp, gh/insolation)
-		return self.temp * self.atmosphere.greenhouse**C1
+		return self.temp * (1 + self.atmosphere.greenhouse)**C1
 
 	# physical properties
 	@property
