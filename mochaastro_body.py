@@ -350,6 +350,13 @@ class Body:
 	@property
 	def greenhouse_temp(self) -> float:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
+		"""TARGETS:
+				w/o		w/		this	e		%
+		Venus	229 K	737 K	705 K	-32 K	-4.3%
+		Earth	254 K	288 K	285 K	-3 K	-1.0%
+		Mars	210 K	213 K	228 K	+15 K	+7.0%
+		Titan	85 K	94 K	96 K	+2 K	+2.1%
+		"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
 		tau = self.atmosphere.optical_depth
 		F = self.irradiance_surface
