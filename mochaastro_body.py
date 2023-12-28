@@ -199,6 +199,12 @@ class Body:
 		return self.irradiance_total / 4
 
 	@property
+	def irradiance_surface(self) -> float:
+		"""Globally averaged surface solar irradiance at SMA. (W/m^2)
+		https://en.wikipedia.org/wiki/Solar_irradiance"""
+		return (1 - self.albedo) * self.irradiance_global
+
+	@property
 	def max_eclipse_duration(self) -> float:
 		"""Maximum theoretical eclipse duration (s)"""
 		star_r = self.orbit.parent.star.radius
@@ -346,7 +352,7 @@ class Body:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
 		tau = self.atmosphere.optical_depth
-		F = self.irradiance_global
+		F = self.irradiance_surface
 		# T_0 = self.temp * (1 + 0.75*tau)**0.25
 		#tau_CO2 = self.atmosphere.partial_optical_depth('CO2')
 		#tau_H2O = self.atmosphere.partial_optical_depth('H2O')
