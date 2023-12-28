@@ -1,7 +1,8 @@
 """Constants and basic functions used throughout the mochaastro files"""
 # pylint: disable=eval-used, no-member, unused-import, unused-variable
 from datetime import datetime, timedelta
-from math import acos, atan, cos, hypot, inf, pi, sin, sqrt, tan
+from enum import Enum
+from math import acos, atan, cos, hypot, inf, log, pi, sin, sqrt, tan
 from typing import Callable, Tuple
 from matplotlib.axes import Axes
 import numpy as np
@@ -86,6 +87,42 @@ def resonance_probability(mismatch: float, outer: int) -> float:
 def synodic(p1: float, p2: float) -> float:
 	"""synodic period of two periods (s)"""
 	return p1*p2/abs(p2-p1) if p2-p1 else inf
+
+class Phase(Enum):
+	"""Simple enum for chemical phases"""
+	SOLID = 0
+	LIQUID = 1
+	GAS = 2
+	SUPERCRITICAL_FLUID = 3
+
+def water_phase(t: float, p: float) -> Phase:
+	"""Returns the predicted phase of water at the specified temperature and pressure"""
+	CRIT_T = 647
+	CRIT_P = 22.064e6
+	def vapor_line(p_: float) -> float:
+		"""Returns the temperature at which water boils at the given pressure"""
+		y = log(p_)
+		if (p_ < atm):
+			y0 = log(611.73) # triple point
+			y1 = log(atm) # 100C 1 atm
+			return 100 * (y - y0)/(y1 - y0) + C2K
+		# else...
+		y0 = log(atm) # 100C 1 atm
+		y1 = log(CRIT_P)
+		return (CRIT_T - (C2K + 100)) * (y - y0)/(y1 - y0) + C2K + 100
+	WEIRD_ICE_P = 632.4e6
+	def ice7_line(p_: float) -> float:
+		"""Returns the temperature at which water melts from Ice VII (or related)"""
+		y = log(p_)
+		y0 = log(WEIRD_ICE_P)
+		y1 = log(10.2e9)
+		return (CRIT_T - C2K) * (y - y0)/(y1 - y0) + C2K
+	if t < C2K:
+		return Phase.SOLID
+	if WEIRD_ICE_P < p and ice7_line(p) < t:
+		return Phase.SOLID
+	return Phase.SUPERCRITICAL_FLUID if CRIT_P < p and CRIT_T < t else \
+		Phase.GAS if vapor_line(p) < t else Phase.LIQUID
 
 # advanced
 
