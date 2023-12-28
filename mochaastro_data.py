@@ -1,7 +1,7 @@
 """Astronomical data for mochaastro.py"""
 from typing import Dict
 from mochaastro_body import Atmosphere, Body, Rotation, Star
-from mochaastro_common import au, day, deg, hour, minute
+from mochaastro_common import atm, au, day, deg, hour, minute
 from mochaastro_orbit import Orbit
 from mochaastro_system import System
 
