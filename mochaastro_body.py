@@ -158,8 +158,13 @@ class Body:
 
 	@property
 	def flux(self) -> float:
-		"""Absorbed sunlight or heat flux (W/m^2)"""
+		"""Absorbed sunlight or heat flux - accounts for energy absorbed by the surface AND atmosphere. (W/m^2)"""
 		return STEFAN_BOLTZMANN * self.temp**4
+
+	@property
+	def flux_total(self) -> float:
+		"""Total incoming solar radiation, including what is reflected. (W/m^2)"""
+		return self.flux / (1 - self.albedo)
 
 	@property
 	def flux_greenhouse_temp(self) -> float:
