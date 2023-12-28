@@ -3,7 +3,7 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, pc, SQRT2, search, synodic, year
+	G_SC, L_0, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -66,9 +66,10 @@ class Atmosphere:
 		ghg = {
 			# https://en.wikipedia.org/wiki/IPCC_list_of_greenhouse_gases
 			# in W/m^2 per mol fraction
-			'CH4': 0.48 / (1801e-9 - 700e-9),
-			'CO2': 1.82 / (391e-6 - 278e-6),
-			'N2O': 0.17 / (324e-9 - 265e-9),
+			'CH4': 0.48 / 1801e-9,
+			'CO2': 1.82 / 391e-6,
+			'H2O': 2.7 / 0.0025, # "which is responsible overall for about half of all atmospheric gas forcing."
+			'N2O': 0.17 / 324e-9,
 		}
 		return sum(val * self.partial_pressure(key)/atm for (key, val) in ghg.items() \
 	     	if key in self.composition) * self.surface_pressure / atm
@@ -154,6 +155,17 @@ class Body:
 		esi3 = 1-abs((self.v_e-earth.v_e)/(self.v_e+earth.v_e))
 		esi4 = 1-abs((T-earth.temp)/(T+earth.temp))
 		return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
+
+	@property
+	def flux(self) -> float:
+		"""Absorbed sunlight or heat flux (W/m^2)"""
+		return STEFAN_BOLTZMANN * self.temp**4
+
+	@property
+	def flux_greenhouse_temp(self) -> float:
+		"""Greenhouse temp est'd via flux - DO NOT USE THIS IS VERY WRONG (W/m^2)"""
+		# https://worldbuilding.stackexchange.com/questions/152659/how-to-calculate-the-average-temperature-of-a-planet-with-greenhouse-gases
+		return ((self.flux + self.atmosphere.greenhouse) / STEFAN_BOLTZMANN) ** 0.25
 
 	@property
 	def hill(self) -> float:
@@ -305,24 +317,27 @@ class Body:
 		return self.properties['atmosphere']
 
 	@property
+	def insolation(self) -> float:
+		"""Insolation at SMA. (W/m^2)"""
+		o = self.orbit
+		while o.parent != self.star:
+			o = o.parent.orbit
+		return self.star.radiation_pressure_at(o.a)
+
+	@property
 	def greenhouse_temp(self) -> float:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
 		# VENUS TARGET = 737
 		# EARTH TARGET = 287.91
 		# MARS TARGET = 213
-		# TITAN TARGET = 94 (DO NOT USE)
-		# https://www.desmos.com/calculator/p1dobf2cvm
+		# TITAN TARGET = 94
+		# OLD https://www.desmos.com/calculator/p1dobf2cvm
+		# https://www.desmos.com/calculator/jwvm8ymlcp
 		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
 		# maybe try fitting the min() to arctan()???
-		gh = self.atmosphere.greenhouse
-		o = self.orbit
-		while o.parent != self.star:
-			o = o.parent.orbit
-		insolation = self.star.radiation_pressure_at(o.a)
-		C1 = 1.58725
-		C2 = 0.0653011
+		C1 = 0.0661957
 		# print(self.temp, gh/insolation)
-		return self.temp * C1 * (gh / insolation)**C2
+		return self.temp * self.atmosphere.greenhouse**C1
 
 	# physical properties
 	@property

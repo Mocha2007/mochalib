@@ -17,6 +17,7 @@ GRAV = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
 c = 299792458 # m/s; exact; speed of light
 L_0 = 3.0128e28 # W; exact; zero point luminosity
 L_sun = 3.828e26 # W; exact; nominal solar luminosity
+STEFAN_BOLTZMANN = 5.670374419e-8 # W⋅m−2⋅K−4
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute
