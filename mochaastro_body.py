@@ -314,6 +314,11 @@ class Body:
 		return inf if t == T else (t*T)/(T-t)
 
 	@property
+	def solar_year(self) -> float:
+		"""Tropical year length in terms of local solar days"""
+		return self.tropical_year / self.solar_day
+
+	@property
 	def tropical_year(self) -> float:
 		"""Tropical year (s)"""
 		return 1/(1/self.orbit.p + 1/self.precession_period)
