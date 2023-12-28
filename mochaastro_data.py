@@ -159,7 +159,7 @@ venus = Body(**{
 		'man': .87467,
 	}),
 	'rotation': Rotation(**{
-		'period': 243.025 * day,
+		'period': 243.0226 * day,
 		'tilt': 3.0955,
 		'ra': 272.76*deg,
 		'dec': 67.16*deg,

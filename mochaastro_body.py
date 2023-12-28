@@ -311,6 +311,8 @@ class Body:
 	def solar_day(self) -> float:
 		"""True solar day (s)"""
 		t, T = self.rotation.p, self.orbit.p
+		if pi/2 < self.rotation.tilt and 0 < t: # retrograde rotation
+			t *= -1
 		return inf if t == T else (t*T)/(T-t)
 
 	@property
