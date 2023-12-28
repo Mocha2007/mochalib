@@ -2,8 +2,8 @@
 from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
-from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
+from mochaastro_common import atm, au, c, C2K, day, deg, gas_constant, GRAV, \
+	G_SC, L_0, pc, Phase, SQRT2, search, STEFAN_BOLTZMANN, synodic, water_phase, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -83,6 +83,12 @@ class Atmosphere:
 		return self.altitude(earth.atmosphere.pressure(85000)) # avg.
 
 	@property
+	def optical_depth(self) -> float:
+		"""Optical depth (dimensionless?)"""
+		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
+		return self.partial_optical_depth('CO2') + self.partial_optical_depth('H2O')
+
+	@property
 	def scale_height(self) -> float:
 		"""Scale height (m)"""
 		return self.properties['scale_height']
@@ -114,6 +120,15 @@ class Atmosphere:
 	def altitude(self, pressure: float) -> float:
 		"""Altitude at which atm has pressure, in Pa"""
 		return -self.scale_height*log(pressure/self.surface_pressure)
+
+	def partial_optical_depth(self, molecule: str) -> float:
+		"""Optical depth (dimensionless?)"""
+		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
+		if molecule == 'CO2' and 'CO2' in self.composition:
+			return 0.025*self.partial_pressure('CO2')**0.53
+		if molecule == 'H2O' and 'H2O' in self.composition:
+			return 0.277*self.partial_pressure('H2O')**0.3
+		return 0
 
 	def partial_pressure(self, molecule: str) -> float:
 		"""Partial pressure of a molecule on the surface (Pa)"""
@@ -166,12 +181,6 @@ class Body:
 	def flux_total(self) -> float:
 		"""Total incoming solar radiation, including what is reflected. (W/m^2)"""
 		return self.flux / (1 - self.albedo)
-
-	@property
-	def flux_greenhouse_temp(self) -> float:
-		"""Greenhouse temp est'd via flux - DO NOT USE THIS IS VERY WRONG (W/m^2)"""
-		# https://worldbuilding.stackexchange.com/questions/152659/how-to-calculate-the-average-temperature-of-a-planet-with-greenhouse-gases
-		return ((self.flux + self.atmosphere.greenhouse) / STEFAN_BOLTZMANN) ** 0.25
 
 	@property
 	def hill(self) -> float:
@@ -331,7 +340,7 @@ class Body:
 		return self.star.radiation_pressure_at(o.a)
 
 	@property
-	def greenhouse_temp(self) -> float:
+	def greenhouse_temp_OLD(self) -> float:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
 		# VENUS TARGET = 737
 		# EARTH TARGET = 287.91
@@ -344,6 +353,44 @@ class Body:
 		C1 = 0.0662386
 		# print(self.temp, gh/insolation)
 		return self.temp * (1 + self.atmosphere.greenhouse)**C1
+
+	@property
+	def greenhouse_temp(self) -> float:
+		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
+		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
+		tau = self.atmosphere.optical_depth
+		F = self.flux
+		# T_0 = self.temp * (1 + 0.75*tau)**0.25
+		tau_CO2 = self.atmosphere.partial_optical_depth('CO2')
+		tau_H2O = self.atmosphere.partial_optical_depth('H2O')
+		F_CO2 = 0.75 * F * tau_CO2
+		F_H2O = 0.75 * F * tau_H2O
+		tau_v = 0.354 + 0.0157*tau
+		Fsi = F * exp(-tau_v)
+		Fc = -22.5 + 0.402 * Fsi * tau
+		Fs = Fsi + F_CO2 + F_H2O - Fc
+		epsilon = 0.95 # for venus and mars only; should be 0.996 for earth
+		Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
+		# Section 5
+		# If water is liquid...
+		"""
+		if tau_H2O and water_phase(Ts, self.atmosphere.surface_pressure) == Phase.LIQUID:
+			print('old tau_H2O =', tau_H2O)
+			print('old Ts =', Ts)
+			for _ in range(100):
+				P_H2O = self.atmosphere.partial_pressure('H2O') * exp(0.0698 * (Ts - 288.15))
+				tau_H2O = 0.277 * P_H2O ** 0.3
+				F_H2O = 0.75 * F * tau_H2O
+				Fs = Fsi + F_CO2 + F_H2O - Fc
+				Ts_old = Ts
+				Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
+				if abs(Ts - Ts_old) < 0.001:
+					print(_)
+					break
+			print('new tau_H2O =', tau_H2O)
+			print('new Ts =', Ts)
+		"""
+		return Ts
 
 	# physical properties
 	@property
