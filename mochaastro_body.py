@@ -371,7 +371,7 @@ class Body:
 		# I did my own fit with my updated data...
 		Fc = max(0, -27.6733 + 0.468719 * Fsi * tau)
 		Fs = Fsi + F_CO2 + F_H2O - Fc
-		epsilon = 0.95 # for venus and mars only; should be 0.996 for earth
+		epsilon = 0.95 # for venus and mars only; paper says 0.996 for earth but https://en.wikipedia.org/wiki/Emissivity#Emissivities_of_planet_Earth also says 0.95
 		Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
 		# Section 5
 		# If water is liquid...
