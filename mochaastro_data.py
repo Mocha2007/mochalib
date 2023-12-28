@@ -380,6 +380,11 @@ mars = Body(**{
 			'O2':  .00174,
 			'CO':  .000747,
 			'H2O': .0003,
+			'H2': 15e-6, # https://en.wikipedia.org/wiki/Atmosphere_of_Mars#Other_trace_gases
+			'Ne': 2.5e-6,
+			'Kr': 0.3e-6,
+			'Xe': 0.08e-6,
+			'CH4': 10e-9, # https://en.wikipedia.org/wiki/Natural_methane_on_Mars
 		},
 	}),
 	'mass': 6.4171e23,

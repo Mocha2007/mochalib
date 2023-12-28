@@ -368,7 +368,7 @@ class Body:
 		Fsi = F * exp(-tau_v)
 		# https://www.desmos.com/calculator/mhnsmc5lrs
 		# I did my own fit with my updated data...
-		Fc = max(0, -27.6733 + 0.468719 * Fsi * tau)
+		Fc = max(0, -27.6735 + 0.46872 * Fsi * tau)
 		Fs = Fsi + F_CHEM - Fc
 		emissivity = 0.95 # for venus and mars only; paper says 0.996 for earth but https://en.wikipedia.org/wiki/Emissivity#Emissivities_of_planet_Earth also says 0.95
 		Ts = (Fs/(emissivity*STEFAN_BOLTZMANN))**0.25
