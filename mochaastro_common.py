@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
 
 # constants
+MOCHAASTRO_DEBUG = False
+
 # https://en.wikipedia.org/wiki/Epoch_(astronomy)#Julian_years_and_J2000
 J2000 = datetime(2000, 1, 1, 11, 58, 55, 816)
 SQRT2 = sqrt(2)

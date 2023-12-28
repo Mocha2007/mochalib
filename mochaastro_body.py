@@ -2,8 +2,8 @@
 from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
-from mochaastro_common import atm, au, c, C2K, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, pc, Phase, SQRT2, search, STEFAN_BOLTZMANN, synodic, water_phase, year
+from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
+	G_SC, L_0, MOCHAASTRO_DEBUG, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -367,7 +367,9 @@ class Body:
 		F_H2O = 0.75 * F * tau_H2O
 		tau_v = 0.354 + 0.0157*tau
 		Fsi = F * exp(-tau_v)
-		Fc = -22.5 + 0.402 * Fsi * tau
+		# https://www.desmos.com/calculator/mhnsmc5lrs
+		# I did my own fit with my updated data...
+		Fc = max(0, -27.6733 + 0.468719 * Fsi * tau)
 		Fs = Fsi + F_CO2 + F_H2O - Fc
 		epsilon = 0.95 # for venus and mars only; should be 0.996 for earth
 		Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
@@ -390,6 +392,19 @@ class Body:
 			print('new tau_H2O =', tau_H2O)
 			print('new Ts =', Ts)
 		"""
+		# Table 2
+		if MOCHAASTRO_DEBUG:
+			print('tau_CO2', tau_CO2)
+			print('tau_H2O', tau_H2O)
+			print('tau', tau)
+			print()
+			print('Fsi', Fsi)
+			print('F_CO2', F_CO2)
+			print('F_H2O', F_H2O)
+			print('Fc', Fc)
+			print()
+			print('Fs', Fs)
+			print('Ts', Ts)
 		return Ts
 
 	# physical properties

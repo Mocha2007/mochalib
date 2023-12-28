@@ -142,11 +142,15 @@
 		"atmosphere": {
 			"surface_pressure": 1.467e5,
 			"composition": {
-				"N2":  0.95,
-				"CH4": 0.049,
-				"H2":  0.002
+				"N2":  0.942,
+				"CH4": 0.0565,
+				"H2":  0.00099,
+				"CO":  0.0000565,
+				"Ar":  0.000043,
+				"CO2": 0.00004
 			},
-			"notes": "lower troposphere"
+			"notes": "lower troposphere; source listed below suggests the concentration of CO2 is comparable to Ar... I think?; Titan's atmosphere also contains over a thousand times more methane than carbon monoxide per https://en.wikipedia.org/wiki/Atmosphere_of_Titan#Atmospheric_evolution",
+			"source": "https://deepblue.lib.umich.edu/bitstream/handle/2027.42/62703/nature04122.pdf;jsessionid=3D98A3B25310D620BC803D8C938156E4?sequence=1"
 		}
 	},
 	{
