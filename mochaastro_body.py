@@ -70,6 +70,7 @@ class Atmosphere:
 			'CO2': 1.82 / 391e-6,
 			'H2O': 2.7 / 0.0025, # "which is responsible overall for about half of all atmospheric gas forcing."
 			'N2O': 0.17 / 324e-9,
+			# 'SO2': -1.3 / 15e-9, # https://en.wikipedia.org/wiki/File:Physical_Drivers_of_climate_change.svg
 		}
 		return sum(val * self.partial_pressure(key)/atm for (key, val) in ghg.items() \
 	     	if key in self.composition) * self.surface_pressure / atm

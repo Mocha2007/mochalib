@@ -220,6 +220,7 @@ earth = Body(**{
 			'H2':  5.5e-7,
 			'N2O': 9e-8,
 			'NO2': 2e-8,
+			'SO2': 1.5e-8, # https://en.wikipedia.org/wiki/Sulfur_dioxide#Occurrence
 		},
 	}),
 	'composition': { # by mass https://en.wikipedia.org/wiki/Abundance_of_the_chemical_elements#Earth
