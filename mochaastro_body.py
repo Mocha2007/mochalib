@@ -128,7 +128,9 @@ class Atmosphere:
 		gases = {
 			'CO2': (0.025, 0.53),
 			'H2O': (0.277, 0.3),
-			#'CH4': (0.025, 0.3), # for starters, just gonna assume it's weak...
+			# I tried est'ing with https://www.desmos.com/calculator/mjt8s2d0ja but failed so here are guesses
+			'CH4': (5e-3, 0.6), # fitted to titan...
+			'SO2': (1e-2, 0.6), # untested; wild guess
 		}
 		return gases[molecule][0] * self.partial_pressure(molecule)**gases[molecule][1] if molecule in gases else 0
 
