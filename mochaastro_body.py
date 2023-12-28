@@ -86,7 +86,7 @@ class Atmosphere:
 	def optical_depth(self) -> float:
 		"""Optical depth (dimensionless?)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
-		return self.partial_optical_depth('CO2') + self.partial_optical_depth('H2O')
+		return sum(self.partial_optical_depth(chem) for chem in self.composition)
 
 	@property
 	def scale_height(self) -> float:
@@ -124,11 +124,13 @@ class Atmosphere:
 	def partial_optical_depth(self, molecule: str) -> float:
 		"""Optical depth (dimensionless?)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
-		if molecule == 'CO2' and 'CO2' in self.composition:
-			return 0.025*self.partial_pressure('CO2')**0.53
-		if molecule == 'H2O' and 'H2O' in self.composition:
-			return 0.277*self.partial_pressure('H2O')**0.3
-		return 0
+		# todo: methane increases titan's temp from 84K to 94K!
+		gases = {
+			'CO2': (0.025, 0.53),
+			'H2O': (0.277, 0.3),
+			#'CH4': (0.025, 0.3), # for starters, just gonna assume it's weak...
+		}
+		return gases[molecule][0] * self.partial_pressure(molecule)**gases[molecule][1] if molecule in gases else 0
 
 	def partial_pressure(self, molecule: str) -> float:
 		"""Partial pressure of a molecule on the surface (Pa)"""
@@ -361,18 +363,17 @@ class Body:
 		tau = self.atmosphere.optical_depth
 		F = self.flux
 		# T_0 = self.temp * (1 + 0.75*tau)**0.25
-		tau_CO2 = self.atmosphere.partial_optical_depth('CO2')
-		tau_H2O = self.atmosphere.partial_optical_depth('H2O')
-		F_CO2 = 0.75 * F * tau_CO2
-		F_H2O = 0.75 * F * tau_H2O
+		#tau_CO2 = self.atmosphere.partial_optical_depth('CO2')
+		#tau_H2O = self.atmosphere.partial_optical_depth('H2O')
+		F_CHEM = 0.75 * F * self.atmosphere.optical_depth
 		tau_v = 0.354 + 0.0157*tau
 		Fsi = F * exp(-tau_v)
 		# https://www.desmos.com/calculator/mhnsmc5lrs
 		# I did my own fit with my updated data...
 		Fc = max(0, -27.6733 + 0.468719 * Fsi * tau)
-		Fs = Fsi + F_CO2 + F_H2O - Fc
-		epsilon = 0.95 # for venus and mars only; paper says 0.996 for earth but https://en.wikipedia.org/wiki/Emissivity#Emissivities_of_planet_Earth also says 0.95
-		Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
+		Fs = Fsi + F_CHEM - Fc
+		emissivity = 0.95 # for venus and mars only; paper says 0.996 for earth but https://en.wikipedia.org/wiki/Emissivity#Emissivities_of_planet_Earth also says 0.95
+		Ts = (Fs/(emissivity*STEFAN_BOLTZMANN))**0.25
 		# Section 5
 		# If water is liquid...
 		"""
@@ -385,7 +386,7 @@ class Body:
 				F_H2O = 0.75 * F * tau_H2O
 				Fs = Fsi + F_CO2 + F_H2O - Fc
 				Ts_old = Ts
-				Ts = (Fs/(epsilon*STEFAN_BOLTZMANN))**0.25
+				Ts = (Fs/(emissivity*STEFAN_BOLTZMANN))**0.25
 				if abs(Ts - Ts_old) < 0.001:
 					print(_)
 					break
@@ -394,13 +395,12 @@ class Body:
 		"""
 		# Table 2
 		if MOCHAASTRO_DEBUG:
-			print('tau_CO2', tau_CO2)
-			print('tau_H2O', tau_H2O)
+			#print('tau_CO2', tau_CO2)
+			#print('tau_H2O', tau_H2O)
 			print('tau', tau)
 			print()
 			print('Fsi', Fsi)
-			print('F_CO2', F_CO2)
-			print('F_H2O', F_H2O)
+			print('F_CHEM', F_CHEM)
 			print('Fc', Fc)
 			print()
 			print('Fs', Fs)
