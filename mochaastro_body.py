@@ -178,20 +178,25 @@ class Body:
 		return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
 
 	@property
-	def flux(self) -> float:
-		"""Absorbed sunlight or heat flux - accounts for energy absorbed by the surface AND atmosphere. (W/m^2)"""
-		return STEFAN_BOLTZMANN * self.temp**4
-
-	@property
-	def flux_total(self) -> float:
-		"""Total incoming solar radiation, including what is reflected. (W/m^2)"""
-		return self.flux / (1 - self.albedo)
-
-	@property
 	def hill(self) -> float:
 		"""Hill Sphere (m)"""
 		a, e, m, M = self.orbit.a, self.orbit.e, self.mass, self.orbit.parent.mass
 		return a*(1-e)*(m/3/M)**(1/3)
+
+	@property
+	def irradiance_total(self) -> float:
+		"""Total solar irradiance at SMA. (W/m^2)
+		https://en.wikipedia.org/wiki/Solar_irradiance"""
+		o = self.orbit
+		while o.parent != self.star:
+			o = o.parent.orbit
+		return self.star.radiation_pressure_at(o.a)
+
+	@property
+	def irradiance_global(self) -> float:
+		"""Globally averaged solar irradiance at SMA. (W/m^2)
+		https://en.wikipedia.org/wiki/Solar_irradiance"""
+		return self.irradiance_total / 4
 
 	@property
 	def max_eclipse_duration(self) -> float:
@@ -337,34 +342,11 @@ class Body:
 		return self.properties['atmosphere']
 
 	@property
-	def insolation(self) -> float:
-		"""Insolation at SMA. (W/m^2)"""
-		o = self.orbit
-		while o.parent != self.star:
-			o = o.parent.orbit
-		return self.star.radiation_pressure_at(o.a)
-
-	@property
-	def greenhouse_temp_OLD(self) -> float:
-		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
-		# VENUS TARGET = 737
-		# EARTH TARGET = 287.91
-		# MARS TARGET = 213
-		# TITAN TARGET = 94
-		# OLD https://www.desmos.com/calculator/p1dobf2cvm
-		# https://www.desmos.com/calculator/jwvm8ymlcp
-		# todo: remove reliance on the C1 and C2 bits, they don't really make sense..
-		# maybe try fitting the min() to arctan()???
-		C1 = 0.0662386
-		# print(self.temp, gh/insolation)
-		return self.temp * (1 + self.atmosphere.greenhouse)**C1
-
-	@property
 	def greenhouse_temp(self) -> float:
 		"""Planetary equilibrium temperature w/ greenhouse correction (K)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
 		tau = self.atmosphere.optical_depth
-		F = self.flux
+		F = self.irradiance_global
 		# T_0 = self.temp * (1 + 0.75*tau)**0.25
 		#tau_CO2 = self.atmosphere.partial_optical_depth('CO2')
 		#tau_H2O = self.atmosphere.partial_optical_depth('H2O')
