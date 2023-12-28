@@ -106,6 +106,13 @@ class Atmosphere:
 		return self.properties['surface_pressure']
 
 	@property
+	def thermopause(self) -> float:
+		"""Altitude of Thermopause, approximation, m
+		See notes for Tropopause."""
+		from mochaastro_data import earth
+		return self.altitude(earth.atmosphere.pressure(750000)) # varies b/w 500 and 1000 km
+
+	@property
 	def tropopause(self) -> float:
 		"""Altitude of Tropopause, approximation, m
 		Uses Earth's atmosphere as a model, so,
