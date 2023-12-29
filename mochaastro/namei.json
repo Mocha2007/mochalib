@@ -116,8 +116,8 @@
 		"name": "Oneia",
 		"class": "planet",
 		"mass": "1.28*earth.mass",
-		"radius": 6.987e6,
-		"oblateness": 0.002773859469165522,
+		"radius": 6.85e6,
+		"oblateness": 0.00215,
 		"albedo": 0.3,
 		"orbit": {
 			"parent": "Namei",
@@ -209,7 +209,7 @@
 		"class": "planet",
 		"mass": "9.0586*jupiter.mass",
 		"radius": 7.691186e7,
-		"oblateness": "jupiter.oblateness",
+		"oblateness": 0.0155,
 		"albedo": 0.504936,
 		"orbit": {
 			"parent": "Namei",
@@ -232,6 +232,7 @@
 		"class": "moon",
 		"mass": 4.8711e25,
 		"radius": 1.667568e7,
+		"oblateness": "uranus.oblateness/4",
 		"albedo": 0.507827,
 		"orbit": {
 			"parent": "Eisen",

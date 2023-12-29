@@ -281,6 +281,14 @@ class Body:
 			/ (3 * self.mu)
 
 	@property
+	def oblateness_estimate(self) -> float:
+		"""Returns estimated oblateness based on its density and rotation period.
+		Theoretically, the oblateness should always be somewhat smaller due to
+		mass concentration near the core. Decently accurate for terrestrial planets,
+		but you may want to halve the result for gas/ice giants."""
+		return 15*pi / (4 * GRAV * self.rotation.p**2 * self.density)
+
+	@property
 	def precession_period(self) -> float:
 		"""Period of axial precession (s)"""
 		return 2*pi / self.precession_rate
