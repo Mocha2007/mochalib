@@ -3,10 +3,10 @@
 		"name": "Namei",
 		"class": "star",
 		"mass": "2/3*sun.mass",
-		"radius": "2/3*sun.radius",
+		"radius": "0.65*sun.radius",
 		"oblateness": "sun.oblateness",
 		"rotation": "22.6*day",
-		"luminosity": "1/8*sun.luminosity",
+		"luminosity": "0.1213*sun.luminosity",
 		"temperature": "4200",
 		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])"
 	},
@@ -130,10 +130,10 @@
 			"tilt": "22*deg"
 		},
 		"atmosphere": {
-			"surface_pressure": "0.85*atm",
+			"surface_pressure": "atm",
 			"composition": {
-				"N2":  0.64,
-				"O2":  0.35,
+				"N2":  0.69,
+				"O2":  0.3,
 				"Ar":  0.00934,
 				"H2O": 0.0025,
 				"CO2": 2.8e-4,
@@ -143,7 +143,7 @@
 				"Kr":  1.14e-6,
 				"H2":  5.5e-7
 			},
-			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous. Pressure adjusted for climatological reasons."
+			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous."
 		},
 		"notes": "mocha"
 	},
