@@ -21,7 +21,11 @@ c = 299792458 # m/s; exact; speed of light
 L_0 = 3.0128e28 # W; exact; zero point luminosity
 L_sun = 3.828e26 # W; exact; nominal solar luminosity
 STEFAN_BOLTZMANN = 5.670374419e-8 # W⋅m−2⋅K−4
-C2K = 273.15 # constant to add to convert from Celsius to Kelvin
+C2K = 273.15 # K; exact; constant to add to convert from Celsius to Kelvin
+PLANCK = 6.62607015e-34 # J/Hz; exact; Planck constant
+gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
+N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
+WIEN = 2.897771955e-3 # m*K; appx; Wien's displacement constant
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute
@@ -41,8 +45,6 @@ mi = 1609.344 # m; exact; mile
 
 G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 # * - technically not b/c this is based on visual luminosity rather than bolometric
-gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
-N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 
 
 # simple functions
@@ -81,6 +83,12 @@ def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 		* (interval2[1] - interval2[0]) + interval2[0]
 
 
+# https://en.wikipedia.org/wiki/Planck's_law
+def planck(freq: float, temp: float) -> float:
+	"""Planck's law: intensity of light emitted at a frequency (Hz) given a temp (K)"""
+	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(STEFAN_BOLTZMANN*temp))-1)
+
+
 def resonance_probability(mismatch: float, outer: int) -> float:
 	"""Return probability a particular resonance is by chance rather than gravitational"""
 	return 1-(1-abs(mismatch))**outer
@@ -90,12 +98,14 @@ def synodic(p1: float, p2: float) -> float:
 	"""synodic period of two periods (s)"""
 	return p1*p2/abs(p2-p1) if p2-p1 else inf
 
+
 class Phase(Enum):
 	"""Simple enum for chemical phases"""
 	SOLID = 0
 	LIQUID = 1
 	GAS = 2
 	SUPERCRITICAL_FLUID = 3
+
 
 def water_phase(t: float, p: float) -> Phase:
 	"""Returns the predicted phase of water at the specified temperature and pressure"""
@@ -126,12 +136,15 @@ def water_phase(t: float, p: float) -> Phase:
 	return Phase.SUPERCRITICAL_FLUID if CRIT_P < p and CRIT_T < t else \
 		Phase.GAS if vapor_line(p) < t else Phase.LIQUID
 
-# advanced
+
+def wien(t: float) -> float:
+	"""Wien's displacement law: given a temperature (K) return the peak emission wavelength (m)"""
+	return WIEN / t
 
 
+# advanced functions
 
 
-# functions
 def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 	"""Procedurally generate a star system."""
 	from random import randint, uniform
