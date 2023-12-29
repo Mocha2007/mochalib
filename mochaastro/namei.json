@@ -136,11 +136,11 @@
 				"O2":  0.3,
 				"Ar":  0.00934,
 				"H2O": 0.0025,
-				"CO2": 2.8e-4,
+				"CO2": 2.78e-4,
 				"Ne":  1.818e-5,
 				"He":  5.24e-6,
-				"CH4": 1.87e-6,
 				"Kr":  1.14e-6,
+				"CH4": 7e-7,
 				"H2":  5.5e-7
 			},
 			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous."
