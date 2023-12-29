@@ -8,9 +8,10 @@
 		"rotation": {
 			"period": "22.6*day"
 		},
-		"luminosity": "0.1213*sun.luminosity",
+		"luminosity": "0.11795428566427084*sun.luminosity",
 		"temperature": "4200",
-		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])"
+		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])",
+		"notes2": "L = T^4 R^2"
 	},
 	{
 		"name": "Ara",
