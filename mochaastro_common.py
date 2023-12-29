@@ -417,7 +417,7 @@ def stargen(m: float) :
 	c_r = 1.2*bell(1)(m) - 1.13*bell(1.23)(m) + 0.9
 	r = 1.012*m**c_r # 1.012 Rsun is the ref for a G2V star
 	# stellar temp
-	# https://www.desmos.com/calculator/pqtk3ooipj
+	# https://www.desmos.com/calculator/mhhdatpcu0
 	if m < 0.085:
 		t = 5.46 * m
 	elif m < 1:
