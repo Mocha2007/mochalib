@@ -708,7 +708,7 @@ class Body:
 			"'Mass            {}'.format(str(Mass(self.mass, 'astro')))",
 			"'Density         {} kg/m³'.format(round(self.density))",
 			"'ESI             {}'.format(round(self.esi, 3))",
-			"'Absolute Mag.   {}'.format(round(self.app_mag_at(10*pc), 2))",
+			"'Absolute Mag.   {}'.format(round(self.app_mag(10*pc), 2))",
 			"'Semimajor Axis  {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
 			"'Orbital Period  {}'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",
 			"'Rotation Period {}'.format(pretty_dim(Time(self.rotation.p, 'imperial')))",
@@ -952,19 +952,19 @@ class Body:
 		"""Angular diameter at distance (rad)"""
 		return 2*atan2(self.radius, dist)
 
-	def app_mag(self, other: Orbit) -> Tuple[float, float]:
-		"""Apparent magnitude, min and max (dimensionless)"""
-		dmin, dmax = self.orbit.distance(other)
-		return self.app_mag_at(dmax), self.app_mag_at(dmin)
-
-	def app_mag_at(self, dist: float) -> float:
-		"""Apparent magnitude at distance (dimensionless)"""
+	def app_mag(self, dist: float) -> float:
+		"""Apparent magnitude of this body at distance (dimensionless)"""
 		# https://astronomy.stackexchange.com/a/38377
 		a_p, r_p, d_s, v_sun = self.albedo, self.radius, self.star_dist, self.star.abs_mag
 		h_star = v_sun + 5*log10(au/(10*pc))
 		d_0 = 2*au*10**(h_star/5)
 		h = 5 * log10(d_0 / (2*r_p * sqrt(a_p)))
 		return h + 5*log10(d_s * dist / au**2)
+
+	def app_mag_orbit(self, other: Orbit) -> Tuple[float, float]:
+		"""Apparent magnitude of this body, min and max (dimensionless)"""
+		dmin, dmax = self.orbit.distance(other)
+		return self.app_mag(dmax), self.app_mag(dmin)
 
 	def atm_supports(self, molmass: float) -> bool:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
@@ -1163,7 +1163,7 @@ class Star(Body):
 
 	# methods
 	def app_mag(self, dist: float) -> float:
-		"""Apparent Magnitude (dimensionless)"""
+		"""Apparent Magnitude of this star at the given distance (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
 
 	def radiation_pressure_at(self, dist: float) -> float:
