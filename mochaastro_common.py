@@ -426,6 +426,8 @@ def stargen(m: float) :
 		t = m ** (0.6 + 0.22 * sin(2.7*m + 1.1))
 	else:
 		t = m ** 0.6
+	 # 5770 is the ref for a G2V star, but we've thus far been measuring in suns, so...
+	t *= 5770 / 5778
 	# cf https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
 	# 2023 Dec 29 - I realized you can manipulate two different formulas for the habitable zone
 	# and get the relation T^4 R^2 = L
@@ -437,8 +439,8 @@ def stargen(m: float) :
 	return Star(**{
 		'mass': m*sun.mass,
 		'radius': r*sun.radius,
-		'luminosity': sun.luminosity*lum, # todo
-		'temperature': 5770*t, # 5770 is the ref for a G2V star
+		'luminosity': sun.luminosity*lum,
+		'temperature': 5778*t, # see note 14 lines above
 	})
 
 
