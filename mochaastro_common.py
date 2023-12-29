@@ -418,14 +418,14 @@ def stargen(m: float) :
 	r = 1.012*m**c_r # 1.012 Rsun is the ref for a G2V star
 	# stellar temp
 	# https://www.desmos.com/calculator/pqtk3ooipj
-	if m < 0.1:
-		t = 4.77 * m
+	if m < 0.085:
+		t = 5.46 * m
 	elif m < 1:
 		t = m ** (0.29 + 0.76 * sin(2.67*m + 0.1)*m)
-	elif m < 2:
-		t = m ** (0.6 + 0.22 * sin(2.7*m + 1.1))
+	elif m < 2.1:
+		t = m ** (0.58 + 0.14 * sin(3.3*m))
 	else:
-		t = m ** 0.6
+		t = 1.06 * m ** 0.57
 	 # 5770 is the ref for a G2V star, but we've thus far been measuring in suns, so...
 	t *= 5770 / 5778
 	# cf https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
