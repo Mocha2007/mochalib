@@ -415,8 +415,16 @@ def stargen(m: float) :
 	def bell(mid: float) -> Callable[[float], float]:
 		return lambda x: exp(-(log(x) - mid)**2)
 	c_r = 1.2*bell(1)(m) - 1.13*bell(1.23)(m) + 0.9
-	# ditto
-	c_t = 0.5 + 0.2 * sin(1.8 * log(m, 10))
+	# stellar temp
+	# https://www.desmos.com/calculator/pqtk3ooipj
+	if m < 0.1:
+		t = 4.77 * m
+	elif m < 1:
+		t = m ** (0.29 + 0.76 * sin(2.67*m + 0.1)*m)
+	elif m < 2:
+		t = m ** (0.6 + 0.22 * sin(2.7*m + 1.1))
+	else:
+		t = m ** 0.6
 	# Luminosity and time values from
 	# https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
 	# L
@@ -428,7 +436,7 @@ def stargen(m: float) :
 		'mass': m*sun.mass,
 		'radius': 1.012*sun.radius*m**c_r, # 1.012 Rsun is the ref for a G2V star
 		'luminosity': sun.luminosity*lum, # todo
-		'temperature': 5770*m**c_t, # 5770 is the reference point for a G2V star
+		'temperature': 5770*t, # 5770 is the ref for a G2V star
 	})
 
 
