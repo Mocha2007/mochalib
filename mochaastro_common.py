@@ -2,7 +2,7 @@
 # pylint: disable=eval-used, no-member, unused-import, unused-variable
 from datetime import datetime, timedelta
 from enum import Enum
-from math import acos, atan, cos, hypot, inf, log, pi, sin, sqrt, tan
+from math import acos, atan, cos, exp, hypot, inf, log, pi, sin, sqrt, tan
 from typing import Callable, Tuple
 from matplotlib.axes import Axes
 import numpy as np
@@ -409,9 +409,14 @@ def stargen(m: float) :
 	from mochaastro_body import Star
 	from mochaastro_data import sun
 	m /= sun.mass
-	# default exponents: .74,3,.505,-2.5
-	# I find 0.96 a better approximation than 0.74, at least for smaller stars.
-	# I find 0.54 a very slightly better approximation than 0.505, at least for smaller stars.
+	# stellar radius
+	# https://www.desmos.com/calculator/rpvpmewvyn
+	# I manually tweaked the coefficients to get a good fit for M <= 11 sols
+	def bell(mid: float) -> Callable[[float], float]:
+		return lambda x: exp(-(log(x) - mid)**2)
+	c_r = 1.2*bell(1)(m) - 1.13*bell(1.23)(m) + 0.9
+	# ditto
+	c_t = 0.5 + 0.2 * sin(1.8 * log(m, 10))
 	# Luminosity and time values from
 	# https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
 	# L
@@ -421,9 +426,9 @@ def stargen(m: float) :
 		lum = .2264*m**2.52
 	return Star(**{
 		'mass': m*sun.mass,
-		'radius': sun.radius*m**0.96,
-		'luminosity': sun.luminosity*lum,
-		'temperature': 5772*m**.54,
+		'radius': 1.012*sun.radius*m**c_r, # 1.012 Rsun is the ref for a G2V star
+		'luminosity': sun.luminosity*lum, # todo
+		'temperature': 5770*m**c_t, # 5770 is the reference point for a G2V star
 	})
 
 
