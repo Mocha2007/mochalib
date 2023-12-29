@@ -435,15 +435,11 @@ def stargen(m: float) :
 	# proportional to area x flux. The full form is probably similar to the product of the RHS
 	# of the sphere area formula and Stefan-Boltzmann law
 	lum = t**4 * r**2
-	# cf https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
-	time = 8.839639544315635e17 * m / lum
-	time *= 0.73 if m <= 0.45 else 0.4496 if m <= 2 else 0.511
 	return Star(**{
 		'mass': m*sun.mass,
 		'radius': r*sun.radius,
 		'luminosity': sun.luminosity*lum,
 		'temperature': 5778*t, # see note 14 lines above
-		'lifespan': time,
 	})
 
 

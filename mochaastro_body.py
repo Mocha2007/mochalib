@@ -3,7 +3,8 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, MOCHAASTRO_DEBUG, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
+	G_SC, L_0, lifespan, MOCHAASTRO_DEBUG, pc, SQRT2, search, \
+	STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -1125,7 +1126,11 @@ class Star(Body):
 	def lifespan(self) -> float:
 		"""Estimated lifespan (s)"""
 		from mochaastro_data import sun
-		return 3e17*(self.mass/sun.mass)**-2.5162
+		# cf https://www.academia.edu/4301816/On_Stellar_Lifetime_Based_on_Stellar_Mass
+		m, lum = self.mass / sun.mass, self.luminosity / sun.luminosity
+		time = 8.839639544315635e17 * m / lum
+		time *= 0.73 if m <= 0.45 else 0.4496 if m <= 2 else 0.511
+		return time
 
 	@property
 	def luminosity(self) -> float:
