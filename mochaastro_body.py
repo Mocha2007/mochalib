@@ -3,8 +3,7 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, lifespan, MOCHAASTRO_DEBUG, pc, SQRT2, search, \
-	STEFAN_BOLTZMANN, synodic, year
+	G_SC, L_0, MOCHAASTRO_DEBUG, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
