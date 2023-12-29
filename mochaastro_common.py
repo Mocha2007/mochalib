@@ -419,7 +419,7 @@ def stargen(m: float) :
 	# stellar temp
 	# https://www.desmos.com/calculator/mhhdatpcu0
 	if m < 0.085:
-		t = 5.46 * m
+		t = 5.23 * m
 	elif m < 1:
 		t = m ** (0.29 + 0.76 * sin(2.67*m + 0.1)*m)
 	elif m < 2.1:
