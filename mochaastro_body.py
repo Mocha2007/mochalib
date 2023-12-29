@@ -1108,7 +1108,7 @@ class Star(Body):
 	def habitable_zone(self) -> Tuple[float, float]:
 		"""Inner and outer habitable zone (m)"""
 		from mochaastro_data import sun
-		center = au*sqrt(self.luminosity/sun.luminosity)
+		center = au * (self.temperature/sun.temperature)**2 * (self.radius / sun.radius) # sqrt(self.luminosity/sun.luminosity)
 		inner = .95*center
 		outer = 1.37*center
 		return inner, outer
