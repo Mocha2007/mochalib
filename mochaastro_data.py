@@ -219,6 +219,7 @@ earth = Body(**{
 			'Kr':  1.14e-6,
 			'H2':  5.5e-7,
 			'N2O': 9e-8,
+			'Xe': 8.7e-8, # https://en.wikipedia.org/wiki/Xenon#Occurrence_and_production
 			'NO2': 2e-8,
 			'SO2': 1.5e-8, # https://en.wikipedia.org/wiki/Sulfur_dioxide#Occurrence
 		},

@@ -141,7 +141,8 @@
 				"He":  5.24e-6,
 				"Kr":  1.14e-6,
 				"CH4": 7e-7,
-				"H2":  5.5e-7
+				"H2":  5.5e-7,
+				"Xe":  8.7e-8
 			},
 			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous."
 		},
