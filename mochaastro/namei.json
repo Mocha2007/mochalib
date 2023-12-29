@@ -5,7 +5,9 @@
 		"mass": "2/3*sun.mass",
 		"radius": "0.65*sun.radius",
 		"oblateness": "sun.oblateness",
-		"rotation": "22.6*day",
+		"rotation": {
+			"period": "22.6*day"
+		},
 		"luminosity": "0.1213*sun.luminosity",
 		"temperature": "4200",
 		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])"
