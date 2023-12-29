@@ -7,7 +7,7 @@ An astronomy library used to compute various things for my conworlds.
 from typing import Callable, Iterable, Set
 from mochaastro_common import *
 from mochaastro_data import *
-from mochaastro_body import Atmosphere, Body, Rotation, Star
+from mochaastro_body import *
 from mochaastro_orbit import Orbit
 from mochaastro_system import System
 

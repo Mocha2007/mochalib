@@ -23,9 +23,11 @@ L_sun = 3.828e26 # W; exact; nominal solar luminosity
 STEFAN_BOLTZMANN = 5.670374419e-8 # W⋅m−2⋅K−4
 C2K = 273.15 # K; exact; constant to add to convert from Celsius to Kelvin
 PLANCK = 6.62607015e-34 # J/Hz; exact; Planck constant
+REDUCED_PLANCK = PLANCK / (2*pi)
 gas_constant = 8.31446261815324 # J/(Kmol); exact; ideal gas constant
 N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 WIEN = 2.897771955e-3 # m*K; appx; Wien's displacement constant
+kB = 1.380649e-23 # J/K; exact; Boltzmann constant
 
 lb = 0.45359237 # kg; exact; pound
 minute = 60 # s; exact; minute

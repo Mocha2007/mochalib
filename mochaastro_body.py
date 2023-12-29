@@ -3,7 +3,8 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, L_0, MOCHAASTRO_DEBUG, pc, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, REDUCED_PLANCK, SQRT2, search, \
+	STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -1177,3 +1178,24 @@ class Star(Body):
 		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
 		area = obj.area / 2
 		return self.radiation_pressure_at(dist) * area
+
+
+class BlackHole(Body):
+	"""Black Hole object, which is like body but with a few extra parameters."""
+	@property
+	def dissipation_time(self) -> float:
+		"""Dissipation time (s)"""
+		# https://en.wikipedia.org/wiki/Hawking_radiation
+		return 5120*pi*GRAV**2 * self.mass**3 / (REDUCED_PLANCK * c**4)
+
+	@property
+	def luminosity(self) -> float:
+		"""Bekenstein-Hawking luminosity (W)"""
+		# https://en.wikipedia.org/wiki/Hawking_radiation
+		return REDUCED_PLANCK * c**6 / (15360*pi*GRAV**2*self.mass**2)
+
+	@property
+	def temperature(self) -> float:
+		"""Hawking radiation temperature (K)"""
+		# https://en.wikipedia.org/wiki/Hawking_radiation
+		return REDUCED_PLANCK * c**3 / (8*pi*GRAV*self.mass*kB)
