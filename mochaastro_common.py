@@ -39,6 +39,7 @@ deg = pi/180 # rad; exact; degree
 arcmin = deg/60 # rad; exact; arcminute
 arcsec = arcmin/60 # rad; exact; arcsecond
 atm = 101325 # Pa; exact; atmosphere
+angstrom = 1e-10 # m; exact
 
 ly = c * jyear # m; exact; light-year
 au = 149597870700 # m; exact; astronomical unit
@@ -63,6 +64,23 @@ PHOTOMETRIC_FILTER = {
 	'M': 4.8e-6,
 	'N': 10.2e-6,
 }
+
+AV_E = {
+	'U': 4.99,
+	'B': 4.12,
+	'V': 3.15,
+	'R': 2.4,
+	'I': 1.7,
+	'J': 1.0,
+	'H': 0.7,
+	'K': 0.4,
+	'L': 0.3,
+	'M': 0,
+	'N': 0,
+}
+"""Ratio of amount of interstellar absorbtion to color excess at given magnitude.
+These are guesstimates based on the table on p. 104...
+"""
 
 
 # simple functions
@@ -103,25 +121,49 @@ def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 
 def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	"""Difference in intensity of light emitted at the given temperature between filters (dimensionless)"""
-	#vega = 9602 # https://en.wikipedia.org/wiki/Vega
-	f_a, f_b = c/PHOTOMETRIC_FILTER[filter_a], c/PHOTOMETRIC_FILTER[filter_b]
-	#va = planck(f_a, vega)
-	#vb = planck(f_b, vega)
-	a = planck(f_a, temp)
-	b = planck(f_b, temp)
+	vega = 9602 # https://en.wikipedia.org/wiki/Vega
+	l_a, l_b = PHOTOMETRIC_FILTER[filter_a], PHOTOMETRIC_FILTER[filter_b]
+	# f_a, f_b = c/l_a, c/l_b
+	va = spi(vega, l_a) # planck(f_a, vega)
+	vb = spi(vega, l_b) # planck(f_b, vega)
+	a = spi(temp, l_a) # planck(f_a, temp)
+	b = spi(temp, l_b) # planck(f_b, temp)
 	# https://astronomy.stackexchange.com/a/34062/48796
-	return -2.5*log10(a/b) #+ 2.5*log10(va/vb)
+	C0 = -2.5*log10(a/b) + 2.5*log10(va/vb)
+	# Page 103 - Interstellar reddening
+	# AA = EA * AV_E[filter_a]
+	# AB = EB * AV_E[filter_b]
+	return C0 # + AA - AB
 
 def photometryTest() -> None:
-	t = 7700, 5778, 3700
+	# test SPI (page 103 of the book) - I verified this already so we good
+	# print('PAGE 103 TEST', spi(10800, 5000, 0 + -0.40))
+	#	U		B	V		R 	I	<- appx peaks
+	t = 7900, 6600, 5250, 4150, 3200
 	print('Name', 'λ', *t)
 	for x in 'UBVRIJHKLMN':
-		print("{: >1} ({: >3} nm) {: <20} {: <20} {: <20}".format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(planck(c/PHOTOMETRIC_FILTER[x], tx)*1e10 for tx in t)))
+		print(("{: >1} ({: >5} nm)" + " {: <20}"*5).format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(spi(tx, PHOTOMETRIC_FILTER[x])*1e14 for tx in t)))
 	print('-'*70)
-	print('T', 'B-V', 'U-B', 'V-R')#, 'R-I')
+	print('T', 'B-V', 'U-B', 'V-R', 'R-I')
 	for x in [42000, 30000, 9790, 7300, 5940, 5150, 3840]:
-		print("{: >5} {: <20} {: <20} {: <20}".format(x, photometry(x, 'B', 'V'), photometry(x, 'U', 'B'), photometry(x, 'V', 'R')))#, photometry(x, 'R', 'I'))
+		print(("{: >5}" + " {: <6}"*4).format(x,
+			round(photometry(x, 'B', 'V'), 3), round(photometry(x, 'U', 'B'), 3),
+			round(photometry(x, 'V', 'R'), 3), round(photometry(x, 'R', 'I'), 3)))
 
+def spi(Te: float, lam: float, mb: float = 0) -> float:
+	"""Spectral photon irradiance f(lam) from a star
+	of apparent bolometric magnitude mb. (photons / (m^3 s))
+
+	Arguments:
+	:param Te: effective temperature of the star (K)
+	:param lam: wavelength (m)
+
+	Note you can derive the bolometric magnitude by adding
+	the bolometric correction factor to its visual magnitude."""
+	lam /= angstrom
+	# lam *= 1.2 # idk why but i need this corrective factor... UGH!!!
+	fl = 8.48e34 * 10**(-0.4*mb) / (Te**4 * lam**4 * (exp(1.44e8/(lam*Te))-1))
+	return fl * 0.01**2 * angstrom
 
 # https://en.wikipedia.org/wiki/Planck's_law
 def planck(freq: float, temp: float) -> float:
