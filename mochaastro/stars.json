@@ -8,7 +8,28 @@
 			"period": "36*year"
 		},
 		"luminosity": "(87.1e3+126e3)/2*sun.luminosity",
-		"temperature": "3600",
-		"metallicity": "0.05"
+		"temperature": 3600,
+		"metallicity": 0.05
+	},
+	{
+		"name": "Proxima Centauri",
+		"class": "star",
+		"mass": "0.1221*sun.mass",
+		"radius": "0.1542sun.radius",
+		"rotation": {
+			"period": "89.8*day"
+		},
+		"luminosity": "0.001567*sun.luminosity",
+		"temperature": 2992,
+		"metallicity": 0.21
+	},
+	{
+		"name": "Rigel",
+		"class": "star",
+		"mass": "21*sun.mass",
+		"radius": "78.9sun.radius",
+		"luminosity": "1.2e5*sun.luminosity",
+		"temperature": 12100,
+		"metallicity": -0.06
 	}
 ]
