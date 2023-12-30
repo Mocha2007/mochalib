@@ -1279,7 +1279,10 @@ class Star(Body):
 		# print(C, N, A)
 		# I expect this to be vaguely in the range of 8*10^27, but instead it's 3*10^-9!!!
 		# I'll have to settle on a quick-and-dirty approximation then... sigh...
-		C = 8e27
+		# https://en.wikipedia.org/wiki/White_dwarf#Radiation_and_cooling
+		# claims the coolest white dwarfs are just under 4000K.
+		# Assuming they formed at the beginning of the universe, that means C should be...
+		C = 3e28
 		return (t/C + 1/self.temperature**3)**(-1/3)
 
 
