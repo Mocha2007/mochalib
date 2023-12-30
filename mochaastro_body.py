@@ -3,7 +3,7 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, REDUCED_PLANCK, SQRT2, search, \
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, REDUCED_PLANCK, SQRT2, search, \
 	STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
@@ -1178,6 +1178,12 @@ class Star(Body):
 		"""Estimated B-V difference from temperature (dimensionless)
 		Maximum error = 0.0898 in the range [2380, 44900]"""
 		return 1.25542 * atan(-4.22389e-4 * self.temperature + 1.53047) + 1.55418
+
+	@property
+	def BV2(self) -> float:
+		"""Estimated B-V difference from temperature (dimensionless)
+		Maximum error = 0.0898 in the range [2380, 44900]"""
+		return photometry(self.temperature, 'B', 'V')
 
 	@property
 	def UB(self) -> float:

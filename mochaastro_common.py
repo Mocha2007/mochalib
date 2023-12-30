@@ -2,7 +2,7 @@
 # pylint: disable=eval-used, no-member, unused-import, unused-variable
 from datetime import datetime, timedelta
 from enum import Enum
-from math import acos, atan, cos, exp, hypot, inf, log, pi, sin, sqrt, tan
+from math import acos, atan, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Callable, Tuple
 from matplotlib.axes import Axes
 import numpy as np
@@ -48,6 +48,22 @@ mi = 1609.344 # m; exact; mile
 G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 # * - technically not b/c this is based on visual luminosity rather than bolometric
 
+PHOTOMETRIC_FILTER = {
+	# https://en.wikipedia.org/wiki/UBV_photometric_system
+	# Handbook of Space Astronomy and Astrophysics (2nd ed.). Cambridge University Press. p. 100
+	'U': 365e-9,
+	'B': 440e-9,
+	'V': 550e-9,
+	'R': 700e-9,
+	'I': 900e-9,
+	'J': 1.25e-6,
+	'H': 1.65e-6,
+	'K': 2.2e-6,
+	'L': 3.6e-6,
+	'M': 4.8e-6,
+	'N': 10.2e-6,
+}
+
 
 # simple functions
 def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
@@ -85,10 +101,33 @@ def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 		* (interval2[1] - interval2[0]) + interval2[0]
 
 
+def photometry(temp: float, filter_a: str, filter_b: str) -> float:
+	"""Difference in intensity of light emitted at the given temperature between filters (dimensionless)"""
+	#vega = 9602 # https://en.wikipedia.org/wiki/Vega
+	f_a, f_b = c/PHOTOMETRIC_FILTER[filter_a], c/PHOTOMETRIC_FILTER[filter_b]
+	#va = planck(f_a, vega)
+	#vb = planck(f_b, vega)
+	a = planck(f_a, temp)
+	b = planck(f_b, temp)
+	return -2.5*log10(a/b) #+ 2.5*log10(va/vb)
+
+def photometryTest() -> None:
+	t = 7700, 5778, 3700
+	print('Name', 'λ', *t)
+	for x in 'UBVRIJHKLMN':
+		print("{: >1} ({: >3} nm) {: <20} {: <20} {: <20}".format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(planck(c/PHOTOMETRIC_FILTER[x], tx)*1e10 for tx in t)))
+	print('-'*70)
+	print('T', 'B-V', 'U-B', 'V-R')#, 'R-I')
+	for x in [42000, 30000, 9790, 7300, 5940, 5150, 3840]:
+		print("{: >5} {: <20} {: <20} {: <20}".format(x, photometry(x, 'B', 'V'), photometry(x, 'U', 'B'), photometry(x, 'V', 'R')))#, photometry(x, 'R', 'I'))
+
+
 # https://en.wikipedia.org/wiki/Planck's_law
 def planck(freq: float, temp: float) -> float:
 	"""Planck's law: intensity of light emitted at a frequency (Hz) given a temp (K)"""
-	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(STEFAN_BOLTZMANN*temp))-1)
+	# https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html
+	#temp *= 1.8 # idk why but i need this corrective factor... UGH!!!
+	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(kB*temp))-1)
 
 
 def resonance_probability(mismatch: float, outer: int) -> float:
