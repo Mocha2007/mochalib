@@ -109,6 +109,7 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	#vb = planck(f_b, vega)
 	a = planck(f_a, temp)
 	b = planck(f_b, temp)
+	# https://astronomy.stackexchange.com/a/34062/48796
 	return -2.5*log10(a/b) #+ 2.5*log10(va/vb)
 
 def photometryTest() -> None:
