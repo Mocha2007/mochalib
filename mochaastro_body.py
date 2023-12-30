@@ -1210,6 +1210,25 @@ class Star(Body):
 		See notes for B-V"""
 		return 0.68 * self.BV - 0.0685
 
+	@property
+	def JH(self) -> float:
+		"""Estimated J-H difference from temperature (dimensionless)
+		Very poor quality.
+		See notes for B-V"""
+		# Methodology: http://exoplanets.org/plots
+		# I plotted a histogram of (0.32 * BMV + 0.1135)/(J - H)
+		# And just tweaked the slope to minimize the std
+		# And tweaked the y-intercept to center the mean at 0
+		# Cursed, but effective
+		return 0.32 * self.BV + 0.1135
+
+	@property
+	def HK(self) -> float:
+		"""Estimated H-K difference from temperature (dimensionless)
+		Decent quality.
+		See notes for B-V"""
+		return 0.12 * self.BV + 0.00833
+
 	# methods
 	def app_mag(self, dist: float) -> float:
 		"""Apparent Magnitude of this star at the given distance (dimensionless)"""
