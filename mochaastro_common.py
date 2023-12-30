@@ -419,10 +419,13 @@ def search(name: str):
 	raise KeyError(hits)
 
 
-def stargen(m: float) :
-	"""Generate star from mass"""
+def stargen(m: float, variance: float = 0) :
+	"""Generate star from mass (use variance to slightly fluctuate values from expected norm - I recommend something like 0.01)"""
 	from mochaastro_body import Star
 	from mochaastro_data import sun
+	def e() -> float:
+		from random import uniform
+		return 1 + uniform(-variance, variance)
 	m /= sun.mass
 	# stellar radius
 	# https://www.desmos.com/calculator/rpvpmewvyn
@@ -443,6 +446,7 @@ def stargen(m: float) :
 		t = 1.06 * m ** 0.57
 	 # 5770 is the ref for a G2V star, but we've thus far been measuring in suns, so...
 	t *= 5770 / 5778
+	# error/variance...
 	# 2023 Dec 29 - I realized you can manipulate two different formulas for the habitable zone
 	# and get the relation T^4 R^2 = L
 	# this relation seems to be an EXTREMELY close approximation, making me think it is
@@ -451,10 +455,10 @@ def stargen(m: float) :
 	# of the sphere area formula and Stefan-Boltzmann law
 	lum = t**4 * r**2
 	return Star(**{
-		'mass': m*sun.mass,
-		'radius': r*sun.radius,
-		'luminosity': sun.luminosity*lum,
-		'temperature': 5778*t, # see note 14 lines above
+		'mass': m*sun.mass, # does not use variance because this is given
+		'radius': r*sun.radius*e(),
+		'luminosity': sun.luminosity*lum, # does not use variance since this is an exact relation
+		'temperature': 5778*t*e(), # see note 14 lines above
 	})
 
 
