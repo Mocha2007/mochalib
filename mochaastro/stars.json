@@ -1,0 +1,14 @@
+[
+	{
+		"name": "Betelgeuse",
+		"class": "star",
+		"mass": "(14+19)/2*sun.mass",
+		"radius": "(764+1021)/2sun.radius",
+		"rotation": {
+			"period": "36*year"
+		},
+		"luminosity": "(87.1e3+126e3)/2*sun.luminosity",
+		"temperature": "3600",
+		"metallicity": "0.05"
+	}
+]
