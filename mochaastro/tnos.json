@@ -163,6 +163,10 @@
 			"tilt": "80*deg",
 			"ra": "282.6*deg",
 			"dec": "-13*deg"
+		},
+		"atmosphere": {
+			"surface_pressure": 0,
+			"source": "https://arxiv.org/ftp/arxiv/papers/2006/2006.03113.pdf p.4, 22-3, 32-3, 39"
 		}
 	},
 	{
