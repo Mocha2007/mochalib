@@ -1114,12 +1114,6 @@ class Star(Body):
 		return -2.5 * log10(self.luminosity / L_0)
 
 	@property
-	def BV(self) -> float:
-		"""Estimated B-V difference from temperature (dimensionless)
-		Maximum error = 0.0898 in the range [2380, 44900]"""
-		return 1.25542 * atan(-4.22389e-4 * self.temperature + 1.53047) + 1.55418
-
-	@property
 	def habitable_zone(self) -> Tuple[float, float]:
 		"""Inner and outer habitable zone (m)"""
 		from mochaastro_data import sun
@@ -1178,6 +1172,31 @@ class Star(Body):
 			from mochaastro_data import sun
 			return sun.Z * 10**self.metallicity
 		return 1 - self.X - self.Y
+
+	@property
+	def BV(self) -> float:
+		"""Estimated B-V difference from temperature (dimensionless)
+		Maximum error = 0.0898 in the range [2380, 44900]"""
+		return 1.25542 * atan(-4.22389e-4 * self.temperature + 1.53047) + 1.55418
+
+	@property
+	def UB(self) -> float:
+		"""Estimated U-B difference from temperature (dimensionless)
+		This one in particular is rather bad, the R^2 was 0.899, compared to 0.987 and 0.99 for the other two.
+		See notes for B-V"""
+		return 1.26 * self.BV - 0.516
+
+	@property
+	def VR(self) -> float:
+		"""Estimated V-R difference from temperature (dimensionless)
+		See notes for B-V"""
+		return 0.803 * self.BV + 0.714
+
+	@property
+	def RI(self) -> float:
+		"""Estimated R-I difference from temperature (dimensionless)
+		See notes for B-V"""
+		return 0.68 * self.BV - 0.0685
 
 	# methods
 	def app_mag(self, dist: float) -> float:
