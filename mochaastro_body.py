@@ -1138,6 +1138,14 @@ class Star(Body):
 		return self.properties['luminosity']
 
 	@property
+	def metallicity(self) -> float:
+		"""Metallicity, relative to the sun (dex)"""
+		if 'metallicity' in self.properties:
+			return self.properties['metallicity']
+		from mochaastro_data import sun
+		return log10(self.Z / sun.Z)
+
+	@property
 	def peakwavelength(self) -> float:
 		"""Peak emission wavelength (m)"""
 		return 2.8977729e-3/self.temperature
@@ -1160,6 +1168,9 @@ class Star(Body):
 	@property
 	def Z(self) -> float:
 		"""Metal composition (dimensionless)"""
+		if 'metallicity' in self.properties:
+			from mochaastro_data import sun
+			return sun.Z * 10**self.metallicity
 		return 1 - self.X - self.Y
 
 	# methods

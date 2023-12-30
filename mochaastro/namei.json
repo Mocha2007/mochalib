@@ -10,6 +10,7 @@
 		},
 		"luminosity": "0.11795428566427084*sun.luminosity",
 		"temperature": "4200",
+		"metallicity": "-0.34",
 		"notes": "namei_system = System(*[i for i in universe.values() if (i.orbit.parent if 'orbit' in i.properties and 'parent' in i.orbit.properties else i).name == 'Namei'])",
 		"notes2": "L = T^4 R^2"
 	},
