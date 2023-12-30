@@ -31,5 +31,17 @@
 		"luminosity": "1.2e5*sun.luminosity",
 		"temperature": 12100,
 		"metallicity": -0.06
+	},
+	{
+		"name": "Vega",
+		"class": "star",
+		"mass": "2.135*sun.mass",
+		"radius": "(2.362+2.818)/2*sun.radius",
+		"rotation": {
+			"period": "16.5*hour"
+		},
+		"luminosity": "40.12*sun.luminosity",
+		"temperature": 9602,
+		"metallicity": -0.5
 	}
 ]

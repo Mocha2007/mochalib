@@ -1179,18 +1179,24 @@ class Star(Body):
 		Maximum error = 0.0898 in the range [2380, 44900]"""
 		return 1.25542 * atan(-4.22389e-4 * self.temperature + 1.53047) + 1.55418
 
-	@property
-	def BV2(self) -> float:
-		"""Estimated B-V difference from temperature (dimensionless)
-		Maximum error = 0.0898 in the range [2380, 44900]"""
-		return photometry(self.temperature, 'B', 'V')
+	#@property
+	#def BV2(self) -> float:
+	#	"""Estimated B-V difference from temperature (dimensionless)
+	#	Maximum error = 0.0898 in the range [2380, 44900]"""
+	#	return photometry(self.temperature, 'B', 'V')
 
 	@property
 	def UB(self) -> float:
 		"""Estimated U-B difference from temperature (dimensionless)
 		This one in particular is rather bad, the R^2 was 0.899, compared to 0.987 and 0.99 for the other two.
 		See notes for B-V"""
-		return 1.26 * self.BV - 0.516
+		# return 1.26 * self.BV - 0.516
+		from math import cosh
+		x = self.BV
+		# took slope between endpoints, then added a regressed sech
+		# to try to fix most of the error,
+		# went from R^2 = 0.8988 to 0.9723
+		return 1.393*x - 0.73 + 0.489/cosh(-5.69298*x + 0.244607)
 
 	@property
 	def VR(self) -> float:
