@@ -3,7 +3,7 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, REDUCED_PLANCK, SQRT2, search, \
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, REDUCED_PLANCK, SQRT2, search, \
 	STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
@@ -1151,6 +1151,16 @@ class Star(Body):
 		return 2.8977729e-3/self.temperature
 
 	@property
+	def photosphere_pressure(self) -> float:
+		"""Estimated pressure at bottom of photosphere (Pa)"""
+		# okay here is my solution for pressure. I think of it this way.
+		# It's probably proportional to surface gravity / surface area.
+		# for the sun, that quotient is 4.5092805033996796e-17
+		# but https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html says it's 125 mb (12500 Pa)
+		# So I'll use that and hope for the best.
+		return 12500/4.5092805033996796e-17 * self.surface_gravity / self.area
+
+	@property
 	def temperature(self) -> float:
 		"""Temperature (K)"""
 		return self.properties['temperature']
@@ -1245,6 +1255,32 @@ class Star(Body):
 		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
 		area = obj.area / 2
 		return self.radiation_pressure_at(dist) * area
+
+	def cool(self, t: float) -> float:
+		"""Assuming this star is a stellar remnant (ie. a Neutron Star or White Dwarf),
+		Finds the temperature (K) it cools down to after the given time (s).
+		"""
+		# http://hyperphysics.phy-astr.gsu.edu/hbase/thermo/cootime.html
+		# N = self.photosphere_pressure*self.volume/(gas_constant*self.temperature)
+		# ^
+		# ideal gas law (my assumption pulled out of my ass...) https://chemistry.stackexchange.com/a/152172/94364
+		# technically the volume and temp would vary with time,
+		# but the number of mols would remain the same regardless so it doesn't matter
+		# the only problem is pressure which I have NO idea...
+		# I'm going to guesstimate the photosphere pressure based on a nasa doc, wish me luck
+		# turns out I don't need that. White dwarves are like 50/50 carbon-12 and oxygen-16.
+		# So I'll take the mean of the molar masses of those two (ie. 14 g/mol) and assume that's the molar mass of a white dwarf.
+		# this turns out to be half of the previous value, which tells me I was on the right track though...
+		# N = self.mass / 14000
+		# print(N, 'mol')
+		# A = self.area # I think?
+		# emissivity = 1 # assume ideal
+		# C = N*kB/(2*emissivity*STEFAN_BOLTZMANN*A)
+		# print(C, N, A)
+		# I expect this to be vaguely in the range of 8*10^27, but instead it's 3*10^-9!!!
+		# I'll have to settle on a quick-and-dirty approximation then... sigh...
+		C = 8e27
+		return (t/C + 1/self.temperature**3)**(-1/3)
 
 
 class BlackHole(Body):
