@@ -15,6 +15,7 @@
 			"man": "180*deg",
 			"epoch": "01 June 2018"
 		},
-		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf and https://arxiv.org/pdf/2203.07642.pdf and https://data.caltech.edu/records/0yypt-j3n93"
+		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf and https://arxiv.org/pdf/2203.07642.pdf and https://data.caltech.edu/records/0yypt-j3n93",
+		"notes2": "These weren't used, but https://arxiv.org/pdf/2205.07675.pdf https://arxiv.org/pdf/2210.04147.pdf were interesting too"
 	}
 ]
