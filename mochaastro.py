@@ -10,13 +10,14 @@ from mochaastro_data import *
 from mochaastro_body import *
 from mochaastro_orbit import Orbit
 from mochaastro_system import System
+from common import staticproperty
 
 # classes
 
 class Tools:
 	"""Miscelleneous tools to filter and manage bodies."""
-	@staticmethod
-	def namei_system() -> System:
+	@staticproperty
+	def namei_system(self) -> System:
 		"""Precompute the namei system"""
 		return System(search('namei'), *(search(s) for s in \
 			"ara falto tata bau oneia don eisen neuve dicito mannu".split(" ")))

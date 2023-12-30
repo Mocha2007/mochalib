@@ -238,3 +238,8 @@ def _test() -> None:
 		theta = test_helper()
 		# print(f"{lat}\t{theta}")
 	print(f"{average(_debug_timer_times)/1e3} μs")
+
+class staticproperty(property):
+	"""Use as a decorator and have a static getter!!!"""
+	def __get__(self, cls, owner):
+		return classmethod(self.fget).__get__(None, owner)()
