@@ -2,7 +2,7 @@
 from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
-from mochaastro_common import atm, au, c, day, deg, gas_constant, GRAV, \
+from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
 	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, REDUCED_PLANCK, SQRT2, search, \
 	STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
@@ -1112,6 +1112,12 @@ class Star(Body):
 	def abs_mag(self) -> float:
 		"""Absolute Magnitude (dimensionless)"""
 		return -2.5 * log10(self.luminosity / L_0)
+
+	@property
+	def BV(self) -> float:
+		"""Estimated B-V difference from temperature (dimensionless)
+		Maximum error = 0.0898 in the range [2380, 44900]"""
+		return 1.25542 * atan(-4.22389e-4 * self.temperature + 1.53047) + 1.55418
 
 	@property
 	def habitable_zone(self) -> Tuple[float, float]:
