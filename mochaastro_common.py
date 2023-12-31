@@ -63,6 +63,10 @@ PHOTOMETRIC_FILTER = {
 	'L': 3.6e-6,
 	'M': 4.8e-6,
 	'N': 10.2e-6,
+	# https://physics.stackexchange.com/a/503176/277131
+	'RGB_R': 612e-9,
+	'RGB_G': 549e-9,
+	'RGB_B': 464e-9,
 }
 
 AV_E = {
@@ -156,6 +160,18 @@ def photometryTest() -> None:
 			round(photometry(x, 'B', 'V'), 3), round(photometry(x, 'U', 'B'), 3),
 			round(photometry(x, 'V', 'R'), 3), round(photometry(x, 'R', 'I'), 3)))
 
+# https://en.wikipedia.org/wiki/Planck's_law
+def planck(freq: float, temp: float) -> float:
+	"""Planck's law: intensity of light emitted at a frequency (Hz) given a temp (K)"""
+	# https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html
+	#temp *= 1.8 # idk why but i need this corrective factor... UGH!!!
+	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(kB*temp))-1)
+
+
+def resonance_probability(mismatch: float, outer: int) -> float:
+	"""Return probability a particular resonance is by chance rather than gravitational"""
+	return 1-(1-abs(mismatch))**outer
+
 def spi(Te: float, lam: float, mb: float = 0) -> float:
 	"""Spectral photon irradiance f(lam) from a star
 	of apparent bolometric magnitude mb. (photons / (m^3 s))
@@ -170,18 +186,6 @@ def spi(Te: float, lam: float, mb: float = 0) -> float:
 	# lam *= 1.2 # idk why but i need this corrective factor... UGH!!!
 	fl = 8.48e34 * 10**(-0.4*mb) / (Te**4 * lam**4 * (exp(1.44e8/(lam*Te))-1))
 	return fl * 0.01**2 * angstrom
-
-# https://en.wikipedia.org/wiki/Planck's_law
-def planck(freq: float, temp: float) -> float:
-	"""Planck's law: intensity of light emitted at a frequency (Hz) given a temp (K)"""
-	# https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html
-	#temp *= 1.8 # idk why but i need this corrective factor... UGH!!!
-	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(kB*temp))-1)
-
-
-def resonance_probability(mismatch: float, outer: int) -> float:
-	"""Return probability a particular resonance is by chance rather than gravitational"""
-	return 1-(1-abs(mismatch))**outer
 
 
 def synodic(p1: float, p2: float) -> float:
