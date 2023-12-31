@@ -1282,7 +1282,7 @@ class Star(Body):
 		# https://en.wikipedia.org/wiki/White_dwarf#Radiation_and_cooling
 		# claims the coolest white dwarfs are just under 4000K.
 		# Assuming they formed at the beginning of the universe, that means C should be...
-		C = 3e28
+		C = 2.1077e28 # https://www.desmos.com/calculator/wu1rudon6k
 		return (t/C + 1/self.temperature**3)**(-1/3)
 
 
