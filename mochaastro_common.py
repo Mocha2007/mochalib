@@ -161,11 +161,11 @@ def photometryTest(temp: float = 5778) -> None:
 	for x in 'UBVRI':
 		print(("{: >1} ({: >3} nm)" + " {: <20}"*5).format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(planck(PHOTOMETRIC_FILTER[x], tx)/1e4 for tx in t)))
 	print('-'*70)
-	print('T', 'B-V', 'U-B', 'V-R', 'R-I')
+	print('T', 'U-B', 'B-V', 'V-R', 'R-I')
 	classif = 'XOBAFGKM'
 	for (i, x) in enumerate([temp, 42000, 30000, 9790, 7300, 5940, 5150, 3840]):
 		print((classif[i] + " {: >5}" + " {: <6}"*4).format(x,
-			round(photometry(x, 'B', 'V'), 3), round(photometry(x, 'U', 'B'), 3),
+			round(photometry(x, 'U', 'B'), 3), round(photometry(x, 'B', 'V'), 3),
 			round(photometry(x, 'V', 'R'), 3), round(photometry(x, 'R', 'I'), 3)))
 
 # https://en.wikipedia.org/wiki/Planck's_law
