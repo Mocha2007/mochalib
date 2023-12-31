@@ -154,7 +154,7 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	# AB = EB * AV_E[filter_b]
 	return C0 # + AA - AB
 
-def photometryTest() -> None:
+def photometryTest(temp: float = 5778) -> None:
 	#	U		B	V		R 	I	<- appx peaks
 	t = 7900, 6550, 5250, 4400, 3600
 	print('Name', 'λ', *t)
@@ -162,8 +162,9 @@ def photometryTest() -> None:
 		print(("{: >1} ({: >3} nm)" + " {: <20}"*5).format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(planck(PHOTOMETRIC_FILTER[x], tx)/1e4 for tx in t)))
 	print('-'*70)
 	print('T', 'B-V', 'U-B', 'V-R', 'R-I')
-	for x in [42000, 30000, 9790, 7300, 5940, 5150, 3840]:
-		print(("{: >5}" + " {: <6}"*4).format(x,
+	classif = 'XOBAFGKM'
+	for (i, x) in enumerate([temp, 42000, 30000, 9790, 7300, 5940, 5150, 3840]):
+		print((classif[i] + " {: >5}" + " {: <6}"*4).format(x,
 			round(photometry(x, 'B', 'V'), 3), round(photometry(x, 'U', 'B'), 3),
 			round(photometry(x, 'V', 'R'), 3), round(photometry(x, 'R', 'I'), 3)))
 
