@@ -112,6 +112,12 @@ def blagg(n: int,
 	return A * base**n * (B + f(a + n*b))
 
 
+def light_travel_time(z: float) -> float:
+	"""Time it took for light to reach observer, given redshift z. Returns (s)"""
+	# https://www.desmos.com/calculator/8r8h3ds9pf
+	return 1e9*year * 8.97983*atan(1.27092*z)
+
+
 def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 		-> Callable[[float], float]:
 	"""Create a linear map from one interval to another"""
