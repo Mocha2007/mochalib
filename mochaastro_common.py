@@ -78,23 +78,12 @@ PHOTOMETRIC_FILTER = {
 	'RGB_B': 464e-9,
 }
 
-AV_E = {
-	'U': 4.99,
-	'B': 4.12,
-	'V': 3.15,
-	'R': 2.4,
-	'I': 1.7,
-	'J': 1.0,
-	'H': 0.7,
-	'K': 0.4,
-	'L': 0.3,
-	'M': 0,
-	'N': 0,
+PHOTOMETRY_CORRECTION_COEF = {
+	'U-B': (-0.0248, 0.358, -2.1, 4.12),
+	'B-V': (0.108, 1.24, 0.173, -0.142),
+	'V-R': (0.0939, 1.21, 0.976),
+	'R-I': (-7.7e-3, 1.39),
 }
-"""Ratio of amount of interstellar absorbtion to color excess at given magnitude.
-These are guesstimates based on the table on p. 104...
-"""
-
 
 # simple functions
 def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
@@ -138,7 +127,7 @@ def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 		* (interval2[1] - interval2[0]) + interval2[0]
 
 
-def photometry(temp: float, filter_a: str, filter_b: str) -> float:
+def photometry(temp: float, filter_a: str, filter_b: str, correction: bool = False) -> float:
 	"""Difference in intensity of light emitted at the given temperature between filters (dimensionless)"""
 	vega = 9602 # https://en.wikipedia.org/wiki/Vega
 	l_a, l_b = PHOTOMETRIC_FILTER[filter_a], PHOTOMETRIC_FILTER[filter_b]
@@ -149,10 +138,11 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	b = planck(l_b, temp)
 	# https://astronomy.stackexchange.com/a/34062/48796
 	C0 = -2.5*log10(a/b) + 2.5*log10(va/vb)
-	# Page 103 - Interstellar reddening
-	# AA = EA * AV_E[filter_a]
-	# AB = EB * AV_E[filter_b]
-	return C0 # + AA - AB
+	# Corrective polynomial fits
+	name = f"{filter_a}-{filter_b}"
+	if correction and name in PHOTOMETRY_CORRECTION_COEF:
+		C0 = sum(x*C0**i for (i, x) in enumerate(PHOTOMETRY_CORRECTION_COEF[name]))
+	return C0
 
 def photometryTest(temp: float = 5778) -> None:
 	#	U		B	V		R 	I	<- appx peaks
