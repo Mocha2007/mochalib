@@ -112,7 +112,7 @@ def blagg(n: int,
 	return A * base**n * (B + f(a + n*b))
 
 
-def light_travel_time(z: float) -> float:
+def light_travel_time_OLD(z: float) -> float:
 	"""Time it took for light to reach observer, given redshift z. Returns (s)"""
 	# https://www.desmos.com/calculator/8r8h3ds9pf
 	return 1e9*year * 8.97983*atan(1.27092*z)
@@ -386,6 +386,97 @@ def distance_audio(orbit1, orbit2) -> None:
 	pcm_to_wav(frames.tobytes())
 	# play audio
 	play_file('output.wav')
+
+
+def light_travel_time(z: float) -> float:
+	# shamelessly ported from https://www.astro.ucla.edu/~wright/ACC.html
+	# constants https://en.wikipedia.org/wiki/Lambda-CDM_model#Parameters
+	H0 = 67.4 # 2018
+	T0 = 2.72528
+	mnue = 0.001
+	mnumu = 0.009
+	mnutau = 0.049
+	Tyr = 977.8
+	WM = 0.315 # 2018
+	WV = 0.6847 # 2018 Omega-Lambda on the Wikipedia article; Omega-DE on the site
+	w = -1.03 # 2018
+	wp = 0
+	n = 1000 # max iterations for integration
+	#def DCMT() -> float:
+	#	x = sqrt(abs(WK))*DCMR
+	#	if x > 0.1: return (0.5*(exp(x)-exp(-x)) if WK > 0 else sin(x))/x*DCMR
+	#	y = x**2
+	#	if WK < 0: y = -y
+	#	return (1 + y/6 + y*y/120)*DCMR
+	def nurho(mnu: float) -> float:
+		return (1+(mnurel/mnu)**1.842)**(1/1.842)
+	#def VCM() -> float:
+	#	x = sqrt(abs(WK))*DCMR
+	#	if x > 0.1:	return (0.125*(exp(2*x)-exp(-2*x))-x/2 if WK > 0 else x/2 - sin(2*x)/4)/x**3*DCMR**3
+	#	y = x**2
+	#	if WK < 0: y = -y
+	#	return (1 + y/5 + 2/105*y**2)*DCMR**3/3
+	# main
+	h = H0/100
+	WR = 2.477E-5*(T0/2.72528)**4/h**2
+	we = (mnue/93.64)*(T0/2.72528)**3
+	wmu = (mnumu/93.90)*(T0/2.72528)**3
+	wtau = (mnutau/93.90)*(T0/2.72528)**3
+	mnurel = 6.13*(T0/2.72528)/11604.5
+	Wnu = (we*nurho(mnue)+wmu*nurho(mnumu)+wtau*nurho(mnutau))/h**2
+	WK = 1-WM-WR-WV
+	WM -= Wnu
+	az = 1/(1+z)
+	# age = 0
+	#for i in range(n):
+	#	a = az*(i+0.5)/n
+	#	rhoV = WV*a**(-3-3*w-6*wp) * exp(6*wp*(a-1))
+	#	Wnu = (we*nurho(mnue*a)+wmu*nurho(mnumu*a)+wtau*nurho(mnutau*a))/h**2
+	#	adot = sqrt(WK+(WM+Wnu)/a+WR/a**2+rhoV*a**2)
+	#	age += 1/adot
+	# zage = az*age/n
+	# lpz = log10(1+z)
+	# dzage = 0
+	# if lpz > 15.107: dzage = 0.214
+	# elif lpz > 14.081: dzage = 0.013 * (lpz - 14.081) +  0.201
+	# elif lpz > 13.055: dzage = 0.013 * (lpz - 13.055) +  0.188
+	# elif lpz > 12.382: dzage = 0.024 * (lpz - 12.382) +  0.171
+	# elif lpz > 12.258: dzage = 0.461 * (lpz - 12.258) +  0.114
+	# elif lpz > 11.851: dzage = 0.069 * (lpz - 11.851) +  0.086
+	# elif lpz > 10.775: dzage = 0.035 * (lpz - 10.775) +  0.048
+	# elif lpz > 10.000: dzage = 0.048
+	# elif lpz >  9.500: dzage = 0.019 * (lpz -  9.500) +  0.039
+	# elif lpz >  9.000: dzage = 0.020 * (lpz -  9.000) +  0.028
+	# elif lpz >  8.500: dzage = 0.040 * (lpz -  8.500) +  0.008
+	# elif lpz >  8.000: dzage = 0.014 * (lpz -  8.000) +  0.001
+	# elif lpz >  7.500: dzage = 0.002 * (lpz -  7.500)
+	# zage *= 10**dzage
+	# zage_Gyr = (Tyr/H0)*zage
+	DTT = 0
+	# DCMR = 0
+	for i in range(n):
+		a = az+(1-az)*(i+0.5)/n
+		rhoV = WV*a**(-3-3*w-6*wp)*exp(6*wp*(a-1))
+		Wnu = (we*nurho(mnue*a)+wmu*nurho(mnumu*a)+wtau*nurho(mnutau*a))/(h*h)
+		adot = sqrt(WK+(WM+Wnu)/a+WR/a**2+rhoV*a**2)
+		DTT += 1/adot
+		# DCMR += 1/(a*adot)
+	DTT *= (1-az)/n
+	# DCMR *= (1-az)/n
+	# age = DTT+zage
+	# age_Gyr = age*Tyr/H0
+	DTT_Gyr = Tyr/H0*DTT
+	# DCMR_Gyr = Tyr/H0*DCMR
+	# DCMR_Mpc = c/H0*DCMR
+	# DA = az*DCMT()
+	# DA_Mpc = c/H0*DA
+	# kpc_DA = DA_Mpc/206.264806
+	# DA_Gyr = Tyr/H0*DA
+	# DL = DA/az**2
+	# DL_Mpc = c/H0*DL
+	# DL_Gyr = Tyr/H0*DL
+	# V_Gpc = 4*pi*(0.001*c/H0)**3 * VCM()
+	return DTT_Gyr * 1e9 * year * c # convert from Gly to m
 
 
 def plot_delta_between(orbit1, orbit2) -> None:
