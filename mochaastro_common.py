@@ -56,17 +56,22 @@ G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 PHOTOMETRIC_FILTER = {
 	# https://en.wikipedia.org/wiki/UBV_photometric_system
 	# Handbook of Space Astronomy and Astrophysics (2nd ed.). Cambridge University Press. p. 100
+	# https://en.wikipedia.org/wiki/Photometric_system#Photometric_letters
 	'U': 365e-9,
-	'B': 440e-9,
-	'V': 550e-9,
-	'R': 700e-9,
-	'I': 900e-9,
-	'J': 1.25e-6,
-	'H': 1.65e-6,
-	'K': 2.2e-6,
-	'L': 3.6e-6,
-	'M': 4.8e-6,
-	'N': 10.2e-6,
+	'B': 445e-9,
+	'G': 464e-9,
+	'V': 551e-9,
+	'R': 658e-9,
+	'I': 806e-9,
+	'Z': 900e-9,
+	'Y': 1020e-9,
+	'J': 1220e-9,
+	'H': 1630e-9,
+	'K': 2190e-9,
+	'L': 3450e-9,
+	'M': 4750e-9,
+	'N': 10500e-9,
+	'Q': 21000e-9,
 	# https://physics.stackexchange.com/a/503176/277131
 	'RGB_R': 612e-9,
 	'RGB_G': 549e-9,
@@ -138,10 +143,10 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	vega = 9602 # https://en.wikipedia.org/wiki/Vega
 	l_a, l_b = PHOTOMETRIC_FILTER[filter_a], PHOTOMETRIC_FILTER[filter_b]
 	# f_a, f_b = c/l_a, c/l_b
-	va = spi(vega, l_a) # planck(l_a, vega)
-	vb = spi(vega, l_b) # planck(l_b, vega)
-	a = spi(temp, l_a) # planck(l_a, temp)
-	b = spi(temp, l_b) # planck(l_b, temp)
+	va = planck(l_a, vega)
+	vb = planck(l_b, vega)
+	a = planck(l_a, temp)
+	b = planck(l_b, temp)
 	# https://astronomy.stackexchange.com/a/34062/48796
 	C0 = -2.5*log10(a/b) + 2.5*log10(va/vb)
 	# Page 103 - Interstellar reddening
@@ -150,13 +155,11 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	return C0 # + AA - AB
 
 def photometryTest() -> None:
-	# test SPI (page 103 of the book) - I verified this already so we good
-	# print('PAGE 103 TEST', spi(10800, 5000, 0 + -0.40))
 	#	U		B	V		R 	I	<- appx peaks
-	t = 7900, 6600, 5250, 4150, 3200
+	t = 7900, 6550, 5250, 4400, 3600
 	print('Name', 'λ', *t)
-	for x in 'UBVRIJHKLMN':
-		print(("{: >1} ({: >5} nm)" + " {: <20}"*5).format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(spi(tx, PHOTOMETRIC_FILTER[x])*1e14 for tx in t)))
+	for x in 'UBVRI':
+		print(("{: >1} ({: >3} nm)" + " {: <20}"*5).format(x, int(PHOTOMETRIC_FILTER[x]*1e9), *(planck(PHOTOMETRIC_FILTER[x], tx)/1e4 for tx in t)))
 	print('-'*70)
 	print('T', 'B-V', 'U-B', 'V-R', 'R-I')
 	for x in [42000, 30000, 9790, 7300, 5940, 5150, 3840]:
@@ -174,21 +177,6 @@ def planck(wl: float, temp: float) -> float:
 def resonance_probability(mismatch: float, outer: int) -> float:
 	"""Return probability a particular resonance is by chance rather than gravitational"""
 	return 1-(1-abs(mismatch))**outer
-
-def spi(Te: float, lam: float, mb: float = 0) -> float:
-	"""Spectral photon irradiance f(lam) from a star
-	of apparent bolometric magnitude mb. (photons / (m^3 s))
-
-	Arguments:
-	:param Te: effective temperature of the star (K)
-	:param lam: wavelength (m)
-
-	Note you can derive the bolometric magnitude by adding
-	the bolometric correction factor to its visual magnitude."""
-	lam /= angstrom
-	# lam *= 1.2 # idk why but i need this corrective factor... UGH!!!
-	fl = 8.48e34 * 10**(-0.4*mb) / (Te**4 * lam**4 * (exp(1.44e8/(lam*Te))-1))
-	return fl * 0.01**2 * angstrom
 
 
 def synodic(p1: float, p2: float) -> float:
