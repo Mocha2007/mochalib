@@ -3,7 +3,7 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, planck, PHOTOMETRIC_FILTER, \
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, planck, PHOTOMETRIC_FILTER, \
 	REDUCED_PLANCK, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
@@ -1256,18 +1256,6 @@ class Star(Body):
 		"""Apparent Magnitude of this star at the given distance (dimensionless)"""
 		return 5 * log10(dist / (10*pc)) + self.abs_mag
 
-	def radiation_pressure_at(self, dist: float) -> float:
-		"""Stellar radiation pressure at a distance (W/m^2)"""
-		from mochaastro_data import sun
-		wattage = self.luminosity / sun.luminosity
-		return G_SC * wattage / (dist/au)**2
-
-	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
-		"""Stellar radiation force on a planet at a time (W)"""
-		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
-		area = obj.area / 2
-		return self.radiation_pressure_at(dist) * area
-
 	def cool(self, t: float) -> float:
 		"""Assuming this star is a stellar remnant (ie. a Neutron Star or White Dwarf),
 		Finds the temperature (K) it cools down to after the given time (s).
@@ -1296,6 +1284,22 @@ class Star(Body):
 		# Assuming they formed at the beginning of the universe, that means C should be...
 		C = 2.1077e28 # https://www.desmos.com/calculator/wu1rudon6k
 		return (t/C + 1/self.temperature**3)**(-1/3)
+
+	def photometry(self, filter_a: str = 'B', filter_b: str = 'V', correction: bool = True) -> float:
+		"""Difference in magnitude of this star between the two specified photometric filters (dimensionless)"""
+		return photometry(self.temperature, filter_a, filter_b, correction)
+
+	def radiation_pressure_at(self, dist: float) -> float:
+		"""Stellar radiation pressure at a distance (W/m^2)"""
+		from mochaastro_data import sun
+		wattage = self.luminosity / sun.luminosity
+		return G_SC * wattage / (dist/au)**2
+
+	def radiation_force_at(self, obj: Body, t: float = 0) -> float:
+		"""Stellar radiation force on a planet at a time (W)"""
+		dist = hypot(*obj.orbit.cartesian(t)[:3]) / au
+		area = obj.area / 2
+		return self.radiation_pressure_at(dist) * area
 
 
 class BlackHole(Body):
