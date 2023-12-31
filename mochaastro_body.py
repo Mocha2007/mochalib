@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
 	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, planck, PHOTOMETRIC_FILTER, \
-	REDUCED_PLANCK, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
+	REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -245,15 +245,30 @@ class Body:
 
 	@property
 	def star_dist(self) -> float:
-		"""Get the distance to the nearest star in the hierarchy"""
+		"""Get the distance to the nearest star in the hierarchy (m)"""
 		p = self.orbit.parent
 		return self.orbit.a if isinstance(p, Star) else p.star_dist
 
 	@property
 	def star_radius(self) -> float:
-		"""Get the radius of the nearest star in the hierarchy"""
+		"""Get the radius of the nearest star in the hierarchy (m)"""
 		p = self.orbit.parent
 		return p.radius if isinstance(p, Star) else p.star_radius
+
+	@property
+	def sudarsky_class(self) -> int:
+		"""Sudarsky's gas giant classification (1-5, dimensionless)"""
+		# https://en.wikipedia.org/wiki/Sudarsky's_gas_giant_classification
+		t = max(self.temp, stargen(self.mass).temperature)
+		if t < 150:
+			return 1
+		if t < 300:
+			return 2
+		if t < 850:
+			return 3
+		if t < 1400:
+			return 4
+		return 5
 
 	@property
 	def temp(self) -> float:
