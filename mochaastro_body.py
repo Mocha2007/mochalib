@@ -3,8 +3,8 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, REDUCED_PLANCK, SQRT2, search, \
-	STEFAN_BOLTZMANN, synodic, year
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, planck, PHOTOMETRIC_FILTER, \
+	REDUCED_PLANCK, SQRT2, search, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -1112,6 +1112,18 @@ class Star(Body):
 	def abs_mag(self) -> float:
 		"""Absolute Magnitude (dimensionless)"""
 		return -2.5 * log10(self.luminosity / L_0)
+
+	@property
+	def color(self) -> Tuple[float, float, float]:
+		"""Returns approximation of color in sRGB space (0-255 intensity)"""
+		r = planck(PHOTOMETRIC_FILTER['RGB_R'], self.temperature)
+		g = planck(PHOTOMETRIC_FILTER['RGB_G'], self.temperature)
+		b = planck(PHOTOMETRIC_FILTER['RGB_B'], self.temperature)
+		mag = max(r, g, b)
+		r *= 255 / mag
+		g *= 255 / mag
+		b *= 255 / mag
+		return tuple(map(round, (r, g, b)))
 
 	@property
 	def habitable_zone(self) -> Tuple[float, float]:

@@ -17,16 +17,20 @@ J2000 = datetime(2000, 1, 1, 11, 58, 55, 816)
 SQRT2 = sqrt(2)
 
 GRAV = 6.674e-11 # m^3 / (kg*s^2); appx; standard gravitational constant
-c = 299792458 # m/s; exact; speed of light
+c = 299792458
+"""m/s; exact; speed of light"""
 L_0 = 3.0128e28 # W; exact; zero point luminosity
 L_sun = 3.828e26 # W; exact; nominal solar luminosity
 STEFAN_BOLTZMANN = 5.670374419e-8 # W⋅m−2⋅K−4
+"""W/(m^2 * K^4); appx; Stefan-Boltzmann constant (NOT Boltzmann: use kB for that)"""
 C2K = 273.15 # K; exact; constant to add to convert from Celsius to Kelvin
-PLANCK = 6.62607015e-34 # J/Hz; exact; Planck constant
+PLANCK = 6.62607015e-34
+"""J/Hz; exact; Planck constant, often written 'h'"""
 REDUCED_PLANCK = PLANCK / (2*pi)
 N_A = 6.02214076e23 # dimensionless; exact; Avogadro constant
 WIEN = 2.897771955e-3 # m*K; appx; Wien's displacement constant
-kB = 1.380649e-23 # J/K; exact; Boltzmann constant
+kB = 1.380649e-23
+"""J/K; exact; Boltzmann constant (NOT Stefan-Boltzmann: use STEFAN_BOLTZMANN for that)"""
 gas_constant = N_A*kB # J/(Kmol); exact; ideal gas constant
 
 lb = 0.45359237 # kg; exact; pound
@@ -134,10 +138,10 @@ def photometry(temp: float, filter_a: str, filter_b: str) -> float:
 	vega = 9602 # https://en.wikipedia.org/wiki/Vega
 	l_a, l_b = PHOTOMETRIC_FILTER[filter_a], PHOTOMETRIC_FILTER[filter_b]
 	# f_a, f_b = c/l_a, c/l_b
-	va = spi(vega, l_a) # planck(f_a, vega)
-	vb = spi(vega, l_b) # planck(f_b, vega)
-	a = spi(temp, l_a) # planck(f_a, temp)
-	b = spi(temp, l_b) # planck(f_b, temp)
+	va = spi(vega, l_a) # planck(l_a, vega)
+	vb = spi(vega, l_b) # planck(l_b, vega)
+	a = spi(temp, l_a) # planck(l_a, temp)
+	b = spi(temp, l_b) # planck(l_b, temp)
 	# https://astronomy.stackexchange.com/a/34062/48796
 	C0 = -2.5*log10(a/b) + 2.5*log10(va/vb)
 	# Page 103 - Interstellar reddening
@@ -161,11 +165,10 @@ def photometryTest() -> None:
 			round(photometry(x, 'V', 'R'), 3), round(photometry(x, 'R', 'I'), 3)))
 
 # https://en.wikipedia.org/wiki/Planck's_law
-def planck(freq: float, temp: float) -> float:
-	"""Planck's law: intensity of light emitted at a frequency (Hz) given a temp (K)"""
+def planck(wl: float, temp: float) -> float:
+	"""Planck's law: spectral radiance emitted at a wavelength (m) given a temp (K)"""
 	# https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html
-	#temp *= 1.8 # idk why but i need this corrective factor... UGH!!!
-	return 2*PLANCK*freq**3/c**2 / (exp(PLANCK*freq/(kB*temp))-1)
+	return 8*pi*PLANCK*c/wl**5 / (exp(PLANCK*c/(wl*kB*temp)) - 1)
 
 
 def resonance_probability(mismatch: float, outer: int) -> float:
