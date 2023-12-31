@@ -141,6 +141,12 @@ mercury = Body(**{
 			'O2':  .25,
 		},
 	}),
+	'composition': { # by mass https://en.wikipedia.org/wiki/Mercury_(planet)#Physical_characteristics
+		'Fe': 0.7, # "70% metallic"
+		# "30% Silicate, assuming Silicate ~ 30% Si 70% O"
+		'O':  0.3 * 0.7,
+		'Si': 0.3 * 0.3,
+	},
 	'mass': 3.3011e23,
 	'radius': 2.4397e6,
 	'oblateness': 9e-4,

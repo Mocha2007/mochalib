@@ -44,6 +44,7 @@ arcmin = deg/60 # rad; exact; arcminute
 arcsec = arcmin/60 # rad; exact; arcsecond
 atm = 101325 # Pa; exact; atmosphere
 angstrom = 1e-10 # m; exact
+bar = 1e5 # Pa; exact
 
 ly = c * jyear # m; exact; light-year
 au = 149597870700 # m; exact; astronomical unit

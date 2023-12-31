@@ -2,7 +2,7 @@
 from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
-from mochaastro_common import atan, atm, au, c, day, deg, gas_constant, GRAV, \
+from mochaastro_common import atan, atm, au, bar, c, day, deg, gas_constant, GRAV, \
 	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, planck, PHOTOMETRIC_FILTER, \
 	REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
@@ -457,7 +457,7 @@ class Body:
 	@property
 	def categories(self) -> set:
 		"""List all possible categories for body"""
-		from mochaastro_data import earth, jupiter, mars, mercury, neptune, saturn, solar_system
+		from mochaastro_data import earth, jupiter, mars, mercury, neptune, saturn, solar_system, sun
 		ice_giant_cutoff = 80*earth.mass # https://en.wikipedia.org/wiki/Super-Neptune
 		categories = set()
 		if isinstance(self, Star):
@@ -539,6 +539,9 @@ class Body:
 		categories.add('Minor Planet')
 		if 9e20 < mass: # smallest dwarf planet is Ceres
 			categories.add('Dwarf Planet')
+		# solar system-centric categories...
+		if self.orbit.parent is not sun:
+			return categories # exit early
 		# crossers
 		# [print(n, b.categories) for n, b in universe.items()
 		# if any('Crosser' in c for c in b.categories)]
@@ -666,39 +669,6 @@ class Body:
 			# https://en.wikipedia.org/wiki/Damocloid
 			categories.add('Damocloid')
 		return categories
-
-	@property
-	def category(self) -> str:
-		"""Attempt to categorize the body [DEPRECATED, USE CATEGORIES INSTEAD]"""
-		from mochaastro_data import earth, jupiter, mercury
-		if isinstance(self, Star):
-			return 'star'
-		isround = 2e5 < self.radius
-		if isinstance(self.orbit.parent, Star):
-			# heliocentric
-			if not isround:
-				return 'asteroid'
-			# planets and dwarf planets
-			if self.planetary_discriminant < 1:
-				return 'dwarf planet'
-			# planets
-			if self.radius < mercury.radius:
-				return 'mesoplanet'
-			if self.radius < 4/5 * earth.radius:
-				return 'subearth'
-			if self.radius < 5/4 * earth.radius:
-				return 'earthlike'
-			if self.mass < 10 * earth.mass:
-				return 'superearth'
-			if self.mass < 3e26: # SWAG
-				return 'ice giant'
-			if self.mass < 13*jupiter.mass:
-				return 'gas giant'
-			return 'brown dwarf'
-		# moons
-		if isround:
-			return 'major moon'
-		return 'minor moon'
 
 	@property
 	def circumference(self) -> float:
@@ -893,26 +863,109 @@ class Body:
 	@property
 	def setype(self) -> float:
 		"""Space Engine-like classifier"""
+		from mochaastro_data import earth, jupiter
+		# https://spaceengine.org/news/blog170924/
+		me = self.mass / earth.mass
+		mj = self.mass / jupiter.mass
+		# Temperature
 		temperature = self.temp
 		try:
 			temperature = self.greenhouse_temp
 		except KeyError:
 			pass
-		if 800 < temperature:
-			heat = 'Scorched'
-		elif 400 < temperature:
-			heat = 'Hot'
-		elif 300 < temperature:
-			heat = 'Warm'
+		if 1000 < temperature:
+			heat = 'torrid'
+		elif 500 < temperature:
+			heat = 'hot'
+		elif 330 < temperature:
+			heat = 'warm'
 		elif 250 < temperature:
-			heat = 'Temperate'
-		elif 200 < temperature:
-			heat = 'Cool'
-		elif 100 < temperature:
-			heat = 'Cold'
+			heat = 'temperate'
+		elif 170 < temperature:
+			heat = 'cool'
+		elif 90 < temperature:
+			heat = 'cold'
 		else:
-			heat = 'Frozen'
-		return heat + ' ' + self.category.title()
+			heat = 'frigid'
+		# volatiles
+		p = self.atmosphere.surface_pressure if 'atmosphere' in self.properties and 'surface_pressure' in self.atmosphere.properties else 0
+		if p < 1e-9*bar:
+			volatiles = 'airless'
+		# todo (arid non-arid) = desertic lacustrine marine oceanic superoceanic
+		else:
+			volatiles = 'arid'
+		# bulk
+		HAS_ATMOSPHERIC_COMPOSITION = 'atmosphere' in self.properties and 'composition' in self.atmosphere.properties
+		HAS_COMPOSITION = 'composition' in self.properties
+		# I assume they mean https://en.wikipedia.org/wiki/Goldschmidt_classification ?
+		siderophilic = 'Mn Fe Co Ni Mo Tc Ru Rh Pd W Re Os Ir Pt Au Sg Bh Hs Mt Ds Rg'.split(' ')
+		siderophily = sum(self.composition[elem] for elem in siderophilic if elem in self.composition) \
+			if HAS_COMPOSITION else 0
+		carbon = self.composition['C'] if HAS_COMPOSITION and 'C' in self.composition else 0
+		# I exclude O because that would cause Ice giants to be included
+		lithophilic = 'Li Be B F Na Mg Al Si P Cl K Ca Sc Ti V Cr Br Rb Sr Y Zr Nb I Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta At Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rd Db Ts'.split(' ')
+		lithophily = sum(self.composition[elem] for elem in lithophilic if elem in self.composition) \
+			if HAS_COMPOSITION else 0
+		nonmetals = 'H H2 He'.split(' ')
+		nonmetallicity = sum(self.atmosphere.composition[elem] for elem in nonmetals if elem in self.atmosphere.composition) \
+			if HAS_ATMOSPHERIC_COMPOSITION else 0
+		rounded = 6.4e19 <= self.mass # Miranda
+		if not rounded:
+			bulk = 'asteroid'
+		elif 0.5 < siderophily:
+			bulk = 'ferria'
+		elif 0.25 < carbon:
+			bulk = 'carbonia'
+		# todo aquaria
+		elif 0.25 < lithophily:
+			bulk = 'terra'
+		elif 0.25 < nonmetallicity:
+			bulk = 'gas giant'
+		else:
+			bulk = 'ice giant'
+		# insufficient data to safely predict, OVERRIDE!
+		if not HAS_ATMOSPHERIC_COMPOSITION or not HAS_COMPOSITION:
+			bulk = 'gas giant' if 0.18 < mj else 'ice giant' if 7.3 < me else 'terra'
+		# prefix
+		if bulk == 'ice giant':
+			if me < 4:
+				prefix = 'mini'
+			elif me < 10:
+				prefix = 'sub'
+			elif me < 25:
+				prefix = ''
+			elif me < 62.5:
+				prefix = 'super'
+			else:
+				prefix = 'mega'
+		elif bulk == 'gas giant':
+			if mj < 0.2:
+				prefix = 'sub'
+			elif mj < 2:
+				prefix = ''
+			elif mj < 10:
+				prefix = 'super'
+			else:
+				prefix = 'mega'
+		else:
+			if me < 0.002:
+				prefix = 'micro'
+			elif me < 0.02:
+				prefix = 'mini'
+			elif me < 0.2:
+				prefix = 'sub'
+			elif me < 2:
+				prefix = ''
+			elif me < 10:
+				prefix = 'super'
+			else:
+				prefix = 'mega'
+		if ' ' in bulk:
+			bulk = bulk.split(' ')
+			bulk[1] = prefix + bulk[1]
+			bulk = ' '.join(bulk)
+			prefix = ''
+		return heat + ' ' + volatiles + ' ' + prefix + bulk
 
 	@property
 	def v_e(self) -> float:
