@@ -188,15 +188,18 @@ class Phase(Enum):
 
 def water_phase(t: float, p: float) -> Phase:
 	"""Returns the predicted phase of water at the specified temperature and pressure"""
+	p = max(p, 1) # prevent domain error for low pressures
 	CRIT_T = 647
 	CRIT_P = 22.064e6
+	TRIP_T = C2K # actually 273.16 but close enough...
+	TRIP_P = 611.657
 	def vapor_line(p_: float) -> float:
 		"""Returns the temperature at which water boils at the given pressure"""
 		y = log(p_)
 		if (p_ < atm):
-			y0 = log(611.73) # triple point
+			y0 = log(TRIP_P)
 			y1 = log(atm) # 100C 1 atm
-			return 100 * (y - y0)/(y1 - y0) + C2K
+			return 100 * (y - y0)/(y1 - y0) + TRIP_T
 		# else...
 		y0 = log(atm) # 100C 1 atm
 		y1 = log(CRIT_P)
@@ -208,6 +211,13 @@ def water_phase(t: float, p: float) -> Phase:
 		y0 = log(WEIRD_ICE_P)
 		y1 = log(10.2e9)
 		return (CRIT_T - C2K) * (y - y0)/(y1 - y0) + C2K
+	def sublimation_line(p_: float) -> float:
+		"""Returns the temperature at which water sublimates at the given pressure"""
+		y = log(p_)
+		y1 = log(TRIP_P)
+		return (TRIP_T - 212.6) * y/y1 + 212.6
+	if p < TRIP_P:
+		return Phase.GAS if sublimation_line(p) < t else Phase.SOLID
 	if t < C2K:
 		return Phase.SOLID
 	if WEIRD_ICE_P < p and ice7_line(p) < t:
