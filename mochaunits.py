@@ -199,11 +199,11 @@ class Mass(Dimension):
 		m_e = 5.97237e24
 		m_j = 1.8982e27
 		m_s = 1.98847e30
-		if self.value < m_e:
+		if self.value < 0.05 * m_e:
 			return str(round(x/m_m, self.round)) + ' Lunar Masses'
-		if self.value < m_j:
+		if self.value < 10 * m_e:
 			return str(round(x/m_e, self.round)) + ' Earth Masses'
-		if self.value < m_s:
+		if self.value < 0.1 * m_s:
 			return str(round(x/m_j, self.round)) + ' Jupiter Masses'
 		return str(round(x/m_s, self.round)) + ' Solar Masses'
 
