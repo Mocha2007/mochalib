@@ -44,7 +44,8 @@
 				"CO":  1.51e-7,
 				"Ne":  1.04e-7
 			}
-		}
+		},
+		"composition": "venus.composition"
 	},
 	{
 		"name": "Falto",
@@ -111,6 +112,7 @@
 			"surface_pressure": "14.7*atm",
 			"composition": "venus.atmosphere.composition"
 		},
+		"composition": "venus.composition",
 		"notes": "guesses: sma, composition"
 	},
 	{
@@ -151,6 +153,7 @@
 			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous."
 		},
 		"hydrosphere": "earth.hydrosphere",
+		"composition": "earth.composition",
 		"notes": "mocha"
 	},
 	{
@@ -176,6 +179,7 @@
 			"surface_pressure": "earth.atmosphere.surface_pressure",
 			"composition": "earth.atmosphere.composition"
 		},
+		"composition": "moon.composition",
 		"notes": "Guesses: mass, radius, orbital elements other than sma; search('nikki').solar_eclipse()"
 	},
 	{
@@ -204,6 +208,7 @@
 				"N2": 1
 			}
 		},
+		"composition": "mars.composition",
 		"notes": "5:2 with oneia"
 	},
 	{

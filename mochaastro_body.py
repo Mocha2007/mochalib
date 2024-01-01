@@ -919,6 +919,7 @@ class Body:
 	def setype(self) -> str:
 		"""Space Engine-like classifier"""
 		from mochaastro_data import earth, jupiter
+		GIANT = {'gas giant', 'ice giant'}
 		# https://spaceengine.org/news/blog170924/
 		me = self.mass / earth.mass
 		mj = self.mass / jupiter.mass
@@ -973,13 +974,16 @@ class Body:
 		nonmetallicity = sum(self.atmosphere.composition[elem] for elem in nonmetals if elem in self.atmosphere.composition) \
 			if HAS_ATMOSPHERIC_COMPOSITION else 0
 		rounded = 6.4e19 <= self.mass # Miranda
+		if MOCHAASTRO_DEBUG:
+			print(self.name, HAS_ATMOSPHERIC_COMPOSITION, HAS_COMPOSITION)
 		if not rounded:
 			bulk = 'asteroid'
+		elif 'oceanic' in volatiles:
+			bulk = 'aquaria'
 		elif 0.5 < siderophily:
 			bulk = 'ferria'
 		elif 0.25 < carbon:
 			bulk = 'carbonia'
-		# todo aquaria
 		elif 0.25 < lithophily:
 			bulk = 'terra'
 		elif 0.25 < nonmetallicity:
@@ -987,9 +991,9 @@ class Body:
 		else:
 			bulk = 'ice giant'
 		# insufficient data to safely predict, OVERRIDE!
-		if not HAS_ATMOSPHERIC_COMPOSITION or not HAS_COMPOSITION:
+		if not HAS_ATMOSPHERIC_COMPOSITION or (bulk not in GIANT and not HAS_COMPOSITION):
 			bulk = 'gas giant' if 0.18 < mj else 'ice giant' if 7.3 < me else 'terra'
-		if bulk in {'gas giant', 'ice giant'}:
+		if bulk in GIANT:
 			INCLUDE_VOLATILES = False
 		# prefix
 		if bulk == 'ice giant':
