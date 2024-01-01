@@ -27,7 +27,8 @@
 				"CH4":   1
 			},
 			"notes": "pressure is an upper bound"
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
 	},
 	{
 		"name": "55565 2002 AW197",
@@ -46,7 +47,8 @@
 		},
 		"rotation": {
 			"period": "8.87*hour"
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
 	},
 	{
 		"name": "90377 Sedna",
@@ -66,7 +68,8 @@
 		},
 		"rotation": {
 			"period": "10.273*hour"
-		}
+		},
+		"composition": "SEDNOID_COMPOSITION"
 	},
 	{
 		"name": "90482 Orcus",
@@ -86,7 +89,8 @@
 		},
 		"rotation": {
 			"period": "13.188*hour"
-		}
+		},
+		"composition": "PLUTINO_COMPOSITION"
 	},
 	{
 		"name": "120347 Salacia",
@@ -106,7 +110,8 @@
 		},
 		"rotation": {
 			"period": "6.09*hour"
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
 	},
 	{
 		"name": "134340 Pluto",
@@ -140,7 +145,8 @@
 				"C2H2":  3e-6,
 				"C2H4":  1e-6
 			}
-		}
+		},
+		"composition": "PLUTINO_COMPOSITION"
 	},
 	{
 		"name": "136108 Haumea",
@@ -167,7 +173,8 @@
 		"atmosphere": {
 			"surface_pressure": 0,
 			"source": "https://arxiv.org/ftp/arxiv/papers/2006/2006.03113.pdf p.4, 22-3, 32-3, 39"
-		}
+		},
+		"composition": "HAUMEID_COMPOSITION"
 	},
 	{
 		"name": "136199 Eris",
@@ -187,7 +194,8 @@
 		},
 		"rotation": {
 			"period": "15.786*day"
-		}
+		},
+		"composition": "SDO_COMPOSITION"
 	},
 	{
 		"name": "136472 Makemake",
@@ -213,7 +221,8 @@
 			"composition": {
 				"N2": 1
 			}
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
 	},
 	{
 		"name": "174567 Varda",
@@ -233,7 +242,8 @@
 		},
 		"rotation": {
 			"period": "5.61*hour"
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
 	},
 	{
 		"name": "225088 Gonggong",
@@ -253,7 +263,8 @@
 		},
 		"rotation": {
 			"period": "22.4*hour"
-		}
+		},
+		"composition": "SDO_COMPOSITION"
 	},
 	{
 		"name": "307261 2002 MS4",
@@ -272,7 +283,26 @@
 		},
 		"rotation": {
 			"period": "7.33*hour"
-		}
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT"
+	},
+	{
+		"name": "486958 Arrokoth",
+		"class": "TNO",
+		"mass": 7.485e14,
+		"radius": 9130,
+		"albedo": 0.21,
+		"orbit": {
+			"parent": "sun",
+			"sma": "44.581*au",
+			"e": 0.04172,
+			"i": "2.4512*deg",
+			"lan": "158.998*deg",
+			"aop": "174.418*deg",
+			"man": "316.551*deg",
+			"epoch": "27 April 2019"
+		},
+		"composition": "CLASSICAL_KBO_COMPOSITION_COLD"
 	},
 	{
 		"name": "541132 Leleākūhonua",
@@ -288,6 +318,7 @@
 			"aop": "117.778*deg",
 			"man": "359.418*deg",
 			"epoch": "31 May 2020"
-		}
+		},
+		"composition": "SEDNOID_COMPOSITION"
 	}
 ]

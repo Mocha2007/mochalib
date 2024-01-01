@@ -569,24 +569,46 @@ neptune = Body(**{
 })
 
 # asteroid compositions (most are guesses)
-ASTEROID_COMPOSITION_C = { # https://starlust.org/what-are-asteroids-made-of/
-	'C': 0.5,
-	'N': 0.15,
-	'O': 0.15,
-	'H': 0.1,
+ASTEROID_COMPOSITION_C = { # Guess: 30% Ice crust, 50% Silicate mantle, 20% Iron core
+	'O': 0.3*0.881 + 0.5*0.8,
+	'H': 0.3*0.119,
+	'Si': 0.5*0.2,
+	'Fe': 0.2,
 }
 ASTEROID_COMPOSITION_M = { # https://starlust.org/what-are-asteroids-made-of/
 	'Fe': 0.8,
 	'Ni': 0.2,
 }
-ASTEROID_COMPOSITION_S = { # https://starlust.org/what-are-asteroids-made-of/
-	'O': 0.8 * 0.8,
-	'Si': 0.8 * 0.2,
-	'Fe': 0.2,
+ASTEROID_COMPOSITION_S = { # Guess: 25% Ice crust, 30% Silicate mantle, 45% Iron core
+	'O': 0.25*0.881 + 0.3*0.8,
+	'H': 0.25*0.119,
+	'Si': 0.3*0.2,
+	'Fe': 0.45,
 }
 ASTEROID_COMPOSITION_B = ASTEROID_COMPOSITION_C
 ASTEROID_COMPOSITION_G = ASTEROID_COMPOSITION_C
 ASTEROID_COMPOSITION_V = ASTEROID_COMPOSITION_S
+CLASSICAL_KBO_COMPOSITION_HOT = { # Guess: 37.5% Ice crust, 37.5% Silicate mantle, 25% Iron core
+	'O': 0.375*0.881 + 0.375*0.8,
+	'H': 0.375*0.119,
+	'Si': 0.375*0.2,
+	'Fe': 0.25,
+}
+CLASSICAL_KBO_COMPOSITION_COLD = { # Guess: 40% Ice crust, 40% Silicate mantle, 20% Iron core
+	'O': 0.4*0.881 + 0.4*0.8,
+	'H': 0.4*0.119,
+	'Si': 0.4*0.2,
+	'Fe': 0.2,
+}
+SDO_COMPOSITION = CLASSICAL_KBO_COMPOSITION_HOT # wiki says they're similar in composition
+PLUTINO_COMPOSITION = CLASSICAL_KBO_COMPOSITION_HOT # wild guess
+HAUMEID_COMPOSITION = { # Densest type of KBO - Guess: 25% Ice crust, 40% Silicate mantle, 35% Iron core
+	'O': 0.25*0.881 + 0.4*0.8,
+	'H': 0.25*0.119,
+	'Si': 0.4*0.2,
+	'Fe': 0.35,
+}
+SEDNOID_COMPOSITION = CLASSICAL_KBO_COMPOSITION_HOT # wild guess
 
 # inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 # solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)

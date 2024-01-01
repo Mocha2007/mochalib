@@ -417,6 +417,7 @@
 			"tilt": "102*deg"
 		},
 		"atmosphere": "mars.atmosphere",
+		"composition": "CLASSICAL_KBO_COMPOSITION_HOT",
 		"notes": "62.321yr;System(search('namei'), search('eisen'), search('neuve'), search('dicito'), search('mannu')).grav_sim(search('dicito'), 10000, 25, 100)"
 	},
 	{
