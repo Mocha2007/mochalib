@@ -609,6 +609,11 @@ HAUMEID_COMPOSITION = { # Densest type of KBO - Guess: 25% Ice crust, 40% Silica
 	'Fe': 0.35,
 }
 SEDNOID_COMPOSITION = CLASSICAL_KBO_COMPOSITION_HOT # wild guess
+PROTOPLANET_ATM_COMPOSITION = { # Venus/Mars-like
+	'CO2': 0.95,
+	'N2': 0.03,
+	'Ar': 0.02,
+}
 
 # inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 # solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)

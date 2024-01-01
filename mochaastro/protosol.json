@@ -28,9 +28,12 @@
 			"period": "1/0.255 * 8 * hour",
 			"tilt": "mercury.rotation.tilt"
 		},
-		"atmosphere": "mars.atmosphere",
+		"atmosphere": {
+			"surface_pressure": "0.255*atm",
+			"composition": "PROTOPLANET_ATM_COMPOSITION"
+		},
 		"composition": "mars.composition",
-		"notes": "Mercury would've taken about 100 Myr to tidally lock, so it is not tidally locked yet. Also, its mantle was blown off in an impact after this time. It may have been marslike."
+		"notes": "Mercury would've taken about 100 Myr to tidally lock in its current state, and 225 Myr in its past state, so it is not tidally locked yet. Also, its mantle was blown off in an impact after this time. It may have been marslike."
 	},
 	{
 		"name": "Proto-Venus",
@@ -45,7 +48,10 @@
 		"rotation": {
 			"period": "earth.mass / venus.mass * 8 * hour"
 		},
-		"atmosphere": "earth.atmosphere",
+		"atmosphere": {
+			"surface_pressure": "0.815*atm",
+			"composition": "PROTOPLANET_ATM_COMPOSITION"
+		},
 		"composition": "venus.composition",
 		"notes": "Venus would've taken about 800 Myr to tidally lock, so it is not tidally locked yet."
 	},
@@ -62,7 +68,10 @@
 		"rotation": {
 			"period": "8 * hour"
 		},
-		"atmosphere": "earth.atmosphere",
+		"atmosphere": {
+			"surface_pressure": "0.9*atm",
+			"composition": "PROTOPLANET_ATM_COMPOSITION"
+		},
 		"composition": "earth.composition",
 		"notes": "Proto-Earth mass = (Earth + Moon) - Theia"
 	},
@@ -80,7 +89,10 @@
 		"rotation": {
 			"period": "1/0.11 * 8 * hour"
 		},
-		"atmosphere": "earth.atmosphere",
+		"atmosphere": {
+			"surface_pressure": "0.11*atm",
+			"composition": "PROTOPLANET_ATM_COMPOSITION"
+		},
 		"composition": "earth.composition",
 		"notes": "Marslike Theia?"
 	},
@@ -98,7 +110,10 @@
 			"period": "earth.mass / mars.mass * 8 * hour",
 			"tilt": "mars.rotation.tilt"
 		},
-		"atmosphere": "earth.atmosphere",
+		"atmosphere": {
+			"surface_pressure": "0.107*atm",
+			"composition": "PROTOPLANET_ATM_COMPOSITION"
+		},
 		"composition": "mars.composition"
 	},
 	{
