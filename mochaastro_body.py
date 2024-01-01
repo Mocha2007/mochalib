@@ -41,7 +41,7 @@ class Rotation:
 	@property
 	def tilt(self) -> float:
 		"""Axial tilt (rad)"""
-		return self.properties['tilt']
+		return self.properties['tilt'] if 'tilt' in self.properties else 0
 
 
 class Atmosphere:
@@ -765,6 +765,7 @@ class Body:
 			"'Orbital Period  {}'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",
 			"'Rotation Period {}'.format(pretty_dim(Time(self.rotation.p, 'imperial')))",
 			"'Solar Day       {}'.format(pretty_dim(Time(self.solar_day, 'imperial')))",
+			"'Solar Year      {} sols'.format(round(self.solar_year, 2))",
 			"'Axial Tilt      {}'.format(Angle(self.rotation.tilt, 'deg', 'round=1'))",
 			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 3))",
 			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
@@ -876,7 +877,7 @@ class Body:
 	@property
 	def oblateness(self) -> float:
 		"""Oblateness (dimensionless)"""
-		return self.properties['oblateness']
+		return self.properties['oblateness'] if 'oblateness' in self.properties else self.oblateness_estimate
 
 	@property
 	def planetary_discriminant(self) -> float:

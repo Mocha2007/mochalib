@@ -25,7 +25,7 @@
 			"sma": ".51*au"
 		},
 		"rotation": {
-			"period": "1/0.255 * 8 * hour",
+			"period": "9 * hour",
 			"tilt": "mercury.rotation.tilt"
 		},
 		"atmosphere": {
@@ -46,7 +46,7 @@
 			"sma": ".77*au"
 		},
 		"rotation": {
-			"period": "earth.mass / venus.mass * 8 * hour"
+			"period": "8 * hour"
 		},
 		"atmosphere": {
 			"surface_pressure": "0.815*atm",
@@ -87,7 +87,7 @@
 			"man": "60*deg"
 		},
 		"rotation": {
-			"period": "1/0.11 * 8 * hour"
+			"period": "9 * hour"
 		},
 		"atmosphere": {
 			"surface_pressure": "0.11*atm",
@@ -107,7 +107,7 @@
 			"sma": "1.65*au"
 		},
 		"rotation": {
-			"period": "earth.mass / mars.mass * 8 * hour",
+			"period": "9 * hour",
 			"tilt": "mars.rotation.tilt"
 		},
 		"atmosphere": {
