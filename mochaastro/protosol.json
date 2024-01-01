@@ -1,0 +1,169 @@
+[
+	{
+		"name": "Proto-Sol",
+		"class": "star",
+		"mass": "sun.mass",
+		"radius": "0.88*sun.radius",
+		"oblateness": "sun.oblateness",
+		"rotation": {
+			"period": "22.6*day"
+		},
+		"luminosity": "0.69*sun.luminosity",
+		"temperature": 5600,
+		"metallicity": 0,
+		"title": "Solar System at an age of appx. 23 Myr, just before the Theia impact.",
+		"notes": "Primary source: https://www.youtube.com/watch?v=d27exZfXzsc 1m43s"
+	},
+	{
+		"name": "Proto-Mercury",
+		"class": "planet",
+		"mass": "mercury.mass",
+		"radius": "mercury.radius",
+		"albedo": "mercury.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": ".51*au"
+		},
+		"rotation": {
+			"period": "earth.mass / mercury.mass * 8 * hour",
+			"tilt": "mercury.rotation.tilt"
+		},
+		"atmosphere": "mercury.atmosphere",
+		"composition": "mercury.composition",
+		"notes": "Mercury would've taken about 100 Myr to tidally lock, so it is not tidally locked yet."
+	},
+	{
+		"name": "Proto-Venus",
+		"class": "planet",
+		"mass": "venus.mass",
+		"radius": "venus.radius",
+		"albedo": "earth.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": ".77*au"
+		},
+		"rotation": {
+			"period": "earth.mass / venus.mass * 8 * hour"
+		},
+		"atmosphere": "venus.atmosphere",
+		"composition": "venus.composition",
+		"notes": "Venus would've taken about 800 Myr to tidally lock, so it is not tidally locked yet."
+	},
+	{
+		"name": "Proto-Earth",
+		"class": "planet",
+		"mass": "0.9 * earth.mass",
+		"radius": "0.968 * earth.radius",
+		"albedo": "earth.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "1.12*au"
+		},
+		"rotation": {
+			"period": "8 * hour"
+		},
+		"atmosphere": "earth.atmosphere",
+		"composition": "earth.composition",
+		"notes": "Proto-Earth mass = (Earth + Moon) - Theia"
+	},
+	{
+		"name": "Theia",
+		"class": "planet",
+		"mass": "0.11 * earth.mass",
+		"radius": "0.48 * earth.radius",
+		"albedo": "earth.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "1.12*au",
+			"man": "60*deg"
+		},
+		"rotation": {
+			"period": "0.11 * 8 * hour"
+		},
+		"atmosphere": "mars.atmosphere",
+		"composition": "earth.composition",
+		"notes": "Marslike Theia?"
+	},
+	{
+		"name": "Proto-Mars",
+		"class": "planet",
+		"mass": "mars.mass",
+		"radius": "mars.radius",
+		"albedo": "mars.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "1.65*au"
+		},
+		"rotation": {
+			"period": "earth.mass / mars.mass * 8 * hour",
+			"tilt": "mars.rotation.tilt"
+		},
+		"atmosphere": "mars.atmosphere",
+		"composition": "mars.composition"
+	},
+	{
+		"name": "Proto-Jupiter",
+		"class": "planet",
+		"mass": "jupiter.mass",
+		"radius": "jupiter.radius",
+		"albedo": "jupiter.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "5.5*au"
+		},
+		"rotation": "jupiter.rotation",
+		"atmosphere": "jupiter.atmosphere"
+	},
+	{
+		"name": "Proto-Saturn",
+		"class": "planet",
+		"mass": "saturn.mass",
+		"radius": "saturn.radius",
+		"albedo": "saturn.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "7.2*au"
+		},
+		"rotation": "saturn.rotation",
+		"atmosphere": "saturn.atmosphere"
+	},
+	{
+		"name": "Proto-P9",
+		"class": "planet",
+		"mass": "6.59*earth.mass",
+		"radius": "2.20*earth.radius",
+		"albedo": "neptune.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "9.6*au"
+		},
+		"rotation": "neptune.rotation",
+		"atmosphere": "neptune.atmosphere"
+	},
+	{
+		"name": "Proto-Uranus",
+		"class": "planet",
+		"mass": "uranus.mass",
+		"radius": "uranus.radius",
+		"albedo": "uranus.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "15.2*au"
+		},
+		"rotation": "uranus.rotation",
+		"atmosphere": "uranus.atmosphere"
+	},
+	{
+		"name": "Proto-Neptune",
+		"class": "planet",
+		"mass": "neptune.mass",
+		"radius": "neptune.radius",
+		"albedo": "neptune.albedo",
+		"orbit": {
+			"parent": "Proto-Sol",
+			"sma": "20*au"
+		},
+		"rotation": "neptune.rotation",
+		"atmosphere": "neptune.atmosphere"
+	}
+]

@@ -16,11 +16,18 @@ from common import staticproperty
 
 class Tools:
 	"""Miscelleneous tools to filter and manage bodies."""
+
 	@staticproperty
 	def namei_system(self) -> System:
 		"""Precompute the namei system"""
 		return System(search('namei'), *(search(s) for s in \
 			"ara falto tata bau oneia don eisen neuve dicito mannu".split(" ")))
+
+	@staticproperty
+	def proto_sol(self) -> System:
+		"""Precompute the nascent solar system"""
+		return System(search('Proto-Sol'), search('Theia'), *(search("Proto-"+s) for s in \
+			"mercury venus earth mars jupiter saturn p9 uranus neptune".split(" ")))
 
 	@staticmethod
 	def filter(*filters: Callable[[Iterable[Body]], Iterable[Body]]) -> Set[Body]:
