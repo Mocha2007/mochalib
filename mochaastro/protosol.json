@@ -45,7 +45,7 @@
 		"rotation": {
 			"period": "earth.mass / venus.mass * 8 * hour"
 		},
-		"atmosphere": "venus.atmosphere",
+		"atmosphere": "earth.atmosphere",
 		"composition": "venus.composition",
 		"notes": "Venus would've taken about 800 Myr to tidally lock, so it is not tidally locked yet."
 	},
@@ -80,7 +80,7 @@
 		"rotation": {
 			"period": "0.11 * 8 * hour"
 		},
-		"atmosphere": "mars.atmosphere",
+		"atmosphere": "earth.atmosphere",
 		"composition": "earth.composition",
 		"notes": "Marslike Theia?"
 	},
@@ -98,7 +98,7 @@
 			"period": "earth.mass / mars.mass * 8 * hour",
 			"tilt": "mars.rotation.tilt"
 		},
-		"atmosphere": "mars.atmosphere",
+		"atmosphere": "earth.atmosphere",
 		"composition": "mars.composition"
 	},
 	{
