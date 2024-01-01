@@ -25,7 +25,7 @@ class Orbit:
 	@property
 	def aop(self) -> float:
 		"""Argument of periapsis (radians)"""
-		return self.properties['aop']
+		return self.properties['aop'] if 'aop' in self.properties else 0
 
 	@property
 	def apo(self) -> float:
@@ -55,7 +55,7 @@ class Orbit:
 	@property
 	def e(self) -> float:
 		"""Eccentricity (dimensionless)"""
-		return self.properties['e']
+		return self.properties['e'] if 'e' in self.properties else 0
 
 	@property
 	def epoch_offset(self) -> float:
@@ -68,12 +68,12 @@ class Orbit:
 	@property
 	def i(self) -> float:
 		"""Inclination (radians)"""
-		return self.properties['i']
+		return self.properties['i'] if 'i' in self.properties else 0
 
 	@property
 	def lan(self) -> float:
 		"""Longitude of the ascending node (radians)"""
-		return self.properties['lan']
+		return self.properties['lan'] if 'lan' in self.properties else 0
 
 	@property
 	def L_z(self) -> float:
@@ -83,7 +83,7 @@ class Orbit:
 	@property
 	def man(self) -> float:
 		"""Mean Anomaly (radians)"""
-		return self.properties['man']
+		return self.properties['man'] if 'man' in self.properties else 0
 
 	@property
 	def mean_longitude(self) -> float:

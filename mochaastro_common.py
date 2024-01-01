@@ -807,7 +807,7 @@ def universe_sim(parent, t: float=0, size: Tuple[int, int]=(1024, 640), \
 		if 'orbit' not in body.properties or 'parent' not in body.orbit.properties:
 			continue
 		# disable comets; sharp angles
-		if 'class' in body.properties and body.properties['class'] == 'comet':
+		if 'class' in body.properties and body.classification == 'comet':
 			continue
 		# clean orbits of undrawable orbits
 		try:
@@ -816,7 +816,7 @@ def universe_sim(parent, t: float=0, size: Tuple[int, int]=(1024, 640), \
 			continue
 		# good orbit then!
 		if body.orbit.parent == parent:
-			color = beige if 'class' in body.properties and body.properties['class'] != 'planet' else blue
+			color = beige if 'class' in body.properties and body.classification != 'planet' else blue
 			orbits.append((name, body, precompute_orbit(body), color))
 	# main loop
 	# frame

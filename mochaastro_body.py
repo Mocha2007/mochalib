@@ -731,6 +731,11 @@ class Body:
 		return 2*pi*self.radius
 
 	@property
+	def classification(self) -> str:
+		"""Class name"""
+		return self.properties['class']
+
+	@property
 	def composition(self) -> dict:
 		"""Composition (element: fraction)"""
 		return self.properties['composition']
@@ -743,7 +748,7 @@ class Body:
 		"""Data Table a la Space Engine"""
 		# sadly the only alternative would be like, 5000 lines of try/except
 		lines = (
-			"'{} {}'.format(self.category.title(), self.properties['name'])",
+			"'{} {}'.format(self.classification.title(), self.properties['name'])",
 			"'Class           {}'.format(self.setype)",
 			"'Radius          {} ({} Earths)'.format(pretty_dim(Length(self.radius)), round(self.radius/earth.radius, 3))",
 			"'Mass            {}'.format(str(Mass(self.mass, 'astro')))",
