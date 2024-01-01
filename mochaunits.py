@@ -3,6 +3,7 @@ from copy import deepcopy
 from math import floor, log10, pi
 from typing import Tuple
 
+_MOCHAUNITS_DEFAULT_ROUNDING = 15
 prefixes = {key-10: value for key, value in enumerate('qryzafpnµm kMGTPEZYRQ')}
 prefixes[0] = '' # set up prefix dict
 temperatures = {
@@ -19,14 +20,14 @@ temperatures = {
 }
 
 
-def get_si(value: float) -> Tuple[float, str]:
+def get_si(value: float, rounding: int = _MOCHAUNITS_DEFAULT_ROUNDING) -> Tuple[float, str]:
 	"""Get SI prefix and adjusted value"""
 	if value == 0:
 		return 0, prefixes[0]
 	index = floor(log10(value)/3)
 	index = max(min(prefixes), min(max(prefixes), index))
 	new_value = value / 10**(3*index)
-	return new_value, prefixes[index]
+	return round(new_value, rounding), prefixes[index]
 
 
 # https://stackoverflow.com/a/10854034/2579798
@@ -58,6 +59,8 @@ class Dimension:
 	def __init__(self, value, *tags):
 		self.value = value
 		self.tags = set(tags)
+		rounding_tags = list(filter(lambda s: s[:5] == 'round', tags))
+		self.round = int(rounding_tags[0].split('=')[1]) if len(rounding_tags) else _MOCHAUNITS_DEFAULT_ROUNDING
 
 	# properties
 	@property
@@ -152,11 +155,11 @@ class Length(Dimension):
 		LD = 3.84402e8
 		au = 1.495978707e11
 		ly = 9.4607304725808e15
-		if self.value < au:
-			return str(x/LD) + ' LD'
-		if self.value < ly:
-			return str(x/au) + ' au'
-		return '{} {}ly'.format(*get_si(x/ly))
+		if self.value < 0.1 * au:
+			return str(round(x/LD, self.round)) + ' LD'
+		if self.value < 0.1 * ly:
+			return str(round(x/au, self.round)) + ' au'
+		return '{} {}ly'.format(*get_si(x/ly, self.round))
 
 	@property
 	def imperial(self) -> str:
@@ -167,12 +170,12 @@ class Length(Dimension):
 		yd = 0.9144
 		mi = 1609.344
 		if self.value < ft:
-			return str(x/inch) + ' in'
+			return str(round(x/inch, self.round)) + ' in'
 		if self.value < yd:
-			return str(x/ft) + ' ft'
+			return str(round(x/ft, self.round)) + ' ft'
 		if self.value < mi:
-			return str(x/yd) + ' yd'
-		return str(x/mi) + ' mi'
+			return str(round(x/yd, self.round)) + ' yd'
+		return str(round(x/mi, self.round)) + ' mi'
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -183,7 +186,7 @@ class Length(Dimension):
 			return self.imperial
 		if 'astro' in self.tags and 3.84402e8 < x:
 			return self.astro
-		return '{} {}m'.format(*get_si(x))
+		return '{} {}m'.format(*get_si(x, self.round))
 
 
 class Mass(Dimension):
@@ -197,12 +200,12 @@ class Mass(Dimension):
 		m_j = 1.8982e27
 		m_s = 1.98847e30
 		if self.value < m_e:
-			return str(x/m_m) + ' Lunar Masses'
+			return str(round(x/m_m, self.round)) + ' Lunar Masses'
 		if self.value < m_j:
-			return str(x/m_e) + ' Earth Masses'
+			return str(round(x/m_e, self.round)) + ' Earth Masses'
 		if self.value < m_s:
-			return str(x/m_j) + ' Jupiter Masses'
-		return str(x/m_s) + ' Solar Masses'
+			return str(round(x/m_j, self.round)) + ' Jupiter Masses'
+		return str(round(x/m_s, self.round)) + ' Solar Masses'
 
 	@property
 	def imperial(self) -> str:
@@ -211,8 +214,8 @@ class Mass(Dimension):
 		lb = .45359237
 		oz = lb / 12
 		if self.value < lb:
-			return str(x/oz) + ' oz'
-		return str(x/lb) + ' lb'
+			return str(round(x/oz, self.round)) + ' oz'
+		return str(round(x/lb, self.round)) + ' lb'
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -223,7 +226,7 @@ class Mass(Dimension):
 			return self.imperial
 		if 1e23 < x and 'astro' in self.tags:
 			return self.astro
-		return '{} {}g'.format(*get_si(x*1000))
+		return '{} {}g'.format(*get_si(x*1000, self.round))
 
 
 class Time(Dimension):
@@ -237,12 +240,12 @@ class Time(Dimension):
 		d = 24*h
 		yr = 365.2425*d
 		if self.value < h:
-			return str(x/minute) + ' min'
+			return str(round(x/minute, self.round)) + ' min'
 		if self.value < d:
-			return str(x/h) + ' h'
+			return str(round(x/h, self.round)) + ' h'
 		if self.value < yr:
-			return str(x/d) + ' d'
-		return '{} {}yr'.format(*get_si(x/yr))
+			return str(round(x/d, self.round)) + ' d'
+		return '{} {}yr'.format(*get_si(x/yr, self.round))
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -251,7 +254,7 @@ class Time(Dimension):
 			return '-' + str(-self)
 		if 'imperial' in self.tags and 60 <= x:
 			return self.imperial
-		return '{} {}s'.format(*get_si(x))
+		return '{} {}s'.format(*get_si(x, self.round))
 
 
 class Temperature(Dimension):
@@ -259,8 +262,8 @@ class Temperature(Dimension):
 	def __str__(self) -> str:
 		for name, (sym, scalar, offset) in temperatures.items():
 			if name in self.tags:
-				return '{} {}{}'.format(scalar * self.value + offset, '°' if offset else '', sym)
-		return '{} K'.format(self.value)
+				return '{} {}{}'.format(round(scalar * self.value + offset, self.round), '°' if offset else '', sym)
+		return '{} K'.format(round(self.value, self.round))
 
 
 class Current(Dimension):
@@ -269,7 +272,7 @@ class Current(Dimension):
 		x = self.value
 		if x < 0:
 			return '-' + str(-self)
-		return '{} {}A'.format(*get_si(x))
+		return '{} {}A'.format(*get_si(x, self.round))
 
 
 class Angle(Dimension):
@@ -282,12 +285,12 @@ class Angle(Dimension):
 		arcmin = deg / 60
 		arcsec = arcmin / 60
 		if deg < self.value:
-			return str(x/deg) + '°'
+			return str(round(x/deg, self.round)) + '°'
 		if arcmin < self.value:
-			return str(x/arcmin) + '′'
+			return str(round(x/arcmin, self.round)) + '′'
 		if arcsec < self.value:
-			return str(x/arcsec) + '″'
-		return '{} {}as'.format(*get_si(x/arcsec))
+			return str(round(x/arcsec, self.round)) + '″'
+		return '{} {}as'.format(*get_si(x/arcsec, self.round))
 
 	# double underscore methods
 	def __str__(self) -> str:
@@ -296,7 +299,7 @@ class Angle(Dimension):
 			return '-' + str(-self)
 		if 'deg' in self.tags:
 			return self.degrees
-		return '{} {}rad'.format(*get_si(x))
+		return '{} {}rad'.format(*get_si(x, self.round))
 
 
 quantities = [
@@ -408,7 +411,7 @@ class Multidimension:
 		x = self.value
 		if x < 0:
 			return '-' + str(-self)
-		val, prefix = get_si(x)
+		val, prefix = get_si(x) # todo use rounding for this
 		return f'{val} {prefix}{self.unit}'
 
 	def __sub__(self, other):

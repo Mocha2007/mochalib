@@ -210,6 +210,12 @@ class Body:
 		if 'hydrosphere' in properties:
 			self.hydrosphere.body = self
 
+	@property
+	def temperature(self) -> float:
+		"""The actual temperature, whether that be through just solar irradiation, greenhouse, or gravitational contraction... (K)"""
+		t =  self.greenhouse_temp if 'atmosphere' in self.properties else self.temp if 'orbit' in self.properties else 0
+		return max(stargen(self.mass).temperature, t)
+
 	# orbital properties
 	@property
 	def orbit(self) -> Orbit:
@@ -742,14 +748,14 @@ class Body:
 
 	@property
 	def data(self) -> str:
-		from mochaunits import Angle, Length, pretty_dim # pylint: disable=unused-import
+		"""Data Table a la Space Engine"""
+		from mochaunits import Angle, Length, pretty_dim, Temperature # pylint: disable=unused-import
 		from mochaastro_data import earth # pylint: disable=unused-import
 		# used by eval
-		"""Data Table a la Space Engine"""
 		# sadly the only alternative would be like, 5000 lines of try/except
 		lines = (
 			"'{} {}'.format(self.classification.title(), self.properties['name'])",
-			"'Class           {}'.format(self.setype)",
+			"'Class           {}'.format(self.setype.title())",
 			"'Radius          {} ({} Earths)'.format(pretty_dim(Length(self.radius)), round(self.radius/earth.radius, 3))",
 			"'Mass            {}'.format(str(Mass(self.mass, 'astro')))",
 			"'Density         {} kg/m³'.format(round(self.density))",
@@ -763,8 +769,8 @@ class Body:
 			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 3))",
 			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
 			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 3)",
-			"'Temperature     {} K'.format(round((self.atmosphere.greenhouse if 'atmosphere' in self.properties else 1)*self.temp, 2))",
-			"'Greenhouse Eff. {} K'.format(round((self.atmosphere.greenhouse-1)*self.temp, 2))",
+			"'Temperature     {}'.format(Temperature(self.temperature, 'celsius', 'round=2'))",
+			"'Greenhouse Eff. {}'.format(Temperature(self.greenhouse_temp - self.temp if 'atmosphere' in self.properties else 0, 'round=2'))",
 		)
 		string = []
 		for line in lines:
