@@ -56,7 +56,7 @@ class Atmosphere:
 
 	@property
 	def density(self) -> float:
-		"""Density of atmosphere at surface, approximation, kg/m^3
+		"""Density of atmosphere at surface, approximation, (kg/m^3)
 		Does not account for composition or temperature, only pressure."""
 		from mochaastro_data import earth
 		return 1.225 * self.surface_pressure / earth.atmosphere.surface_pressure
@@ -156,10 +156,59 @@ class Atmosphere:
 		return self.density * v**2
 
 
+class Hydrosphere:
+	"""Stores information about the body's hydrosphere and processes it."""
+	def __init__(self, **properties):
+		self.properties = properties
+		self.body = None
+		"""Parent body object"""
+
+	@property
+	def bottom_pressure(self) -> float:
+		"""Pressure at bottom of hydrosphere (Pa)"""
+		return self.pressure(self.max_depth)
+
+	@property
+	def composition(self) -> dict:
+		"""Composition (element: fraction)"""
+		return self.properties['composition']
+
+	@property
+	def coverage(self) -> dict:
+		"""Fraction of the body's surface covered by the hydrosphere (dimensionless)"""
+		return self.properties['coverage']
+
+	@property
+	def density(self) -> float:
+		"""Density of hydrosphere at surface (kg/m^3)"""
+		return self.properties['density']
+
+	@property
+	def max_depth(self) -> float:
+		"""Maximum depth of hydrosphere (m)"""
+		return self.properties['depth']
+
+	@property
+	def surface_pressure(self) -> float:
+		"""Surface pressure (Pa)"""
+		return self.body.atmosphere.surface_pressure
+
+	# methods
+	def depth(self, pressure: float) -> float:
+		"""Depth at which atm has pressure, in Pa"""
+		return (pressure - self.surface_pressure) / (self.density * self.body.surface_gravity)
+
+	def pressure(self, depth: float) -> float:
+		"""Pressure at depth (Pa)"""
+		return self.surface_pressure + self.density * self.body.surface_gravity * depth
+
+
 class Body:
 	"""Stores information about celestial bodies and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
+		if 'hydrosphere' in properties:
+			self.hydrosphere.body = self
 
 	# orbital properties
 	@property
@@ -442,6 +491,12 @@ class Body:
 			print('Fs', Fs)
 			print('Ts', Ts)
 		return Ts
+	# hydrospheric properties
+
+	@property
+	def hydrosphere(self) -> Hydrosphere:
+		"""Returns the hydrosphere object."""
+		return self.properties['hydrosphere']
 
 	# physical properties
 	@property
@@ -861,7 +916,7 @@ class Body:
 		return 2*self.mu/c**2
 
 	@property
-	def setype(self) -> float:
+	def setype(self) -> str:
 		"""Space Engine-like classifier"""
 		from mochaastro_data import earth, jupiter
 		# https://spaceengine.org/news/blog170924/

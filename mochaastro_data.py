@@ -1,6 +1,6 @@
 """Astronomical data for mochaastro.py"""
 from typing import Dict
-from mochaastro_body import Atmosphere, Body, Rotation, Star
+from mochaastro_body import Atmosphere, Body, Hydrosphere, Rotation, Star
 from mochaastro_common import atm, au, day, deg, hour, minute
 from mochaastro_orbit import Orbit
 from mochaastro_system import System
@@ -228,6 +228,23 @@ earth = Body(**{
 			'Xe': 8.7e-8, # https://en.wikipedia.org/wiki/Xenon#Occurrence_and_production
 			'NO2': 2e-8,
 			'SO2': 1.5e-8, # https://en.wikipedia.org/wiki/Sulfur_dioxide#Occurrence
+		},
+	}),
+	'hydrosphere': Hydrosphere(**{
+		'coverage': 0.708,
+		'density': 1025,
+		'depth': 11034,
+		'composition': { # https://en.wikipedia.org/wiki/Seawater#Chemical_composition
+			'O':  .8584,
+			'H':  .1082,
+			'Cl': .0194,
+			'Na': .0108,
+			'Mg': .001292,
+			'S':  .00091,
+			'Ca': .0004,
+			'K':  .0004,
+			'Br': .000067,
+			'C':  .000028,
 		},
 	}),
 	'composition': { # by mass https://en.wikipedia.org/wiki/Abundance_of_the_chemical_elements#Earth
