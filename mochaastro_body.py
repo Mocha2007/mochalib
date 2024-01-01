@@ -768,7 +768,7 @@ class Body:
 			"'Axial Tilt      {}'.format(Angle(self.rotation.tilt, 'deg', 'round=1'))",
 			"'Gravity         {} g'.format(round(self.surface_gravity/earth.surface_gravity, 3))",
 			# "'Atmosphere Composition {}'.format(', '.join(sorted(list(self.atmosphere.composition), key=lambda x: self.atmosphere.composition[x], reverse=True)[:5]))",
-			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure), 3)",
+			"'Atmos. Pressure {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure, 3))",
 			"'Temperature     {}'.format(Temperature(self.temperature, 'celsius', 'round=2'))",
 			"'Greenhouse Eff. {}'.format(Temperature(self.greenhouse_temp - self.temp if 'atmosphere' in self.properties else 0, 'round=2'))",
 		)
