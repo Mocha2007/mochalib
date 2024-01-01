@@ -760,6 +760,7 @@ class Body:
 			"'Mass               {}'.format(str(Mass(self.mass, 'astro', 'round=3')))",
 			"'Density            {} kg/m³'.format(round(self.density))",
 			"'ESI                {}'.format(round(self.esi, 3))",
+			"'Composition        {}'.format(', '.join(map(lambda x: f'{x[0]} ({round(x[1]*100)}%)', sorted(list(self.composition.items()), key=lambda x: x[1], reverse=True)[:5])))",
 			"'Absolute Mag.      {}'.format(round(self.app_mag(10*pc), 2))",
 			"'Semimajor Axis     {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
 			"'Orbital Period     {}'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",

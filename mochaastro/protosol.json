@@ -8,6 +8,7 @@
 		"rotation": {
 			"period": "22.6*day"
 		},
+		"composition": "sun.composition",
 		"luminosity": "0.69*sun.luminosity",
 		"temperature": 5600,
 		"metallicity": 0,
