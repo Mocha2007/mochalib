@@ -17,7 +17,14 @@
 		"rotation": {
 			"period": "9.074170*hour",
 			"tilt": 0.07
-		}
+		},
+		"atmosphere": {
+			"composition": {
+				"H2O": 1
+			},
+			"source": "https://en.wikipedia.org/wiki/Ceres_(dwarf_planet)#Atmosphere"
+		},
+		"composition": "ASTEROID_COMPOSITION_G"
 	},
 	{
 		"name": "2 Pallas",
@@ -38,7 +45,8 @@
 		"rotation": {
 			"period": "7.8132*hour",
 			"tilt": "84*deg"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_B"
 	},
 	{
 		"name": "3 Juno",
@@ -58,7 +66,8 @@
 		},
 		"rotation": {
 			"period": "7.21*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_S"
 	},
 	{
 		"name": "4 Vesta",
@@ -78,7 +87,8 @@
 		"rotation": {
 			"period": "5.342*hour",
 			"tilt": "42*deg"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_V"
 	},
 	{
 		"name": "5 Astraea",
@@ -98,7 +108,8 @@
 		},
 		"rotation": {
 			"period": "7.21*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_S"
 	},
 	{
 		"name": "10 Hygiea",
@@ -118,7 +129,8 @@
 		},
 		"rotation": {
 			"period": "27.623*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_C"
 	},
 	{
 		"name": "132 Aethra",
@@ -138,7 +150,8 @@
 		},
 		"rotation": {
 			"period": "5.1684*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_M"
 	},
 	{
 		"name": "433 Eros",
@@ -158,7 +171,8 @@
 		},
 		"rotation": {
 			"period": "5.27*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_S"
 	},
 	{
 		"name": "162173 Ryugu",
@@ -177,6 +191,7 @@
 		},
 		"rotation": {
 			"period": "7.627*hour"
-		}
+		},
+		"composition": "ASTEROID_COMPOSITION_C"
 	}
 ]

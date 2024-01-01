@@ -87,6 +87,8 @@
 			"period": "1950700.886099735",
 			"tilt": "5/60*deg"
 		},
+		"composition": "ASTEROID_COMPOSITION_G",
+		"composition_note": "Ceres",
 		"notes": "[(search(s).planetary_discriminant / mars.planetary_discriminant, search(s).planetary_discriminant2 / mars.planetary_discriminant) for s in ('ara', 'falto', 'tata', 'bau', 'oneia', 'don', 'eisen', 'neuve', 'dicito', 'mannu')]"
 	},
 	{

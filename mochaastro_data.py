@@ -568,6 +568,26 @@ neptune = Body(**{
 	'albedo': .29,
 })
 
+# asteroid compositions (most are guesses)
+ASTEROID_COMPOSITION_C = { # https://starlust.org/what-are-asteroids-made-of/
+	'C': 0.5,
+	'N': 0.15,
+	'O': 0.15,
+	'H': 0.1,
+}
+ASTEROID_COMPOSITION_M = { # https://starlust.org/what-are-asteroids-made-of/
+	'Fe': 0.8,
+	'Ni': 0.2,
+}
+ASTEROID_COMPOSITION_S = { # https://starlust.org/what-are-asteroids-made-of/
+	'O': 0.8 * 0.8,
+	'Si': 0.8 * 0.2,
+	'Fe': 0.2,
+}
+ASTEROID_COMPOSITION_B = ASTEROID_COMPOSITION_C
+ASTEROID_COMPOSITION_G = ASTEROID_COMPOSITION_C
+ASTEROID_COMPOSITION_V = ASTEROID_COMPOSITION_S
+
 # inner_solar_system = System(mercury, venus, earth, mars) # a <= mars
 # solar_system = System(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
 # jupiter_system = System(io, europa, ganymede, callisto)
