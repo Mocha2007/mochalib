@@ -338,6 +338,7 @@ earth = Body(**{
 	'oblateness': 1/298.257222101,
 	'albedo': .306,
 })
+venus.properties['composition'] = earth.composition # https://en.wikipedia.org/wiki/Venus#Internal_structure
 
 moon = Body(**{
 	'name': 'Moon',
@@ -360,23 +361,23 @@ moon = Body(**{
 		'scale_height': 41860,
 		'surface_pressure': 1e-7,
 	}),
-    'composition': { # https://www.permanent.com/l-apollo.htm
-        'O':  .446,
-        'Si': .21,
-        'Al': .133,
-        'Ca': .1068,
-        'Fe': .0487,
-        'Mg': .0455,
-        'Na': 3.1e-3,
-        'Ti': 3.1e-3,
-        'Cr': 8.5e-4,
-        'K':  8e-4,
-        'Mn': 6.75e-4,
-        'P':  5e-4,
-        'C':  1e-4,
-        'H':  5.6e-5,
-        'Cl': 1.7e-5,
-    },
+	'composition': { # https://www.permanent.com/l-apollo.htm
+		'O':  .446,
+		'Si': .21,
+		'Al': .133,
+		'Ca': .1068,
+		'Fe': .0487,
+		'Mg': .0455,
+		'Na': 3.1e-3,
+		'Ti': 3.1e-3,
+		'Cr': 8.5e-4,
+		'K':  8e-4,
+		'Mn': 6.75e-4,
+		'P':  5e-4,
+		'C':  1e-4,
+		'H':  5.6e-5,
+		'Cl': 1.7e-5,
+	},
 	'mass': 7.342e22,
 	'radius': 1.7371e6,
 	'oblateness': 1.2e-3,
@@ -417,6 +418,17 @@ mars = Body(**{
 			'CH4': 10e-9, # https://en.wikipedia.org/wiki/Natural_methane_on_Mars
 		},
 	}),
+	'composition': { # https://en.wikipedia.org/wiki/Composition_of_Mars#Elemental_composition
+		'Fe': 0.639, # "Martian meteorite analysis suggests that the planet's mantle is about twice as rich in iron as the Earth's mantle."
+		'O':  0.297 * (1 - 0.6517)/0.66322,
+		'Si': 0.161 * (1 - 0.6517)/0.66322,
+		'Mg': 0.154 * (1 - 0.6517)/0.66322,
+		'Ni': 0.01822 * (1 - 0.6517)/0.66322,
+		'Ca': 0.0171 * (1 - 0.6517)/0.66322,
+		'Al': 0.0159 * (1 - 0.6517)/0.66322,
+		'S':  0.0127, # "Second, its core is richer in sulphur."
+		# 0.6517 vs 0.66322
+	},
 	'mass': 6.4171e23,
 	'radius': 3.3895e6,
 	'oblateness': 5.89e-3,
@@ -574,5 +586,5 @@ solar_system = {
 	'Neptune': neptune,
 }
 solar_system_object = System(sun, *(i for i in solar_system.values() \
-				    if i is not sun and i is not moon))
+					if i is not sun and i is not moon))
 universe = load_data(solar_system.copy()) # type: Dict[str, Body]
