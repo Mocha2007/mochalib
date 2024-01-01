@@ -184,6 +184,9 @@ class Phase(Enum):
 	LIQUID = 1
 	GAS = 2
 	SUPERCRITICAL_FLUID = 3
+	def __str__(self) -> str:
+		from re import search as regex
+		return regex('[A-Z_]{2,}', self.__repr__()).group(0).replace('_', ' ').title()
 
 
 def water_phase(t: float, p: float) -> Phase:

@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, bar, c, day, deg, gas_constant, GRAV, \
 	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, planck, PHOTOMETRIC_FILTER, \
-	REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, synodic, year
+	REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, synodic, water_phase, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -773,6 +773,7 @@ class Body:
 			"'Atmos. Pressure    {} atm'.format(round(self.atmosphere.surface_pressure/earth.atmosphere.surface_pressure, 3))",
 			"'Temperature        {}'.format(Temperature(self.temperature, 'celsius', 'round=2'))",
 			"'Greenhouse Eff.    {}'.format(Temperature(self.greenhouse_temp - self.temp if 'atmosphere' in self.properties else 0, 'round=2'))",
+			"'Water Phase        {}'.format(str(water_phase(self.temperature, self.atmosphere.surface_pressure if 'atmosphere' in self.properties else 0)))"
 		)
 		string = []
 		for line in lines:
