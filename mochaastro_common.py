@@ -378,6 +378,7 @@ def distance_audio(orbit1, orbit2) -> None:
 
 
 def light_travel_time(z: float) -> float:
+	"""Returns distance to object with observed redshift z. Distance in (m)"""
 	# shamelessly ported from https://www.astro.ucla.edu/~wright/ACC.html
 	# constants https://en.wikipedia.org/wiki/Lambda-CDM_model#Parameters
 	H0 = 67.4 # 2018
