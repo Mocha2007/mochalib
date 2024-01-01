@@ -17,20 +17,20 @@
 	{
 		"name": "Proto-Mercury",
 		"class": "planet",
-		"mass": "mercury.mass",
-		"radius": "mercury.radius",
+		"mass": "0.255 * earth.mass",
+		"radius": "0.68 * earth.radius",
 		"albedo": "mercury.albedo",
 		"orbit": {
 			"parent": "Proto-Sol",
 			"sma": ".51*au"
 		},
 		"rotation": {
-			"period": "earth.mass / mercury.mass * 8 * hour",
+			"period": "1/0.255 * 8 * hour",
 			"tilt": "mercury.rotation.tilt"
 		},
-		"atmosphere": "mercury.atmosphere",
-		"composition": "mercury.composition",
-		"notes": "Mercury would've taken about 100 Myr to tidally lock, so it is not tidally locked yet."
+		"atmosphere": "mars.atmosphere",
+		"composition": "mars.composition",
+		"notes": "Mercury would've taken about 100 Myr to tidally lock, so it is not tidally locked yet. Also, its mantle was blown off in an impact after this time. It may have been marslike."
 	},
 	{
 		"name": "Proto-Venus",
@@ -78,7 +78,7 @@
 			"man": "60*deg"
 		},
 		"rotation": {
-			"period": "0.11 * 8 * hour"
+			"period": "1/0.11 * 8 * hour"
 		},
 		"atmosphere": "earth.atmosphere",
 		"composition": "earth.composition",
