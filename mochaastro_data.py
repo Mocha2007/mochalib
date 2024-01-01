@@ -16,6 +16,10 @@ def load_data(seed: dict) -> dict:
 			if isinstance(data, str):
 				return value_parse(data)
 			return Atmosphere(**{key: value_parse(value) for key, value in data.items()})
+		def convert_hydrosphere(data: dict) -> Hydrosphere:
+			if isinstance(data, str):
+				return value_parse(data)
+			return Hydrosphere(**{key: value_parse(value) for key, value in data.items()})
 		def convert_orbit(data: dict, current_universe: dict) -> Orbit:
 			out = Orbit(**{key: value_parse(value) for key, value in data.items()})
 			# string -> bod
@@ -39,6 +43,8 @@ def load_data(seed: dict) -> dict:
 		for key, value in data.items():
 			if key == 'atmosphere':
 				body_data[key] = convert_atmosphere(value)
+			elif key == 'hydrosphere':
+				body_data[key] = convert_hydrosphere(value)
 			elif key == 'orbit':
 				body_data[key] = convert_orbit(value, current_universe)
 			elif key == 'rotation':

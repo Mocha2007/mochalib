@@ -150,6 +150,7 @@
 			},
 			"notes": "Trace compounds like pre-industrial earth. Oxygen like Carboniferous."
 		},
+		"hydrosphere": "earth.hydrosphere",
 		"notes": "mocha"
 	},
 	{
