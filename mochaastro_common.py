@@ -184,6 +184,7 @@ class Phase(Enum):
 	LIQUID = 1
 	GAS = 2
 	SUPERCRITICAL_FLUID = 3
+	PLASMA = 4
 	def __str__(self) -> str:
 		from re import search as regex
 		return regex('[A-Z_]{2,}', self.__repr__()).group(0).replace('_', ' ').title()
@@ -191,6 +192,8 @@ class Phase(Enum):
 
 def water_phase(t: float, p: float) -> Phase:
 	"""Returns the predicted phase of water at the specified temperature and pressure"""
+	if 3270 <= t: # https://en.wikipedia.org/wiki/Water_splitting#Thermal_decomposition_of_water
+		return Phase.PLASMA # "It turned into a hydrogen-oxygen plasma"
 	p = max(p, 1) # prevent domain error for low pressures
 	CRIT_T = 647
 	CRIT_P = 22.064e6
