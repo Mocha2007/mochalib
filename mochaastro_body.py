@@ -944,12 +944,20 @@ class Body:
 			heat = 'frigid'
 		# volatiles
 		p = self.atmosphere.surface_pressure if 'atmosphere' in self.properties and 'surface_pressure' in self.atmosphere.properties else 0
+		hydrosphere_coverage = self.hydrosphere.coverage if 'hydrosphere' in self.properties else 0
 		if p < 1e-9*bar:
 			volatiles = 'airless'
 		# todo (arid non-arid) = desertic lacustrine marine oceanic superoceanic
+		elif hydrosphere_coverage == 1:
+			volatiles = 'superoceanic' if 100e3 < self.hydrosphere.max_depth else 'oceanic'
+		elif 0.2 < hydrosphere_coverage:
+			volatiles = 'marine'
+		elif 0 < hydrosphere_coverage:
+			volatiles = 'lacustrine'
 		else:
-			volatiles = 'arid'
+			volatiles = 'desertic'
 		# bulk
+		INCLUDE_VOLATILES = True
 		HAS_ATMOSPHERIC_COMPOSITION = 'atmosphere' in self.properties and 'composition' in self.atmosphere.properties
 		HAS_COMPOSITION = 'composition' in self.properties
 		# I assume they mean https://en.wikipedia.org/wiki/Goldschmidt_classification ?
@@ -981,6 +989,8 @@ class Body:
 		# insufficient data to safely predict, OVERRIDE!
 		if not HAS_ATMOSPHERIC_COMPOSITION or not HAS_COMPOSITION:
 			bulk = 'gas giant' if 0.18 < mj else 'ice giant' if 7.3 < me else 'terra'
+		if bulk in {'gas giant', 'ice giant'}:
+			INCLUDE_VOLATILES = False
 		# prefix
 		if bulk == 'ice giant':
 			if me < 4:
@@ -1020,7 +1030,9 @@ class Body:
 			bulk[1] = prefix + bulk[1]
 			bulk = ' '.join(bulk)
 			prefix = ''
-		return heat + ' ' + volatiles + ' ' + prefix + bulk
+		if INCLUDE_VOLATILES:
+			return heat + ' ' + volatiles + ' ' + prefix + bulk
+		return heat + ' ' + prefix + bulk
 
 	@property
 	def v_e(self) -> float:
