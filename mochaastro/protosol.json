@@ -69,8 +69,13 @@
 			"period": "8 * hour"
 		},
 		"atmosphere": {
-			"surface_pressure": "0.9*atm",
-			"composition": "PROTOPLANET_ATM_COMPOSITION"
+			"surface_pressure": "3.04884*atm",
+			"composition": {
+				"CO2": 0.7438894792773644,
+				"N2": 0.25611052072263546,
+				"Ar": 0.003063460201256871
+			},
+			"source": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Early_Earth_-_Solar_and_CO2_relationship.png says CO2 was 5400x - or 2.268 atm worth!"
 		},
 		"composition": "earth.composition",
 		"notes": "Proto-Earth mass = (Earth + Moon) - Theia"
