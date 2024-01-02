@@ -1467,6 +1467,15 @@ class Star(Body):
 		C = 2.1077e28 # https://www.desmos.com/calculator/wu1rudon6k
 		return (t/C + 1/self.temperature**3)**(-1/3)
 
+	def interplanetary_medium_electron_density(self, dist: float) -> float:
+		"""Electron density at the given distance (m) from the sun. (Particles / m^3)
+		Function designed with values of less than 20 Rsun in mind."""
+		# formula taken from p. 154
+		from mochaastro_data import sun
+		l = self.luminosity / sun.luminosity
+		r = dist / sun.radius
+		return l * ((1.55*r**-6 + 2.99*r**-16) * 1e14 if r < 4 else 5e11 * r**-2)
+
 	def photometry(self, filter_a: str = 'B', filter_b: str = 'V', correction: bool = True) -> float:
 		"""Difference in magnitude of this star between the two specified photometric filters (dimensionless)"""
 		return photometry(self.temperature, filter_a, filter_b, correction)
