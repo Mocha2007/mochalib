@@ -121,6 +121,7 @@ sun = Star(**{
 	'luminosity': 3.828e26,
 	'temperature': 5778,
 })
+sun.atmosphere.properties['composition'] = sun.composition # https://en.wikipedia.org/wiki/Stellar_corona#Physics_of_the_corona
 
 mercury = Body(**{
 	'name': 'Mercury',

@@ -3,8 +3,9 @@ from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
 from mochaastro_common import atan, atm, au, bar, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, pc, photometry, planck, PHOTOMETRIC_FILTER, \
-	REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, synodic, water_phase, year
+	G_SC, kB, L_0, MOCHAASTRO_DEBUG, MOLAR_MASS, pc, photometry, planck, \
+	PHOTOMETRIC_FILTER, REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, \
+	synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -82,6 +83,11 @@ class Atmosphere:
 		See notes for Tropopause."""
 		from mochaastro_data import earth
 		return self.altitude(earth.atmosphere.pressure(85000)) # avg.
+
+	@property
+	def molar_mass(self) -> float:
+		"""Computed molar mass (kg/mol)"""
+		return sum(MOLAR_MASS[chem]*amt for (chem, amt) in self.composition.items() if chem in MOLAR_MASS)
 
 	@property
 	def optical_depth(self) -> float:
@@ -416,12 +422,13 @@ class Body:
 		omega = 2*pi / self.rotation.p
 		return 1/2 * i * omega**2
 
+	# atmospheric properties
+
 	@property
-	def atmosphere_mass(self) -> float:
+	def atm_mass(self) -> float:
 		"""Mass of the atmosphere (kg)"""
 		return self.atmosphere.surface_pressure * self.area / self.surface_gravity
 
-	# atmospheric properties
 	@property
 	def atm_retention(self) -> float:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
@@ -434,6 +441,11 @@ class Body:
 		except KeyError:
 			t = self.temp
 		return 887.364 * t / (self.v_e)**2
+
+	@property
+	def atm_predicted_scale_height(self) -> float:
+		"""Computed scale height (m)"""
+		return gas_constant * self.temperature / (self.atmosphere.molar_mass * self.surface_gravity)
 
 	@property
 	def atmosphere(self) -> Atmosphere:
@@ -750,7 +762,7 @@ class Body:
 	def data(self) -> str:
 		"""Data Table a la Space Engine"""
 		from mochaunits import Angle, Length, pretty_dim, Temperature # pylint: disable=unused-import
-		from mochaastro_data import earth # pylint: disable=unused-import
+		from mochaastro_data import earth, water_phase # pylint: disable=unused-import
 		# used by eval
 		# sadly the only alternative would be like, 5000 lines of try/except
 		lines = (

@@ -54,6 +54,19 @@ mi = 1609.344 # m; exact; mile
 G_SC = L_sun / (4*pi*au**2) # W/m^2; exact*; solar constant;
 # * - technically not b/c this is based on visual luminosity rather than bolometric
 
+# molar masses for common atmospheric compounds
+MOLAR_MASS = {
+	'H2': 1.008e-3*2,
+	'H2O': 1.008e-3*2 + 15.999e-3,
+	'He': 4.002602e-3,
+	'CH4': 12.011e-3 + 1.008e-3*4,
+	'CO2': 12.011e-3 + 15.999e-3*2,
+	'N2': 14.007e-3*2,
+	'O2': 15.999e-3*2,
+	'SO2': 32.06e-3 + 15.999e-3*2,
+	'Ar': 39.95e-3,
+}
+
 PHOTOMETRIC_FILTER = {
 	# https://en.wikipedia.org/wiki/UBV_photometric_system
 	# Handbook of Space Astronomy and Astrophysics (2nd ed.). Cambridge University Press. p. 100
