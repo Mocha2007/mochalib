@@ -49,6 +49,8 @@ class Atmosphere:
 	"""Stores information about the body's atmosphere and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
+		self.body = None # type: Body
+		"""Parent body object"""
 
 	@property
 	def composition(self) -> dict:
@@ -78,6 +80,11 @@ class Atmosphere:
 	     	if key in self.composition) * self.surface_pressure / atm
 
 	@property
+	def mass(self) -> float:
+		"""Mass of the atmosphere (kg)"""
+		return self.surface_pressure * self.body.area / self.body.surface_gravity
+
+	@property
 	def mesopause(self) -> float:
 		"""Altitude of Mesopause, approximation, m
 		See notes for Tropopause."""
@@ -96,9 +103,14 @@ class Atmosphere:
 		return sum(self.partial_optical_depth(chem) for chem in self.composition)
 
 	@property
+	def predicted_scale_height(self) -> float:
+		"""Computed scale height (m)"""
+		return gas_constant * self.body.temperature / (self.molar_mass * self.body.surface_gravity)
+
+	@property
 	def scale_height(self) -> float:
 		"""Scale height (m)"""
-		return self.properties['scale_height']
+		return self.properties['scale_height'] if 'scale_height' in self.properties else self.predicted_scale_height
 
 	@property
 	def stratopause(self) -> float:
@@ -135,6 +147,10 @@ class Atmosphere:
 		"""Altitude at which atm has pressure, in Pa"""
 		return -self.scale_height*log(pressure/self.surface_pressure)
 
+	def molecular_density(self, altitude: float) -> float:
+		"""Molecular density at an altitude (m) in (mol/m^3)"""
+		return self.pressure(altitude)/(gas_constant*self.body.temperature)
+
 	def partial_optical_depth(self, molecule: str) -> float:
 		"""Optical depth (dimensionless?)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
@@ -166,7 +182,7 @@ class Hydrosphere:
 	"""Stores information about the body's hydrosphere and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
-		self.body = None
+		self.body = None # type: Body
 		"""Parent body object"""
 
 	@property
@@ -213,6 +229,8 @@ class Body:
 	"""Stores information about celestial bodies and processes it."""
 	def __init__(self, **properties):
 		self.properties = properties
+		if 'atmosphere' in properties:
+			self.atmosphere.body = self
 		if 'hydrosphere' in properties:
 			self.hydrosphere.body = self
 
@@ -423,11 +441,10 @@ class Body:
 		return 1/2 * i * omega**2
 
 	# atmospheric properties
-
 	@property
-	def atm_mass(self) -> float:
-		"""Mass of the atmosphere (kg)"""
-		return self.atmosphere.surface_pressure * self.area / self.surface_gravity
+	def atmosphere(self) -> Atmosphere:
+		"""Returns the atmosphere object."""
+		return self.properties['atmosphere']
 
 	@property
 	def atm_retention(self) -> float:
@@ -436,21 +453,7 @@ class Body:
 		# https://upload.wikimedia.org/wikipedia/commons/4/4a/Solar_system_escape_velocity_vs_surface_temperature.svg
 		# revised based on formulas derived from:
 		# Reichart, Dan. "Lesson 6 - Earth and the Moon". Astronomy 101: The Solar System, 1st ed.
-		try:
-			t = self.greenhouse_temp
-		except KeyError:
-			t = self.temp
-		return 887.364 * t / (self.v_e)**2
-
-	@property
-	def atm_predicted_scale_height(self) -> float:
-		"""Computed scale height (m)"""
-		return gas_constant * self.temperature / (self.atmosphere.molar_mass * self.surface_gravity)
-
-	@property
-	def atmosphere(self) -> Atmosphere:
-		"""Returns the atmosphere object."""
-		return self.properties['atmosphere']
+		return 887.364 * self.temperature / self.v_e**2
 
 	@property
 	def greenhouse_temp(self) -> float:
@@ -509,8 +512,8 @@ class Body:
 			print('Fs', Fs)
 			print('Ts', Ts)
 		return Ts
-	# hydrospheric properties
 
+	# hydrospheric properties
 	@property
 	def hydrosphere(self) -> Hydrosphere:
 		"""Returns the hydrosphere object."""
@@ -1135,10 +1138,6 @@ class Body:
 	def atm_supports(self, molmass: float) -> bool:
 		"""Checks if v_e is high enough to retain compound; molmass in kg/mol"""
 		return molmass > self.atm_retention
-
-	def atmospheric_molecular_density(self, altitude: float) -> float:
-		"""Molecular density at an altitude (m) in (mol/m^3)"""
-		return self.atmosphere.pressure(altitude)/(gas_constant*self.greenhouse_temp)
 
 	def bielliptic(self, inner: Orbit, mid: Orbit, outer: Orbit) -> float:
 		"""Bielliptic transfer delta-v (m/s)"""
