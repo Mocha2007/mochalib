@@ -154,7 +154,6 @@ class Atmosphere:
 	def partial_optical_depth(self, molecule: str) -> float:
 		"""Optical depth (dimensionless?)"""
 		# http://saspcsus.pbworks.com/w/file/fetch/64696386/planet%20temperatures%20with%20surface%20cooling%20parameterized.pdf
-		# todo: methane increases titan's temp from 84K to 94K!
 		gases = {
 			'CO2': (0.025, 0.53),
 			'H2O': (0.277, 0.3),
@@ -765,7 +764,8 @@ class Body:
 	def data(self) -> str:
 		"""Data Table a la Space Engine"""
 		from mochaunits import Angle, Length, pretty_dim, Temperature # pylint: disable=unused-import
-		from mochaastro_data import earth, water_phase # pylint: disable=unused-import
+		from mochaastro_common import water_phase  # pylint: disable=unused-import
+		from mochaastro_data import earth # pylint: disable=unused-import
 		# used by eval
 		# sadly the only alternative would be like, 5000 lines of try/except
 		lines = (
@@ -973,22 +973,22 @@ class Body:
 		else:
 			heat = 'frigid'
 		# volatiles
-		p = self.atmosphere.surface_pressure if 'atmosphere' in self.properties and 'surface_pressure' in self.atmosphere.properties else 0
+		HAS_ATMOSPHERE = 'atmosphere' in self.properties
+		HAS_ATMOSPHERIC_COMPOSITION = HAS_ATMOSPHERE and 'composition' in self.atmosphere.properties
+		p = self.atmosphere.surface_pressure if HAS_ATMOSPHERE and 'surface_pressure' in self.atmosphere.properties else 0
 		hydrosphere_coverage = self.hydrosphere.coverage if 'hydrosphere' in self.properties else 0
 		if p < 1e-9*bar:
 			volatiles = 'airless'
-		# todo (arid non-arid) = desertic lacustrine marine oceanic superoceanic
 		elif hydrosphere_coverage == 1:
 			volatiles = 'superoceanic' if 100e3 < self.hydrosphere.max_depth else 'oceanic'
 		elif 0.2 < hydrosphere_coverage:
 			volatiles = 'marine'
 		elif 0 < hydrosphere_coverage:
 			volatiles = 'lacustrine'
-		else:
-			volatiles = 'desertic'
+		else: # corresponds to 'desertic' in the blogpost - I'm just guessing here...
+			volatiles = 'arid' if HAS_ATMOSPHERIC_COMPOSITION and self.atmosphere.composition['H2O'] < 1e-4 else 'non-arid'
 		# bulk
 		INCLUDE_VOLATILES = True
-		HAS_ATMOSPHERIC_COMPOSITION = 'atmosphere' in self.properties and 'composition' in self.atmosphere.properties
 		HAS_COMPOSITION = 'composition' in self.properties
 		# I assume they mean https://en.wikipedia.org/wiki/Goldschmidt_classification ?
 		siderophilic = 'Mn Fe Co Ni Mo Tc Ru Rh Pd W Re Os Ir Pt Au Sg Bh Hs Mt Ds Rg'.split(' ')

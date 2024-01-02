@@ -1,7 +1,7 @@
 """Astronomical data for mochaastro.py"""
 from typing import Dict
 from mochaastro_body import Atmosphere, Body, Hydrosphere, Rotation, Star
-from mochaastro_common import atm, au, day, deg, hour, minute
+from mochaastro_common import atm, au, day, deg, hour, minute # pylint: disable=unused-import
 from mochaastro_orbit import Orbit
 from mochaastro_system import System
 
@@ -121,7 +121,8 @@ sun = Star(**{
 	'luminosity': 3.828e26,
 	'temperature': 5778,
 })
-sun.atmosphere.properties['composition'] = sun.composition # https://en.wikipedia.org/wiki/Stellar_corona#Physics_of_the_corona
+sun.atmosphere.properties['composition'] = sun.composition
+# https://en.wikipedia.org/wiki/Stellar_corona#Physics_of_the_corona
 
 mercury = Body(**{
 	'name': 'Mercury',
@@ -339,7 +340,8 @@ earth = Body(**{
 	'oblateness': 1/298.257222101,
 	'albedo': .306,
 })
-venus.properties['composition'] = earth.composition # https://en.wikipedia.org/wiki/Venus#Internal_structure
+venus.properties['composition'] = earth.composition
+# https://en.wikipedia.org/wiki/Venus#Internal_structure
 
 moon = Body(**{
 	'name': 'Moon',

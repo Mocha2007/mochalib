@@ -144,7 +144,7 @@ def linear_map(interval1: Tuple[float, float], interval2: Tuple[float, float]) \
 
 
 def photometry(temp: float, filter_a: str, filter_b: str, correction: bool = False) -> float:
-	"""Difference in intensity of light emitted at the given temperature between filters (dimensionless)"""
+	"""Difference in intensity of light between filters emitted at the given temperature (dimensionless)"""
 	vega = 9602 # https://en.wikipedia.org/wiki/Vega
 	l_a, l_b = PHOTOMETRIC_FILTER[filter_a], PHOTOMETRIC_FILTER[filter_b]
 	# f_a, f_b = c/l_a, c/l_b
@@ -161,6 +161,7 @@ def photometry(temp: float, filter_a: str, filter_b: str, correction: bool = Fal
 	return C0
 
 def photometryTest(temp: float = 5778) -> None:
+	"""Used for testing accuracy of mochaastro_common.photometry"""
 	#	U		B	V		R 	I	<- appx peaks
 	t = 7900, 6550, 5250, 4400, 3600
 	print('Name', 'λ', *t)
@@ -215,7 +216,7 @@ def water_phase(t: float, p: float) -> Phase:
 	def vapor_line(p_: float) -> float:
 		"""Returns the temperature at which water boils at the given pressure"""
 		y = log(p_)
-		if (p_ < atm):
+		if p_ < atm:
 			y0 = log(TRIP_P)
 			y1 = log(atm) # 100C 1 atm
 			return 100 * (y - y0)/(y1 - y0) + TRIP_T
