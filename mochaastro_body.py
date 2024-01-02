@@ -1314,8 +1314,7 @@ class Star(Body):
 		if 'luminosity' in self.properties:
 			return self.properties['luminosity']
 		if 'radius' in self.properties and 'temperature' in self.properties:
-			from mochaastro_data import sun
-			return sun.luminosity * (self.temperature / sun.temperature)**4 * (self.radius / sun.radius)**2
+			return 4*pi*STEFAN_BOLTZMANN * self.temperature**4 * self.radius**2
 
 	@property
 	def metallicity(self) -> float:
@@ -1347,8 +1346,7 @@ class Star(Body):
 		if 'radius' in self.properties:
 			return self.properties['radius'] # I could use super().radius instead
 		if 'luminosity' in self.properties and 'temperature' in self.properties:
-			from mochaastro_data import sun
-			return sun.radius * sqrt((self.luminosity / sun.luminosity) / (self.temperature / sun.temperature)**4)
+			return sqrt(self.luminosity / (4*pi*STEFAN_BOLTZMANN * self.temperature**4))
 
 	@property
 	def temperature(self) -> float:
@@ -1356,8 +1354,7 @@ class Star(Body):
 		if 'temperature' in self.properties:
 			return self.properties['temperature']
 		if 'radius' in self.properties and 'luminosity' in self.properties:
-			from mochaastro_data import sun
-			return sun.temperature * ((self.luminosity / sun.luminosity) / (self.radius / sun.radius)**2)**0.25
+			return (self.luminosity / (4*pi*STEFAN_BOLTZMANN * self.radius**2))**0.25
 
 	@property
 	def X(self) -> float:
