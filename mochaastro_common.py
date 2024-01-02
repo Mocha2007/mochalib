@@ -651,7 +651,7 @@ def stargen(m: float, variance: float = 0) :
 	# an exact relationship. Intuitively it makes sense, since Luminosity should be
 	# proportional to area x flux. The full form is probably similar to the product of the RHS
 	# of the sphere area formula and Stefan-Boltzmann law
-	lum = t**4 * r**2
+	lum = 1.02 * t**4 * r**2
 	return Star(**{
 		'mass': m*sun.mass, # does not use variance because this is given
 		'radius': r*sun.radius*e(),

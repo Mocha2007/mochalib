@@ -27,17 +27,17 @@ class Rotation:
 	@property
 	def dec(self) -> float:
 		"""Declination of axis (rad)"""
-		return self.properties['dec']
+		return self.properties['dec'] if 'dec' in self.properties else 0
 
 	@property
 	def p(self) -> float:
 		"""Period (s)"""
-		return self.properties['period']
+		return self.properties['period'] if 'dec' in self.properties else inf
 
 	@property
 	def ra(self) -> float:
 		"""Right ascension of axis (rad)"""
-		return self.properties['ra']
+		return self.properties['ra'] if 'ra' in self.properties else 0
 
 	@property
 	def tilt(self) -> float:
@@ -55,7 +55,7 @@ class Atmosphere:
 	@property
 	def composition(self) -> dict:
 		"""Composition (element: fraction)"""
-		return self.properties['composition']
+		return self.properties['composition'] if 'composition' in self.properties else dict()
 
 	@property
 	def density(self) -> float:
@@ -122,7 +122,7 @@ class Atmosphere:
 	@property
 	def surface_pressure(self) -> float:
 		"""Surface pressure (Pa)"""
-		return self.properties['surface_pressure']
+		return self.properties['surface_pressure'] if 'surface_pressure' in self.properties else 0
 
 	@property
 	def thermopause(self) -> float:
@@ -193,22 +193,22 @@ class Hydrosphere:
 	@property
 	def composition(self) -> dict:
 		"""Composition (element: fraction)"""
-		return self.properties['composition']
+		return self.properties['composition'] if 'composition' in self.properties else dict()
 
 	@property
 	def coverage(self) -> dict:
 		"""Fraction of the body's surface covered by the hydrosphere (dimensionless)"""
-		return self.properties['coverage']
+		return self.properties['coverage'] if 'coverage' in self.properties else 0
 
 	@property
 	def density(self) -> float:
 		"""Density of hydrosphere at surface (kg/m^3)"""
-		return self.properties['density']
+		return self.properties['density'] if 'density' in self.properties else 0
 
 	@property
 	def max_depth(self) -> float:
 		"""Maximum depth of hydrosphere (m)"""
-		return self.properties['depth']
+		return self.properties['depth'] if 'depth' in self.properties else 0
 
 	@property
 	def surface_pressure(self) -> float:
@@ -523,7 +523,7 @@ class Body:
 	@property
 	def albedo(self) -> float:
 		"""Albedo (dimensionless)"""
-		return self.properties['albedo']
+		return self.properties['albedo'] if 'albedo' in self.properties else 0
 
 	@property
 	def area(self) -> float:
@@ -759,7 +759,7 @@ class Body:
 	@property
 	def composition(self) -> dict:
 		"""Composition (element: fraction)"""
-		return self.properties['composition']
+		return self.properties['composition'] if 'composition' in self.properties else dict()
 
 	@property
 	def data(self) -> str:
@@ -816,7 +816,7 @@ class Body:
 	@property
 	def mass(self) -> float:
 		"""Mass (kg)"""
-		return self.properties['mass']
+		return self.properties['mass'] if 'mass' in self.properties else 0
 
 	@property
 	def metal_report(self) -> str:
@@ -917,7 +917,7 @@ class Body:
 	@property
 	def radius(self) -> float:
 		"""Mean Radius (m)"""
-		return self.properties['radius']
+		return self.properties['radius'] if 'radius' in self.properties else 0
 
 	@property
 	def radius_equatorial(self) -> float:
@@ -1311,7 +1311,11 @@ class Star(Body):
 	@property
 	def luminosity(self) -> float:
 		"""Luminosity (W)"""
-		return self.properties['luminosity']
+		if 'luminosity' in self.properties:
+			return self.properties['luminosity']
+		if 'radius' in self.properties and 'temperature' in self.properties:
+			from mochaastro_data import sun
+			return sun.luminosity * (self.temperature / sun.temperature)**4 * (self.radius / sun.radius)**2
 
 	@property
 	def metallicity(self) -> float:
@@ -1337,9 +1341,23 @@ class Star(Body):
 		return 12500/4.5092805033996796e-17 * self.surface_gravity / self.area
 
 	@property
+	def radius(self) -> float:
+		"""Radius (m)"""
+		# I am overriding Body.radius here because if that's unknown, but Lum and Temp are known, Radius can be computed directly from that instead
+		if 'radius' in self.properties:
+			return self.properties['radius'] # I could use super().radius instead
+		if 'luminosity' in self.properties and 'temperature' in self.properties:
+			from mochaastro_data import sun
+			return sun.radius * sqrt((self.luminosity / sun.luminosity) / (self.temperature / sun.temperature)**4)
+
+	@property
 	def temperature(self) -> float:
 		"""Temperature (K)"""
-		return self.properties['temperature']
+		if 'temperature' in self.properties:
+			return self.properties['temperature']
+		if 'radius' in self.properties and 'luminosity' in self.properties:
+			from mochaastro_data import sun
+			return sun.temperature * ((self.luminosity / sun.luminosity) / (self.radius / sun.radius)**2)**0.25
 
 	@property
 	def X(self) -> float:
