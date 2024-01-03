@@ -3,7 +3,7 @@
 		"name": "Betelgeuse",
 		"class": "star",
 		"mass": "(14+19)/2*sun.mass",
-		"radius": "(764+1021)/2sun.radius",
+		"radius": "(764+1021)/2*sun.radius",
 		"rotation": {
 			"period": "36*year"
 		},
@@ -15,7 +15,7 @@
 		"name": "Proxima Centauri",
 		"class": "star",
 		"mass": "0.1221*sun.mass",
-		"radius": "0.1542sun.radius",
+		"radius": "0.1542*sun.radius",
 		"rotation": {
 			"period": "89.8*day"
 		},
@@ -27,7 +27,7 @@
 		"name": "Rigel",
 		"class": "star",
 		"mass": "21*sun.mass",
-		"radius": "78.9sun.radius",
+		"radius": "78.9*sun.radius",
 		"luminosity": "1.2e5*sun.luminosity",
 		"temperature": 12100,
 		"metallicity": -0.06

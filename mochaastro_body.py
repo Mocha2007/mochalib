@@ -2,10 +2,10 @@
 from math import atan2, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Dict, Optional, Tuple
 from mochaunits import Mass, Time
-from mochaastro_common import atan, atm, au, bar, c, day, deg, gas_constant, GRAV, \
-	G_SC, kB, L_0, MOCHAASTRO_DEBUG, MOLAR_MASS, pc, photometry, planck, \
-	PHOTOMETRIC_FILTER, REDUCED_PLANCK, SQRT2, search, stargen, STEFAN_BOLTZMANN, \
-	synodic, year
+from mochaastro_common import atan, atm, au, bar, c, day, DEFAULT_DENSITIES, \
+	deg, gas_constant, GRAV, G_SC, kB, L_0, MOCHAASTRO_DEBUG, MOLAR_MASS, \
+	pc, photometry, planck, PHOTOMETRIC_FILTER, REDUCED_PLANCK, SQRT2, \
+	search, stargen, STEFAN_BOLTZMANN, synodic, year
 from mochaastro_orbit import Orbit
 
 class Rotation:
@@ -255,12 +255,13 @@ class Body:
 		"""Earth similarity index (dimensionless)"""
 		from mochaastro_data import earth
 		# Radius, Density, Escape Velocity, Temperature
-		r, rho, T = self.radius, self.density, self.temp
+		r, rho, T = self.radius, self.density if self.radius else DEFAULT_DENSITIES[self.classification], self.temperature
+		T, v_e = self.temperature, self.v_e if self.radius else 0
 		r_e, rho_e = earth.radius, earth.density
 		esi1 = 1-abs((r-r_e)/(r+r_e))
 		esi2 = 1-abs((rho-rho_e)/(rho+rho_e))
-		esi3 = 1-abs((self.v_e-earth.v_e)/(self.v_e+earth.v_e))
-		esi4 = 1-abs((T-earth.temp)/(T+earth.temp))
+		esi3 = 1-abs((v_e-earth.v_e)/(v_e+earth.v_e))
+		esi4 = 1-abs((T-earth.temperature)/(T+earth.temperature))
 		return esi1**(.57/4)*esi2**(1.07/4)*esi3**(.7/4)*esi4**(5.58/4)
 
 	@property

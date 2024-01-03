@@ -67,6 +67,10 @@ MOLAR_MASS = {
 	'Ar': 39.95e-3,
 }
 
+DEFAULT_DENSITIES = {
+	'comet': 600,
+}
+
 PHOTOMETRIC_FILTER = {
 	# https://en.wikipedia.org/wiki/UBV_photometric_system
 	# Handbook of Space Astronomy and Astrophysics (2nd ed.). Cambridge University Press. p. 100
@@ -631,7 +635,7 @@ def stargen(m: float, variance: float = 0) :
 	# I manually tweaked the coefficients to get a good fit for M <= 11 sols
 	def bell(mid: float) -> Callable[[float], float]:
 		return lambda x: exp(-(log(x) - mid)**2)
-	c_r = 1.2*bell(1)(m) - 1.13*bell(1.23)(m) + 0.9
+	c_r = m and 1.2*bell(1)(m) - 1.13*bell(1.23)(m) + 0.9 # "and" is to prevent 0 from causing domain errors lol
 	r = 1.012*m**c_r # 1.012 Rsun is the ref for a G2V star
 	# stellar temp
 	# https://www.desmos.com/calculator/mhhdatpcu0
