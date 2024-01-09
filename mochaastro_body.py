@@ -558,6 +558,12 @@ class Body:
 		radius = 'radius' in self.properties and self.radius
 		if mass and 1 <= self.planetary_discriminant:
 			categories.add('Planet')
+			if 'orbit' not in self.properties or 'parent' not in self.orbit.properties:
+				categories.add('Rogue Planet')
+			elif self.orbit.parent is not sun:
+				categories.add('Exoplanet')
+			else:
+				categories.add(('Inferior' if self.orbit.a < earth.orbit.a else 'Superior') + ' Planet')
 			# earth-relative
 			if earth.mass < mass < ice_giant_cutoff:
 				categories.add('Super-earth')
@@ -595,11 +601,9 @@ class Body:
 					pass
 			else:
 				categories.add('Giant Planet')
-				if .1 < self.orbit.e:
-					categories.add('Eccentric Jupiter')
 				if HAS_ATMOSPHERE_C \
 						and 'He' in self.atmosphere.composition \
-						and .5 < self.atmosphere.composition['He']:
+						and 0.5 <= self.atmosphere.composition['He']:
 					categories.add('Helium Planet')
 				if mass < ice_giant_cutoff:
 					categories.add('Ice Giant')
@@ -617,6 +621,8 @@ class Body:
 						categories.add('Puffy Planet')
 					if self.orbit.p < 10*day:
 						categories.add('Hot Jupiter')
+					if 0.2 <= self.orbit.e:
+						categories.add('Eccentric Jupiter')
 			return categories
 		# subplanetary
 		categories.add('Minor Planet')
