@@ -540,6 +540,10 @@ class Body:
 			return {'Star'}
 		mass = 'mass' in self.properties and self.mass
 		rounded = search('Miranda').mass <= mass
+		HAS_ATMOSPHERE = 'atmosphere' in self.properties
+		HAS_ATMOSPHERE_C = HAS_ATMOSPHERE and 'composition' in self.atmosphere.properties
+		HAS_C = 'composition' in self.properties
+		HAS_HYDROSPHERE = 'hydrosphere' in self.properties
 		# Miranda is the smallest solar system body which might be in HSE
 		if 'Star' not in self.orbit.parent.categories:
 			categories.add('Moon')
@@ -564,17 +568,21 @@ class Body:
 			# USP
 			if self.orbit.p < day:
 				categories.add('Ultra-short period planet')
+			# https://en.wikipedia.org/wiki/Hycean_planet
+			if HAS_HYDROSPHERE and HAS_ATMOSPHERE_C and \
+					self.hydrosphere.coverage > 0.5 < self.atmosphere.composition['H']:
+				categories.add('Hycean Planet')
 			# absolute
 			if self.mass < 10*earth.mass or (mars.density <= self.density and self.mass < jupiter.mass): # to prevent high-mass superjupiters
 				categories.add('Terrestrial Planet')
-				if 'composition' in self.properties and set('CO') <= set(self.composition) \
+				if HAS_C and set('CO') <= set(self.composition) \
 						and self.composition['O'] < self.composition['C']:
 					categories.add('Carbon Planet')
 				if 10*earth.mass < self.mass:
 					categories.add('Mega-Earth')
 				try:
-					temperature = self.greenhouse_temp if 'atmosphere' in self.properties else self.temp
-					if earth.greenhouse_temp < temperature < 300: # death valley avg. 298K
+					temperature = self.temperature
+					if earth.temperature < temperature < 300: # death valley avg. 298K
 						# https://en.wikipedia.org/wiki/Desert_planet
 						categories.add('Desert Planet')
 					elif temperature < 260 and .9 < self.albedo:
@@ -589,8 +597,7 @@ class Body:
 				categories.add('Giant Planet')
 				if .1 < self.orbit.e:
 					categories.add('Eccentric Jupiter')
-				if 'atmosphere' in self.properties \
-						and 'composition' in self.atmosphere.properties \
+				if HAS_ATMOSPHERE_C \
 						and 'He' in self.atmosphere.composition \
 						and .5 < self.atmosphere.composition['He']:
 					categories.add('Helium Planet')
