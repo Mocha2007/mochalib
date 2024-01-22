@@ -1183,7 +1183,7 @@ class Body:
 		i, o = inner.a, outer.a
 		mu = self.mu
 		dv1 = sqrt(mu/i)*(sqrt(2*o/(i+o))-1)
-		dv2 = sqrt(mu/i)*(1-sqrt(2*i/(i+o)))
+		dv2 = sqrt(mu/o)*(1-sqrt(2*i/(i+o)))
 		return dv1, dv2
 
 	def lunar_eclipse(self) -> None:
