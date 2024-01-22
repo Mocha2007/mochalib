@@ -1175,12 +1175,16 @@ class Body:
 		return self.mu * other.mass/r**2
 
 	def hohmann(self, inner: Orbit, outer: Orbit) -> float:
-		"""Hohmann transfer delta-v (m/s)"""
+		"""Hohmann transfer delta-v (total) (m/s)"""
+		return sum(self.hohmann_split(inner, outer))
+
+	def hohmann_split(self, inner: Orbit, outer: Orbit) -> Tuple[float, float]:
+		"""Hohmann transfer delta-v (by burn) (m/s)"""
 		i, o = inner.a, outer.a
 		mu = self.mu
 		dv1 = sqrt(mu/i)*(sqrt(2*o/(i+o))-1)
 		dv2 = sqrt(mu/i)*(1-sqrt(2*i/(i+o)))
-		return dv1 + dv2
+		return dv1, dv2
 
 	def lunar_eclipse(self) -> None:
 		"""Draw maximum eclipsing radii"""
