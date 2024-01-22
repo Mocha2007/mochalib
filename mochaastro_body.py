@@ -429,6 +429,11 @@ class Body:
 		return 1/(1/self.orbit.p + 1/self.precession_period)
 
 	@property
+	def v_r_orbit(self) -> float:
+		"""Orbital velocity of a circular orbit around the body at a = R (m/s)"""
+		return (self.radius/self.mu)**-.5
+
+	@property
 	def v_tan(self) -> float:
 		"""Equatorial rotation velocity (m/s)"""
 		return 2*pi*self.radius/self.rotation.p
