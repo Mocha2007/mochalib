@@ -59,3 +59,29 @@ def expected(current_score: int=0, unheld_dice: int=6) -> float:
 
 def should_i_roll(current_score: int=0, unheld_dice: int=6) -> bool:
 	return current_score < expected(current_score, unheld_dice)
+
+def get_all_rolls() -> dict:
+	output = {
+		'6oak': 0,
+		'5oak': 0,
+		'4oak': 0,
+		'3oak': 0,
+		'3p': 0,
+		'run': 0,
+	}
+	for die1 in range(6):
+		for die2 in range(6):
+			for die3 in range(6):
+				for die4 in range(6):
+					for die5 in range(6):
+						for die6 in range(6):
+							dice = [die1, die2, die3, die4, die5, die6]
+							# n of a kind
+							noak = max(map(lambda d: dice.count(d), dice))
+							if 2 < noak:
+								output[str(noak) + 'oak'] += 1
+							elif noak == 1:
+								output['run'] += 1
+							elif noak == 2 and len(set(dice)) == 3:
+								output['3p'] += 1
+	return output
