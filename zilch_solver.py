@@ -68,6 +68,11 @@ def get_all_rolls() -> dict:
 		'3oak': 0,
 		'3p': 0,
 		'run': 0,
+		'1': 0,
+		'11': 0,
+		'5': 0,
+		'55': 0,
+		'nsd': 0,
 	}
 	for die1 in range(6):
 		for die2 in range(6):
@@ -75,13 +80,33 @@ def get_all_rolls() -> dict:
 				for die4 in range(6):
 					for die5 in range(6):
 						for die6 in range(6):
+							scoring = False
 							dice = [die1, die2, die3, die4, die5, die6]
 							# n of a kind
 							noak = max(map(lambda d: dice.count(d), dice))
 							if 2 < noak:
 								output[str(noak) + 'oak'] += 1
+								scoring = True
 							elif noak == 1:
 								output['run'] += 1
+								scoring = True
 							elif noak == 2 and len(set(dice)) == 3:
 								output['3p'] += 1
+								scoring = True
+							# one 1
+							if dice.count(1) == 1:
+								output['1'] += 1
+								scoring = True
+							elif dice.count(1) == 2:
+								output['11'] += 1
+								scoring = True
+							if dice.count(5) == 1:
+								output['5'] += 1
+								scoring = True
+							elif dice.count(5) == 2:
+								output['55'] += 1
+								scoring = True
+							# no scoring dice
+							if not scoring:
+								output['nsd'] += 1
 	return output
