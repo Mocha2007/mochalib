@@ -23,3 +23,16 @@ def stats_roll(n = 1000000) -> None:
 	counts, bins = histogram(data, bins=range(36))
 	stairs(counts, bins)
 	show()
+
+def dicey_descent() -> tuple[int, int, int, int]:
+	"""Return the place of 4 players"""
+	# https://wiisports.fandom.com/wiki/Dicey_Descent
+	died_on = [0, 0, 0, 0]
+	for roundn in range(1, 4):
+		choices = [randint(0, 1) for _ in range(4)]
+		lightning = randint(0, 1)
+		for i, choice in enumerate(choices):
+			if choice == lightning and not died_on[i]:
+				died_on[i] = roundn
+	place = [1 + sum(v0 < v1 for v1 in died_on) for v0 in died_on]
+	return place
