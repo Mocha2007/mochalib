@@ -36,3 +36,18 @@ def dicey_descent() -> tuple[int, int, int, int]:
 				died_on[i] = roundn
 	place = [1 + sum(v0 < v1 for v1 in died_on) for v0 in died_on]
 	return place
+
+
+def risky_railroad() -> tuple[int, int, int, int]:
+	"""Return the place of 4 players"""
+	# https://wiisports.fandom.com/wiki/Risky_Railroad
+	# eg. sum(len(set(risky_railroad())) == 4 for _ in range(1000000)) / 1000000
+	died_on = [0, 0, 0, 0]
+	for roundn in range(1, 11):
+		choices = [randint(0, 2) for _ in range(4)]
+		dead_end = randint(0, 2)
+		for i, choice in enumerate(choices):
+			if choice == dead_end and not died_on[i]:
+				died_on[i] = roundn
+	place = [1 + sum(v0 < v1 for v1 in died_on) for v0 in died_on]
+	return place
