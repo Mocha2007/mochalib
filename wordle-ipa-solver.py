@@ -95,7 +95,10 @@ while 1:
 	# ok now the sub-loop
 	while 1:
 		print(len(filtered), "valid words.")
-		print("Random valid words:", *(choice(filtered) for _ in range(5)))
+		if len(filtered) <= 10:
+			print("All valid words: ", *filtered)
+		else:
+			print("5 random valid words:", *(choice(filtered) for _ in range(5)))
 		test = input("Please enter your next attempt (eg. 'dʒinz'):")
 		# process exit request
 		if test in quit_keywords:
