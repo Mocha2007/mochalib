@@ -9,6 +9,8 @@ dictionary_file = "ignore/cmudict-0.7b" # http://www.speech.cs.cmu.edu/cgi-bin/c
 
 # http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict-0.7b.symbols
 replacements = [
+	('AH0', 'ə'), # this one seems to mark schwa? see "about"
+	# stress markers
 	('0', ''),
 	('1', ''),
 	('2', ''),
