@@ -94,6 +94,34 @@ def optimize_first_choice(valid_length_range = range(3, 12)):
 	# now get the min for each length!
 	return {i: min(((w, s) for w, s in word_score.items() if len(w) == i), key=lambda x: x[1]) for i in valid_length_range}
 
+def optimize_first_choice2(valid_length_range = range(3, 12), skip = 22):
+	# we want to MINIMIZE the average of how many results are possible after filtering
+	word_score = dict()
+	print("Preprocessing dictionary...")
+	resized_dicts = {i: [word for word in dictionary.values() if len(word) == i][::skip] for i in valid_length_range}
+	words_to_test = [word for word in dictionary.values() if len(word) in valid_length_range][::skip]
+	print("Pretesting", len(words_to_test), "words...")
+	test_results = {a: {b: test_word(a, b) for b in words_to_test if len(a) == len(b)} for a in words_to_test}
+	print("Searching sample space...")
+	for test in words_to_test:
+		# print("Testing <", test, "> (", i+1, "/", len(words_to_test) ,")...")
+		word_length = len(test)
+		score = 0
+		solution_space = resized_dicts[word_length]
+		for solution in solution_space:
+			# if j % (len(solution_space) // 10) == 0:
+			# 	print(round(j/len(solution_space) * 100), "% of", len(solution_space) ,"tests done...")
+			# print('... against', solution, len(resized_dicts[word_length]), 'words of this size')
+			result = test_results[test][solution]
+			for word in solution_space:
+				if test_results[test][word] == result:
+					score += 1
+		score /= len(solution_space)
+		print('Word <', test, '> has score', score, '(lower is better)')
+		word_score[test] = score
+	# now get the min for each length!
+	return {i: min(((w, s) for w, s in word_score.items() if len(w) == i), key=lambda x: x[1]) for i in valid_length_range}
+
 # preload dict
 
 with open(dictionary_file) as file:
@@ -136,7 +164,7 @@ def main():
 				print("All valid words:", *filtered)
 			else:
 				print("5 random valid words:", *(choice(filtered) for _ in range(5)))
-			test = input("Please enter your next attempt (eg. 'dʒinz'):")
+			test = input("Please enter your next attempt (eg. 'klɪnt'):")
 			# process exit request
 			if test in quit_keywords:
 				break
@@ -157,3 +185,4 @@ def main():
 
 main()
 # print(optimize_first_choice(range(3, 4)))
+# print(optimize_first_choice2(range(5, 6)))
