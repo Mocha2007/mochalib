@@ -3,7 +3,7 @@
 		"name": "Planet Nine",
 		"class": "planet",
 		"mass": "4.4*earth.mass",
-		"radius": "1.6*earth.radius",
+		"radius": "1.867*earth.radius",
 		"albedo": 0.476,
 		"orbit": {
 			"parent": "sun",
