@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 from enum import Enum
 from math import acos, atan, cos, exp, hypot, inf, log, log10, pi, sin, sqrt, tan
 from typing import Callable, Tuple
-from matplotlib.axes import Axes
-import numpy as np
-import matplotlib.pyplot as plt
 from mochaunits import Angle, Length, Mass, Time, pretty_dim # Angle is indeed used
 
 # constants
@@ -112,8 +109,9 @@ def apsides2ecc(apo: float, peri: float) -> Tuple[float, float]:
 	return (apo+peri)/2, (apo-peri)/(apo+peri)
 
 
-def axisEqual3D(ax: Axes) -> None:
+def axisEqual3D(ax) -> None: # ax type: Axes
 	"""Forces each axis to use the same scale"""
+	import numpy as np
 	extents = np.array([getattr(ax, f'get_{dim}lim')() for dim in 'xyz'])
 	sz = extents[:, 1] - extents[:, 0]
 	centers = np.mean(extents, axis=1)
@@ -323,6 +321,7 @@ def accrete(star_mass: float = 2e30, particle_n: int = 25000):
 
 def keplerian(parent, cartesian: Tuple[float, float, float, float, float, float]):
 	"""Get keplerian orbital parameters (a, e, i, O, o, m)"""
+	import numpy as np
 	from mochaastro_orbit import Orbit
 	# https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 	r, r_ = np.array(cartesian[:3]), np.array(cartesian[3:])
@@ -385,6 +384,7 @@ def distance_audio(orbit1, orbit2) -> None:
 	Byte order | little endian
 	Channels   | 1 channel mono
 	"""
+	import numpy as np
 	from mochaaudio import pcm_to_wav, play_file
 	print("* recording")
 
@@ -505,6 +505,7 @@ def light_travel_time(z: float) -> float:
 
 def plot_delta_between(orbit1, orbit2) -> None:
 	"""Plot system with pyplot"""
+	import matplotlib.pyplot as plt
 	resolution = 100
 	orbits = 8
 	limit = max([orbit1, orbit2], key=lambda x: x.apo).apo*2
@@ -531,6 +532,7 @@ def plot_delta_between(orbit1, orbit2) -> None:
 
 def plot_distance(orbit1, orbit2) -> None:
 	"""Plot distance between two bodies over several orbits"""
+	import matplotlib.pyplot as plt
 	resolution = 1000
 	orbits = 8
 	outerp = max([orbit1, orbit2], key=lambda x: x.p).p
@@ -548,6 +550,7 @@ def plot_distance(orbit1, orbit2) -> None:
 
 def plot_grav_acc(body1, body2) -> None:
 	"""Plot gravitational acceleration from one body to another over several orbits"""
+	import matplotlib.pyplot as plt
 	resolution = 1000
 	orbits = 8
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
@@ -566,6 +569,7 @@ def plot_grav_acc(body1, body2) -> None:
 
 def plot_grav_accs(body, other_bodies) -> None:
 	"""Plot total gravitational acceleration from one body to several others over several orbits"""
+	import matplotlib.pyplot as plt
 	resolution = 1000
 	orbits = 8
 	outerp = max(body, *other_bodies, key=lambda x: x.orbit.p).orbit.p
@@ -584,6 +588,7 @@ def plot_grav_accs(body, other_bodies) -> None:
 
 def plot_grav_acc_vector(body1, body2) -> None:
 	"""Plot gravitational acceleration vector from one body to another over several orbits"""
+	import matplotlib.pyplot as plt
 	resolution = 100
 	orbits = 8
 	outerp = max([body1, body2], key=lambda x: x.orbit.p).orbit.p
