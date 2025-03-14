@@ -3,7 +3,7 @@
 		"name": "Planet Nine",
 		"class": "planet",
 		"mass": "4.4*earth.mass",
-		"radius": "1.867*earth.radius",
+		"radius": "1.4*earth.radius",
 		"albedo": 0.476,
 		"orbit": {
 			"parent": "sun",
@@ -16,6 +16,7 @@
 			"epoch": "01 June 2018"
 		},
 		"notes": "Albedo estimated from KBOs; radius from similar exoplanets; 2025 updated with https://iopscience.iop.org/article/10.3847/1538-4357/ad98f6; updated with https://arxiv.org/abs/2108.09868; updated with https://arxiv.org/pdf/2110.13117.pdf and https://arxiv.org/pdf/2203.07642.pdf and https://data.caltech.edu/records/0yypt-j3n93",
-		"notes2": "These weren't used, but https://arxiv.org/pdf/2205.07675.pdf https://arxiv.org/pdf/2210.04147.pdf https://arxiv.org/pdf/2111.03831.pdf were interesting too"
+		"notes2": "These weren't used, but https://arxiv.org/pdf/2205.07675.pdf https://arxiv.org/pdf/2210.04147.pdf https://arxiv.org/pdf/2111.03831.pdf were interesting too",
+		"notes3": "avg. exo density for 3.3 to 5.5 mass: 8878 kg/m^3"
 	}
 ]
