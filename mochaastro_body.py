@@ -32,7 +32,7 @@ class Rotation:
 	@property
 	def p(self) -> float:
 		"""Period (s)"""
-		return self.properties['period'] if 'dec' in self.properties else inf
+		return self.properties['period'] if 'period' in self.properties else inf
 
 	@property
 	def ra(self) -> float:
