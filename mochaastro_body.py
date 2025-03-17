@@ -801,6 +801,8 @@ class Body:
 			"'Absolute Mag.      {}'.format(round(self.app_mag(10*pc), 2))",
 			"'Semimajor Axis     {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
 			"'Orbital Period     {} (sidereal)'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",
+			"'                   {} (anomalistic)'.format(pretty_dim(Time(self.orbit.anomalistic_period, 'imperial')))",
+			"'                   {} (draconic)'.format(pretty_dim(Time(self.orbit.draconic_period, 'imperial')))",
 			"'                   {} (tropical)'.format(pretty_dim(Time(self.tropical_year, 'imperial')))",
 			"'                   {} (tropical sols)'.format(round(self.solar_year, 2))",
 			"'Rotation Period    {} (sidereal)'.format(pretty_dim(Time(self.rotation.p, 'imperial')))",
