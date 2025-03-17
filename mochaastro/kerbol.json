@@ -57,7 +57,7 @@
 		"name": "Mun",
 		"class": "moon",
 		"mass": 9.7599066e20,
-		"radius": 2e6,
+		"radius": 2e5,
 		"albedo": "moon.albedo",
 		"orbit": {
 			"parent": "Kerbin",
