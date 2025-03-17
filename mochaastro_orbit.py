@@ -38,7 +38,15 @@ class Orbit:
 		# https://en.wikipedia.org/wiki/Apsidal_precession#General_relativity
 		# note that the formula given is radians PER ORBIT and thus
 		# needs to be divided by T to get it in radians PER SECOND
-		return 24*pi**3 * self.a**2 / (self.p**3 * c**2 * (1-self.e**2))
+		general_relativity = 24*pi**3 * self.a**2 / (self.p**3 * c**2 * (1-self.e**2))
+		# todo: verify this formula
+		# quadrupole = 3/2 * self.ref.mu * self.parent.J2 / (self.a * (1 - self.e**2)**2)
+		# k_2 = 0.308 # no way of easily knowing, this is appx. Earth's
+		# Q = 1000 # I chose a higher value erring on the side of underestimation rather than overestimation
+		# tidal = 3/2 * (self.ref.mu)/(self.a * (1 - self.e**2)**2) \
+		# 	* (k_2 * self.parent.radius**5 * self.parent.rotation.angular_velocity)/Q
+		# print("APSIDIAL", general_relativity, quadrupole, tidal)
+		return general_relativity # + quadrupole + tidal
 
 	@property
 	def copy(self):
@@ -134,6 +142,12 @@ class Orbit:
 		"""Periapsis shift per revolution (rad)"""
 		# https://en.wikipedia.org/wiki/Tests_of_general_relativity#Perihelion_precession_of_Mercury
 		return 24*pi**3*self.a**2 / (self.p**2 * c**2 * (1-self.e**2))
+
+	@property
+	def ref(self): # type: (Orbit) -> Body
+		"""Reference body for an orbit. Returns an "empty" body if unavailable."""
+		from mochaastro_body import Body
+		return self.properties['ref'] if 'ref' in self.properties else Body()
 
 	@property
 	def v(self) -> float:

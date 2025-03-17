@@ -232,6 +232,8 @@ class Body:
 			self.atmosphere.body = self
 		if 'hydrosphere' in properties:
 			self.hydrosphere.body = self
+		if 'orbit' in properties:
+			self.orbit.properties['ref'] = self
 
 	@property
 	def temperature(self) -> float:
