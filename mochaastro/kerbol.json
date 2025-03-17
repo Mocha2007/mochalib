@@ -188,5 +188,50 @@
 			"tilt": 0
 		},
 		"notes": "albedo is a SWAG"
+	},
+	{
+		"name": "Dres",
+		"class": "planet",
+		"mass": 3.2190937e20,
+		"radius": 138e3,
+		"albedo": "moon.albedo",
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 40839348203,
+			"e": 0.145,
+			"i": 5,
+			"lan": 280,
+			"aop": 90,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 34800,
+			"tilt": 0
+		},
+		"notes": "albedo is a SWAG"
+	},
+	{
+		"name": "Eeloo",
+		"class": "dwarf planet",
+		"mass": 1.1149224e21,
+		"radius": 210e3,
+		"albedo": 0.8,
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 90118820000,
+			"e": 0.26,
+			"i": 6.15,
+			"lan": 50,
+			"aop": 260,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 19460,
+			"tilt": 0
+		},
+		"atmosphere": {
+			"surface_pressure": 0
+		},
+		"notes": "albedo is a SWAG"
 	}
 ]
