@@ -8,6 +8,26 @@
 		"temperature": 2840
 	},
 	{
+		"name": "Moho",
+		"class": "planet",
+		"mass": 2.5263314e21,
+		"radius": 250e3,
+		"albedo": "mercury.albedo",
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 5263138304,
+			"e": 0.2,
+			"i": 7,
+			"lan": 70,
+			"aop": 15,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 1210000,
+			"tilt": 0
+		}
+	},
+	{
 		"name": "Kerbin",
 		"class": "planet",
 		"mass": 5.2915158e22,
