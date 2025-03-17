@@ -1,6 +1,6 @@
 """Defines the Orbit class"""
 from datetime import datetime
-from math import acos, atan2, cos, erf, hypot, isfinite, pi, sin, sqrt
+from math import acos, atan2, ceil, cos, erf, hypot, isfinite, log2, pi, sin, sqrt
 from typing import Tuple
 from mochaastro_common import apsides2ecc, axisEqual3D, c, J2000, \
 	resonance_probability, SQRT2, synodic
@@ -438,14 +438,26 @@ class Orbit:
 		a, a_P, e, i = self.a, other.a, self.e, self.relative_inclination(other)
 		return a_P/a + 2*cos(i) * sqrt(a/a_P * (1-e**2))
 	# """Compute optimal transfer burn (m/s, m/s, m/s, s)"""
-	"""
 	def transfer(self, other, t: float = 0,
-		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = .1) -> Tuple[float, float, float, float]:
-
-		raise NotImplementedError('DO NOT USE THIS. It NEVER works, and takes ages to compute.')
-		# initial guess needs to be "bring my apo up/peri down to the orbit
-		initial_guess = self.stretch_to(other)
-		System(*[Body(orbit=i) for i in (initial_guess, self, other)]).plot2d()
+		delta_t_tol: float = 1, delta_x_tol: float = 1e7, dv_tol: float = 1, max_iter: int = 1000) -> Tuple[float, float, float, float]:
+		"""I don't think this is working properly. But you can run it anyways."""
+		# earth.orbit.transfer(mars.orbit)
+		from mochaastro_common import keplerian
+		from mochaastro_system import System
+		from mochaastro_body import Body
+		from mochaunits import Length
+		syn = synodic(self.p, other.p)
+		# initial guess is going to be a hohmann burn
+		initial_guess = self.copy # self.stretch_to(other)
+		inner, outer = (self, other) if self.a < other.a else (other, self)
+		igdv = self.parent.hohmann_split(inner, outer)[0] # we only care about the first burn
+		igcart = initial_guess.cartesian(t) # todo account for phase angle
+		igv = hypot(*igcart[3:])
+		# print("454 igv, igdv, igcart", igv, igdv, igcart)
+		igc = (igdv + igv) / igv
+		igcart = (igcart[0], igcart[1], igcart[2], igcart[3]*igc, igcart[4]*igc, igcart[5]*igc)
+		initial_guess = keplerian(self.parent, igcart)
+		System(*[Body(orbit=i) for i in (self.parent, initial_guess, self, other)]).plot2d()
 		time_at_guess = initial_guess.close_approach(other, t, 1, delta_t_tol)
 		dv_of_guess = tuple(j-i for i, j in zip(self.cartesian(t), initial_guess.cartesian(t)))[-3:]
 		dv_best = dv_of_guess + (t,) # includes time
@@ -461,14 +473,16 @@ class Orbit:
 			(0, 0, -dv_tol),
 		)
 		delta_v_was_successful = True
-		while delta_v_was_successful:
+		while delta_v_was_successful and 0 < max_iter:
+			max_iter -= 1
 			if old_close_approach_dist < delta_x_tol: # success!
 				# print('it finally works!')
 				print('{0} < {1}'.format(*(Length(i, 'astro') for i in (old_close_approach_dist, delta_x_tol))))
 				System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot()
 				return dv_best
 			# try to change the time FIRST
-			mul = 2**16
+			# our initial guess for time diff will be the smallest power of 2 greater than the synodic period
+			mul = 2**ceil(log2(syn/delta_t_tol))
 			while mul:
 				# check if changing the time helps
 				dt_mod = delta_t_tol*mul
@@ -479,10 +493,10 @@ class Orbit:
 				new_close_approach_time = burn_orbit.close_approach(other, dt, 1, delta_t_tol)
 				new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
 				if new_close_approach_dist < old_close_approach_dist:
-					print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+					# print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
 					# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
 					# good! continue along this path, then.
-					print('good!', (0, 0, 0, dt_mod), '@', mul)
+					# print('good!', (0, 0, 0, dt_mod), '@', mul)
 					dv_best = dv_best[:3] + (dt,)
 					old_close_approach_dist = new_close_approach_dist
 					continue
@@ -492,8 +506,8 @@ class Orbit:
 					mul >>= 1
 			delta_v_was_successful = False
 			for modifiers in base_order:
-				print('MODIFIERS', modifiers)
-				mul = 2**13
+				# our initial guess for mul should be half our total dv...
+				mul = 2**ceil(log2(hypot(*dv_best[:3])/(2*dv_tol)))
 				while 1 <= mul:
 					dvx_mod, dvy_mod, dvz_mod = tuple(i*mul for i in modifiers)
 					# start by testing if adding a minute dx improves close approach
@@ -501,7 +515,11 @@ class Orbit:
 					old_cartesian = self.cartesian(dt)
 					x, y, z, vx, vy, vz = old_cartesian
 					new_cartesian = old_cartesian[:3] + (vx+dvx, vy+dvy, vz+dvz)
-					burn_orbit = keplerian(self.parent, new_cartesian).at_time(-dt)
+					try:
+						burn_orbit = keplerian(self.parent, new_cartesian).at_time(-dt) # this was -dt. why? I think that was a mistake, but maybe not.
+					except ValueError: # maybe this means orbit was hyperbolic?
+						mul >>= 1
+						continue
 					# when t=0 for this orbit, the real time is dt, so we need to reverse it by dt seconds
 					# print(self, burn_orbit)
 					# now, to check if burn_orbit makes it closer...
@@ -512,23 +530,21 @@ class Orbit:
 						continue
 					new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
 					if new_close_approach_dist < old_close_approach_dist:
-						print(Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
+						# print("526", Length(new_close_approach_dist, 'astro'), Length(old_close_approach_dist, 'astro'))
 						# System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot2d
 						# good! continue along this path, then.
-						print('good!', (dvx_mod, dvy_mod, dvz_mod, 0), '@', mul)
+						# print('529 good!', (dvx_mod, dvy_mod, dvz_mod, 0), '@', mul)
 						dv_best = dvx, dvy, dvz, dt
 						old_close_approach_dist = new_close_approach_dist
 						delta_v_was_successful = True
-						break
+						# break
 					# multiplier is too big!
 					# print('old mul was', mul)
 					mul >>= 1
-				if delta_v_was_successful:
-					break
-			print('Transfer failed...', Length(old_close_approach_dist, 'astro'))
+			print('Transfer failed... (', max_iter, ' attempts left)', Length(old_close_approach_dist, 'astro'))
 		# autopsy
 		try:
-			System(*[Body(orbit=i) for i in (burn_orbit, self, other)]).plot()
+			System(*[Body(orbit=i) for i in (self.parent, burn_orbit, self, other)]).plot()
 		except AssertionError:
 			print(initial_guess, burn_orbit)
 		errorstring = '\n'.join((
@@ -538,7 +554,6 @@ class Orbit:
 			str(dv_best),
 		))
 		raise ValueError(errorstring)
-	"""
 
 	def true_anomaly(self, t: float = 0, ecc_anom_cache = None) -> float:
 		"""True anomaly (rad)"""
