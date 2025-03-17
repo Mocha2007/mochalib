@@ -97,6 +97,11 @@ class Orbit:
 	def mean_longitude(self) -> float:
 		"""Mean Longitude (radians)"""
 		return self.lan + self.aop + self.man
+	
+	@property
+	def mu(self) -> float:
+		"""mu G(m1+m2)"""
+		return self.ref.mu + self.parent.mu
 
 	@property
 	def nodal_precession(self) -> float:
@@ -119,12 +124,12 @@ class Orbit:
 	@property
 	def orbital_energy(self) -> float:
 		"""Specific orbital energy (J)"""
-		return -self.parent.mu/(2*self.a)
+		return -self.mu/(2*self.a)
 
 	@property
 	def p(self) -> float:
 		"""Period (seconds)"""
-		return 2*pi*sqrt(self.a**3/self.parent.mu)
+		return 2*pi*sqrt(self.a**3/self.mu)
 
 	@property
 	def parent(self):
@@ -152,7 +157,7 @@ class Orbit:
 	@property
 	def v(self) -> float:
 		"""Mean orbital velocity (m/s)"""
-		return (self.a/self.parent.mu)**-.5
+		return (self.a/self.mu)**-.5
 
 	@property
 	def v_apo(self) -> float:
@@ -160,7 +165,7 @@ class Orbit:
 		if self.e == 0:
 			return self.v
 		e = self.e
-		return sqrt((1-e)*self.parent.mu/(1+e)/self.a)
+		return sqrt((1-e)*self.mu/(1+e)/self.a)
 
 	@property
 	def v_peri(self) -> float:
@@ -168,7 +173,7 @@ class Orbit:
 		if self.e == 0:
 			return self.v
 		e = self.e
-		return sqrt((1+e)*self.parent.mu/(1-e)/self.a)
+		return sqrt((1+e)*self.mu/(1-e)/self.a)
 
 	# double underscore methods
 	def __gt__(self, other) -> bool:
@@ -544,4 +549,4 @@ class Orbit:
 
 	def v_at(self, r: float) -> float:
 		"""Orbital velocity at radius (m/s)"""
-		return sqrt(self.parent.mu*(2/r-1/self.a))
+		return sqrt(self.mu*(2/r-1/self.a))
