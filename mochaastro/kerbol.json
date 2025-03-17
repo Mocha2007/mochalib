@@ -23,8 +23,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 1210000,
-			"tilt": 0
+			"period": 1210000
 		}
 	},
 	{
@@ -43,8 +42,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 80500,
-			"tilt": 0
+			"period": 80500
 		},
 		"atmosphere": {
 			"scale_height": 7300,
@@ -69,8 +67,7 @@
 			"man": 0.9
 		},
 		"rotation": {
-			"period": 28255,
-			"tilt": 0
+			"period": 28255
 		},
 		"notes": "albedo is a SWAG"
 	},
@@ -90,8 +87,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 21549.425,
-			"tilt": 0
+			"period": 21549.425
 		},
 		"atmosphere": {
 			"scale_height": 5000,
@@ -116,8 +112,7 @@
 			"man": 1.7
 		},
 		"rotation": {
-			"period": 138984.38,
-			"tilt": 0
+			"period": 138984.38
 		},
 		"notes": "albedo is a SWAG"
 	},
@@ -137,8 +132,7 @@
 			"man": 0.9
 		},
 		"rotation": {
-			"period": 40400,
-			"tilt": 0
+			"period": 40400
 		},
 		"notes": "albedo is a SWAG"
 	},
@@ -158,8 +152,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 80500,
-			"tilt": 0
+			"period": 80500
 		},
 		"atmosphere": {
 			"scale_height": 6000,
@@ -184,8 +177,7 @@
 			"man": 1.7
 		},
 		"rotation": {
-			"period": 65517.862,
-			"tilt": 0
+			"period": 65517.862
 		},
 		"notes": "albedo is a SWAG"
 	},
@@ -205,8 +197,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 34800,
-			"tilt": 0
+			"period": 34800
 		},
 		"notes": "albedo is a SWAG"
 	},
@@ -226,8 +217,7 @@
 			"man": 3.14
 		},
 		"rotation": {
-			"period": 19460,
-			"tilt": 0
+			"period": 19460
 		},
 		"atmosphere": {
 			"surface_pressure": 0
