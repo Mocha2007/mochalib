@@ -488,7 +488,7 @@ class Orbit:
 				dt_mod = delta_t_tol*mul
 				# start by testing if adding a minute dt improves close approach
 				dt = dv_best[3]+dt_mod
-				burn_orbit = self.at_time(dt)
+				burn_orbit = self.at_time(dt) # TODO this is wrong, I forget to add the DV!!!
 				# now, to check if burn_orbit makes it closer...
 				new_close_approach_time = burn_orbit.close_approach(other, dt, 1, delta_t_tol)
 				new_close_approach_dist = burn_orbit.distance_to(other, new_close_approach_time)
