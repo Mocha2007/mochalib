@@ -395,7 +395,10 @@ class Body:
 		# https://en.wikipedia.org/wiki/Axial_precession#Equations
 		# http://www.columbia.edu/itc/ldeo/v1011x-1/jcm/Topic2/Topic2.html
 		# (C-A) / A = H = oblateness
-		SECOND_TERM = 3/2 * self.oblateness * cos(self.rotation.tilt) / self.rotation.angular_velocity
+		# used to be / self.rotation.angular_velocity,
+		# but that could cause a zero division error.
+		# instead I use the inverse of it: self.p / (2*pi)
+		SECOND_TERM = 3/(4*pi) * self.oblateness * cos(self.rotation.tilt) * self.rotation.p
 		def dPsi(mu, a, e, i) -> float:
 			return mu*(1-1.5*sin(i)**2)/(a**3 * (1-e**2)**1.5)
 		STAR_RATE = dPsi(self.orbit.parent.mu, self.orbit.a, self.orbit.e, 0)
