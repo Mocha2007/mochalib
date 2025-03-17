@@ -28,6 +28,53 @@
 		}
 	},
 	{
+		"name": "Eve",
+		"class": "planet",
+		"mass": 1.2243980e23,
+		"radius": 7e5,
+		"albedo": "venus.albedo",
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 9832684544,
+			"e": 0.01,
+			"i": 2.1,
+			"lan": 15,
+			"aop": 0,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 80500,
+			"tilt": 0
+		},
+		"atmosphere": {
+			"scale_height": 7300,
+			"surface_pressure": 506625,
+			"composition": "venus.atmosphere.composition"
+		},
+		"notes": "albedo is a SWAG; scale height is pre-1.0"
+	},
+	{
+		"name": "Gilly",
+		"class": "moon",
+		"mass": 1.2420363e17,
+		"radius": 13e3,
+		"albedo": "moon.albedo",
+		"orbit": {
+			"parent": "Eve",
+			"sma": 31500000,
+			"e": 0.55,
+			"i": 12,
+			"lan": 80,
+			"aop": 10,
+			"man": 0.9
+		},
+		"rotation": {
+			"period": 28255,
+			"tilt": 0
+		},
+		"notes": "albedo is a SWAG"
+	},
+	{
 		"name": "Kerbin",
 		"class": "planet",
 		"mass": 5.2915158e22,
