@@ -10,6 +10,7 @@ class System:
 		"""Star system containing bodies.\nDoesn't need to be ordered."""
 		self.parent = parent
 		self.bodies = set(bodies)
+		assert len(self.bodies)
 
 	@property
 	def mass(self) -> float:
@@ -56,6 +57,7 @@ class System:
 		n = 1000
 
 		plt.figure(figsize=(7, 7))
+		plt.axis('equal')
 		plt.title('Orbit')
 		plt.xlabel('x (m)')
 		plt.ylabel('y (m)')
