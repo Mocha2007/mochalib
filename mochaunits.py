@@ -1,6 +1,6 @@
 """Module to handle dimensional analysis"""
 from copy import deepcopy
-from math import floor, log10, pi
+from math import floor, isfinite, log10, pi
 from typing import Tuple
 
 _MOCHAUNITS_DEFAULT_ROUNDING = 15
@@ -22,8 +22,8 @@ temperatures = {
 
 def get_si(value: float, rounding: int = _MOCHAUNITS_DEFAULT_ROUNDING) -> Tuple[float, str]:
 	"""Get SI prefix and adjusted value"""
-	if value == 0:
-		return 0, prefixes[0]
+	if value == 0 or not isfinite(value):
+		return value, prefixes[0]
 	index = floor(log10(value)/3)
 	index = max(min(prefixes), min(max(prefixes), index))
 	new_value = value / 10**(3*index)
