@@ -17,9 +17,9 @@
 			"parent": "Kerbol",
 			"sma": 5263138304,
 			"e": 0.2,
-			"i": 7,
-			"lan": 70,
-			"aop": 15,
+			"i": "7*deg",
+			"lan": "70*deg",
+			"aop": "15*deg",
 			"man": 3.14
 		},
 		"rotation": {
@@ -37,9 +37,9 @@
 			"parent": "Kerbol",
 			"sma": 9832684544,
 			"e": 0.01,
-			"i": 2.1,
-			"lan": 15,
-			"aop": 0,
+			"i": "2.1*deg",
+			"lan": "15*deg",
+			"aop": "0*deg",
 			"man": 3.14
 		},
 		"rotation": {
@@ -63,9 +63,9 @@
 			"parent": "Eve",
 			"sma": 31500000,
 			"e": 0.55,
-			"i": 12,
-			"lan": 80,
-			"aop": 10,
+			"i": "12*deg",
+			"lan": "80*deg",
+			"aop": "10*deg",
 			"man": 0.9
 		},
 		"rotation": {
@@ -131,9 +131,9 @@
 			"parent": "Kerbin",
 			"sma": 4.7e7,
 			"e": 0,
-			"i": 6,
-			"lan": 78,
-			"aop": 38,
+			"i": "6*deg",
+			"lan": "78*deg",
+			"aop": "38*deg",
 			"man": 0.9
 		},
 		"rotation": {
@@ -152,8 +152,8 @@
 			"parent": "Kerbol",
 			"sma": 20726155264,
 			"e": 0.051,
-			"i": 0.06,
-			"lan": 135.5,
+			"i": "0.06*deg",
+			"lan": "135.5*deg",
 			"aop": 0,
 			"man": 3.14
 		},
@@ -178,7 +178,7 @@
 			"parent": "Duna",
 			"sma": 3.2e6,
 			"e": 0.03,
-			"i": 0.2,
+			"i": "0.2*deg",
 			"lan": 0,
 			"aop": 0,
 			"man": 1.7
@@ -199,9 +199,9 @@
 			"parent": "Kerbol",
 			"sma": 40839348203,
 			"e": 0.145,
-			"i": 5,
-			"lan": 280,
-			"aop": 90,
+			"i": "5*deg",
+			"lan": "280*deg",
+			"aop": "90*deg",
 			"man": 3.14
 		},
 		"rotation": {
@@ -220,9 +220,9 @@
 			"parent": "Kerbol",
 			"sma": 90118820000,
 			"e": 0.26,
-			"i": 6.15,
-			"lan": 50,
-			"aop": 260,
+			"i": "6.15*deg",
+			"lan": "50*deg",
+			"aop": "260*deg",
 			"man": 3.14
 		},
 		"rotation": {
