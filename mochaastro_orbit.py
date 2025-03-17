@@ -36,8 +36,8 @@ class Orbit:
 	def apsidial_precession(self) -> float:
 		"""Apsidial precession rate predicted by general relativity (rad/s)"""
 		# https://en.wikipedia.org/wiki/Apsidal_precession#General_relativity
-		# note that the formula given is PER ORBIT and thus
-		# needs to be divided by T to get it in seconds
+		# note that the formula given is radians PER ORBIT and thus
+		# needs to be divided by T to get it in radians PER SECOND
 		return 24*pi**3 * self.a**2 / (self.p**3 * c**2 * (1-self.e**2))
 
 	@property
