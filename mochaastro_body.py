@@ -801,6 +801,7 @@ class Body:
 			"'Absolute Mag.      {}'.format(round(self.app_mag(10*pc), 2))",
 			"'Semimajor Axis     {}'.format(pretty_dim(Length(self.orbit.a, 'astro')))",
 			"'Orbital Period     {}'.format(pretty_dim(Time(self.orbit.p, 'imperial')))",
+			"'                   {} local days'.format(round(self.orbit.p/self.rotation.p, 3))",
 			"'Rotation Period    {}'.format(pretty_dim(Time(self.rotation.p, 'imperial')))",
 			"'Solar Day          {}'.format(pretty_dim(Time(self.solar_day, 'imperial')))",
 			"'Solar Year         {} sols'.format(round(self.solar_year, 2))",
