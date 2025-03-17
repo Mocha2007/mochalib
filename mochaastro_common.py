@@ -343,7 +343,7 @@ def keplerian(parent, cartesian: Tuple[float, float, float, float, float, float]
 	i = acos(h_z / np.linalg.norm(h))
 	# 3 Determine the orbit eccentricity e [1],
 	# which is simply the magnitude of the eccentricity vector e, and the eccentric anomaly E [1]:
-	eccentricity = np.linalg.norm(e)
+	eccentricity = np.linalg.norm(e).item()
 	E = 2 * atan(tan(nu/2) / sqrt((1+eccentricity)/(1-eccentricity)))
 	# print(nu, eccentricity, '-> E =', E)
 	# E = 2 * atan2(sqrt((1+eccentricity)/(1-eccentricity)), tan(nu/2))
@@ -366,7 +366,7 @@ def keplerian(parent, cartesian: Tuple[float, float, float, float, float, float]
 	M = E - eccentricity * sin(E)
 	# print(E, eccentricity, '-> M =', M)
 	# 6 Finally, the semi-major axis a is found from the expression
-	a = 1 / (2/np.linalg.norm(r) - np.linalg.norm(r_)**2/mu)
+	a = 1 / (2/np.linalg.norm(r) - np.linalg.norm(r_)**2/mu).item()
 	return Orbit(**{
 		'parent': parent,
 		'sma': a,
