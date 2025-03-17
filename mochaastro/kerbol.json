@@ -141,5 +141,52 @@
 			"tilt": 0
 		},
 		"notes": "albedo is a SWAG"
+	},
+	{
+		"name": "Duna",
+		"class": "planet",
+		"mass": 4.5154270e21,
+		"radius": 320e3,
+		"albedo": "mars.albedo",
+		"orbit": {
+			"parent": "Kerbol",
+			"sma": 20726155264,
+			"e": 0.051,
+			"i": 0.06,
+			"lan": 135.5,
+			"aop": 0,
+			"man": 3.14
+		},
+		"rotation": {
+			"period": 80500,
+			"tilt": 0
+		},
+		"atmosphere": {
+			"scale_height": 6000,
+			"surface_pressure": 6755,
+			"composition": "mars.atmosphere.composition"
+		},
+		"notes": "albedo is a SWAG; scale height is pre-1.0"
+	},
+	{
+		"name": "Ike",
+		"class": "moon",
+		"mass": 2.7821615e20,
+		"radius": 130e3,
+		"albedo": "moon.albedo",
+		"orbit": {
+			"parent": "Duna",
+			"sma": 3.2e6,
+			"e": 0.03,
+			"i": 0.2,
+			"lan": 0,
+			"aop": 0,
+			"man": 1.7
+		},
+		"rotation": {
+			"period": 65517.862,
+			"tilt": 0
+		},
+		"notes": "albedo is a SWAG"
 	}
 ]
