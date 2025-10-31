@@ -57,10 +57,15 @@ def main(loc):
 	return cleanup(l(loc))
 
 
-huracan = telnetlib.Telnet(host='rainmaker.wunderground.com')
+huracan = None
 
 
 def hurricane(x):
+	if huracan is None:
+		try:
+			huracan = telnetlib.Telnet(host='rainmaker.wunderground.com')
+		except socket.gaierror:
+			print("couldn't connect to rainmaker.wunderground.com")
 	try:
 		x = int(x)
 	except ValueError:
