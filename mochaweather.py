@@ -103,7 +103,7 @@ def phoon():
 def quake(): # load
 	url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.csv'
 	request = urllib.request.Request(url, None, headers)
-	csv = urllib.request.urlopen(request).read().decode('ascii')
+	csv = urllib.request.urlopen(request).read().decode('utf-8')
 	csv = sub(compile(r'(,[^,]*){8}$', MULTILINE), '', csv)
 	csv = sub(r',(?! )', '\t', csv).replace('"', '')
 	# del magType -> updated
